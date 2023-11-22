@@ -24,12 +24,12 @@ interface Props {
   closeModal: () => void;
   type: String;
   _storyBoardSeq: Number;
-  storyReplyData: {};
+  selectedData: {};
   replyInfo: {};
   profileOpenFn: (memberSeq:number, openCnt:number, isSecret:boolean) => void;
 }
 
-export default function LikeListPopup({ isVisible, closeModal, type, _storyBoardSeq, storyReplyData, replyInfo, profileOpenFn }: Props) {
+export default function LikeListPopup({ isVisible, closeModal, type, _storyBoardSeq, selectedData, replyInfo, profileOpenFn }: Props) {
   const { show } = usePopup();
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -57,7 +57,7 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
 
     // 스토리 댓글 좋아요 파람
     const replyBody = {
-      story_reply_seq: storyReplyData?.storyReplySeq,
+      story_reply_seq: replyInfo?.story_reply_seq,
       type: type,
     };
 
@@ -178,6 +178,7 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
     >
       <View style={{ height, alignItems: 'center', justifyContent: 'center' }}>
 
+        {/* 배경 영역 */}
         <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}} onPress={()=> { closeModal(); }} />
 
         <SafeAreaView style={_styles.container}>
@@ -188,24 +189,28 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
             </TouchableOpacity>
           </View>
 
+          {/* 댓글인 경우 표시 */}
           {type == 'REPLY' && (
             <SpaceView viewStyle={_styles.replyArea}>
               <TouchableOpacity
                 disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
                 onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
 
-                {replyInfo.story_type == 'SECRET' ? (
+                {(replyInfo.story_type == 'SECRET' || selectedData.isSecret) ? (
                   <Image source={replyInfo.gender == 'M' ? ICON.storyMale : ICON.storyFemale} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
                 ) : (
                   <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
                 )}
               </TouchableOpacity>
               <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
-                <Text style={[_styles.mainNicknameText]}>
-                  {replyInfo.story_type == 'SECRET' ? replyInfo.nickname_modifier + ' ' + replyInfo.nickname_noun : replyInfo.nickname}
+                <Text style={[_styles.mainNicknameText]}>                  
+                  {(replyInfo.story_type == 'SECRET' || selectedData.isSecret) ? (
+                    <>{replyInfo.story_type == 'SECRET' ? replyInfo.nickname_modifier + ' ' + replyInfo.nickname_noun : '비밀글'}</>
+                  ) : replyInfo.nickname}
                   <Text style={_styles.timeText}> {replyInfo.time_text}</Text>
                 </Text>
-                <Text style={[_styles.replyText, {marginTop: 3}]}>{replyInfo.reply_contents}</Text>
+                <Text style={[_styles.replyText, {marginTop: 3}]}>
+                  {selectedData.isSecret ? '게시글 작성자에게만 보이는 글입니다.' : replyInfo.reply_contents}</Text>
               </SpaceView>
             </SpaceView>
           )}

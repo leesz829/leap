@@ -66,6 +66,12 @@ export default function StoryDetail(props: Props) {
     isSecret: false,
   });
 
+  // 선택된 좋아요 데이터(좋아요 목록 모달 적용)
+  const [selectedLikeData, setSelectedLikeData] = React.useState({
+    storyReplySeq: 0,
+    isSecret: false,
+  });
+
   // 스토리 데이터
   const [storyData, setStoryData] = React.useState({
     board: {},
@@ -325,10 +331,19 @@ export default function StoryDetail(props: Props) {
   const popupStoryReplyActive = (_storyReplySeq:number, _depth:number, replyInfo:{}) => {
     setLikeListPopup(true);
     setLikeListTypePopup('REPLY');
-    setSelectedReplyData({
+    setSelectedLikeData({
+
+      
       storyReplySeq: _storyReplySeq,
-      depth: _depth,
+      isSecret: replyInfo?.secret_yn == 'Y' && memberBase?.member_seq != storyData.board?.member_seq && memberBase?.member_seq != replyInfo?.member_seq
     });
+
+    /* if(secretYn == 'Y') {
+      if(memberBase?.member_seq != storyData.board?.member_seq && memberBase?.member_seq != item?.member_seq) {
+        isApplySecret = true;
+      }
+    }; */
+
     setReplyInfo(replyInfo);
   };
 
@@ -1056,7 +1071,6 @@ export default function StoryDetail(props: Props) {
       {/* ##################################################################################
                 댓글 입력 팝업
       ################################################################################## */}
-      
       <ReplyRegiPopup 
         isVisible={isReplyVisible} 
         storyBoardSeq={storyData?.board?.story_board_seq}
@@ -1074,7 +1088,7 @@ export default function StoryDetail(props: Props) {
         closeModal={likeListCloseModal}
         type={likeListTypePopup}
         _storyBoardSeq={props.route.params.storyBoardSeq}
-        storyReplyData={selectedReplyData}
+        selectedData={selectedLikeData}
         replyInfo={replyInfo}
         profileOpenFn={profileCardOpenPopup}
       />

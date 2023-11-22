@@ -3,7 +3,7 @@ import { JWT_TOKEN } from 'constants/storeKey';
 
 // api 서버 도메인
 //export const api_domain = "http://115.85.182.94:9915";
-export const api_domain = "http://61.72.154.87:9915";
+export const api_domain = "http://221.146.13.175:9915";
 //export const api_domain = 'http://118.67.134.149:9915';
 //export const api_domain = 'http://www.api.limeeted.com';
 

@@ -38,6 +38,7 @@ interface Props {
   imgHeight?: number;
   borderRadius?: number;
   iconSize?: number;
+  isMst?: boolean;
 }
 
 const includeExtra = true;
@@ -134,39 +135,79 @@ export const CommonImagePicker: FC<Props> = (props) => {
 
       ) : (
 
-        <TouchableOpacity onPress={onButtonPress} style={props.isAuth ? _styles.tempBoxAuth : _styles.tempBoxBase} >
+        <TouchableOpacity onPress={onButtonPress} style={props.isAuth ? _styles.tempBoxAuth : _styles.imgBoxBase(props.imgWidth, props.imgHeight, props.borderRadius)} >
 
-          {imgPath != '' ? (
+          {/* 대표 여부 구분 */}
+          {isEmptyData(props.isMst) && props.isMst ? (
             <>
-              <Image
-                resizeMode="cover"
-                resizeMethod="scale"
-                style={_styles.tempBoxBase}
-                source={{uri : imgPath}}
-              />
+              {isEmptyData(imgPath) ? (
+                <>
+                  <Image
+                    source={{uri : imgPath}}
+                    style={_styles.imgBoxBase(props.imgWidth, props.imgHeight, props.borderRadius)}
+                    resizeMode="cover"
+                    //resizeMethod="scale"
+                  />
 
-              <View style={_styles.imgDisabled}>
-                <Text style={[_styles.profileImageDimText('PROGRESS')]}>심사중</Text>
-              </View>
-            </>
-          ) : isEmptyData(props.uriParam) ? (
-            <>
-              <Image
-                resizeMode="cover"
-                resizeMethod="scale"
-                style={_styles.tempBoxBase}
-                key={props.uriParam}
-                source={props.uriParam}
-              />
+                  <View style={_styles.imgDisabled}>
+                    <Text style={[_styles.profileImageDimText('PROGRESS')]}>심사중</Text>
+                  </View>
+                </>
+              ) : isEmptyData(props.uriParam) ? (
+                <>
+                  <Image
+                    resizeMode="cover"
+                    //resizeMethod="scale"
+                    style={_styles.imgBoxBase(props.imgWidth, props.imgHeight, props.borderRadius)}
+                    key={props.uriParam}
+                    source={props.uriParam}
+                  />
 
-              {props.isAuth && 
-                <View style={_styles.imgDisabled}>
-                  <Text style={[_styles.profileImageDimText(props.auth_status)]}>{props.auth_status == 'PROGRESS' ? '심사중' : '반려'}</Text>
-                </View>
-              }
+                  {props.isAuth && 
+                    <View style={_styles.imgDisabled}>
+                      <Text style={[_styles.profileImageDimText(props.auth_status)]}>{props.auth_status == 'PROGRESS' ? '심사중' : '반려'}</Text>
+                    </View>
+                  }
+                </>
+              ) : (
+                <Image source={props.plusBtnType == '02' ? ICON.plus2 : ICON.plus_primary} style={styles.boxPlusIcon} />
+              )}
             </>
           ) : (
-            <Image source={props.plusBtnType == '02' ? ICON.plus2 : ICON.plus_primary} style={styles.boxPlusIcon} />
+            <>
+              {imgPath != '' ? (
+                <>
+                  <Image
+                    resizeMode="cover"
+                    //resizeMethod="scale"
+                    style={_styles.imgBoxBase(props.imgWidth, props.imgHeight, props.borderRadius)}
+                    source={{uri : imgPath}}
+                  />
+
+                  <View style={_styles.imgDisabled}>
+                    <Text style={[_styles.profileImageDimText('PROGRESS')]}>심사중</Text>
+                  </View>
+                </>
+              ) : isEmptyData(props.uriParam) ? (
+                <>
+                  <Image
+                    resizeMode="cover"
+                    //resizeMethod="scale"
+                    style={_styles.imgBoxBase(props.imgWidth, props.imgHeight, props.borderRadius)}
+                    key={props.uriParam}
+                    source={props.uriParam}
+                  />
+
+                  {props.isAuth && 
+                    <View style={_styles.imgDisabled}>
+                      <Text style={[_styles.profileImageDimText(props.auth_status)]}>{props.auth_status == 'PROGRESS' ? '심사중' : '반려'}</Text>
+                    </View>
+                  }
+                </>
+              ) : (
+                <Image source={props.plusBtnType == '02' ? ICON.plus2 : ICON.plus_primary} style={styles.boxPlusIcon} />
+              )}
+            </>
           )}
 
         </TouchableOpacity>
@@ -174,8 +215,6 @@ export const CommonImagePicker: FC<Props> = (props) => {
     </>
   );
 };
-
-
 
 const _styles = StyleSheet.create({
   imgBoxBase: (imgWidth: number, imgHeight: number, borderRadius: number) => {
@@ -223,7 +262,7 @@ const _styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    borderRadius: 20,
+    //borderRadius: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flexDirection: 'column',
     alignItems: 'center',
