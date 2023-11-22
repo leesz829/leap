@@ -73,7 +73,7 @@ const codepushVersionCheck = async () => {
 
 const codePushOptions = {
   checkFrequency: codePush.CheckFrequency.MANUAL,
-  // 언제 업데이트를 체크하고 반영할지를 정한다.1
+  // 언제 업데이트를 체크하고 반영할지를 정한다.
   // ON_APP_RESUME은 Background에서 Foreground로 오는 것을 의미
   // ON_APP_START은 앱이 실행되는(켜지는) 순간을 의미
   //updateDialog: false,
