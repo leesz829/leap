@@ -4,6 +4,7 @@ import { GuidePopup } from 'screens/commonpopup/GuidePopup';
 import { EventPopup } from 'screens/commonpopup/EventPopup';
 import { ResponsivePopup } from 'screens/commonpopup/ResponsivePopup';
 import { PromotionPopup } from 'screens/commonpopup/PromotionPopup';
+import { OpenProfilePopup } from 'screens/commonpopup/OpenProfilePopup';
 
 export const PopupContext = createContext({} as any);
 
@@ -137,6 +138,15 @@ export const PopupProvider = ({ children }: any) => {
           confirmCallbackFunc={contents.confirmCallback}
           prodList={contents.prodList}
           etcCallbackFunc={contents.etcCallback}
+        />
+      ) : contents.type == 'OPEN' ? (
+        <OpenProfilePopup
+          popupVisible={!contents.isCross ? visible : visibleCross}
+          setPopupVIsible={setVisible}
+          confirmCallbackFunc={contents.confirmCallback}
+          cancelCallbackFunc={contents.cancelCallback}
+          passAmt={contents.passAmt}
+          passType={contents.passType}
         />
       ) : (
         <BasePopup

@@ -466,7 +466,7 @@ export const Preference: FC<Props> = (props) => {
               value={'저장'}
               type={'primary'}
               onPress={() => {
-                console.log('asdsaldkmlmk');
+                
               }}
             />
           </SpaceView>

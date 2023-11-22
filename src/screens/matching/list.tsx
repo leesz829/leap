@@ -235,7 +235,6 @@ export default function MatchingList(props: Props) {
 				colors={['#3D4348', '#1A1E1C']}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 0, y: 1 }}
-				style={_styles.wrap}
 			>
         {isEmpty ? (
           <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'} ]}>
@@ -564,9 +563,6 @@ const MatchRenderItem = ({ item, fnDetail }) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-  wrap: {
-    minHeight: height,
-  },
   imgItemWrap: {
     marginHorizontal: 5,
   },

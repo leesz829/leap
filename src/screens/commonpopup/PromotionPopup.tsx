@@ -246,7 +246,7 @@ const _styles = StyleSheet.create({
     fontSize: 10,
   },
   recItemName: {
-    width: 60,
+    width: 80,
     fontFamily: 'Pretendard-Regular',
     color: '#D5CD9E',
     marginTop: 10,
@@ -331,7 +331,7 @@ const _styles = StyleSheet.create({
       overflow: 'hidden',
       marginRight: 10,
       backgroundColor: '#6A6A6A',
-      width: width - 290,
+      width: width - 270,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',

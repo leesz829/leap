@@ -19,9 +19,6 @@ interface Props {
   popupVisible?: boolean; // popup state
   setPopupVIsible?: any; // popup setState
   isConfirm?: boolean; // confirm 여부
-  title?: string; // 팝업 제목
-  text?: string; // 팝업 문구
-  subText?: string;
   confirmCallbackFunc?: Function | undefined; // 확인 Callback 함수
   cancelCallbackFunc?: Function | undefined;
   confirmBtnText?: string;
@@ -33,23 +30,26 @@ interface Props {
 }
 
 export const OpenProfilePopup = (props: Props) => {
-  const onPressConfirm = () => {
+  const [message, setMessage] = React.useState(''); // 메시지
+  const onPressConfirm = (message:string) => {
     if(props.confirmCallbackFunc == null && typeof props.confirmCallbackFunc != 'undefined') {
-      
+
     } else {
-      props.confirmCallbackFunc && props.confirmCallbackFunc();
+      props.confirmCallbackFunc && props.confirmCallbackFunc(message);
       props.setPopupVIsible(false);
+      setMessage('');
     }
   };
   const onPressCancel = () => {
     props.cancelCallbackFunc && props.cancelCallbackFunc();
     props.setPopupVIsible(false);
+    setMessage('');
   };
-  const [message, setMessage] = React.useState(''); // 메시지
+  
 
   return (
     <>
-      <Modal isVisible={popupVisible} onRequestClose={() => { closeModal(); }}>
+      <Modal isVisible={props.popupVisible} onRequestClose={() => { closeModal(); }}>
         <LinearGradient
           colors={['#3D4348', '#1A1E1C']}
           start={{ x: 0, y: 0 }}
@@ -82,7 +82,7 @@ export const OpenProfilePopup = (props: Props) => {
             <TouchableOpacity 
               style={[_styles.allButton, {backgroundColor: '#FFF'}]} 
               onPress={() => {
-                closeModal();
+                onPressCancel();
               }}> 
 
               <Text style={_styles.allButtonText}>취소하기</Text>
@@ -90,13 +90,13 @@ export const OpenProfilePopup = (props: Props) => {
             <TouchableOpacity 
               style={_styles.allButton} 
               onPress={() => {
-                confirmFunc(message);
+                onPressConfirm(message);
               }}>    
               
               <Text style={[_styles.allButtonText, {marginTop: 5}]}>확인하기</Text>
               <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                   <Image source={ICON.polygonGreen} style={{width: 20, height: 25}} />
-                  <Text style={_styles.passAmtText}>15</Text>
+                  <Text style={_styles.passAmtText}>{props.passAmt}</Text>
               </SpaceView>
             </TouchableOpacity>
           </View>

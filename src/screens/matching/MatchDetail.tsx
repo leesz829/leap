@@ -280,7 +280,19 @@ export default function MatchDetail(props: Props) {
       show({ content: '신고항목을 선택해주세요.' });
       return false;
     } else {
-      insertReport();
+      show({
+        title: '사용자 신고하기',
+        content: '해당 사용자를 신고하시겠습니까?',
+        type: 'REPORT',
+        cancelCallback: function() {
+          report_onClose();
+        },
+        confirmCallback: async function() {
+          insertReport();
+        },
+        cancelBtnText: '취소 할래요!',
+        confirmBtnText: '신고할래요!',
+      });
     }
   };
 

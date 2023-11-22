@@ -17,7 +17,7 @@ import TopNavigation from 'component/TopNavigation';
 import { ViualSlider } from 'component/ViualSlider';
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
+import { Modal, ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { LiveSearch } from 'screens/live/LiveSearch';
 import { get_live_members, regist_profile_evaluation, get_common_code, update_additional } from 'api/models';
@@ -35,7 +35,6 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 //import { Easing } from 'react-native-reanimated';
 import RatingStar from 'component/RatingStar';
 import LinearGradient from 'react-native-linear-gradient';
-import Modal from 'react-native-modal';
 import { ColorType } from '@types';
 import { isEmptyData } from 'utils/functions';
 
@@ -88,10 +87,14 @@ export const Live = () => {
     }
   }
 
+  const [pickFace, setPickFace] = useState(''); // 선택한 인상
+
   // 인상 선택 팝업 열기
-  const openImpressPop = async () => {
+  const openImpressPop = async (pick:string) => {
     setLiveModalVisible(false);
     setIsPopVisible(true);
+
+    setPickFace(pick);
   };
 
   // 인상 선택 팝업 끄기
@@ -281,27 +284,35 @@ export const Live = () => {
           </View>
 
           {/* 인상 리스트 모달 */}
-          <Modal isVisible={liveModalVisible} style={{backgroundColor: 'rgba(9, 32, 50, 0.4)', margin: 0}}>
-            <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 120}}>
-              <TouchableOpacity onPress={openImpressPop}>
+          <Modal visible={liveModalVisible} style={{margin: 0}} transparent={true}>
+            <LinearGradient
+              colors={['rgba(9, 32, 50, 0.7)', 'rgba(52, 71, 86, 0.7)']}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 0, y: 0 }} 
+              style={_styles.liveModalBackground}
+            >
+            <SpaceView mt={300}>
+              <TouchableOpacity onPress={() => openImpressPop('#웃는게 이뻐요.')}>
                 <Text style={_styles.faceModalText}>#웃는게 이뻐요.</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={openImpressPop}>
+              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
                 <Text style={_styles.faceModalText}>#눈이 이뻐요.</Text>
               </TouchableOpacity>
+            </SpaceView>
+            <SpaceView mb={100}>
               <TouchableOpacity
-                style={{marginTop: 130}}
                 onPress={() => {
                   setLiveModalVisible(false);
                 }}
               >
                 <Image source={ICON.circleX} style={styles.iconSize40} />
               </TouchableOpacity>
-            </View>
+            </SpaceView>
+            </LinearGradient>
           </Modal>
 
           {/* 인상 선택 팝업 */}
-          <Modal isVisible={isPopVisible} style={{margin: 0}}>
+          <Modal visible={isPopVisible} style={{margin: 0}} transparent={true}>
             <View style={modalStyle.modalBackground}>
               <View style={[modalStyle.modalStyle1, {overflow: 'hidden'}]}>
                 <LinearGradient
@@ -316,7 +327,7 @@ export const Live = () => {
                       <Image source={findSourcePath(data.live_profile_img[0].url.uri)} style={styles.iconSize80} />
                     </SpaceView>
                     <SpaceView mt={30}>
-                      <Text style={_styles.pickImpressText}>#봄같은 분위기</Text>
+                      <Text style={_styles.pickImpressText}>{pickFace}</Text>
                     </SpaceView>
                   </SpaceView>
 
@@ -537,5 +548,10 @@ const _styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 50,
     marginBottom: 40,
+  },
+  liveModalBackground: {
+    height,
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

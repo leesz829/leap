@@ -66,12 +66,6 @@ export default function StoryDetail(props: Props) {
     isSecret: false,
   });
 
-  // 선택된 좋아요 데이터(좋아요 목록 모달 적용)
-  const [selectedLikeData, setSelectedLikeData] = React.useState({
-    storyReplySeq: 0,
-    isSecret: false,
-  });
-
   // 스토리 데이터
   const [storyData, setStoryData] = React.useState({
     board: {},
@@ -331,19 +325,10 @@ export default function StoryDetail(props: Props) {
   const popupStoryReplyActive = (_storyReplySeq:number, _depth:number, replyInfo:{}) => {
     setLikeListPopup(true);
     setLikeListTypePopup('REPLY');
-    setSelectedLikeData({
-
-      
+    setSelectedReplyData({
       storyReplySeq: _storyReplySeq,
-      isSecret: replyInfo?.secret_yn == 'Y' && memberBase?.member_seq != storyData.board?.member_seq && memberBase?.member_seq != replyInfo?.member_seq
+      depth: _depth,
     });
-
-    /* if(secretYn == 'Y') {
-      if(memberBase?.member_seq != storyData.board?.member_seq && memberBase?.member_seq != item?.member_seq) {
-        isApplySecret = true;
-      }
-    }; */
-
     setReplyInfo(replyInfo);
   };
 
@@ -402,15 +387,13 @@ export default function StoryDetail(props: Props) {
 
     } else {
       show({
-        title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
-        content: isSecret ? '(7일간)비밀 프로필을 열람하시겠습니까?' : '(7일간)프로필을 열람하시겠습니까?',
+        type: 'OPEN',
         passType: isSecret ? 'ROYAL' : 'PASS',
         passAmt: isSecret ? '1' : '15',
-        confirmCallback: function() {
-
+        confirmCallback: function(message:string) {
           if(isSecret) {
             if(memberBase?.royal_pass_has_amt >= 1) {
-              profileCardOpen(memberSeq, isSecret);
+              profileCardOpen(memberSeq, isSecret, message);
             } else {
               show({
                 title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
@@ -426,7 +409,7 @@ export default function StoryDetail(props: Props) {
             }
           } else {
             if(memberBase?.pass_has_amt >= 15) {
-              profileCardOpen(memberSeq, isSecret);
+              profileCardOpen(memberSeq, isSecret, message);
             } else {
               show({
                 title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
@@ -449,8 +432,7 @@ export default function StoryDetail(props: Props) {
   };
 
   // ##################################################################################### 프로필 카드 열람
-  const profileCardOpen =  async (memberSeq:number, isSecret:boolean) => {
-
+  const profileCardOpen =  async (memberSeq:number, isSecret:boolean, message:string) => {
     // 중복 클릭 방지 설정
     if(isClickable) {
       try {
@@ -461,6 +443,7 @@ export default function StoryDetail(props: Props) {
           type: 'STORY',
           trgt_member_seq: memberSeq,
           secret_yn: isSecret ? 'Y' : 'N',
+          message: message,
         };
   
         const { success, data } = await profile_open(body);
@@ -1071,6 +1054,7 @@ export default function StoryDetail(props: Props) {
       {/* ##################################################################################
                 댓글 입력 팝업
       ################################################################################## */}
+      
       <ReplyRegiPopup 
         isVisible={isReplyVisible} 
         storyBoardSeq={storyData?.board?.story_board_seq}
@@ -1088,7 +1072,7 @@ export default function StoryDetail(props: Props) {
         closeModal={likeListCloseModal}
         type={likeListTypePopup}
         _storyBoardSeq={props.route.params.storyBoardSeq}
-        selectedData={selectedLikeData}
+        storyReplyData={selectedReplyData}
         replyInfo={replyInfo}
         profileOpenFn={profileCardOpenPopup}
       />

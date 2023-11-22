@@ -639,7 +639,7 @@ export const modalStyle = StyleSheet.create({
     flex: 2,
     alignItems: 'center',
     paddingVertical: 0,
-    height: 60,
+    height: 50,
     justifyContent: 'center',
   },
   modalAuctBtn: {
