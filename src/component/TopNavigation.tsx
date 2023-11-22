@@ -36,32 +36,36 @@ const TopNavigation: FC<Props> = (props) => {
     show({ title: '스토리', content: '준비중입니다.' });
   }
 
-  return props.theme ? (
-    <LinearGradient
-      colors={['#89b0fa', '#aaa1f7']}
-      style={{
-        width: '100%',
-        zIndex: 1,
-      }}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
-      <View style={_styles.tabContainer}>
-        <NaviButtons navName={props.currentPath} theme={props.theme} />
-        {/* ######################################################################
-			  ##### 팝업 영역
-			  ###################################################################### */}
-        <Wallet theme={props.theme} />
-      </View>
-    </LinearGradient>
-  ) : (
-    <View style={[_styles.tabContainer, { backgroundColor: 'white', zIndex: 1 }]}>
-      <NaviButtons navName={props.currentPath} theme={props.theme} />
-      {/* ######################################################################
-			##### 팝업 영역
-			###################################################################### */}
-      <Wallet theme={props.theme} />
-    </View>
+  return (
+    <>
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        style={{
+          width: '100%',
+          zIndex: 1,
+        }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        {props.theme ? (
+          <View style={_styles.tabContainer}>
+            <NaviButtons navName={props.currentPath} theme={props.theme} />
+            {/* ######################################################################
+            ##### 팝업 영역
+            ###################################################################### */}
+            <Wallet theme={props.theme} />
+          </View>
+        ) : (
+          <View style={[_styles.tabContainer, { /* backgroundColor: 'white', */ zIndex: 1 }]}>
+            <NaviButtons navName={props.currentPath} theme={props.theme} />
+            {/* ######################################################################
+            ##### 팝업 영역
+            ###################################################################### */}
+            <Wallet theme={props.theme} />
+          </View>
+        )}
+      </LinearGradient>
+    </>
   );
 };
 function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
@@ -105,15 +109,17 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
-        <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" />
+        {/* <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" /> */}
+        <Text style={_styles.storyTxt(navName == 'LIMEETED', theme != undefined)}>리프</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
-        <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" />
+        {/* <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" /> */}
+        <Text style={_styles.storyTxt(navName == 'LIVE', theme != undefined)}>플러팅</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
-        <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>STORY</Text>
+        <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>피드</Text>
         <View style={{borderBottomWidth: navName == 'Story' ? 2 : 0, borderBottomColor: '#7986EE', position: 'absolute', bottom: 1, left: 0, right: 17}} />
         {/* <View style={{position: 'absolute', top: -8, right: 16}}>
           <Image style={_styles.betaIcon} source={betaIcon} resizeMode="contain" />
@@ -279,17 +285,17 @@ const _styles = StyleSheet.create({
 
   },
   storyTxt: (isOn:boolean, isTheme:boolean) => {
-    let _color = '#999999';
+    let _color = '#445561';
 
     if(isOn) {
-      _color = '#7986EE';
+      _color = '#F1D30E';
     } else if(isTheme) {
       _color = '#fff';
     }
 
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
-      fontSize: 18,
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 25,
       color: _color,
       //borderBottomWidth: isOn ? 2 : 0,
       //borderBottomColor: '#7986EE',
