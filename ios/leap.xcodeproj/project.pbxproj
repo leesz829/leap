@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* limeetedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* limeetedTests.m */; };
+		00E356F31AD99517003FC87E /* leapTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* leapTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -26,8 +26,8 @@
 		84A3B3DA2A77AB6C008FAAE9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */; };
 		84F4E05829F823F7000977E9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F4E05729F823F7000977E9 /* StoreKit.framework */; };
 		A86AF2A3CC014412B6DA2A8A /* AppleSDGothicNeoSB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */; };
-		B9AAB84DA6D309356E671698 /* Pods_limeeted_limeetedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 076418B245E8BB17F5A9F17D /* Pods_limeeted_limeetedTests.framework */; };
-		D5BE8479734C03E43564D570 /* Pods_limeeted.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33F377FC7EE6E5DEA2252469 /* Pods_limeeted.framework */; };
+		B9AAB84DA6D309356E671698 /* Pods_leap_leapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 076418B245E8BB17F5A9F17D /* Pods_leap_leapTests.framework */; };
+		D5BE8479734C03E43564D570 /* Pods_leap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33F377FC7EE6E5DEA2252469 /* Pods_leap.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,41 +36,41 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = limeeted;
+			remoteInfo = leap;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* limeetedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = limeetedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* leapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = leapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* limeetedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = limeetedTests.m; sourceTree = "<group>"; };
-		076418B245E8BB17F5A9F17D /* Pods_limeeted_limeetedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_limeeted_limeetedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		139E02B62CD3182D0D301CC4 /* Pods-limeeted-limeetedTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.staging.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.staging.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* limeeted.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = limeeted.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = limeeted/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = limeeted/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = limeeted/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = limeeted/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = limeeted/main.m; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* leapTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = leapTests.m; sourceTree = "<group>"; };
+		076418B245E8BB17F5A9F17D /* Pods_leap_leapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_leap_leapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		139E02B62CD3182D0D301CC4 /* Pods-leap-leapTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap-leapTests.staging.xcconfig"; path = "Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests.staging.xcconfig"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* leap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = leap.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = leap/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = leap/AppDelegate.m; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = leap/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = leap/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = leap/main.m; sourceTree = "<group>"; };
 		1786CE02C22F4178A2B51687 /* AppleSDGothicNeoB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoB00.ttf; sourceTree = "<group>"; };
-		1D0AE47A65C8663E3B452821 /* Pods-limeeted-limeetedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.release.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.release.xcconfig"; sourceTree = "<group>"; };
-		33F377FC7EE6E5DEA2252469 /* Pods_limeeted.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_limeeted.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D0AE47A65C8663E3B452821 /* Pods-leap-leapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap-leapTests.release.xcconfig"; path = "Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests.release.xcconfig"; sourceTree = "<group>"; };
+		33F377FC7EE6E5DEA2252469 /* Pods_leap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_leap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoSB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoSB00.ttf; sourceTree = "<group>"; };
 		63141EE5A8E940BCB34D9639 /* AppleSDGothicNeoEB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoEB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoEB00.ttf; sourceTree = "<group>"; };
 		670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoM00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoM00.ttf; sourceTree = "<group>"; };
-		6C97AB639B58BBB4B15BBE30 /* Pods-limeeted-limeetedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted-limeetedTests.debug.xcconfig"; path = "Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6C97AB639B58BBB4B15BBE30 /* Pods-leap-leapTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap-leapTests.debug.xcconfig"; path = "Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
-		7CA540472937A4AA0071FB41 /* limeeted.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = limeeted.entitlements; path = limeeted/limeeted.entitlements; sourceTree = "<group>"; };
+		7CA540472937A4AA0071FB41 /* leap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = leap.entitlements; path = leap/leap.entitlements; sourceTree = "<group>"; };
 		7CEB068529CB622E007F724F /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = ../src/assets/fonts; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = limeeted/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = leap/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		84F4E05729F823F7000977E9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		8FF31B59ABF84B969B1F8A52 /* RIDIBatang.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = RIDIBatang.otf; path = ../src/assets/fonts/RIDIBatang.otf; sourceTree = "<group>"; };
 		989501BE79244D0C985EDE1D /* AppleSDGothicNeoUL00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoUL00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoUL00.ttf; sourceTree = "<group>"; };
 		BC26003FFA43486F94BF29BA /* AppleSDGothicNeoT00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoT00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoT00.ttf; sourceTree = "<group>"; };
-		C0A881CF5CF3F2B244570E2A /* Pods-limeeted.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted.debug.xcconfig"; path = "Target Support Files/Pods-limeeted/Pods-limeeted.debug.xcconfig"; sourceTree = "<group>"; };
-		C8449447517BE5198005BF35 /* Pods-limeeted.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted.staging.xcconfig"; path = "Target Support Files/Pods-limeeted/Pods-limeeted.staging.xcconfig"; sourceTree = "<group>"; };
-		D00AAFFCFCFDA5787532823F /* Pods-limeeted.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-limeeted.release.xcconfig"; path = "Target Support Files/Pods-limeeted/Pods-limeeted.release.xcconfig"; sourceTree = "<group>"; };
+		C0A881CF5CF3F2B244570E2A /* Pods-leap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.debug.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.debug.xcconfig"; sourceTree = "<group>"; };
+		C8449447517BE5198005BF35 /* Pods-leap.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.staging.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.staging.xcconfig"; sourceTree = "<group>"; };
+		D00AAFFCFCFDA5787532823F /* Pods-leap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.release.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.release.xcconfig"; sourceTree = "<group>"; };
 		D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoH00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoH00.ttf; sourceTree = "<group>"; };
 		E86E82B682E3427CBE73A7D4 /* AppleSDGothicNeoL00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoL00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoL00.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -82,7 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B9AAB84DA6D309356E671698 /* Pods_limeeted_limeetedTests.framework in Frameworks */,
+				B9AAB84DA6D309356E671698 /* Pods_leap_leapTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,20 +91,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				84F4E05829F823F7000977E9 /* StoreKit.framework in Frameworks */,
-				D5BE8479734C03E43564D570 /* Pods_limeeted.framework in Frameworks */,
+				D5BE8479734C03E43564D570 /* Pods_leap.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* limeetedTests */ = {
+		00E356EF1AD99517003FC87E /* leapTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* limeetedTests.m */,
+				00E356F21AD99517003FC87E /* leapTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = limeetedTests;
+			path = leapTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -132,11 +132,11 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* limeeted */ = {
+		13B07FAE1A68108700A75B9A /* leap */ = {
 			isa = PBXGroup;
 			children = (
 				84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */,
-				7CA540472937A4AA0071FB41 /* limeeted.entitlements */,
+				7CA540472937A4AA0071FB41 /* leap.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -144,7 +144,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = limeeted;
+			name = leap;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -152,8 +152,8 @@
 			children = (
 				84F4E05729F823F7000977E9 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				33F377FC7EE6E5DEA2252469 /* Pods_limeeted.framework */,
-				076418B245E8BB17F5A9F17D /* Pods_limeeted_limeetedTests.framework */,
+				33F377FC7EE6E5DEA2252469 /* Pods_leap.framework */,
+				076418B245E8BB17F5A9F17D /* Pods_leap_leapTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -170,9 +170,9 @@
 			children = (
 				7CEB068529CB622E007F724F /* fonts */,
 				7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */,
-				13B07FAE1A68108700A75B9A /* limeeted */,
+				13B07FAE1A68108700A75B9A /* leap */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* limeetedTests */,
+				00E356EF1AD99517003FC87E /* leapTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				E233CBF5F47BEE60B243DCF8 /* Pods */,
@@ -186,8 +186,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* limeeted.app */,
-				00E356EE1AD99517003FC87E /* limeetedTests.xctest */,
+				13B07F961A680F5B00A75B9A /* leap.app */,
+				00E356EE1AD99517003FC87E /* leapTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -195,12 +195,12 @@
 		E233CBF5F47BEE60B243DCF8 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C0A881CF5CF3F2B244570E2A /* Pods-limeeted.debug.xcconfig */,
-				D00AAFFCFCFDA5787532823F /* Pods-limeeted.release.xcconfig */,
-				6C97AB639B58BBB4B15BBE30 /* Pods-limeeted-limeetedTests.debug.xcconfig */,
-				1D0AE47A65C8663E3B452821 /* Pods-limeeted-limeetedTests.release.xcconfig */,
-				C8449447517BE5198005BF35 /* Pods-limeeted.staging.xcconfig */,
-				139E02B62CD3182D0D301CC4 /* Pods-limeeted-limeetedTests.staging.xcconfig */,
+				C0A881CF5CF3F2B244570E2A /* Pods-leap.debug.xcconfig */,
+				D00AAFFCFCFDA5787532823F /* Pods-leap.release.xcconfig */,
+				6C97AB639B58BBB4B15BBE30 /* Pods-leap-leapTests.debug.xcconfig */,
+				1D0AE47A65C8663E3B452821 /* Pods-leap-leapTests.release.xcconfig */,
+				C8449447517BE5198005BF35 /* Pods-leap.staging.xcconfig */,
+				139E02B62CD3182D0D301CC4 /* Pods-leap-leapTests.staging.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -208,9 +208,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* limeetedTests */ = {
+		00E356ED1AD99517003FC87E /* leapTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "limeetedTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "leapTests" */;
 			buildPhases = (
 				A130D646172E58E1D159D8F2 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -223,14 +223,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = limeetedTests;
-			productName = limeetedTests;
-			productReference = 00E356EE1AD99517003FC87E /* limeetedTests.xctest */;
+			name = leapTests;
+			productName = leapTests;
+			productReference = 00E356EE1AD99517003FC87E /* leapTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* limeeted */ = {
+		13B07F861A680F5B00A75B9A /* leap */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "limeeted" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "leap" */;
 			buildPhases = (
 				3E482C27206C4DEF2FE45063 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -245,9 +245,9 @@
 			);
 			dependencies = (
 			);
-			name = limeeted;
-			productName = limeeted;
-			productReference = 13B07F961A680F5B00A75B9A /* limeeted.app */;
+			name = leap;
+			productName = leap;
+			productReference = 13B07F961A680F5B00A75B9A /* leap.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -267,7 +267,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "limeeted" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "leap" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -280,8 +280,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* limeeted */,
-				00E356ED1AD99517003FC87E /* limeetedTests */,
+				13B07F861A680F5B00A75B9A /* leap */,
+				00E356ED1AD99517003FC87E /* leapTests */,
 			);
 		};
 /* End PBXProject section */
@@ -348,7 +348,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-limeeted-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-leap-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -361,15 +361,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-limeeted-limeetedTests/Pods-limeeted-limeetedTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A130D646172E58E1D159D8F2 /* [CP] Check Pods Manifest.lock */ = {
@@ -387,7 +387,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-limeeted-limeetedTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-leap-leapTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -400,15 +400,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-limeeted/Pods-limeeted-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-leap/Pods-leap-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-limeeted/Pods-limeeted-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-leap/Pods-leap-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-limeeted/Pods-limeeted-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-leap/Pods-leap-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D518241ECDBE37505A533FE5 /* [CP-User] [RNFB] Core Configuration */ = {
@@ -450,7 +450,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* limeetedTests.m in Sources */,
+				00E356F31AD99517003FC87E /* leapTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,7 +468,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* limeeted */;
+			target = 13B07F861A680F5B00A75B9A /* leap */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -476,7 +476,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C97AB639B58BBB4B15BBE30 /* Pods-limeeted-limeetedTests.debug.xcconfig */;
+			baseConfigurationReference = 6C97AB639B58BBB4B15BBE30 /* Pods-leap-leapTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 4HZDMH53SM;
@@ -484,7 +484,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = limeetedTests/Info.plist;
+				INFOPLIST_FILE = leapTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -498,18 +498,18 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/limeeted.app/limeeted";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/leap.app/leap";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1D0AE47A65C8663E3B452821 /* Pods-limeeted-limeetedTests.release.xcconfig */;
+			baseConfigurationReference = 1D0AE47A65C8663E3B452821 /* Pods-leap-leapTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 4HZDMH53SM;
-				INFOPLIST_FILE = limeetedTests/Info.plist;
+				INFOPLIST_FILE = leapTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -523,23 +523,23 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/limeeted.app/limeeted";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/leap.app/leap";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C0A881CF5CF3F2B244570E2A /* Pods-limeeted.debug.xcconfig */;
+			baseConfigurationReference = C0A881CF5CF3F2B244570E2A /* Pods-leap.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = 8PoyTqW90MuayUTQawL6C3dJPL25G7MPiqxRG;
-				CODE_SIGN_ENTITLEMENTS = limeeted/limeeted.entitlements;
+				CODE_SIGN_ENTITLEMENTS = leap/leap.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HZDMH53SM;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = limeeted/Info.plist;
+				INFOPLIST_FILE = leap/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "리미티드";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -553,8 +553,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.limeeted;
-				PRODUCT_NAME = limeeted;
+				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.leap;
+				PRODUCT_NAME = leap;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -563,17 +563,17 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D00AAFFCFCFDA5787532823F /* Pods-limeeted.release.xcconfig */;
+			baseConfigurationReference = D00AAFFCFCFDA5787532823F /* Pods-leap.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = nbgPsCEDAyD3ZWaau94cmM0IfVQ6TVyrF42L6;
-				CODE_SIGN_ENTITLEMENTS = limeeted/limeeted.entitlements;
+				CODE_SIGN_ENTITLEMENTS = leap/leap.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HZDMH53SM;
-				INFOPLIST_FILE = limeeted/Info.plist;
+				INFOPLIST_FILE = leap/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "리미티드";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -587,8 +587,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.limeeted;
-				PRODUCT_NAME = limeeted;
+				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.leap;
+				PRODUCT_NAME = leap;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -658,17 +658,17 @@
 		};
 		7C3668912941DEEB00654E52 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C8449447517BE5198005BF35 /* Pods-limeeted.staging.xcconfig */;
+			baseConfigurationReference = C8449447517BE5198005BF35 /* Pods-leap.staging.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = 8PoyTqW90MuayUTQawL6C3dJPL25G7MPiqxRG;
-				CODE_SIGN_ENTITLEMENTS = limeeted/limeeted.entitlements;
+				CODE_SIGN_ENTITLEMENTS = leap/leap.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HZDMH53SM;
-				INFOPLIST_FILE = limeeted/Info.plist;
+				INFOPLIST_FILE = leap/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "리미티드";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -682,8 +682,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.limeeted;
-				PRODUCT_NAME = limeeted;
+				PRODUCT_BUNDLE_IDENTIFIER = com.appsquad.leap;
+				PRODUCT_NAME = leap;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -691,12 +691,12 @@
 		};
 		7C3668922941DEEB00654E52 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 139E02B62CD3182D0D301CC4 /* Pods-limeeted-limeetedTests.staging.xcconfig */;
+			baseConfigurationReference = 139E02B62CD3182D0D301CC4 /* Pods-leap-leapTests.staging.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 4HZDMH53SM;
-				INFOPLIST_FILE = limeetedTests/Info.plist;
+				INFOPLIST_FILE = leapTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -710,7 +710,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/limeeted.app/limeeted";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/leap.app/leap";
 			};
 			name = Staging;
 		};
@@ -848,7 +848,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "limeetedTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "leapTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -858,7 +858,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "limeeted" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "leap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -868,7 +868,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "limeeted" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "leap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
