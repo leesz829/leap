@@ -2,10 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:&#x1105;&#x1175;&#x1106;&#x1175;&#x1110;&#x1175;&#x1103;&#x1173; (LImeetED).storekit">
-   </FileRef>
-   <FileRef
-      location = "group:limeeted.xcodeproj">
+      location = "group:leap.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
