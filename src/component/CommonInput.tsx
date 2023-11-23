@@ -16,7 +16,6 @@ type Props = {
   maxLength?: number;
   placeholderTextColor?: string;
   borderBottomType?: string;
-  fontSize?: number;
 } & StyleProp<TextInputProps>;
 
 /**
@@ -70,6 +69,9 @@ const styles = (props: Props) => {
       bordrBottomWIdth = 1;
       borderBottomColor = Color.black0000;
       break;
+    case 'none':
+      bordrBottomWIdth = 0;
+      break;
 
     default:
       break;
@@ -92,8 +94,10 @@ const styles = (props: Props) => {
     labelStyle: {
       fontSize: 17,
       lineHeight: 23,
-      fontFamily: 'AppleSDGothicNeoB00',
-      color: Color.balck333333,
+      //fontFamily: 'AppleSDGothicNeoB00',
+      //color: Color.balck333333,
+      fontFamily: 'Pretendard-SemiBold',
+      color: '#D5CD9E',
     },
     inputContainer: {
       paddingBottom: 5,
@@ -104,11 +108,13 @@ const styles = (props: Props) => {
       //fontSize: 16,
       fontSize: props.fontSize != null ? props.fontSize : 16,
       lineHeight: 20,
-      color: Color.balck4848,
+      //color: Color.balck4848,
       padding: 0,
       paddingVertical: 5,
       margin: 0,
-      fontFamily: 'AppleSDGothicNeoM00',
+      //fontFamily: 'AppleSDGothicNeoB00',
+      fontFamily: 'Pretendard-Light',
+      color: '#E1DFD1',
     },
 
   })

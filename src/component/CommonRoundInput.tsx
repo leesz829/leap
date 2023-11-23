@@ -43,7 +43,7 @@ export const CommonRoundInput: FC<Props> = (props: any) => {
             secureTextEntry={props.isMasking ? true : false}
             maxLength={props.maxLength ? props.maxLength : 1000} />
 
-          <Text style={styles.labelStyle2}>{props.label}</Text>
+          <Text style={[styles.labelStyle2, {color: '#E1DFD1'}]}>{props.label}</Text>
         </View>
       </KeyboardAvoidingView>
 
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     width: 29,
     height: 22,
-    fontFamily: "AppleSDGothicNeoB00",
+    fontFamily: "Pretendard-Regular",
     fontSize: 17,
     fontWeight: "normal",
     fontStyle: "normal",
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   labelStyle: {
     width: 29,
     height: 22,
-    fontFamily: "AppleSDGothicNeoB00",
+    fontFamily: "Pretendard-Regular",
     fontSize: 17,
     fontWeight: "normal",
     fontStyle: "normal",
@@ -100,20 +100,20 @@ const styles = StyleSheet.create({
     height: 45,
     opacity: 1,
     borderRadius: 10,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#445561",
     borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
+    // borderWidth: 1,
+    // borderColor: "#e0e0e0",
   },
   inputStyle: {
     fontSize: 16,
     lineHeight: 20,
-    color: Color.black2222,
+    color: '#F3E270',
     paddingLeft: 15,
     paddingRight: 20,
     marginTop: 0,
     height: 45,
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Regular',
     textAlignVertical: "center",
   },
   labelStyle2: {

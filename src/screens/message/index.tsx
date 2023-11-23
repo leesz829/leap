@@ -144,12 +144,13 @@ export const Message = (props: Props) => {
 			{isLoading && <CommonLoading />}
 
 			<TopNavigation currentPath={''} />
-      <ScrollView>
+      
         <LinearGradient
           colors={['#3D4348', '#1A1E1C']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >
+			  <ScrollView style={{marginBottom: 60}}>
           <SpaceView pt={40} pl={20} pr={20} pb={10}>
             <Text style={_styles.mainTitle}>
               <Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>
@@ -205,8 +206,8 @@ export const Message = (props: Props) => {
               )}
             </SpaceView>
           ))}
-        </LinearGradient>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
 		</>
 	);
 };

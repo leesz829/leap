@@ -28,6 +28,8 @@ type Props = {
   borderRadius?: number;
   borderWidth?: number;
   fontFamily?: string;
+  color?: string;
+  marginBottom?: number;
 } & StyleProp<TouchableOpacityProps>;
 /**
  * 공통 버튼
@@ -184,7 +186,7 @@ const styles = (props: Props) => {
       break;
     case 'reNewId':
       backgroundColor = '#FFDD00';
-      textColor = Color.black0000;
+      textColor = props.color != null ? props.color : Color.black0000;
       borderColor = '#FFDD00';
       break;
     case 'reNewPwd':
@@ -212,7 +214,7 @@ const styles = (props: Props) => {
       borderWidth: props.borderWidth ? props.borderWidth : 1,
       borderColor: borderColor,
       flexDirection: 'row',
-      
+      marginBottom: props.marginBottom ? props.marginBottom : 0,
     },
     btnStyle_gradient: {
       width: props.width ? props.width : '100%',

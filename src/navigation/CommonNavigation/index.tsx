@@ -9,6 +9,7 @@ import BottomNavigation from '../TabNavigation';
 import Component from 'component';
 import { CommonPopup } from 'screens/commonpopup';
 import { Board0 } from 'screens/commonpopup/Board0';
+import { BoardDetail } from 'screens/commonpopup/BoardDetail';
 import { Preference } from 'screens/commonpopup/Preference';
 import { Introduce } from 'screens/profile/Introduce';
 import { Profile } from 'screens/profile/Profile';
@@ -50,6 +51,9 @@ import { Profile_Auth } from 'screens/profile/Profile_Auth';
 import { Profile_Interest } from 'screens/profile/Profile_Interest';
 import { Profile_Introduce } from 'screens/profile/Profile_Introduce';
 
+import {Terms} from 'screens/policy/Terms';
+import {Privacy} from 'screens/policy/Privacy';
+
 const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
@@ -63,6 +67,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="LivePopup" component={LivePopup} />
       <CommonStack.Screen name="Introduce" component={Introduce} />
       <CommonStack.Screen name="Board0" component={Board0} />
+      <CommonStack.Screen name="BoardDetail" component={BoardDetail} />
       <CommonStack.Screen name="Preference" component={Preference} />
       <CommonStack.Screen name="Profile" component={Profile} />
       <CommonStack.Screen name="Profile1" component={Profile1} />
@@ -98,6 +103,8 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="Profile_Auth" component={Profile_Auth} />
       <CommonStack.Screen name="Profile_Interest" component={Profile_Interest} />
       <CommonStack.Screen name="Profile_Introduce" component={Profile_Introduce} />
+      <CommonStack.Screen name="Terms" component={Terms} />
+      <CommonStack.Screen name="Privacy" component={Privacy} />
     </CommonStack.Navigator>
   );
 };

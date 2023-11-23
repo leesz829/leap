@@ -336,24 +336,24 @@ export const Roby = (props: Props) => {
   };
 
   // 이용약관 팝업
-  const terms_modalizeRef = useRef<Modalize>(null);
-  const terms_onOpen = () => {
-    setIsVisible(false);
-    terms_modalizeRef.current?.open();
-  };
-  const terms_onClose = () => {
-    terms_modalizeRef.current?.close();
-  };
+  // const terms_modalizeRef = useRef<Modalize>(null);
+  // const terms_onOpen = () => {
+  //   setIsVisible(false);
+  //   terms_modalizeRef.current?.open();
+  // };
+  // const terms_onClose = () => {
+  //   terms_modalizeRef.current?.close();
+  // };
 
   // 개인정보 취급방침 팝업
-  const privacy_modalizeRef = useRef<Modalize>(null);
-  const privacy_onOpen = () => {
-    setIsVisible(false)
-    privacy_modalizeRef.current?.open();
-  };
-  const privacy_onClose = () => {
-    privacy_modalizeRef.current?.close();
-  };
+  // const privacy_modalizeRef = useRef<Modalize>(null);
+  // const privacy_onOpen = () => {
+  //   setIsVisible(false)
+  //   privacy_modalizeRef.current?.open();
+  // };
+  // const privacy_onClose = () => {
+  //   privacy_modalizeRef.current?.close();
+  // };
 
   const onPressEditProfile = () => {
     navigation.navigate(STACK.COMMON, { screen: 'Introduce' });
@@ -402,6 +402,18 @@ export const Roby = (props: Props) => {
   const onPressMail = async () => {
     setIsVisible(false);
     navigation.navigate(STACK.TAB, { screen: 'Message' });
+  };
+
+  // 이용약관 이동
+  const onPressTerms = async () => {
+    setIsVisible(false);
+    navigation.navigate(STACK.COMMON, { screen: 'Terms' });
+  };
+
+  // 개인처리취급방침 이동
+  const onPressPrivacy = async () => {
+    setIsVisible(false);
+    navigation.navigate(STACK.COMMON, { screen: 'Privacy' });
   };
 
   // 가이드 팝업 활성화
@@ -736,10 +748,12 @@ export const Roby = (props: Props) => {
               <TouchableOpacity onPress={onPressCustomerInquiry}>
                 <Text style={_styles.modalText}>1:1 문의</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={terms_onOpen}>
+              {/* <TouchableOpacity onPress={terms_onOpen}> */}
+              <TouchableOpacity onPress={onPressTerms}>
                 <Text style={_styles.modalText}>이용약관</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={privacy_onOpen}>
+              {/* <TouchableOpacity onPress={privacy_onOpen}> */}
+              <TouchableOpacity onPress={onPressPrivacy}>
                 <Text style={_styles.modalText}>개인정보취급방침 안내</Text>
               </TouchableOpacity>
             </View>
@@ -761,7 +775,7 @@ export const Roby = (props: Props) => {
       {/* ###############################################
                      이용약관 팝업
       ############################################### */}
-      <Modalize
+      {/* <Modalize
         ref={terms_modalizeRef}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
@@ -794,20 +808,16 @@ export const Roby = (props: Props) => {
         }
       >
         <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          {/* <SpaceView mb={24}>
-            <CommonDatePicker />
-          </SpaceView> */}
-
           <SpaceView mb={24}>
             <Terms />
           </SpaceView>
         </View>
-      </Modalize>
+      </Modalize> */}
 
       {/* ###############################################
                 개인정보 취급방침 팝업
       ############################################### */}
-      <Modalize
+      {/* <Modalize
         ref={privacy_modalizeRef}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={modalStyle.modalContainer}
@@ -840,15 +850,11 @@ export const Roby = (props: Props) => {
         }
       >
         <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          {/* <SpaceView mb={24}>
-            <CommonDatePicker />
-          </SpaceView> */}
-
           <SpaceView mb={24}>
             <Privacy />
           </SpaceView>
         </View>
-      </Modalize>
+      </Modalize> */}
     </>
   );
 };

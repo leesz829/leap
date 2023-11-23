@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   Text,
+  Dimensions,
   KeyboardAvoidingView,
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
@@ -41,6 +42,7 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { ROUTES, STACK } from 'constants/routes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CommonLoading } from 'component/CommonLoading';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -55,6 +57,8 @@ interface Props {
   navigation: StackNavigationProp<StackParamList, 'Preference'>;
   route: RouteProp<StackParamList, 'Preference'>;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const Preference = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
@@ -366,197 +370,214 @@ export const Preference = (props: Props) => {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title={'내 선호 이성'} />
-      <ScrollView style={[ styles.scrollContainer ]}>
+      <CommonHeader title={'선호이성 설정'} />
 
-        <KeyboardAvoidingView behavior={"padding"} style={{flex:1}}>
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={{paddingHorizontal: 20, minHeight: height}}
+        >
+        <ScrollView style={{marginTop: 20}}>
 
-          <View>
-            <SpaceView mb={32}>
-                <SpaceView mb={15}>
-                  <CommonText fontWeight={'700'} type={'h4'}>
-                    나이
-                  </CommonText>
-                </SpaceView>
+          <KeyboardAvoidingView behavior={"padding"} style={{flex:1}}>
 
-                <SpaceView viewStyle={styles.halfContainer}>
-                    <View style={styles.halfItemLeft}>
-                      <CommonRoundInput
-                        label={'최소'}
-                        keyboardType="number-pad"
-                        value={wantAgeMin}
-                        onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
-                        maxLength={2}
-                        placeholder={''}
-                        placeholderTextColor={'#c6ccd3'}
-                      />
-                    </View>
-
-                    <View style={styles.halfItemRight}>
-                      <CommonRoundInput
-                        label={'최대'}
-                        keyboardType="number-pad"
-                        value={wantAgeMax}
-                        onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
-                        maxLength={2}
-                        placeholder={''}
-                        placeholderTextColor={'#c6ccd3'}
-                      />
-                    </View>
-                </SpaceView>
-
-                {isAgeError &&
-                  <SpaceView mt={10}>
-                    <Text style={styles1.minAgeErrorText}>최소 나이는 19 이상으로 입력해야 합니다.</Text>
-                  </SpaceView>
-                }
-                
-              </SpaceView>
-
+            <View>
               <SpaceView mb={32}>
-                <SpaceView mb={15}>
-                  <CommonText fontWeight={'700'} type={'h4'}>
-                    거리
-                  </CommonText>
+                  <SpaceView mb={15}>
+                    <CommonText color={'#D5CD9E'} fontWeight={'600'} type={'h4'}>
+                      나이
+                    </CommonText>
+                  </SpaceView>
+
+                  <SpaceView viewStyle={[styles.halfContainer, {alignItems: 'center', justifyContent: 'space-between'}]}>
+                      <View>
+                        <CommonRoundInput
+                          label={'최소'}
+                          keyboardType="number-pad"
+                          value={wantAgeMin}
+                          onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
+                          maxLength={2}
+                          placeholder={''}
+                          placeholderTextColor={'#c6ccd3'}
+                        />
+                      </View>
+
+                      <View>
+                        <Text style={styles1.hipenText}>-</Text>
+                      </View>
+
+                      <View>
+                        <CommonRoundInput
+                          label={'최대'}
+                          keyboardType="number-pad"
+                          value={wantAgeMax}
+                          onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
+                          maxLength={2}
+                          placeholder={''}
+                          placeholderTextColor={'#FFF'}
+                        />
+                      </View>
+                  </SpaceView>
+
+                  {isAgeError &&
+                    <SpaceView mt={10}>
+                      <Text style={styles1.minAgeErrorText}>최소 나이는 19 이상으로 입력해야 합니다.</Text>
+                    </SpaceView>
+                  }
+                  
                 </SpaceView>
 
-                <SpaceView viewStyle={styles.halfContainer}>
-                  <View style={styles.halfItemLeft}>
-                    <CommonRoundInput
-                      label={'Km'}
-                      keyboardType="number-pad"
-                      value={wantLocal1}
-                      onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
-                      maxLength={3}
-                      placeholder={'최소'}
-                      placeholderTextColor={'#c6ccd3'}
-                    />
-                  </View>
+                <SpaceView mb={32}>
+                  <SpaceView mb={15}>
+                    <CommonText color={'#D5CD9E'} fontWeight={'600'} type={'h4'}>
+                      거리
+                    </CommonText>
+                  </SpaceView>
 
-                  <View style={styles.halfItemRight}>
-                    <CommonRoundInput
-                      label={'Km'}
-                      keyboardType="number-pad"
-                      value={wantLocal2}
-                      onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
-                      maxLength={3}
-                      placeholder={'최대'}
-                      placeholderTextColor={'#c6ccd3'}
-                    />
-                  </View>
+                  <SpaceView viewStyle={[styles.halfContainer, {alignItems: 'center', justifyContent: 'space-between'}]}>
+                    <View>
+                      <CommonRoundInput
+                        label={'Km'}
+                        keyboardType="number-pad"
+                        value={wantLocal1}
+                        onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
+                        maxLength={3}
+                        placeholder={'최소'}
+                        placeholderTextColor={'#FFF'}
+                      />
+                    </View>
+
+                    <View>
+                      <Text style={styles1.hipenText}>-</Text>
+                    </View>
+
+                    <View>
+                      <CommonRoundInput
+                        label={'Km'}
+                        keyboardType="number-pad"
+                        value={wantLocal2}
+                        onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
+                        maxLength={3}
+                        placeholder={'최대'}
+                        placeholderTextColor={'#c6ccd3'}
+                      />
+                    </View>
+                  </SpaceView>
                 </SpaceView>
+
+            </View>
+
+
+
+            {/* <SpaceView mb={32}>
+              <SpaceView mb={16}>
+                <CommonText fontWeight={'700'} type={'h4'}>
+                  직업
+                </CommonText>
               </SpaceView>
+              <SpaceView mb={24} viewStyle={styles.halfContainer}>
+                <View style={styles.halfItemLeft}>
+                  <CommonSelect
+                    label={'업종'}
+                    items={busiGrpCdList}
+                    selectValue={wantBusiness1}
+                    callbackFn={busi1CallbackFn}
+                  />
+                </View>
+                <View style={styles.halfItemRight}>
+                  <CommonSelect
+                    label={'직업'}
+                    items={jobCdList1}
+                    selectValue={wantJob1}
+                    callbackFn={jobCd1CallbackFn}
+                  />
+                </View>
+              </SpaceView>
+              <SpaceView mb={24} viewStyle={styles.halfContainer}>
+                <View style={styles.halfItemLeft}>
+                  <CommonSelect
+                    label={'업종'}
+                    items={busiGrpCdList}
+                    selectValue={wantBusiness2}
+                    callbackFn={busi2CallbackFn}
+                  />
+                </View>
+                <View style={styles.halfItemRight}>
+                  <CommonSelect
+                    label={'직업'}
+                    items={jobCdList2}
+                    selectValue={wantJob2}
+                    callbackFn={jobCd2CallbackFn}
+                  />
+                </View>
+              </SpaceView>
+              <SpaceView viewStyle={styles.halfContainer}>
+                <View style={styles.halfItemLeft}>
+                  <CommonSelect
+                    label={'업종'}
+                    items={busiGrpCdList}
+                    selectValue={wantBusiness3}
+                    callbackFn={busi3CallbackFn}
+                  />
+                </View>
+                <View style={styles.halfItemRight}>
+                  <CommonSelect
+                    label={'직업'}
+                    items={jobCdList3}
+                    selectValue={wantJob3}
+                    callbackFn={jobCd3CallbackFn}
+                  />
+                </View>
+              </SpaceView>
+            </SpaceView> */}
 
-          </View>
+            {/* <SpaceView mb={40}>
+              <SpaceView mb={0}>
+                <CommonText fontWeight={'700'} type={'h4'}>
+                  인상
+                </CommonText>
+              </SpaceView>
+              <SpaceView mb={24}>
+                <CommonSelect
+    //            label={'인상'}
+                  items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
+                  selectValue={wantPerson1}
+                  callbackFn={wantPerson1CallbackFn}
+                />
+              </SpaceView>
+              <SpaceView mb={24}>
+                <CommonSelect
+    //            label={'인상'}
+                  items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
+                  selectValue={wantPerson2}
+                  callbackFn={wantPerson2CallbackFn}
+                />
+              </SpaceView>
+              <SpaceView>
+                <CommonSelect
+    //            label={'인상'}
+                  items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
+                  selectValue={wantPerson3}
+                  callbackFn={wantPerson3CallbackFn}
+                />
+              </SpaceView>
+            </SpaceView> */}
 
-
-
-          {/* <SpaceView mb={32}>
             <SpaceView mb={16}>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                직업
-              </CommonText>
-            </SpaceView>
-            <SpaceView mb={24} viewStyle={styles.halfContainer}>
-              <View style={styles.halfItemLeft}>
-                <CommonSelect
-                  label={'업종'}
-                  items={busiGrpCdList}
-                  selectValue={wantBusiness1}
-                  callbackFn={busi1CallbackFn}
-                />
-              </View>
-              <View style={styles.halfItemRight}>
-                <CommonSelect
-                  label={'직업'}
-                  items={jobCdList1}
-                  selectValue={wantJob1}
-                  callbackFn={jobCd1CallbackFn}
-                />
-              </View>
-            </SpaceView>
-            <SpaceView mb={24} viewStyle={styles.halfContainer}>
-              <View style={styles.halfItemLeft}>
-                <CommonSelect
-                  label={'업종'}
-                  items={busiGrpCdList}
-                  selectValue={wantBusiness2}
-                  callbackFn={busi2CallbackFn}
-                />
-              </View>
-              <View style={styles.halfItemRight}>
-                <CommonSelect
-                  label={'직업'}
-                  items={jobCdList2}
-                  selectValue={wantJob2}
-                  callbackFn={jobCd2CallbackFn}
-                />
-              </View>
-            </SpaceView>
-            <SpaceView viewStyle={styles.halfContainer}>
-              <View style={styles.halfItemLeft}>
-                <CommonSelect
-                  label={'업종'}
-                  items={busiGrpCdList}
-                  selectValue={wantBusiness3}
-                  callbackFn={busi3CallbackFn}
-                />
-              </View>
-              <View style={styles.halfItemRight}>
-                <CommonSelect
-                  label={'직업'}
-                  items={jobCdList3}
-                  selectValue={wantJob3}
-                  callbackFn={jobCd3CallbackFn}
-                />
-              </View>
-            </SpaceView>
-          </SpaceView> */}
-
-          {/* <SpaceView mb={40}>
-            <SpaceView mb={0}>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                인상
-              </CommonText>
-            </SpaceView>
-            <SpaceView mb={24}>
-              <CommonSelect
-  //            label={'인상'}
-                items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
-                selectValue={wantPerson1}
-                callbackFn={wantPerson1CallbackFn}
+              <CommonBtn
+                value={'저장'}
+                type={'reNewId'}
+                borderRadius={5}
+                onPress={() => {
+                  saveMemberIdealType();
+                }}
               />
             </SpaceView>
-            <SpaceView mb={24}>
-              <CommonSelect
-  //            label={'인상'}
-                items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
-                selectValue={wantPerson2}
-                callbackFn={wantPerson2CallbackFn}
-              />
-            </SpaceView>
-            <SpaceView>
-              <CommonSelect
-  //            label={'인상'}
-                items={memberBase?.gender == 'M' ? gFaceItemList : mFaceItemList}
-                selectValue={wantPerson3}
-                callbackFn={wantPerson3CallbackFn}
-              />
-            </SpaceView>
-          </SpaceView> */}
 
-          <SpaceView mb={16}>
-            <CommonBtn
-              value={'저장'}
-              type={'primary'}
-              onPress={() => {
-                saveMemberIdealType();
-              }}
-            />
-          </SpaceView>
-
-        </KeyboardAvoidingView>
-      </ScrollView>
+          </KeyboardAvoidingView>
+        </ScrollView>
+      </LinearGradient>
     </>
   );
 };
@@ -593,7 +614,12 @@ const styles1 = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeoM00',
     fontSize: 11,
     color: '#FE0456',
-  }
+  },
+  hipenText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 17,
+    color: '#D5CD9E',
+  },
 });
 
 const pickerSelectStyles = StyleSheet.create({
