@@ -233,6 +233,7 @@ export const ICON = {
   polygonGreen: require('assets/icon/icon-polygon-green.png'),
   passSquare: require('assets/icon/icon-pass-square.png'),
   circleArrow: require('assets/icon/icon-circle-arrow.png'),
+  arrowLeftBrown: require('assets/icon/icon-arrow-left-brown.png'),
 };
 
 export const GIF_IMG = {

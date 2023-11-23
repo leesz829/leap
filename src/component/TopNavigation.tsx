@@ -13,6 +13,7 @@ import { ICON, IMAGE } from 'utils/imageUtils';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Tooltip from 'rn-tooltip';
+import { isEmptyData } from 'utils/functions';
 
 interface Props {
   currentPath: string;
@@ -50,18 +51,12 @@ const TopNavigation: FC<Props> = (props) => {
         {props.theme ? (
           <View style={_styles.tabContainer}>
             <NaviButtons navName={props.currentPath} theme={props.theme} />
-            {/* ######################################################################
-            ##### 팝업 영역
-            ###################################################################### */}
-            <Wallet theme={props.theme} />
+            {/* <Wallet theme={props.theme} /> */}
           </View>
         ) : (
           <View style={[_styles.tabContainer, { /* backgroundColor: 'white', */ zIndex: 1 }]}>
             <NaviButtons navName={props.currentPath} theme={props.theme} />
-            {/* ######################################################################
-            ##### 팝업 영역
-            ###################################################################### */}
-            <Wallet theme={props.theme} />
+            {/* <Wallet theme={props.theme} /> */}
           </View>
         )}
       </LinearGradient>
@@ -134,7 +129,7 @@ export function Wallet({ theme }) {
 
   return (
     <>
-      {typeof memberBase != 'undefined' && (
+      {isEmptyData(memberBase) && (
         <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 
           <View style={[_styles.itemContainer, { marginRight: 10 }]}>

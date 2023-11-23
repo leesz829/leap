@@ -1,7 +1,7 @@
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import * as React from 'react';
 import { useCallback } from 'react';
-import { Image, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
 import { StackScreenProp } from '@types';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
@@ -46,6 +46,8 @@ function CommonHeader({
 
   const navigation = useNavigation<StackScreenProp>();
   const { show } = usePopup();  // 공통 팝업
+
+  const { width, height } = Dimensions.get('window');
 
   const goHome = useCallback(() => {
     const screen = navigation.getState().routes[navigation.getState().routes.length-1].name;
@@ -94,57 +96,21 @@ function CommonHeader({
           <>
             <View style={{ ..._styles.headerContainer, ...containerStyle, zIndex: 1 }}>
 
-              <SpaceView viewStyle={{flexDirection: 'row'}}>
-                {/* 뒤로가기 버튼 */}
-                <TouchableOpacity
-                  onPress={goHome}
-                  style={_styles.backContainer}
-                  hitSlop={commonStyle.hipSlop10}
-                >
-                  <SpaceView>
-                    <Image source={backIcon || ICON.back} style={_styles.backImg} />
-                  </SpaceView>
+              {/* 뒤로가기 버튼 */}
+              <TouchableOpacity
+                onPress={goHome}
+                style={_styles.backContainer}
+                /* hitSlop={commonStyle.hipSlop20} */
+              >
+                <Image source={backIcon || ICON.arrowLeftBrown} style={styles.iconSquareSize(24)} resizeMode={'contain'} />
+              </TouchableOpacity>
 
-                  {/* {type == 'STORY_DETAIL' ? (
-                    <>
-                      <SpaceView ml={13} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
-
-                        {storyType == 'SECRET' ? (
-                          <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
-                        ) : (
-                          <>
-                            <SpaceView>
-                              <Image source={mstImgPath} style={_styles.mstImgStyle} />
-                            </SpaceView>
-
-                            <SpaceView viewStyle={{flexDirection: 'column'}}>
-                              <Text style={_styles.scoreText}>
-                                {profileScore}
-                                {(isEmptyData(authLevel) && authLevel >= 1) && ' | '}
-                                {(isEmptyData(authLevel) && authLevel >= 1) && 'Lv ' + authLevel}
-                              </Text>
-                              <Text style={_styles.nicknameText(storyType, gender)}>{nickname}</Text>
-                            </SpaceView>
-                          </>
-                        )}
-                      </SpaceView>
-                    </>
-                  ) : (
-                    <>
-                      <SpaceView ml={13}>
-                        <Text style={_styles.titleStyle}>{title}</Text>
-                      </SpaceView>
-                    </>
-                  )} */}
-
-                  <SpaceView ml={13}>
-                    <Text style={_styles.titleStyle}>{title}</Text>
-                  </SpaceView>
-                </TouchableOpacity>
-
+              {/* 제목 */}
+              <SpaceView viewStyle={{width: width}}>
+                <Text style={_styles.titleStyle}>{title}</Text>
               </SpaceView>
 
-              <SpaceView>
+              <SpaceView viewStyle={_styles.btnContainer}>
                 {type == 'STORY_REGI' ? (
                   <>
                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
@@ -157,7 +123,7 @@ function CommonHeader({
                 ) : (
                   <>
                     {/* 재화 표시 */}
-                    <View>{right || <Wallet textStyle={walletTextStyle} />}</View>
+                    {/* <View>{right || <Wallet textStyle={walletTextStyle} />}</View> */}
                   </>  
                 )}
 
@@ -174,17 +140,16 @@ export default CommonHeader;
 
 const _styles = StyleSheet.create({
   backContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 13,
     height: 56,
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: 16,
-    paddingRight: 16,
+    zIndex: 1,
   },
   headerContainer: {
     height: 56,
     paddingRight: 24,
-    //backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -194,17 +159,11 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  backImg: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
-  },
   titleStyle: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 16,
-    lineHeight: 32,
-    //color: Color.black2222,
-    color: '#999999',
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 17,
+    color: '#D5CD9E',
+    textAlign: 'center',
   },
   mstImgStyle: {
     width: 32,
@@ -238,7 +197,15 @@ const _styles = StyleSheet.create({
   regiText: {
     fontFamily: 'AppleSDGothicNeoB00',
     fontSize: 16,
-    color: '#333333',
+    color: '#D5CD9E',
+  },
+  btnContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 13,
+    height: 56,
+    justifyContent: 'center',
+    zIndex: 1,
   },
 
 });

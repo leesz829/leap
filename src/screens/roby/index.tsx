@@ -16,18 +16,7 @@ import { useMatches } from 'hooks/useMatches';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { useProfileImg } from 'hooks/useProfileImg';
 import React, { useRef, useState, useEffect } from 'react';
-import {
-  Dimensions,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Platform,
-  PermissionsAndroid,
-  Animated
-} from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, Platform, PermissionsAndroid, Animated } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
 import { Privacy } from 'screens/commonpopup/privacy';
@@ -379,7 +368,13 @@ export const Roby = (props: Props) => {
 
   // 나의 데일리 뷰 화면 이동
   const onPressMyDailyView = () => {
-    navigation.navigate(STACK.COMMON, { screen: 'MyDailyView' });
+    //navigation.navigate(STACK.COMMON, { screen: 'MyDailyView' });
+    navigation.navigate(STACK.COMMON, { 
+      screen: ROUTES.MatchDetail,
+      params: {
+        type: 'ME',
+      }
+    });
   };
 
   // 보관함 이동
@@ -525,7 +520,7 @@ export const Roby = (props: Props) => {
           <SpaceView>
             <TouchableOpacity onPress={onPressMyDailyView}>
               <View style={_styles.profileImageWrap}>
-                <Image source={{ uri: properties.img_domain + mbrProfileImgList[0]?.img_file_path }} style={styles.profileImg} />
+                <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.profileImg} />
               </View>
               <View style={styles.profilePenContainer}>
                   <Image source={ICON.searchYellow} style={styles.iconSquareSize(36)} />

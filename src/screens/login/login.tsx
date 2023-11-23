@@ -424,6 +424,7 @@ export const Login01 = () => {
                     autoCapitalize={'none'}
                     style={_styles.textInputStyle}
                     maxLength={50}
+                    hitSlop={commonStyle.hipSlop25}
                   />
 
                   {id.length > 0 && (
@@ -697,5 +698,7 @@ const _styles = StyleSheet.create({
     color: '#F3E270',
     fontFamily: 'Pretendard-Bold',
     fontSize: 14,
+    paddingBottom: 5,
+    paddingTop: 5,
   },
 });
