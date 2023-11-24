@@ -37,11 +37,12 @@ import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import Carousel from 'react-native-snap-carousel';
 import useInterval from 'utils/useInterval';
-import { isEmptyData, formatNowDate } from 'utils/functions';
-import { styles } from 'assets/styles/Styles';
+import { isEmptyData, formatNowDate, CommaFormat } from 'utils/functions';
+import { layoutStyle, styles } from 'assets/styles/Styles';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Value, multiply, useDerivedValue, Extrapolate, cancelAnimation } from 'react-native-reanimated';
 import InventoryButton from 'component/shop/InventoryButton';
 import ProductModal from './Component/ProductModal';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -62,14 +63,13 @@ interface Product {
   productId: string;
 }
 
+const { width, height } = Dimensions.get('window');
 
 export const Shop = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const dispatch = useDispatch();
   const isFocus = useIsFocused();
   const { show } = usePopup(); // 공통 팝업
-
-  const { width, height } = Dimensions.get('window');
 
   const [productModalVisible, setProductModalVisible] = useState(false); // 상품 모달 VIsible
   const [targetItem, setTargetItem] = useState(null); // 타겟 아이템
@@ -328,85 +328,108 @@ export const Shop = () => {
 
       {isLoading && <CommonLoading />}
 
-      <ScrollView style={{backgroundColor: '#fff'}}>
-        <View style={{minHeight: memberBase.gender == 'M' ? 300 : 330, zIndex: 1, backgroundColor: '#ffffff'}}>
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.wrap}
+      >
+        <ScrollView style={{marginBottom: 60}}>
+          {/* <View style={{minHeight: memberBase.gender == 'M' ? 300 : 330, zIndex: 1, backgroundColor: '#ffffff'}}> */}
 
-          {/* ############################################### 상단 배너 */}
-          <Carousel
-            data={banner}
-            //layout={'default'}
-            sliderWidth={Math.round(width)} 
-            itemWidth={Math.round(width)}
-            horizontal={true}
-            useScrollView={true}
-            inactiveSlideScale={1}
-            inactiveSlideOpacity={0.5}
-            inactiveSlideShift={15}
-            firstItem={banner?.length}
-            loop={true}
-            loopClonesPerSide={banner?.length}
-            autoplay={true}
-            autoplayDelay={2000}
-            autoplayInterval={5000}
-            pagingEnabled
-            renderItem={({ item, index }) => {
-              const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
-              //return  <Image style={_styles.topBanner} source={urlPath} />;
-              return (
-                <View style={{width: Dimensions.get('window').width, justifyContent: 'center', alignItems: 'center'}}>
-                  <Image style={_styles.topBanner} source={urlPath} />
-                </View>
-              )
-            }}
+            {/* ############################################### 상단 배너 */}
+            {/* <Carousel
+              data={banner}
+              //layout={'default'}
+              sliderWidth={Math.round(width)} 
+              itemWidth={Math.round(width)}
+              horizontal={true}
+              useScrollView={true}
+              inactiveSlideScale={1}
+              inactiveSlideOpacity={0.5}
+              inactiveSlideShift={15}
+              firstItem={banner?.length}
+              loop={true}
+              loopClonesPerSide={banner?.length}
+              autoplay={true}
+              autoplayDelay={2000}
+              autoplayInterval={5000}
+              pagingEnabled
+              renderItem={({ item, index }) => {
+                const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
+                //return  <Image style={_styles.topBanner} source={urlPath} />;
+                return (
+                  <View style={{width: Dimensions.get('window').width, justifyContent: 'center', alignItems: 'center'}}>
+                    <Image style={_styles.topBanner} source={urlPath} />
+                  </View>
+                )
+              }}
+            /> */}
+
+            {/* <FlatList
+              ref={flatListRef}
+              data={banner}
+              horizontal
+              style={_styles.bannerWrapper}
+              pagingEnabled
+              snapToOffsets={snapToOffsets}
+              keyExtractor={(_, index) => String(index)}
+              renderItem={({ item, index }) => {
+                const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
+                return <Image style={_styles.topBanner} source={urlPath} />;
+              }}
+            /> */}
+
+            {/* <View style={{ height: 55, paddingHorizontal: 16 }}>
+              <BannerPannel payInfo={payInfo} />
+            </View>
+          </View> */}
+
+          {/* ############################################### 인벤토리 영역 */}
+          {/* <TouchableOpacity onPress={onPressInventory}>
+            <View style={_styles.inventoryArea}>
+              <View>
+                <Image source={ICON.inventoryIcon} style={_styles.inventoryIcon} />
+              </View>
+              <View style={_styles.inventoryText}>
+                <Text style={_styles.inventoryTextTit}>인벤토리</Text>
+                <Text style={_styles.inventoryTextSubTit}>구매한 상품 또는 보상은 인벤토리에 저장되요.</Text>
+              </View>
+              <View>
+                <Image source={ICON.arrow_right} style={_styles.arrowIcon} />
+              </View>
+            </View>
+          </TouchableOpacity> */}
+          <SpaceView>
+            <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, {marginLeft: -5}]}>
+              <Image source={ICON.polygonGreen} style={styles.iconSize24} />
+              <Text style={_styles.myCubeTitle}>보유 큐브</Text>
+            </SpaceView>
+            <Text style={_styles.myCubeContents}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
+          </SpaceView>
+
+          <LinearGradient
+            colors={['#092032', '#344756']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={_styles.itemDescArea}
+          >
+            <Image source={ICON.polygonGreen} style={[styles.iconSize48, {marginBottom: 10}]} />
+            <Text style={_styles.itemDescText}>리프의 기본 재화입니다. 이성에게 라이크를 보내거나{'\n'}내게 온 라이크를 확인하는데 사용합니다.</Text>
+          </LinearGradient>
+
+          {/* ############################################### 카테고리별 */}
+          <CategoryShop 
+            loadingFunc={loadingFunc} 
+            itemUpdateFunc={getShopMain}
+            onPressCategoryFunc={onPressCategory}
+            openProductModalFunc={openProductModal}
+            categoryList={categoryList}
+            productList={productList}
+            selectedCategoryData={selectedCategoryData}
           />
-
-          {/* <FlatList
-            ref={flatListRef}
-            data={banner}
-            horizontal
-            style={_styles.bannerWrapper}
-            pagingEnabled
-            snapToOffsets={snapToOffsets}
-            keyExtractor={(_, index) => String(index)}
-            renderItem={({ item, index }) => {
-              const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
-              return <Image style={_styles.topBanner} source={urlPath} />;
-            }}
-          /> */}
-
-          <View style={{ height: 55, paddingHorizontal: 16 }}>
-            <BannerPannel payInfo={payInfo} />
-          </View>
-        </View>
-
-        {/* ############################################### 인벤토리 영역 */}
-        {/* <TouchableOpacity onPress={onPressInventory}>
-          <View style={_styles.inventoryArea}>
-            <View>
-              <Image source={ICON.inventoryIcon} style={_styles.inventoryIcon} />
-            </View>
-            <View style={_styles.inventoryText}>
-              <Text style={_styles.inventoryTextTit}>인벤토리</Text>
-              <Text style={_styles.inventoryTextSubTit}>구매한 상품 또는 보상은 인벤토리에 저장되요.</Text>
-            </View>
-            <View>
-              <Image source={ICON.arrow_right} style={_styles.arrowIcon} />
-            </View>
-          </View>
-        </TouchableOpacity> */}
-
-        {/* ############################################### 카테고리별 */}
-        <CategoryShop 
-          loadingFunc={loadingFunc} 
-          itemUpdateFunc={getShopMain}
-          onPressCategoryFunc={onPressCategory}
-          openProductModalFunc={openProductModal}
-          categoryList={categoryList}
-          productList={productList}
-          selectedCategoryData={selectedCategoryData}
-        />
-      </ScrollView>
-
+        </ScrollView>
+      </LinearGradient>
       {/* 인벤토리 버튼 */}
       <InventoryButton newItemCnt={newItemCnt} />
 
@@ -436,22 +459,6 @@ const categoryList = [
     value: 'PACKAGE',
   },
 ];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -511,6 +518,36 @@ function ListFooterComponent() {
 ################################################################################################################ */}
 
 const _styles = StyleSheet.create({
+  wrap: {
+    paddingHorizontal: 15,
+    paddingTop: 20,
+  },
+  myCubeTitle: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 17,
+    color: '#32F9E4',
+    marginTop: -2
+  },
+  myCubeContents: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 32,
+    color: '#32F9E4',
+  },
+  itemDescArea: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    borderRadius: 10,
+    marginTop: 40,
+  },
+  itemDescText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 12,
+    color: '#E1DFD1',
+    textAlign: 'center',
+  },
+
   bannerWrapper: {
     backgroundColor: Color.white,
     width: `100%`,

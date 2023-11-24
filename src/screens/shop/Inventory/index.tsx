@@ -24,7 +24,9 @@ import { CommonLoading } from 'component/CommonLoading';
 import AsyncStorage from '@react-native-community/async-storage';
 import { CommaFormat, formatNowDate, isEmptyData } from 'utils/functions';
 import SpaceView from 'component/SpaceView';
+import LinearGradient from 'react-native-linear-gradient';
 
+const { width, height } = Dimensions.get('window');
 
 export default function Inventory() {
   const navigation = useNavigation<ScreenNavigationProp>();
@@ -285,7 +287,14 @@ export default function Inventory() {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title="인벤토리" />
+      <CommonHeader title="선물함" />
+
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.wrap}
+      >
       <FlatList
         style={_styles.root}
         data={data}
@@ -301,6 +310,7 @@ export default function Inventory() {
           </TouchableOpacity>
         </SpaceView>
       }
+      </LinearGradient>
     </>
   );
 }
@@ -314,42 +324,41 @@ export default function Inventory() {
 ################################################################################################################ */}
 
 const _styles = StyleSheet.create({
+  wrap: {
+    minHeight: height,
+  },
   root: {
     flex: 1,
-    backgroundColor: 'white',
-    paddingHorizontal: 16,
-    width: '100%',
   },
   categoriesContainer: {
     marginTop: 15,
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: 'flex-start',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D1D1D1',
   },
   categoryBorder: (isSelected: boolean) => {
     return {
       paddingVertical: 9,
       paddingHorizontal: 15,
-      borderWidth: 1,
-      borderColor: isSelected ? Color.blue01 : Color.grayECECEC,
-      borderRadius: 9,
-      backgroundColor: isSelected ? '#f8f5ff' : Color.white,
       marginLeft: 5,
       marginRight: 5,
     };
   },
   categoryText: (isSelected: boolean) => {
     return {
-      fontSize: 14,
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontSize: 20,
+      fontFamily: 'Pretendard-Regular',
       color: isSelected ? Color.blue01 : Color.grayAAAA,
     };
   },
   renderItem: {
     width: `100%`,
     paddingVertical: 15,
-    borderBottomColor: Color.grayEEEE,
+    borderBottomColor: '#707070',
     borderBottomWidth: 1,
+    paddingHorizontal: 16,
   },
   thumb: {
     width: '30%',

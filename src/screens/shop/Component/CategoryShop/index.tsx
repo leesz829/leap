@@ -24,7 +24,7 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { isEmptyData } from 'utils/functions';
-import { commonStyle, styles } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle, styles } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 
 
@@ -330,9 +330,11 @@ function RenderItem({ item, openModal }) {
 
   return (
     <TouchableOpacity style={_styles.itemContainer} onPress={onPressItem}>
-      <View style={{ flexDirection: 'row' }}>
-        <View style={{width: 110, height: 80}}>
-          <Image source={ imagePath } style={_styles.tumbs} />
+      <View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
+        <View style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter]}>
+          {/* <Image source={ imagePath } style={_styles.tumbs} /> */}
+          <Image source={ICON.polygonGreen} style={_styles.tumbs} />
+          <Text style={_styles.itemNameText}>{item?.item_name}</Text>
           {isNew &&
             <View style={_styles.iconArea}>
               <Text style={_styles.newText}>NEW</Text>
@@ -342,7 +344,6 @@ function RenderItem({ item, openModal }) {
           {buyCountMax < 999999 && (
             <View style={_styles.imgBottomArea}>
               <Text style={_styles.imgBottomText}>{buyCount}/{buyCountMax}구매</Text>
-              <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
             </View>
           )}
 
@@ -355,14 +356,18 @@ function RenderItem({ item, openModal }) {
         </View>
 
         <View style={_styles.textContainer}>
-          {/* <Text style={_styles.BESTText}>BEST</Text> */}
-          <Text style={{ fontSize: 13, fontWeight: 'bold', color:'#363636' }}>
-            {item?.item_name}
-          </Text>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 3 }}>
-            <Text style={_styles.discountRate}>
-              {item?.discount_rate && item.discount_rate != 0 ? item.discount_rate + '%':''}
-            </Text>
+            {item?.discount_rate && item.discount_rate != 0 ?
+              <SpaceView>
+                <SpaceView viewStyle={_styles.discountArea}>
+                  <Text style={_styles.discountRate}>
+                    {item.discount_rate + '%'}
+                  </Text>
+                </SpaceView>
+                <Text style={_styles.originPriceText}>{CommaFormat(item.original_price)}원</Text>
+              </SpaceView>
+              : <></>
+            }
 
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text style={_styles.price}>
@@ -377,27 +382,15 @@ function RenderItem({ item, openModal }) {
                 <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.royalPassCircle} resizeMode={'contain'} /></SpaceView>
               )}
             </View>
-
-            <SpaceView mt={-10}>
-              <Text style={_styles.originPrice}>
-                {(isEmptyData(item.discount_rate) && item.discount_rate != 0) && (
-                  <>
-                    {CommaFormat(item?.original_price) + (item.money_type_code == 'INAPP' ? '원' : '')}  
-                    {item.money_type_code == 'PASS' && ( '패스' )}
-                    {item.money_type_code == 'ROYAL_PASS' && ( ' 로얄패스' )}
-                  </>
-                )}
-              </Text>
-            </SpaceView>
           </View>
-          <View style={_styles.boxWrapper}>
+          {/* <View style={_styles.boxWrapper}>
             {(item?.discount_rate && item.discount_rate != 0 ? true : false) && 
               <View style={_styles.box}><Text style={_styles.boxText}>특가할인</Text></View>
             }
             {item?.buy_count_cycle == 'MONTH' &&
               <View style={_styles.box}><Text style={_styles.boxText}>월1회구매</Text></View>
             }
-          </View>
+          </View> */}
         </View>
       </View>
     </TouchableOpacity>
@@ -412,8 +405,6 @@ function RenderItem({ item, openModal }) {
 const _styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    paddingHorizontal: 16,
-    backgroundColor: '#ffffff',
   },
   categoriesContainer: {
     marginTop: 30,
@@ -438,43 +429,44 @@ const _styles = StyleSheet.create({
     };
   },
   itemContainer: {
-    width: '100%',
-    borderBottomColor: Color.grayDDDD,
-    borderBottomWidth: 1,
     paddingVertical: 15,
   },
   tumbs: {
-    width: 110,
-    height: 80,
-    backgroundColor: Color.gray6666,
-    borderRadius: 5,
+    width: 38,
+    height: 38,
+  },
+  itemNameText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16,
+    color: '#32F9E4',
+    marginTop: -2,
   },
   textContainer: {
     marginLeft: 10,
     flexDirection: 'column',
   },
-  BESTText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#363636',
+  discountArea: {
+    backgroundColor: '#FFF',
+    paddingVertical: 2,
+    borderRadius: 10,
   },
   discountRate: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Color.primary,
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 10,
+    color: '#32F9E4',
+    textAlign: 'center',
+  },
+  originPriceText: {
+    fontSize: 12,
+    fontFamily: 'Pretendard-Light',
+    textDecorationLine: 'line-through',
+    color:'#E1DFD1',
   },
   price: {
+    fontFamily: 'Pretendard-Medium',
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#D5CD9E',
     marginLeft: 4,
-    color:'#363636',
-  },
-  originPrice: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    marginLeft: 4,
-    textDecorationLine: 'line-through',
-    color:'#363636',
   },
   boxWrapper: {
     flexDirection: `row`,
@@ -511,10 +503,12 @@ const _styles = StyleSheet.create({
   },
   imgBottomArea: {
     position: 'absolute',
-    bottom: 4,
-    right: 4,
+    top: -10,
+    left: 35,
     borderRadius: 7,
     overflow: 'hidden',
+    backgroundColor: '#000000',
+    opacity: 0.7,
   },
   imgBottomText: {
     fontFamily: 'AppleSDGothicNeoM00',

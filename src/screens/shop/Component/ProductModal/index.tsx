@@ -40,6 +40,7 @@ import { purchase_product, order_goods } from 'api/models';
 import { ROUTES, STACK } from 'constants/routes';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { CommonBtn } from 'component/CommonBtn';
 
 
 interface Props {
@@ -400,7 +401,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       },
     })
   ).current;
-
+console.log('item:::', item);
   return (
     <>
       <Modal 
@@ -412,52 +413,39 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         //propagateSwipe={true}
         onRequestClose={() => { closeModal(false); }}>
 
-        <View style={modalStyleProduct.root}>
-          <View {...panResponder.panHandlers}>
-            <View style={modalStyleProduct.closeContainer}>
-              <TouchableOpacity onPress={toggleModal} hitSlop={commonStyle.hipSlop20}>
-                <Image source={ICON.closeBlack} style={modalStyleProduct.close} />
-              </TouchableOpacity>
+        <View style={[modalStyleProduct.root, {minHeight: type == 'gifticon' ? '80%' : '45%'}]}>
+          {type == 'gifticon' &&
+            <View {...panResponder.panHandlers}>
+              <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+              
+                <ViewPager
+                  data={images}
+                  style={modalStyleProduct.pagerView}
+                  renderItem={(data) => <Image key={data.index} source={data} style={modalStyleProduct.itemImages} resizeMode={'contain'} />} 
+                />
+              </View>
             </View>
-
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-              <ViewPager
-                data={images}
-                style={modalStyleProduct.pagerView}
-                renderItem={(data) => <Image key={data.index} source={data} style={modalStyleProduct.itemImages} resizeMode={'contain'} />} 
-              />
-            </View>
-          </View>
-
+          }
           <View style={modalStyleProduct.infoContainer}>
-            {brand_name != '' && brand_name != null ? (
+            {brand_name != '' && brand_name != null && type == 'gifticon' ? (
               <Text style={modalStyleProduct.brandText}>{brand_name}</Text>
             ) : null}
 
-            <Text style={modalStyleProduct.giftName}>{prod_name}</Text>
+            <SpaceView>
+              <Text style={modalStyleProduct.title}>상품구매</Text>
+              <SpaceView mt={30} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
+                {type != 'gifticon' && <Image source={ICON.polygonGreen} style={styles.iconSize40} />}
+                <Text style={[modalStyleProduct.giftName, {marginTop: 0}]}>{prod_name}</Text>
+              </SpaceView>
+              <Text style={modalStyleProduct.giftDesc}>{item?.item_contents}</Text>
+            </SpaceView>
+            
             <View style={modalStyleProduct.rowBetween}>
               <Text style={modalStyleProduct.inventory}>
                 {type == 'gifticon' ? CommaFormat(item?.prod_cnt) + '개 남음' : null}
 
                 {/* {CommaFormat(item?.buy_count_max)}개 남음 */}
               </Text>
-              <View style={modalStyleProduct.rowCenter}>
-               <Text style={modalStyleProduct.price}>
-                  {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}
-
-                  {type != 'bm'? <Image source={ICON.crown} style={modalStyleProduct.crown} /> : item?.money_type_code == 'INAPP' ? '원' : ''}
-                </Text>
-                {/*<Image source={ICON.crown} style={modalStyleProduct.crown} />*/}
-
-                {item?.money_type_code == 'PASS' && 
-                  <SpaceView pt={4}><Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} /></SpaceView> 
-                }
-
-                {item?.money_type_code == 'ROYAL_PASS' && 
-                  <SpaceView pt={4}><Image style={styles.iconSquareSize(25)} source={ICON.royalPassCircle} resizeMode={'contain'} /></SpaceView> 
-                }
-                
-              </View>  
             </View>
 
             <View style={modalStyleProduct.infoContents}>
@@ -477,17 +465,24 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
               ]}
             >
               <View style={modalStyleProduct.rowBetween}>
-                {/* <TouchableOpacity style={modalStyle.likeButton}>
-                  <Image source={ICON.storage} style={modalStyle.likeImage} />
-                </TouchableOpacity> */}
                 <TouchableOpacity 
                   style={modalStyleProduct.puchageButton} 
                   onPress={() => {
                     setComfirmModalVisible(true);
                   }}>
-                  <Text style={modalStyleProduct.puchageText}>구매하기</Text>
+                    <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
+                    {item?.discount_rate > 0 &&
+                      <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}</Text>
+                    }
+                    <Text style={modalStyleProduct.puchageText}>구매하기</Text>
                 </TouchableOpacity>
               </View>
+              <CommonBtn
+                value={'취소'}
+                type={'reNewGoBack'}
+                borderRadius={5}
+                onPress={toggleModal}
+              />
             </View>
           </View>
 
@@ -552,8 +547,7 @@ const modalStyleProduct = StyleSheet.create({
   root: {
     // flex: 1,
     width: '100%',
-    minHeight: '80%',
-    backgroundColor: 'white',
+    backgroundColor: '#333B41',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     paddingHorizontal: 27,
@@ -580,24 +574,20 @@ const modalStyleProduct = StyleSheet.create({
     width: Dimensions.get('window').width - 150,
     height: 169,
     borderRadius: 10,
-    backgroundColor: '#ffffff',
   },
   dot: {
     width: 9,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: '#eeeeee',
   },
   dotActive: {
     width: 9,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: Color.primary,
   },
   infoContainer: {
     flex: 1,
-    backgroundColor: 'white',
-    marginTop: 13
+    marginTop: 13,
   },
   brandText: {
     fontFamily: 'AppleSDGothicNeoM00',
@@ -611,15 +601,26 @@ const modalStyleProduct = StyleSheet.create({
   brandContentText: {
     color: '#363636',
   },
+  title: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 30,
+    color: '#F3E270',
+    textAlign: 'center',
+    marginTop: 10,
+  },
   giftName: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 24,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#363636',
-    marginTop: 5,
+    color: '#32F9E4',
+    textAlign: 'center',
+    marginTop: 40,
+  },
+  giftDesc: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 12,
+    color: '#E1DFD1',
+    textAlign: 'center',
+    marginTop: 10,
   },
   rowBetween: {
     flexDirection: `row`,
@@ -678,32 +679,33 @@ const modalStyleProduct = StyleSheet.create({
   },
   puchageButton: {
     //width: (Dimensions.get('window').width - 60) * 0.8,
-    width: (Dimensions.get('window').width) * 0.87,
+    width: '100%',
     height: 56,
-    borderRadius: 10,
-    backgroundColor: '#262626',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#262626',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
+    borderRadius: 5,
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   puchageText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 21,
+    color: '#FFDD00',
+  },
+  originalPriceText: {
+    textDecorationLine: 'line-through',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#D5CD9E',
+    marginTop: 10,
+    marginLeft: 5,
+    marginRight: 'auto',
   },
   infoContents: {
     marginTop: 10,
     paddingTop: 10,
-    borderTopColor: '#e3e3e3',
-    borderTopWidth: 1,
-  }
-
+  },
 });
 
