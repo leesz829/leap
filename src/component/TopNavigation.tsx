@@ -289,7 +289,8 @@ const _styles = StyleSheet.create({
     }
 
     return {
-      fontFamily: 'Pretendard-Bold',
+      fontFamily: 'MinSansVF',
+      fontWeight: 'bold',
       fontSize: 25,
       color: _color,
       //borderBottomWidth: isOn ? 2 : 0,
