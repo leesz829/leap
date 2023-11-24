@@ -10,7 +10,6 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, FlatList, RefreshControl } from 'react-native';
 import { useDispatch } from 'react-redux'; 
-import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { formatNowDate, isEmptyData } from 'utils/functions';
 import { Watermark } from 'component/Watermark';
@@ -180,7 +179,8 @@ export default function MatchingList(props: Props) {
       if(memberBase?.status == 'BLOCK') {
         show({
           title: '서비스 이용 제한 알림',
-          content: '서비스 운영정책 위반으로 회원님의 계정상태가\n이용제한 상태로 전환되었습니다.\n문의사항 : cs@limeeted.com',
+          //content: '서비스 운영정책 위반으로 회원님의 계정상태가\n이용제한 상태로 전환되었습니다.\n문의사항 : cs@limeeted.com',
+          content: '서비스 운영정책 위반으로 회원님의 계정상태가\n이용제한 상태로 전환되었습니다.',
           confirmCallback: function() {
             dispatch(clearPrincipal());
           }
@@ -229,7 +229,7 @@ export default function MatchingList(props: Props) {
 
   return (
     <>
-      <TopNavigation currentPath={'LIMEETED'} />
+      <TopNavigation currentPath={'LEAP'} />
 
       <LinearGradient
 				colors={['#3D4348', '#1A1E1C']}
@@ -273,7 +273,7 @@ export default function MatchingList(props: Props) {
             } */}
           </View>
         ) : (
-          <SpaceView pb={50}>
+          <SpaceView pb={150}>
             <FlatList
               ref={scrollRef}
               data={data.matchList}
@@ -291,7 +291,7 @@ export default function MatchingList(props: Props) {
               pagingEnabled
               showsVerticalScrollIndicator={false}
               decelerationRate="fast"
-              snapToInterval={height * 0.75 + 15}
+              snapToInterval={height * 0.73 + 30}
               refreshControl={
                 <RefreshControl
                   refreshing={isRefreshing}
@@ -312,6 +312,9 @@ export default function MatchingList(props: Props) {
   );
 };
 
+/* #####################################################################################################################################
+####### 매칭 아이템 렌더링
+##################################################################################################################################### */
 const MatchRenderItem = ({ item, fnDetail }) => {
   const imgList = item?.img_list; // 이미지 목록
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
@@ -382,12 +385,12 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                     <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
                     <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
                   </SpaceView>
-                  <SpaceView viewStyle={{flexDirection: 'row'}}>
+                  <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     {item?.face_list.length > 0 && (
                       <>
                         {item?.face_list?.map((i, n) => {
                           return isEmptyData(i.face_code_name) && (
-                            <SpaceView mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
+                            <SpaceView key={n} mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
                               <Text style={_styles.faceText}>#{i.face_code_name}</Text>
                             </SpaceView>
                           )

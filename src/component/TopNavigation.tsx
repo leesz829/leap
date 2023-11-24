@@ -80,7 +80,7 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const limitedIcon = React.useMemo(() => {
-    return navName === 'LIMEETED'
+    return navName === 'LEAP'
       ? ICON.limited_on
       : theme != undefined
       ? ICON.limited_off_white
@@ -105,7 +105,7 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
         {/* <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" /> */}
-        <Text style={_styles.storyTxt(navName == 'LIMEETED', theme != undefined)}>리프</Text>
+        <Text style={_styles.storyTxt(navName == 'LEAP', theme != undefined)}>리프</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
@@ -113,13 +113,10 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
         <Text style={_styles.storyTxt(navName == 'LIVE', theme != undefined)}>플러팅</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
+      {/* <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
         <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>피드</Text>
         <View style={{borderBottomWidth: navName == 'Story' ? 2 : 0, borderBottomColor: '#7986EE', position: 'absolute', bottom: 1, left: 0, right: 17}} />
-        {/* <View style={{position: 'absolute', top: -8, right: 16}}>
-          <Image style={_styles.betaIcon} source={betaIcon} resizeMode="contain" />
-        </View> */}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }

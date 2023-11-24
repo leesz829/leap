@@ -10,6 +10,7 @@ import { commonStyle, styles } from 'assets/styles/Styles';
 import { usePopup } from 'Context';
 import { isEmptyData } from 'utils/functions';
 import SpaceView from './SpaceView';
+import { STACK, ROUTES } from 'constants/routes';
 
 
 export type NavigationHeaderProps = {
@@ -78,7 +79,7 @@ function CommonHeader({
       : navigation.dispatch(
           CommonActions.reset({
             index: 1,
-            routes: [{ name: 'Login01' }],
+            routes: [{ name: ROUTES.LOGIN01 }],
           })
         );
   }

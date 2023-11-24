@@ -411,6 +411,21 @@ export default function MatchDetail(props: Props) {
       <>
         <CommonHeader title={'프로필 상세'} />
 
+        {/* ############################################################################################### 버튼 영역 */}
+        {data.profile_img_list.length > 0 && isLoad && type != 'ME' && (
+          <SpaceView viewStyle={_styles.btnWrap}>
+            <TouchableOpacity onPress={() => { popupActive('pass'); }}>
+              <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { popupActive('interest'); }}>
+              <Text style={_styles.btnText('REQ', '#43ABAE')}>플러팅</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
+              <Text style={_styles.btnText('ZZIM', '#43ABAE')}>찜하기</Text>
+            </TouchableOpacity>
+          </SpaceView>
+        )}
+
         <LinearGradient
             colors={['#3D4348', '#1A1E1C']}
             start={{ x: 0, y: 0 }}
@@ -419,150 +434,153 @@ export default function MatchDetail(props: Props) {
           >
 
           <ScrollView style={{ flex: 1 }}>
+              {data.profile_img_list.length > 0 && isLoad ? (
+                <>
+                  <SpaceView mb={100}>
+                    
+                    {/* ####################################################################################
+                    ####################### 상단 영역
+                    #################################################################################### */}
+                    <SpaceView mb={30} viewStyle={{overflow: 'hidden'}}>
 
-            {data.profile_img_list.length > 0 && isLoad ? (
-              <>
+                      {/* ############################################################## 상단 이미지 영역 */}
+                      <SpaceView viewStyle={_styles.profileImgWrap}>
+                        <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
+                      </SpaceView>
 
-                {/* ############################################################################################### 버튼 영역 */}
-                {type != 'ME' && (
-                  <SpaceView viewStyle={_styles.btnWrap}>
-                    <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-                      <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { popupActive('interest'); }}>
-                      <Text style={_styles.btnText('REQ', '#43ABAE')}>플러팅</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
-                      <Text style={_styles.btnText('ZZIM', '#43ABAE')}>찜하기</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                )}
+                      <SpaceView viewStyle={_styles.infoArea}>
+                        <SpaceView pb={30} viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+                          {isEmptyData(data?.match_member_info.distance) && (
+                            <SpaceView mb={5}><Text style={_styles.infoText(14)}>{data?.match_member_info.distance}Km</Text></SpaceView>
+                          )}
+                          <SpaceView mb={8}><Text style={_styles.infoText(25)}>{data?.match_member_info.nickname}, {data?.match_member_info.age}</Text></SpaceView>
+                          <SpaceView><Text style={_styles.infoText(16)}>{data?.match_member_info.comment}</Text></SpaceView>
+                        </SpaceView>
+                      </SpaceView>
 
-                {/* ####################################################################################
-                ####################### 상단 영역
-                #################################################################################### */}
-                <SpaceView mb={30}>
-
-                  {/* ############################################################## 상단 이미지 영역 */}
-                  <SpaceView viewStyle={_styles.profileImgWrap}>
-                    <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
-                  </SpaceView>
-                </SpaceView>
-
-                {/* ############################################################################################################# 간단 소개 영역 */}
-                <SpaceView pl={15} pr={15} mb={40}>
-                  <MemberIntro 
-                    memberData={data?.match_member_info} 
-                    isEditBtn={false}
-                    faceList={data?.face_list} />
-                </SpaceView>
-
-                {/* ############################################################################################################# 자기 소개 영역 */}
-                {isEmptyData(data?.match_member_info.introduce_comment) && (
-                  <SpaceView pl={15} pr={15} mb={40} viewStyle={_styles.commentWrap}>
-                    <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
-                      <View style={{zIndex:1}}>
-                        <Text style={_styles.commentTitText}>{data?.match_member_info.nickname}님 소개</Text>
-                      </View>
-                      <View style={_styles.commentUnderline} />
+                      <LinearGradient
+                        colors={['transparent', '#000000']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={_styles.thumnailDimArea} />
                     </SpaceView>
-                    <SpaceView>
-                      <Text style={_styles.commentText}>{data?.match_member_info.introduce_comment}</Text>
-                    </SpaceView> 
-                  </SpaceView>
-                )}
 
-                {/* ############################################################################################################# 프로필 인증 영역 */}
-                {data.second_auth_list.length > 0 && (
-                  <SpaceView pl={15} pr={15} mb={40}>
-                    <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
-                  </SpaceView>
-                )}
+                    {/* ############################################################################################################# 간단 소개 영역 */}
+                    <SpaceView pl={15} pr={15} mb={40}>
+                      <MemberIntro 
+                        memberData={data?.match_member_info} 
+                        isEditBtn={false}
+                        faceList={data?.face_list} />
+                    </SpaceView>
 
-                {/* <SpaceView pl={15} pr={15} mb={40}>
-                {data.second_auth_list.length > 0 ? (
-                  <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
-                ) : (
-                  <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
-                    <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
-                    <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
-                  </SpaceView>
-                )}
-                </SpaceView> */}
+                    {/* ############################################################################################################# 자기 소개 영역 */}
+                    {isEmptyData(data?.match_member_info.introduce_comment) && (
+                      <SpaceView pl={15} pr={15} mb={40} viewStyle={_styles.commentWrap}>
+                        <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
+                          <View style={{zIndex:1}}>
+                            <Text style={_styles.commentTitText}>{data?.match_member_info.nickname}님 소개</Text>
+                          </View>
+                          <View style={_styles.commentUnderline} />
+                        </SpaceView>
+                        <SpaceView>
+                          <Text style={_styles.commentText}>{data?.match_member_info.introduce_comment}</Text>
+                        </SpaceView> 
+                      </SpaceView>
+                    )}
 
-                {/* ############################################################################################################# 2번째 이미지 영역 */}
-                <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                  <Image source={findSourcePath(data.profile_img_list[1]?.img_file_path)} style={_styles.profileImgStyle} />
-                </SpaceView>
+                    {/* ############################################################################################################# 프로필 인증 영역 */}
+                    {data.second_auth_list.length > 0 && (
+                      <SpaceView pl={15} pr={15} mb={40}>
+                        <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
+                      </SpaceView>
+                    )}
 
-                {/* ############################################################################################################# 인터뷰 영역 */}
-                <SpaceView pl={15} pr={15} mb={35}>
-                  <InterviewRender 
-                    title={data?.match_member_info?.nickname + '에 대한 필독서'} 
-                    isEditBtn={false}
-                    dataList={data?.interview_list} />
-                </SpaceView>
+                    {/* <SpaceView pl={15} pr={15} mb={40}>
+                    {data.second_auth_list.length > 0 ? (
+                      <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
+                    ) : (
+                      <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
+                        <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
+                        <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
+                      </SpaceView>
+                    )}
+                    </SpaceView> */}
 
-                {/* ############################################################################################################# 3번째 이미지 영역 */}
-                <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                  <Image source={findSourcePath(data.profile_img_list[2]?.img_file_path)} style={_styles.profileImgStyle} />
-                </SpaceView>
-
-                {/* ############################################################################################################# 관심사 영역 */}
-                <SpaceView pl={15} pr={15} mb={40}>
-                  <InterestRender 
-                    memberData={data?.match_member_info} 
-                    isEditBtn={false}
-                    interestList={data?.interest_list} />
-                </SpaceView>
-
-                {/* ############################################################################################################# 4,5,6번째 이미지 영역 */}
-                {data.profile_img_list?.length > 3 && (
-                  <>
+                    {/* ############################################################################################################# 2번째 이미지 영역 */}
                     <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                      <Image source={findSourcePath(data.profile_img_list[3]?.img_file_path)} style={_styles.profileImgStyle} />
+                      <Image source={findSourcePath(data.profile_img_list[1]?.img_file_path)} style={_styles.profileImgStyle} />
                     </SpaceView>
 
-                    {data.profile_img_list?.length > 4 && (
-                      <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                        <Image source={findSourcePath(data.profile_img_list[4]?.img_file_path)} style={_styles.profileImgStyle} />
-                      </SpaceView>
+                    {/* ############################################################################################################# 인터뷰 영역 */}
+                    <SpaceView pl={15} pr={15} mb={35}>
+                      <InterviewRender 
+                        title={data?.match_member_info?.nickname + '에 대한 필독서'} 
+                        isEditBtn={false}
+                        dataList={data?.interview_list} />
+                    </SpaceView>
+
+                    {/* ############################################################################################################# 3번째 이미지 영역 */}
+                    <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                      <Image source={findSourcePath(data.profile_img_list[2]?.img_file_path)} style={_styles.profileImgStyle} />
+                    </SpaceView>
+
+                    {/* ############################################################################################################# 관심사 영역 */}
+                    <SpaceView pl={15} pr={15} mb={40}>
+                      <InterestRender 
+                        memberData={data?.match_member_info} 
+                        isEditBtn={false}
+                        interestList={data?.interest_list} />
+                    </SpaceView>
+
+                    {/* ############################################################################################################# 4,5,6번째 이미지 영역 */}
+                    {data.profile_img_list?.length > 3 && (
+                      <>
+                        <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                          <Image source={findSourcePath(data.profile_img_list[3]?.img_file_path)} style={_styles.profileImgStyle} />
+                        </SpaceView>
+
+                        {data.profile_img_list?.length > 4 && (
+                          <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                            <Image source={findSourcePath(data.profile_img_list[4]?.img_file_path)} style={_styles.profileImgStyle} />
+                          </SpaceView>
+                        )}
+
+                        {data.profile_img_list?.length > 5 && (
+                          <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                            <Image source={findSourcePath(data.profile_img_list[5]?.img_file_path)} style={_styles.profileImgStyle} />
+                          </SpaceView>
+                        )}
+                      </>
                     )}
 
-                    {data.profile_img_list?.length > 5 && (
-                      <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                        <Image source={findSourcePath(data.profile_img_list[5]?.img_file_path)} style={_styles.profileImgStyle} />
-                      </SpaceView>
+                    <SpaceView pl={20} pr={20} mb={30}>
+
+                      {/* ############################################################## 부스트 회원 노출 영역 */}
+                      {/* {data?.match_member_info?.boost_yn === 'Y' && (
+                        <View style={_styles.boostPannel}>
+                          <View style={_styles.boostBadge}>
+                            <Text style={_styles.boostBadgeText}>BOOST</Text>
+                          </View>
+                          <Text style={_styles.boostTitle}>부스터 회원을 만났습니다.</Text>
+                          <Text style={_styles.boostDescription}>
+                            관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
+                          </Text>
+                        </View>
+                      )} */}
+
+                      {/* ############################################################## 추가 정보 영역 */}
+                      {/* <AddInfo memberData={data?.match_member_info} /> */}
+
+                    {/* ############################################################## 신고하기 영역 */}
+                    {type != 'ME' && (
+                      <TouchableOpacity onPress={() => { report_onOpen(); }}>
+                        <View style={_styles.reportButton}>
+                          <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
+                        </View>
+                      </TouchableOpacity>
                     )}
-                  </>
-                )}
 
-                <SpaceView pl={20} pr={20} mb={30}>
-
-                  {/* ############################################################## 부스트 회원 노출 영역 */}
-                  {/* {data?.match_member_info?.boost_yn === 'Y' && (
-                    <View style={_styles.boostPannel}>
-                      <View style={_styles.boostBadge}>
-                        <Text style={_styles.boostBadgeText}>BOOST</Text>
-                      </View>
-                      <Text style={_styles.boostTitle}>부스터 회원을 만났습니다.</Text>
-                      <Text style={_styles.boostDescription}>
-                        관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
-                      </Text>
-                    </View>
-                  )} */}
-
-                  {/* ############################################################## 추가 정보 영역 */}
-                  {/* <AddInfo memberData={data?.match_member_info} /> */}
-
-                  {/* ############################################################## 신고하기 영역 */}
-                  {type != 'ME' && (
-                    <TouchableOpacity onPress={() => { report_onOpen(); }}>
-                      <View style={_styles.reportButton}>
-                        <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
-                      </View>
-                    </TouchableOpacity>
-                  )}
+                  </SpaceView>
 
                 </SpaceView>
               </>
@@ -596,7 +614,6 @@ export default function MatchDetail(props: Props) {
                 )}
               </>
             )}
-            
           </ScrollView>
         </LinearGradient>
 
@@ -697,6 +714,40 @@ const _styles = StyleSheet.create({
   },
   profileImgWrap: {
     alignItems: 'center',
+  },
+  profileImgStyle: {
+    flex: 1,
+    width: width - 25,
+    height: height * 0.7,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  infoArea: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    paddingVertical: 25,
+    overflow: 'hidden',
+  },
+  infoText: (fs:number, cr:string) => {
+    return {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: fs,
+      color: isEmptyData(cr) ? cr : '#fff',
+    };
+  },
+  thumnailDimArea: {
+    position: 'absolute',
+    bottom: -1,
+    left: 0,
+    right: 0,
+    opacity: 0.8,
+    height: height * 0.34,
+    marginHorizontal: 12,
+    borderRadius: 22,
+    overflow: 'hidden',
   },
   commentWrap: {
     alignItems: 'center',
@@ -868,12 +919,6 @@ const _styles = StyleSheet.create({
     fontSize: 10,
     color: '#C3C3C8',
     textAlign: 'center',
-  },
-  profileImgStyle: {
-    flex: 1,
-    width: width - 25,
-    height: height * 0.7,
-    borderRadius: 20,
   },
   btnWrap: {
     position: 'absolute',

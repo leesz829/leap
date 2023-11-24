@@ -584,7 +584,7 @@ export const Story = () => {
                         <>
                           {innerItem.large_list.map((item, index) => {
                             return (
-                              <RenderListItem item={item} type={item?.size_type} />
+                              <RenderListItem key={'ol' + index} item={item} type={item?.size_type} />
                             )
                           })}
                         </>
@@ -593,7 +593,7 @@ export const Story = () => {
                           <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             {innerItem.medium_list.map((item, index) => {
                               return (
-                                <RenderListItem item={item} type={item?.size_type} />
+                                <RenderListItem key={'om' + index} item={item} type={item?.size_type} />
                               )
                             })}
 
@@ -609,7 +609,7 @@ export const Story = () => {
                           <SpaceView mb={5} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             {innerItem.small_list.map((item, index) => {
                               return (
-                                <RenderListItem item={item} type={item?.size_type} />
+                                <RenderListItem key={'os' + index} item={item} type={item?.size_type} />
                               )
                             })}
 
@@ -625,13 +625,13 @@ export const Story = () => {
                           <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             {innerItem.medium_list.map((item, index) => {
                               return (
-                                <RenderListItem item={item} type={item?.size_type} />
+                                <RenderListItem key={'cmm' + index} item={item} type={item?.size_type} />
                               )
                             })}
                             <SpaceView viewStyle={{flexDirection: 'column'}}>
                               {innerItem.small_list.map((item, index) => {
                                 return (
-                                  <SpaceView mb={index == 0 ? 5 : 0}>
+                                  <SpaceView key={'cms' + index} mb={index == 0 ? 5 : 0}>
                                     <RenderListItem item={item} type={item?.size_type} />
                                   </SpaceView>
                                 )
@@ -651,7 +651,7 @@ export const Story = () => {
                             <SpaceView viewStyle={{flexDirection: 'column'}}>
                               {innerItem.small_list.map((item, index) => {
                                 return (
-                                  <SpaceView mb={index == 0 ? 5 : 0}>
+                                  <SpaceView key={'css' + index} mb={index == 0 ? 5 : 0}>
                                     <RenderListItem item={item} type={item?.size_type} />
                                   </SpaceView>
                                 )
@@ -664,7 +664,7 @@ export const Story = () => {
                             </SpaceView>
                             {innerItem.medium_list.map((item, index) => {
                               return (
-                                <RenderListItem item={item} type={item?.size_type} />
+                                <RenderListItem key={'csm' + index} item={item} type={item?.size_type} />
                               )
                             })}
                           </SpaceView>

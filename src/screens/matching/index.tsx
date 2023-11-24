@@ -31,7 +31,6 @@ import { NotificationActionResponse } from 'react-native-notifications/lib/dist/
 import { SimpleGrid } from 'react-native-super-grid';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
-import { MatchSearch } from 'screens/matching/MatchSearch';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
