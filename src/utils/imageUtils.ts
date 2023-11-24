@@ -234,6 +234,12 @@ export const ICON = {
   passSquare: require('assets/icon/icon-pass-square.png'),
   circleArrow: require('assets/icon/icon-circle-arrow.png'),
   arrowLeftBrown: require('assets/icon/icon-arrow-left-brown.png'),
+  profileYellow: require('assets/icon/icon-profile-yellow.png'),
+  profileGray: require('assets/icon/icon-profile-gray.png'),
+  bellGold: require('assets/icon/icon-bell-gold.png'),
+  bellGray: require('assets/icon/icon-bell-gray.png'),
+  cartYellow: require('assets/icon/icon-cart-yellow.png'),
+  cartGray: require('assets/icon/icon-cart-gray.png'),
 };
 
 export const GIF_IMG = {

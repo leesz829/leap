@@ -83,7 +83,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       return (
         <>
           <View>
-            <Image style={_style.iconSize} source={isFocused ? ICON.storageOn : ICON.storage} />
+            <Image style={_style.iconSize} source={isFocused ? ICON.profileYellow : ICON.profileGray} />
 
             {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
               <View style={_style.newIcon} />
@@ -144,12 +144,12 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
     case 'Message': {
       return (
         <>
-          {isFocused ? <Image style={_style.iconSize} source={ICON.mailboxOn} /> : 
-            <Image style={_style.iconSize} source={ICON.mailbox} />
+          {isFocused ? <Image style={_style.iconSize} source={ICON.bellGold} /> : 
+            <Image style={_style.iconSize} source={ICON.bellGray} />
           }
 
           {memberBase?.msg_cnt != null && typeof memberBase?.msg_cnt != 'undefined' && memberBase?.msg_cnt > 0 &&
-            <View style={_style.iconArea}><Text style={_style.countText}>{memberBase?.msg_cnt}</Text></View>
+            <View style={_style.iconArea}><Text style={_style.countText}>{memberBase?.msg_cnt}+</Text></View>
           }
         </>
       );
@@ -158,8 +158,8 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       return (
         <>
           <View style={{width:28}}>
-            {isFocused ? <Image style={_style.iconSize} source={ICON.cashshopOn} /> :
-              <Image style={_style.iconSize} source={ICON.cashshop} />
+            {isFocused ? <Image style={_style.iconSize} source={ICON.cartYellow} /> :
+              <Image style={_style.iconSize} source={ICON.cartGray} />
             }
 
             {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
@@ -198,23 +198,23 @@ const _style = StyleSheet.create({
       width: 28,
       height: 28,
       borderRadius: 20,
-      borderWidth: 2,
-      borderColor: isOn ? '#7C79E7' : '#707070',
+      //borderWidth: 2,
+      //borderColor: isOn ? '#7C79E7' : '#707070',
       overflow: 'hidden',
     };
   },
   iconArea: {
     position: 'absolute',
-    top: -3,
-    right: 25,
+    top: 15,
+    right: 22,
   },
   countText: {
-    backgroundColor: '#FF7E8C',
-    fontFamily: 'AppleSDGothicNeoEB00',
+    backgroundColor: '#FFF',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
-    color: '#fff',
-    borderRadius: 9,
-    width: 28,
+    color: '#FFDD00',
+    borderRadius: 8,
+    width: 25,
     textAlign: 'center',
     paddingVertical: 1,
     overflow: 'hidden',
@@ -280,7 +280,7 @@ const _style = StyleSheet.create({
 		right: -5,
 		width: 8,
 		height: 8,
-		backgroundColor: '#FF7E8C',
+		backgroundColor: '#32F9E4',
 		borderRadius: 30,
 	},
   storageLimitArea: {

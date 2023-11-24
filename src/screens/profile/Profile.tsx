@@ -438,16 +438,7 @@ export const Profile = (props: Props) => {
             </SpaceView>
           </SpaceView>
 
-          {/* <SpaceView mb={70} viewStyle={layoutStyle.rowBetween}>
-            <View>
-              <CommonBtn
-                value={'로그아웃'} 
-                type={'black'} 
-                width={width}
-                borderWidth={0}
-                borderRadius={1}
-                onPress={logout} />
-            </View> */}
+          {/* <SpaceView mb={70} viewStyle={layoutStyle.rowBetween}> */}
 
             {/* <View >
               <CommonBtn 
@@ -460,6 +451,13 @@ export const Profile = (props: Props) => {
           {/* </SpaceView> */}
 
         </ScrollView>
+        <SpaceView viewStyle={{height: height * 0.25}}>
+            <TouchableOpacity
+              style={_styles.logoutBtn}
+              onPress={logout}>
+              <Text style={_styles.logoutText}>로그아웃</Text>
+            </TouchableOpacity>
+          </SpaceView>
       </LinearGradient>
     </>
   );
@@ -483,5 +481,16 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Regular',
     color: '#E1DFD1',
   },
-
+  logoutBtn: {
+    width: '100%',
+    backgroundColor: '#262626',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 25,
+  },
+  logoutText:  {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 19,
+    color: '#FFF',
+  },
 });

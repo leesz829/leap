@@ -9,27 +9,27 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* leapTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* leapTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7C4E08C4293BB73600242D71 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
-		7CEB068629CB622E007F724F /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 7CEB068529CB622E007F724F /* fonts */; };
-		7CEB068729CB69A9007F724F /* RIDIBatang.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8FF31B59ABF84B969B1F8A52 /* RIDIBatang.otf */; };
-		7CEB068829CB69A9007F724F /* AppleSDGothicNeoB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1786CE02C22F4178A2B51687 /* AppleSDGothicNeoB00.ttf */; };
-		7CEB068929CB69A9007F724F /* AppleSDGothicNeoM00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */; };
-		7CEB068A29CB69A9007F724F /* AppleSDGothicNeoR00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F739A331B9B142E3995067D0 /* AppleSDGothicNeoR00.ttf */; };
-		7CEB068C29CB69A9007F724F /* AppleSDGothicNeoEB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63141EE5A8E940BCB34D9639 /* AppleSDGothicNeoEB00.ttf */; };
-		7CEB068D29CB69A9007F724F /* AppleSDGothicNeoH00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */; };
 		819269ABC38A460CE736F789 /* Pods_leap_leapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62169FD7571D5B1CAFBFACC4 /* Pods_leap_leapTests.framework */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		84A3B3DA2A77AB6C008FAAE9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */; };
-		84BB78E02B0E01AD00359ED1 /* Pretendard-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */; };
-		84BB78E12B0E01AD00359ED1 /* Pretendard-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */; };
-		84BB78E22B0E01AD00359ED1 /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DC2B0E01AD00359ED1 /* Pretendard-Medium.ttf */; };
-		84BB78E32B0E01AD00359ED1 /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DD2B0E01AD00359ED1 /* Pretendard-Regular.ttf */; };
-		84BB78E42B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */; };
-		84BB78E52B0E01AD00359ED1 /* Pretendard-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DF2B0E01AD00359ED1 /* Pretendard-SemiBold.ttf */; };
+		8413F0E62B109AB1006F491D /* AppleSDGothicNeoB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1786CE02C22F4178A2B51687 /* AppleSDGothicNeoB00.ttf */; };
+		8413F0E82B109AB1006F491D /* Pretendard-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */; };
+		8413F0E92B109AB1006F491D /* Pretendard-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */; };
+		8413F0EA2B109AB1006F491D /* Pretendard-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */; };
+		8413F0EB2B109AB1006F491D /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DC2B0E01AD00359ED1 /* Pretendard-Medium.ttf */; };
+		8413F0EC2B109AB1006F491D /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DD2B0E01AD00359ED1 /* Pretendard-Regular.ttf */; };
+		8413F0ED2B109AB1006F491D /* Pretendard-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DF2B0E01AD00359ED1 /* Pretendard-SemiBold.ttf */; };
+		8413F0EE2B109AB1006F491D /* AppleSDGothicNeoM00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */; };
+		8413F0EF2B109AB1006F491D /* AppleSDGothicNeoR00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F739A331B9B142E3995067D0 /* AppleSDGothicNeoR00.ttf */; };
+		8413F0F02B109AB1006F491D /* AppleSDGothicNeoEB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63141EE5A8E940BCB34D9639 /* AppleSDGothicNeoEB00.ttf */; };
+		8413F0F12B109AB1006F491D /* AppleSDGothicNeoH00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */; };
+		8413F0F22B109AB1006F491D /* AppleSDGothicNeoSB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */; };
+		8413F0F32B109AC1006F491D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8413F0F52B109AD3006F491D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */; };
+		8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
+		8413F0F72B109B17006F491D /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 7CEB068529CB622E007F724F /* fonts */; };
+		8413F0FA2B109E0D006F491D /* MinSans-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8413F0F92B109E0D006F491D /* MinSans-Bold.otf */; };
 		84F4E05829F823F7000977E9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F4E05729F823F7000977E9 /* StoreKit.framework */; };
-		A86AF2A3CC014412B6DA2A8A /* AppleSDGothicNeoSB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */; };
 		AC88F52FB845B0E5C5C18D36 /* Pods_leap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 998A2D7CC8D7771394266903 /* Pods_leap.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +67,7 @@
 		8131F8F916F64BCB7FF2BA65 /* Pods-leap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.release.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = leap/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		83E35F69B9ED9E3635492A41 /* Pods-leap.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.staging.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.staging.xcconfig"; sourceTree = "<group>"; };
+		8413F0F92B109E0D006F491D /* MinSans-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "MinSans-Bold.otf"; path = "../src/assets/fonts/MinSans-Bold.otf"; sourceTree = "<group>"; };
 		84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.ttf"; sourceTree = "<group>"; };
 		84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.ttf"; sourceTree = "<group>"; };
@@ -75,7 +76,6 @@
 		84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-ExtraBold.ttf"; sourceTree = "<group>"; };
 		84BB78DF2B0E01AD00359ED1 /* Pretendard-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.ttf"; sourceTree = "<group>"; };
 		84F4E05729F823F7000977E9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		8FF31B59ABF84B969B1F8A52 /* RIDIBatang.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = RIDIBatang.otf; path = ../src/assets/fonts/RIDIBatang.otf; sourceTree = "<group>"; };
 		998A2D7CC8D7771394266903 /* Pods_leap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_leap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoH00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoH00.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -124,9 +124,9 @@
 		136ED0319BA3459BB9EC22D5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8FF31B59ABF84B969B1F8A52 /* RIDIBatang.otf */,
 				1786CE02C22F4178A2B51687 /* AppleSDGothicNeoB00.ttf */,
 				84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */,
+				8413F0F92B109E0D006F491D /* MinSans-Bold.otf */,
 				84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */,
 				84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */,
 				84BB78DC2B0E01AD00359ED1 /* Pretendard-Medium.ttf */,
@@ -245,7 +245,7 @@
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
-				13B07F8E1A680F5B00A75B9A /* Resources */,
+				8413F0E52B109AA2006F491D /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				05D1725853969F9A0C0A1A7A /* [CP] Copy Pods Resources */,
 				FB4F8BAEAD5BD96655EFBF50 /* [CP-User] [RNFB] Core Configuration */,
@@ -303,28 +303,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		13B07F8E1A680F5B00A75B9A /* Resources */ = {
+		8413F0E52B109AA2006F491D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84BB78E52B0E01AD00359ED1 /* Pretendard-SemiBold.ttf in Resources */,
-				7CEB068729CB69A9007F724F /* RIDIBatang.otf in Resources */,
-				84BB78E42B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf in Resources */,
-				7CEB068829CB69A9007F724F /* AppleSDGothicNeoB00.ttf in Resources */,
-				84A3B3DA2A77AB6C008FAAE9 /* GoogleService-Info.plist in Resources */,
-				7CEB068929CB69A9007F724F /* AppleSDGothicNeoM00.ttf in Resources */,
-				7CEB068A29CB69A9007F724F /* AppleSDGothicNeoR00.ttf in Resources */,
-				7CEB068C29CB69A9007F724F /* AppleSDGothicNeoEB00.ttf in Resources */,
-				84BB78E12B0E01AD00359ED1 /* Pretendard-Light.ttf in Resources */,
-				7CEB068D29CB69A9007F724F /* AppleSDGothicNeoH00.ttf in Resources */,
-				84BB78E02B0E01AD00359ED1 /* Pretendard-Bold.ttf in Resources */,
-				7CEB068629CB622E007F724F /* fonts in Resources */,
-				84BB78E32B0E01AD00359ED1 /* Pretendard-Regular.ttf in Resources */,
-				7C4E08C4293BB73600242D71 /* SplashScreen.storyboard in Resources */,
-				84BB78E22B0E01AD00359ED1 /* Pretendard-Medium.ttf in Resources */,
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				A86AF2A3CC014412B6DA2A8A /* AppleSDGothicNeoSB00.ttf in Resources */,
+				8413F0F72B109B17006F491D /* fonts in Resources */,
+				8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */,
+				8413F0F52B109AD3006F491D /* GoogleService-Info.plist in Resources */,
+				8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */,
+				8413F0FA2B109E0D006F491D /* MinSans-Bold.otf in Resources */,
+				8413F0F32B109AC1006F491D /* Images.xcassets in Resources */,
+				8413F0E62B109AB1006F491D /* AppleSDGothicNeoB00.ttf in Resources */,
+				8413F0E82B109AB1006F491D /* Pretendard-Bold.ttf in Resources */,
+				8413F0E92B109AB1006F491D /* Pretendard-ExtraBold.ttf in Resources */,
+				8413F0EA2B109AB1006F491D /* Pretendard-Light.ttf in Resources */,
+				8413F0EB2B109AB1006F491D /* Pretendard-Medium.ttf in Resources */,
+				8413F0EC2B109AB1006F491D /* Pretendard-Regular.ttf in Resources */,
+				8413F0ED2B109AB1006F491D /* Pretendard-SemiBold.ttf in Resources */,
+				8413F0EE2B109AB1006F491D /* AppleSDGothicNeoM00.ttf in Resources */,
+				8413F0EF2B109AB1006F491D /* AppleSDGothicNeoR00.ttf in Resources */,
+				8413F0F02B109AB1006F491D /* AppleSDGothicNeoEB00.ttf in Resources */,
+				8413F0F12B109AB1006F491D /* AppleSDGothicNeoH00.ttf in Resources */,
+				8413F0F22B109AB1006F491D /* AppleSDGothicNeoSB00.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

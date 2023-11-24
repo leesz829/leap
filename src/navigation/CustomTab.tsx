@@ -73,14 +73,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabContainer: {
-    borderTopColor: Color.grayEEEE,
-    borderTopWidth: 1,
+    //borderTopColor: Color.grayEEEE,
+    //borderTopWidth: 1,
     flexDirection: 'row',
     // backgroundColor: 'white',
     height: 56,
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: Color.tabColor,
+    paddingHorizontal: 35,
   },
   tabLabel: {
     marginTop: 4,

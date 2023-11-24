@@ -132,7 +132,6 @@
 	</array>
 	<key>UIAppFonts</key>
 	<array>
-		<string>RIDIBatang.otf</string>
 		<string>AppleSDGothicNeoB00.ttf</string>
 		<string>AppleSDGothicNeoM00.ttf</string>
 		<string>AppleSDGothicNeoR00.ttf</string>
@@ -141,10 +140,11 @@
 		<string>AppleSDGothicNeoSB00.ttf</string>
 		<string>Pretendard-Bold.ttf</string>
 		<string>Pretendard-ExtraBold.ttf</string>
-		<string>Pretendard-Light.ttf</string>
+		<string>Pretendard-Light.ttf</string>																			
 		<string>Pretendard-Medium.ttf</string>
 		<string>Pretendard-Regular.ttf</string>
 		<string>Pretendard-SemiBold.ttf</string>
+		<string>MinSans-Bold.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
