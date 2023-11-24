@@ -289,8 +289,7 @@ const _styles = StyleSheet.create({
     }
 
     return {
-      fontFamily: 'MinSansVF',
-      fontWeight: 'bold',
+      fontFamily: 'MinSans-Bold',
       fontSize: 25,
       color: _color,
       //borderBottomWidth: isOn ? 2 : 0,
