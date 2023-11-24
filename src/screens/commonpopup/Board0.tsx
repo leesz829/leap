@@ -29,6 +29,8 @@ interface Props {
 	route: RouteProp<StackParamList, 'Board0'>;
 }
 
+const { width, height } = Dimensions.get('window');
+
 export const Board0 = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 
@@ -43,8 +45,8 @@ export const Board0 = (props: Props) => {
 	// 이용약관 이동
 	const onPressBoardDetail = async (item:any) => {
 		navigation.navigate(STACK.COMMON, {screen: 'BoardDetail',
-		params : item
-	})
+			params : item
+		});
 	};
 
 	// 토글
@@ -139,85 +141,57 @@ export const Board0 = (props: Props) => {
 				colors={['#3D4348', '#1A1E1C']}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 0, y: 1 }}
-				style={{paddingHorizontal: 20}}
+				style={{paddingHorizontal: 25, minHeight: height}}
 			>		
-				<ScrollView style={{marginTop: 40, marginBottom: 70}}>
-					{/* <SpaceView mb={45}>
-						<View style={layoutStyle.alignStart}>
-							<CommonText	type={'h2'} fontWeight={'200'}>리미티드의 소식을{'\n'}전해드립니다 :)</CommonText>
-						</View>
-					</SpaceView> */}
+				<ScrollView showsVerticalScrollIndicator={false}>
 
-					{noticeList.map((item, index) => (
-						<SpaceView mb={10} key={item.board_seq}>
-							<View style={_styles.rowContainer}>
-								<TouchableOpacity
-									style={_styles.inner}
-									activeOpacity={0.3}
-									onPress={() => (
-										onPressBoardDetail(item)
-										//sstoggleAccordion(item);
-										)			
-									}>
-									
-									<View style={[_styles.titleContainer, activeIndex === item.board_seq && _styles.active]}>
-										<View style={{flexDirection:'row'}}>
-											{item.board_type == 'EVENT' &&
-												<Text style={_styles.iconType('#AFF20E')}>이벤트</Text>
-											}
-											{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'NOTICE') &&
-												<Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
-											}
-											{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'GUIDE') &&
-												<Text style={_styles.iconType('#FFDD00')}>가이드</Text>
-											}
-										</View>
+					<SpaceView mt={30} mb={100}>
+						{noticeList.map((item, index) => (
+							<>
+								<SpaceView mb={10} key={item.board_seq}>
+									<View style={_styles.rowContainer}>
+										<TouchableOpacity
+											style={_styles.inner}
+											activeOpacity={0.3}
+											onPress={() => (
+												onPressBoardDetail(item)
+												//sstoggleAccordion(item);
+												)			
+											}>
+											
+											<View style={[_styles.titleContainer, activeIndex === item.board_seq && _styles.active]}>
+												<View style={{flexDirection:'row'}}>
+													{item.board_type == 'EVENT' &&
+														<Text style={_styles.iconType('#AFF20E')}>이벤트</Text>
+													}
+													{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'NOTICE') &&
+														<Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
+													}
+													{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'GUIDE') &&
+														<Text style={_styles.iconType('#FFDD00')}>가이드</Text>
+													}
+												</View>
 
-										<View>
-											{(item.new_yn == 'Y' && item.view_yn == 'N') && (
-												<View style={_styles.newIcon} />
-											)}
-											<CommonText textStyle={_styles.titleText} type={'h5'} fontWeight={'200'} color={'#D5CD9E'}>{item.title}</CommonText>
-											<CommonText type={'h6'} fontWeight={'200'} color={'#445561'}>{item.reg_dt}</CommonText>
-										</View>
+												<View>
+													{(item.new_yn == 'Y' && item.view_yn == 'N') && (
+														<View style={_styles.newIcon} />
+													)}
+													<CommonText textStyle={_styles.titleText} type={'h5'} fontWeight={'200'} color={'#D5CD9E'}>{item.title}</CommonText>
+													<CommonText type={'h6'} fontWeight={'200'} color={'#445561'}>{item.reg_dt}</CommonText>
+												</View>
+											</View>
+
+											<View style={[_styles.iconContainer, activeIndex === item.board_seq && _styles.activeIcon]}>
+												{/* <Image source={ICON.arrBottom} style={_styles.iconStyle} /> */}
+												<Image source={ICON.circleArrow} style={styles.iconSize18} />
+											</View>
+										</TouchableOpacity>
 									</View>
+								</SpaceView>
+							</>
+						))}
+					</SpaceView>
 
-									<View style={[_styles.iconContainer, activeIndex === item.board_seq && _styles.activeIcon]}>
-										{/* <Image source={ICON.arrBottom} style={_styles.iconStyle} /> */}
-										<Image source={ICON.circleArrow} style={styles.iconSize18} />
-									</View>
-								</TouchableOpacity>
-							</View>
-
-							{/* {new_yn == 'Y' &&
-								<View style={_styles.newArea}>
-									<Text style={_styles.newText}>NEW</Text>
-								</View>
-							} */}
-
-							{/* {activeIndex === item.board_seq && (
-								<View style={_styles.descContainer}>
-									<CommonText textStyle={_styles.descText} type={'h5'} color={'#D5CD9E'}>{item.content}</CommonText>
-									<CommonText textStyle={_styles.dateText} type={'h5'} color={'#445561'}>{item.reg_dt}</CommonText>
-									
-									{item.board_type == 'EVENT' &&
-										<SpaceView mt={10}>
-											<CommonBtn 
-												value={'바로가기'} 
-												type={'gray2'}
-												width={'100%'}
-												height={35}
-												fontSize={13}
-												borderRadius={5}
-												onPress={() => {
-													goLink('EVENT');
-												}} />
-										</SpaceView>
-									}
-								</View>
-							)} */}
-						</SpaceView>
-					))}
 				</ScrollView>
 			</LinearGradient>
 		</>
@@ -230,7 +204,7 @@ const _styles = StyleSheet.create({
 	iconContainer: {
 	  	position: 'absolute',
 		top: '45%',
-	  	right: 20,
+	  	right: 0,
 	  	// transform: [{ rotate: '360deg' }],
 		transform: [{ rotate: '270deg' }],
 	},
@@ -255,7 +229,7 @@ const _styles = StyleSheet.create({
 	  	borderBottomWidth: 1,
 	  	borderColor: '#E1DFD1',
 	  	//borderRadius: 15,
-	  	paddingHorizontal: 15,
+	  	//paddingHorizontal: 15,
 	  	paddingVertical: 15,
 	},
 	titleText: {

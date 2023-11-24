@@ -46,7 +46,7 @@ const TopNavigation: FC<Props> = (props) => {
           zIndex: 1,
         }}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        end={{ x: 0, y: 1 }}
       >
         {props.theme ? (
           <View style={_styles.tabContainer}>

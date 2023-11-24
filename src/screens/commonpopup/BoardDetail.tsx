@@ -60,7 +60,7 @@ export const BoardDetail = (props: Props) => {
 		<>
 			{isLoading && <CommonLoading />}
 
-			<CommonHeader title={'새소식'} />
+			<CommonHeader title={'새소식 상세'} />
 			
 			<LinearGradient
 				colors={['#3D4348', '#1A1E1C']}

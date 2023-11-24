@@ -253,7 +253,19 @@ export const Shop = () => {
         item.connect_date = connectDate;
       });
 
-      setProductList(_products);
+      //setProductList(_products);
+
+      let _tmpList = [
+        {item_name: '80', shop_buy_price: 4000, money_type_code: 'INAPP'},
+        {item_name: '150', shop_buy_price: 7500, money_type_code: 'INAPP'},
+        {item_name: '300', shop_buy_price: 14000, money_type_code: 'INAPP', original_price: 15000, discount_rate: 7 },
+        {item_name: '600', shop_buy_price: 26000, money_type_code: 'INAPP', original_price: 30000, discount_rate: 13},
+        {item_name: '1500', shop_buy_price: 59000, money_type_code: 'INAPP', original_price: 75000, discount_rate: 21},
+        {item_name: '3000', shop_buy_price: 105000, money_type_code: 'INAPP', original_price: 150000, discount_rate: 30},
+        {item_name: '6000', shop_buy_price: 179000, money_type_code: 'INAPP', original_price: 300000, discount_rate: 40},
+      ];
+      
+      setProductList(_tmpList);
 
       loadingFunc(false);
     } else {
@@ -263,8 +275,11 @@ export const Shop = () => {
 
   // ######################################################### 상품상세 팝업 열기
   const openProductModal = (item) => {
-    setTargetItem(item);
-    setProductModalVisible(true);
+
+    show({ content: '준비중입니다.' });
+
+    /* setTargetItem(item);
+    setProductModalVisible(true); */
   };
 
   // ######################################################### 상품상세 팝업 닫기
@@ -334,7 +349,7 @@ export const Shop = () => {
         end={{ x: 0, y: 1 }}
         style={_styles.wrap}
       >
-        <ScrollView style={{marginBottom: 60}}>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {/* <View style={{minHeight: memberBase.gender == 'M' ? 300 : 330, zIndex: 1, backgroundColor: '#ffffff'}}> */}
 
             {/* ############################################### 상단 배너 */}
@@ -400,6 +415,7 @@ export const Shop = () => {
               </View>
             </View>
           </TouchableOpacity> */}
+
           <SpaceView>
             <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, {marginLeft: -5}]}>
               <Image source={ICON.polygonGreen} style={styles.iconSize24} />
@@ -419,19 +435,22 @@ export const Shop = () => {
           </LinearGradient>
 
           {/* ############################################### 카테고리별 */}
-          <CategoryShop 
-            loadingFunc={loadingFunc} 
-            itemUpdateFunc={getShopMain}
-            onPressCategoryFunc={onPressCategory}
-            openProductModalFunc={openProductModal}
-            categoryList={categoryList}
-            productList={productList}
-            selectedCategoryData={selectedCategoryData}
-          />
+          <SpaceView mb={200}>
+            <CategoryShop 
+              loadingFunc={loadingFunc} 
+              itemUpdateFunc={getShopMain}
+              onPressCategoryFunc={onPressCategory}
+              openProductModalFunc={openProductModal}
+              categoryList={categoryList}
+              productList={productList}
+              selectedCategoryData={selectedCategoryData}
+            />
+          </SpaceView>
         </ScrollView>
       </LinearGradient>
+
       {/* 인벤토리 버튼 */}
-      <InventoryButton newItemCnt={newItemCnt} />
+      {/* <InventoryButton newItemCnt={newItemCnt} /> */}
 
       {/* 상품 상세 팝업 */}
       <ProductModal
@@ -521,6 +540,7 @@ const _styles = StyleSheet.create({
   wrap: {
     paddingHorizontal: 15,
     paddingTop: 20,
+    minHeight: height,
   },
   myCubeTitle: {
     fontFamily: 'Pretendard-Medium',

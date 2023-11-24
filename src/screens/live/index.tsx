@@ -235,11 +235,11 @@ export const Live = () => {
 
               <TouchableOpacity 
                 onPress={() => { prevImage(); }}
-                style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2}} />
+                style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2, zIndex: 1}} />
 
               <TouchableOpacity 
                 onPress={() => { nextImage(); }}
-                style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
+                style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2, zIndex: 1}} />
 
               <SpaceView viewStyle={_styles.pagingContainer}>
                 {imgList?.map((i, n) => {
@@ -277,8 +277,7 @@ export const Live = () => {
               style={[_styles.bottomBtn,{width: width * 0.47, backgroundColor: '#FCBB15'}]}
               onPress={() => { 
                 setLiveModalVisible(true);
-              }}
-              >
+              }} >
               <Text style={[_styles.bottomTxt, {color: '#FFF'}]}>인상 선택하기</Text>
             </TouchableOpacity>
           </View>

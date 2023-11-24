@@ -37,7 +37,7 @@ const BottomNavigation = () => {
           tabBarShowLabel: true,
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Storage"
         component={Storage}
         options={{
@@ -46,7 +46,7 @@ const BottomNavigation = () => {
           tabBarShowLabel: true,
           unmountOnBlur: true,
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Message"
         component={Message}
@@ -65,7 +65,7 @@ const BottomNavigation = () => {
           },
         })} */
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Cashshop"
         component={Shop}
         options={{
@@ -80,7 +80,7 @@ const BottomNavigation = () => {
             navigation.navigate('Cashshop');
           },
         })}
-      />
+      /> */}
 
       {/* ###############################################################################################################
       ############################################################################################################### */}

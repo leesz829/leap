@@ -487,10 +487,7 @@ export const Roby = (props: Props) => {
       <ScrollView
         bounces={false}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          backgroundColor: 'white',
-          flexGrow: 1,
-        }}>
+        contentContainerStyle={{ flexGrow: 1 }}>
 
         {/* ################################################################################ 상단 메뉴 버튼 영역 */}
         <LinearGradient
@@ -737,9 +734,9 @@ export const Roby = (props: Props) => {
               <TouchableOpacity onPress={onPressMangeAccount}>
                 <Text style={_styles.modalText}>계정 관리</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={onPressMail}>
+              {/* <TouchableOpacity onPress={onPressMail}>
                 <Text style={_styles.modalText}>알림 설정</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity onPress={onPressCustomerInquiry}>
                 <Text style={_styles.modalText}>1:1 문의</Text>
               </TouchableOpacity>

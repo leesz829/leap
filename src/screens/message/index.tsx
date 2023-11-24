@@ -48,7 +48,7 @@ export const Message = (props: Props) => {
 	const isFocus = useIsFocused();
 	const { show } = usePopup();  // 공통 팝업
 
-  const memberBase = useUserInfo(); //hooksMember.getBase();
+  	const memberBase = useUserInfo(); //hooksMember.getBase();
 
 	const toggleAccordion = (index) => {
 		setActiveIndex(activeIndex === index ? -1 : index);
@@ -59,23 +59,23 @@ export const Message = (props: Props) => {
 		setIsLoading(true);
 
 		try {
-		  const { success, data } = await get_member_message_list();
-		  if(success) {
-			switch (data.result_code) {
-			  case SUCCESS:
-				setMessageList(data.message_list);
-				dispatch(myProfile());
-				break;
-			  default:
-				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-				break;
-			}
+			const { success, data } = await get_member_message_list();
+		  	if(success) {
+				switch (data.result_code) {
+			  		case SUCCESS:
+						setMessageList(data.message_list);
+						dispatch(myProfile());
+						break;
+			  		default:
+						show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+						break;
+				}
 		   
-		  } else {
-			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-		  }
+		  	} else {
+				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+		  	}
 		} catch (error) {
-		  console.log(error);
+		  	console.log(error);
 		} finally {
 			setIsLoading(false);
 		}
@@ -145,80 +145,77 @@ export const Message = (props: Props) => {
 
 			<TopNavigation currentPath={''} />
       
-        <LinearGradient
-          colors={['#3D4348', '#1A1E1C']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-        >
-			  <ScrollView style={{marginBottom: 60}}>
-          <SpaceView pt={40} pl={20} pr={20} pb={10}>
-            <Text style={_styles.mainTitle}>
-              <Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>
-              님에게{'\n'}전달해드리는 소식
-            </Text>
-          </SpaceView>
+        	<LinearGradient
+          		colors={['#3D4348', '#1A1E1C']}
+          		start={{ x: 0, y: 0 }}
+          		end={{ x: 0, y: 1 }}
+				style={_styles.wrap}
+        	>
+				<ScrollView style={{marginBottom: 60}}>
+          			<SpaceView pt={40} pl={25} pr={25} pb={25}>
+            			<Text style={_styles.mainTitle}>
+              			<Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>님에게{'\n'}전달해드리는 소식</Text>
+          			</SpaceView>
 
-          {messageList.map((item : any, index) => (
-            <SpaceView key={item.msg_send_seq}>
-              <View style={_styles.rowContainer}>
-                <TouchableOpacity
-                  style={_styles.inner}
-                  onPress={() => { 
-                    toggleAccordion(item.msg_send_seq);
-                  }}
-                  activeOpacity={0.3}>
+          			{messageList.map((item : any, index) => (
+            			<SpaceView key={item.msg_send_seq}>
+              				<View style={_styles.rowContainer}>
+                				<TouchableOpacity
+                  					style={_styles.inner}
+                  					onPress={() => { toggleAccordion(item.msg_send_seq); }}
+                  					activeOpacity={0.3}>
                   
-                  <View style={[_styles.titleContainer, activeIndex === item.msg_send_seq && _styles.active]}>
-                    <CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{item.title}</CommonText>
-                  </View>
+                  					<View style={[_styles.titleContainer, activeIndex === item.msg_send_seq && _styles.active]}>
+                    					<CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{item.title}</CommonText>
+                  					</View>
 
-                  <View style={[_styles.iconContainer, activeIndex === item.msg_send_seq && _styles.activeIcon]}>
-                    <Image source={ICON.circleArrow} style={_styles.iconStyle} />
-                  </View>
-                </TouchableOpacity>
-              </View>
+                  					<View style={[_styles.iconContainer, activeIndex === item.msg_send_seq && _styles.activeIcon]}>
+                    					<Image source={ICON.circleArrow} style={styles.iconSquareSize(18)} />
+                  					</View>
+                				</TouchableOpacity>
+              				</View>
 
-              {activeIndex === item.msg_send_seq && (
-                <View style={_styles.descContainer}>
-                  <View style={_styles.descText}>
-                    <CommonText fontWeight={'300'} color={'#E1DFD1'}>{item.contents}</CommonText>
+              				{activeIndex === item.msg_send_seq && (
+                				<View style={_styles.descContainer}>
+                  					<View style={_styles.descText}>
+                    					<CommonText fontWeight={'300'} color={'#E1DFD1'}>{item.contents}</CommonText>
+                    					<View style={_styles.dateArea}>
+                      						<CommonText fontWeight={'300'} color={'#E1DFD1'} textStyle={_styles.dateText}>{item.reg_dt}</CommonText>
+                    					</View>
+                  					</View>
 
-                    <View style={_styles.dateArea}>
-                      <CommonText fontWeight={'300'} color={'#E1DFD1'} textStyle={_styles.dateText}>{item.reg_dt}</CommonText>
-                    </View>
-                  </View>
-
-                  {(
-                    item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
-                    || item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
-                    || item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14' || item.msg_type == 'MSG_TP_16' || item.msg_type == 'MSG_TP_28'
-                    || item.msg_type == 'MSG_TP_30' || item.msg_type == 'MSG_TP_31' || item.msg_type == 'MSG_TP_32' || item.msg_type == 'MSG_TP_33'
-                  ) &&
-                    <SpaceView mt={10}>
-                      <TouchableOpacity 
-                        disabled={item.link_end_yn == 'Y' ? true : false}
-                        onPress={() => { goLink(item); }}>
-                        <Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
-                      </TouchableOpacity>
-                    </SpaceView>
-                  }
-                </View>
-              )}
-            </SpaceView>
-          ))}
-        </ScrollView>
-      </LinearGradient>
+                  					{(
+                    					item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
+                    					|| item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
+                    					|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14' || item.msg_type == 'MSG_TP_16' || item.msg_type == 'MSG_TP_28'
+                    					|| item.msg_type == 'MSG_TP_30' || item.msg_type == 'MSG_TP_31' || item.msg_type == 'MSG_TP_32' || item.msg_type == 'MSG_TP_33'
+                  					) &&
+                    					<SpaceView mt={10} mb={15}>
+                      						<TouchableOpacity disabled={item.link_end_yn == 'Y' ? true : false} onPress={() => { goLink(item); }}>
+                        						<Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
+                      						</TouchableOpacity>
+                    					</SpaceView>
+                  					}
+                				</View>
+              				)}
+            			</SpaceView>
+          			))}
+        		</ScrollView>
+      		</LinearGradient>
 		</>
 	);
 };
 
 
 const _styles = StyleSheet.create({
-  mainTitle: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 24,
-    color: '#D5CD9E',
-  },
+	wrap: {
+		minHeight: height,
+	},
+  	mainTitle: {
+    	fontFamily: 'Pretendard-SemiBold',
+    	fontSize: 24,
+    	color: '#D5CD9E',
+  	},
 	iconContainer: {
 		position: 'absolute',
 		top: '38%',
@@ -231,28 +228,21 @@ const _styles = StyleSheet.create({
 	inner: {
 	  	width: '100%',
 	},
-	labelContainer: {
-	  	marginBottom: 12,
-	},
 	rowContainer: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 	},
-	iconStyle: {
-		width: 18,
-		height: 18,
-	},
 	titleContainer: {
-		borderTopWidth: 1,
+		borderTopWidth: 0.4,
 		borderColor: '#E1DFD1',
-		paddingHorizontal: 15,
+		paddingHorizontal: 25,
 		paddingVertical: 15,
 	},
 	titleText: {
 		paddingRight: 35,
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 16,
-    color: '#D5CD9E',
+    	fontFamily: 'Pretendard-Regular',
+    	fontSize: 16,
+    	color: '#D5CD9E',
 	},
 	active: {
 		borderBottomWidth: 0,
@@ -261,13 +251,12 @@ const _styles = StyleSheet.create({
 	},
 	descContainer: {
 		//padding: 16,
-		paddingHorizontal: 10,
+		paddingHorizontal: 25,
 		paddingBottom: 10,
-    borderTopColor: '#E1DFD1',
-    borderTopWidth: 1,
+    	borderTopColor: '#E1DFD1',
+    	borderTopWidth: 0.4,
 	},
 	descText: {
-		paddingHorizontal: 5,
 		paddingVertical: 20,
 	},
 	dateArea: {
@@ -278,14 +267,14 @@ const _styles = StyleSheet.create({
 	},
 	linkText: (isDisabled: boolean) => {
 		return {
-		  fontFamily: 'Pretendard-Regular',
-		  fontSize: 10,
-		  color: isDisabled ? '#C7C7C7' : '#D5CD9E',
-		  textAlign: 'center',
-		  borderColor: isDisabled ? '#C7C7C7' : '#D5CD9E',
-		  borderWidth: 1,
-		  borderRadius: 5,
-		  paddingVertical: 8,
+			fontFamily: 'Pretendard-Regular',
+		  	fontSize: 10,
+		  	color: isDisabled ? '#C7C7C7' : '#D5CD9E',
+		  	textAlign: 'center',
+		  	borderColor: isDisabled ? '#C7C7C7' : '#D5CD9E',
+		  	borderWidth: 1,
+		  	borderRadius: 5,
+		  	paddingVertical: 8,
 		};
 	  },
   });

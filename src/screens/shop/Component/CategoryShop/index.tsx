@@ -1,7 +1,7 @@
 import { get_bm_product, purchase_product, update_additional } from 'api/models';
 import { Color } from 'assets/styles/Color';
 import React, { memo, useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform, Alert, ActivityIndicator } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform, Alert, ActivityIndicator, Dimensions } from 'react-native';
 import { CommaFormat, formatNowDate } from 'utils/functions';
 import {
   initConnection,
@@ -37,6 +37,8 @@ interface Props {
   productList: [];
   selectedCategoryData: {};
 }
+
+const { width, height } = Dimensions.get('window');
 
 /* interface Products {
   products: Product[];
@@ -226,7 +228,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
 
     const { success, data } = await update_additional(body);
     if(success) {
-      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+      if(isEmptyData(data.mbr_base)) {
         dispatch(setPartialPrincipal({
           mbr_base : data.mbr_base
         }));
@@ -268,10 +270,10 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
 
   return (
     <>
-      <ScrollView style={_styles.container}>
+      <ScrollView style={_styles.categoryWrap} showsVerticalScrollIndicator={false}>
         <View style={_styles.categoriesContainer}>
 
-          {categoryList?.map((item, index) => (
+          {/* {categoryList?.map((item, index) => (
             <TouchableOpacity
               key={`category-${item.value}-${index}`}
               activeOpacity={0.8}
@@ -282,7 +284,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
                 {item?.label}
               </Text>
             </TouchableOpacity>
-          ))}
+          ))} */}
         </View>
 
         {productList?.map((item, index) => (
@@ -317,12 +319,6 @@ function RenderItem({ item, openModal }) {
       }
     }
 
-    /* if(buyCountCycle != 'NONE') {
-      if(buyCount >= buyCountMax) {
-        isChk = false;
-      }
-    } */
-
     if(isChk) {
       openModal(item);
     }
@@ -330,39 +326,29 @@ function RenderItem({ item, openModal }) {
 
   return (
     <TouchableOpacity style={_styles.itemContainer} onPress={onPressItem}>
-      <View style={[layoutStyle.row, layoutStyle.justifyBetween]}>
+      <View style={_styles.itemWrap}>
         <View style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter]}>
-          {/* <Image source={ imagePath } style={_styles.tumbs} /> */}
-          <Image source={ICON.polygonGreen} style={_styles.tumbs} />
+          <Image source={ICON.polygonGreen} style={styles.iconSquareSize(38)} />
           <Text style={_styles.itemNameText}>{item?.item_name}</Text>
-          {isNew &&
+          {/* {isNew &&
             <View style={_styles.iconArea}>
               <Text style={_styles.newText}>NEW</Text>
             </View>
-          }
+          } */}
 
           {buyCountMax < 999999 && (
             <View style={_styles.imgBottomArea}>
               <Text style={_styles.imgBottomText}>{buyCount}/{buyCountMax}구매</Text>
             </View>
           )}
-
-          {/* {item?.buy_count_cycle != 'NONE' && (
-            <View style={_styles.imgBottomArea}>
-              <Text style={_styles.imgBottomText}>{item?.buy_count}/{item?.buy_count_max}구매</Text>
-              <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
-            </View>
-          )} */}
         </View>
 
         <View style={_styles.textContainer}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 3 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
             {item?.discount_rate && item.discount_rate != 0 ?
-              <SpaceView>
+              <SpaceView viewStyle={{alignItems: 'flex-end'}}>
                 <SpaceView viewStyle={_styles.discountArea}>
-                  <Text style={_styles.discountRate}>
-                    {item.discount_rate + '%'}
-                  </Text>
+                  <Text style={_styles.discountRate}>{item.discount_rate + '%'}</Text>
                 </SpaceView>
                 <Text style={_styles.originPriceText}>{CommaFormat(item.original_price)}원</Text>
               </SpaceView>
@@ -383,14 +369,6 @@ function RenderItem({ item, openModal }) {
               )}
             </View>
           </View>
-          {/* <View style={_styles.boxWrapper}>
-            {(item?.discount_rate && item.discount_rate != 0 ? true : false) && 
-              <View style={_styles.box}><Text style={_styles.boxText}>특가할인</Text></View>
-            }
-            {item?.buy_count_cycle == 'MONTH' &&
-              <View style={_styles.box}><Text style={_styles.boxText}>월1회구매</Text></View>
-            }
-          </View> */}
         </View>
       </View>
     </TouchableOpacity>
@@ -403,11 +381,12 @@ function RenderItem({ item, openModal }) {
 ################################################################################################################ */}
 
 const _styles = StyleSheet.create({
-  container: {
+  categoryWrap: {
     flexDirection: 'column',
+    //height: height - 450,
+    marginTop: 20,
   },
   categoriesContainer: {
-    marginTop: 30,
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: 'flex-start',
@@ -429,7 +408,13 @@ const _styles = StyleSheet.create({
     };
   },
   itemContainer: {
-    paddingVertical: 15,
+    //paddingVertical: 15,
+    marginTop: 15,
+  },
+  itemWrap: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   tumbs: {
     width: 38,
@@ -447,8 +432,9 @@ const _styles = StyleSheet.create({
   },
   discountArea: {
     backgroundColor: '#FFF',
-    paddingVertical: 2,
+    paddingVertical: 1,
     borderRadius: 10,
+    width: 33,
   },
   discountRate: {
     fontFamily: 'Pretendard-Regular',
@@ -464,7 +450,7 @@ const _styles = StyleSheet.create({
   },
   price: {
     fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
+    fontSize: 22,
     color: '#D5CD9E',
     marginLeft: 4,
   },

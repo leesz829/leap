@@ -429,9 +429,9 @@ export const Profile = (props: Props) => {
           </View>
 
           <SpaceView mb={40} mt={20} viewStyle={commonStyle.paddingHorizontal20}>
-            <SpaceView mb={10}>
+            {/* <SpaceView mb={10}>
               <CommonBtn value={'개인정보 변경 및 관리'} type={'reNewGoBack'} borderRadius={5} onPress={btnChangePassword} />
-            </SpaceView>
+            </SpaceView> */}
 
             <SpaceView>
               <CommonBtn value={'휴면회원 전환하기'} type={'reNewGoBack'} borderRadius={5} onPress={btnMemberSleep} />
@@ -451,14 +451,15 @@ export const Profile = (props: Props) => {
           {/* </SpaceView> */}
 
         </ScrollView>
-        <SpaceView viewStyle={{height: height * 0.25}}>
-            <TouchableOpacity
-              style={_styles.logoutBtn}
-              onPress={logout}>
-              <Text style={_styles.logoutText}>로그아웃</Text>
-            </TouchableOpacity>
-          </SpaceView>
       </LinearGradient>
+
+      <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0,}}>
+        <TouchableOpacity
+          style={_styles.logoutBtn}
+          onPress={logout}>
+          <Text style={_styles.logoutText}>로그아웃</Text>
+        </TouchableOpacity>
+      </SpaceView>
     </>
   );
 };
@@ -467,6 +468,7 @@ const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
     paddingTop: 24,
+    //justifyContent: 'space-between',
   },
   profileContents: {
     paddingHorizontal: 20,
@@ -486,11 +488,11 @@ const _styles = StyleSheet.create({
     backgroundColor: '#262626',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 25,
+    paddingVertical: 13,
   },
   logoutText:  {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 19,
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 18,
     color: '#FFF',
   },
 });

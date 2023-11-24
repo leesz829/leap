@@ -18,6 +18,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import AsyncStorage from '@react-native-community/async-storage';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
+import { CommonText } from 'component/CommonText';
+
 
 
 interface Props {
@@ -237,74 +239,84 @@ export default function MatchingList(props: Props) {
 				end={{ x: 0, y: 1 }}
         style={_styles.wrap}
 			>
-        {isEmpty ? (
-          <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'} ]}>
-            <SpaceView mb={50} viewStyle={[layoutStyle.alignCenter]}>
-              <Text style={_styles.emptyText}>
-                {data.introSecondYn == 'Y' ? (
-                  <>
-                    오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
-                    <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드리는 프로필 카드는 {"\n"}매일 오후3시와 자정에 확인 가능합니다. 🎁
-                  </>
-                ) : (
-                  <>
-                    오후 3시에 한번 더 제공해드리는{"\n"}
-                    새로운 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>를 확인해 보세요!
-                  </>
-                )}
-              </Text>
 
-              <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
-                <Image source={IMAGE.logoIcon03} style={styles.iconSquareSize(230)} />
-              </View>
-
-              <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={styles.iconSquareSize(40)} /></View>
-              <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={styles.iconSquareSize(40)} /></View>
+        {!isEmpty ? (
+          <>
+            <SpaceView pb={150}>
+              <FlatList
+                ref={scrollRef}
+                data={data.matchList}
+                //renderItem={MatchRenderItem}
+                renderItem={(props) => {
+                  //console.log('props : ', JSON.stringify(props));
+                  const { item, index } = props;
+                  return (
+                    <>
+                      <MatchRenderItem item={item} fnDetail={goMatchDetail} />
+                    </>
+                  )
+                }}
+                //onScroll={handleScroll}
+                pagingEnabled
+                showsVerticalScrollIndicator={false}
+                decelerationRate="fast"
+                snapToInterval={height * 0.73 + 30}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={handleRefresh}
+                    tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
+                    //title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
+                    titleColor="#ff0000" // 텍스트 색상 변경
+                    colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
+                    progressBackgroundColor="#ffffff" >
+                  </RefreshControl>
+                }
+              />
+            </SpaceView>
+          </>
+        ) : (
+          <>
+            <SpaceView viewStyle={{width: width, height: height}}>
+              <SpaceView ml={20} viewStyle={{height:height / 2, alignItems: 'center', justifyContent:'flex-start', flexDirection: 'row'}}>
+                <Text style={{fontSize: 25, fontFamily: 'Pretendard-Regular', color: '#646467'}}>
+                  소개하여 드릴 <Text style={{fontSize: 30, color: '#BAFAFC', fontFamily:'Pretendard-Bold'}}>이성</Text>을{"\n"}준비중이에요!
+                  {'\n'}{'\n'}
+                  {data.introSecondYn == 'Y' ? (
+                    <>새로운 이성을 자정에{'\n'}다시 확인해 보세요!</>
+                  ) : (
+                    <>새로운 이성을 오후 3시에{'\n'} 다시 확인해 보세요!</>
+                  )}
+                </Text>
+                {/* <Image source={ICON.digitalClock} style={[styles.iconSize40, {marginTop: 25, marginLeft: 5}]} /> */}
+              </SpaceView>
             </SpaceView>
 
-            {/* {matchData.add_list?.length > 0 && 
-              <SpaceView mt={40} viewStyle={_styles.profileAddArea}>
-                <Text style={_styles.profileAddText}>20 패스로 열어볼 수 있는 프로필 카드가 더 준비되어 있어요.</Text>
+            {/* <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'} ]}>
+              <SpaceView mb={50} viewStyle={[layoutStyle.alignCenter]}>
+                <Text style={_styles.emptyText}>
+                  {data.introSecondYn == 'Y' ? (
+                    <>
+                      오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
+                      <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드리는 프로필 카드는 {"\n"}매일 오후3시와 자정에 확인 가능합니다. 🎁
+                    </>
+                  ) : (
+                    <>
+                      오후 3시에 한번 더 제공해드리는{"\n"}
+                      새로운 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>를 확인해 보세요!
+                    </>
+                  )}
+                </Text>
 
-                <TouchableOpacity onPress={() => { profileCardOpenPopup(); }} style={{width: '100%'}}>
-                  <Text style={_styles.profileAddBtn}>프로필 카드 열어보기</Text>
-                </TouchableOpacity>
+                <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                  <Image source={IMAGE.logoIcon03} style={styles.iconSquareSize(230)} />
+                </View>
+
+                <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={styles.iconSquareSize(40)} /></View>
+                <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={styles.iconSquareSize(40)} /></View>
               </SpaceView>
-            } */}
-          </View>
-        ) : (
-          <SpaceView pb={150}>
-            <FlatList
-              ref={scrollRef}
-              data={data.matchList}
-              //renderItem={MatchRenderItem}
-              renderItem={(props) => {
-                //console.log('props : ', JSON.stringify(props));
-                const { item, index } = props;
-                return (
-                  <>
-                    <MatchRenderItem item={item} fnDetail={goMatchDetail} />
-                  </>
-                )
-              }}
-              //onScroll={handleScroll}
-              pagingEnabled
-              showsVerticalScrollIndicator={false}
-              decelerationRate="fast"
-              snapToInterval={height * 0.73 + 30}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isRefreshing}
-                  onRefresh={handleRefresh}
-                  tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
-                  //title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
-                  titleColor="#ff0000" // 텍스트 색상 변경
-                  colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
-                  progressBackgroundColor="#ffffff" >
-                </RefreshControl>
-              }
-            />
-          </SpaceView>
+            </View> */}
+          </>
         )}
 
       </LinearGradient>
@@ -328,8 +340,6 @@ const MatchRenderItem = ({ item, fnDetail }) => {
 
   // 다음 이미지
   const nextImage = async () => {
-    console.log('nexti :::::: '  , imgList.length);
-
     if(currentImgIdx+1 < imgList.length && currentImgIdx < 2) {
       setCurrentImgIdx(currentImgIdx+1);
     }
