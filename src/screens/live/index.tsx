@@ -216,6 +216,7 @@ export const Live = () => {
             renderItem={RenderItem}
             onScroll={handleScroll}
           /> */}
+
           <View style={_styles.imgItemWrap}>
             <View style={_styles.mmbrStatusView}>
               <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
@@ -264,6 +265,7 @@ export const Live = () => {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
                 style={_styles.thumnailDimArea} />
+
               <Watermark value={memberBase?.phone_number}/>
             </SpaceView>
           </View>
@@ -282,7 +284,9 @@ export const Live = () => {
             </TouchableOpacity>
           </View>
 
-          {/* 인상 리스트 모달 */}
+          {/* #########################################################################################################################
+          ##### 인상 리스트 팝업
+          ######################################################################################################################### */}
           <Modal visible={liveModalVisible} style={{margin: 0}} transparent={true}>
             <LinearGradient
               colors={['rgba(9, 32, 50, 0.7)', 'rgba(52, 71, 86, 0.7)']}
@@ -292,10 +296,22 @@ export const Live = () => {
             >
             <SpaceView mt={300}>
               <TouchableOpacity onPress={() => openImpressPop('#웃는게 이뻐요.')}>
-                <Text style={_styles.faceModalText}>#웃는게 이뻐요.</Text>
+                <Text style={_styles.faceModalText}>#대화하고 싶은.</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
-                <Text style={_styles.faceModalText}>#눈이 이뻐요.</Text>
+                <Text style={_styles.faceModalText}>#티키타카 잘 될 것 같은.</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
+                <Text style={_styles.faceModalText}>#맛점 안부 묻고 싶은.</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
+                <Text style={_styles.faceModalText}>#취미 공유하고 싶은.</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
+                <Text style={_styles.faceModalText}>#데이트 하고 싶은.</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
+                <Text style={_styles.faceModalText}>#꿈구던 이상형.</Text>
               </TouchableOpacity>
             </SpaceView>
             <SpaceView mb={100}>
@@ -310,7 +326,9 @@ export const Live = () => {
             </LinearGradient>
           </Modal>
 
-          {/* 인상 선택 팝업 */}
+          {/* #########################################################################################################################
+          ##### 인상 선택 팝업
+          ######################################################################################################################### */}
           <Modal visible={isPopVisible} style={{margin: 0}} transparent={true}>
             <View style={modalStyle.modalBackground}>
               <View style={[modalStyle.modalStyle1, {overflow: 'hidden'}]}>
