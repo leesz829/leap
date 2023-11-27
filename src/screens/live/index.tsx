@@ -48,19 +48,18 @@ const { width, height } = Dimensions.get('window');
 export const Live = () => {
   const isFocus = useIsFocused();
   const { show } = usePopup(); // 공통 팝업
-  // 본인 데이터
-  const memberBase = useUserInfo();
+  const dispatch = useDispatch();
 
-  // 이미지 인덱스
-  const [page, setPage] = useState(0);
+  const memberBase = useUserInfo(); // 본인 데이터
 
-  // Live 팝업 Modal
-  const [liveModalVisible, setLiveModalVisible] = useState(false);
+  const [page, setPage] = useState(0); // 이미지 인덱스
+
+  const [liveModalVisible, setLiveModalVisible] = useState(false); // Live 팝업 Modal
   const [isPopVisible, setIsPopVisible] = useState(false);
 
-  // 로딩 상태 체크
-  const [isLoad, setIsLoad] = useState(false);
+  const [isLoad, setIsLoad] = useState(false); // 로딩 상태 체크
   const [isEmpty, setIsEmpty] = useState(false);
+  const [isClickable, setIsClickable] = useState(true); // 평가 확인 클릭 여부 함수
 
   // 선택 인상 코드
   const [pickFaceCode, setPickFaceCode] = useState('');
@@ -123,6 +122,7 @@ export const Live = () => {
   const liveMemberSeq = data.live_member_info.member_seq;
   const approvalProfileSeq = data.live_member_info?.approval_profile_seq;
 
+  // ####################################################################################### 라이브 등록
   const insertLiveMatch =async () => {
 
     try {
@@ -137,9 +137,18 @@ export const Live = () => {
 
       if(success) {
         console.log('111111111')
-        if (data.result_code != '0000') {
-          console.log(data.result_msg);
-          return false;
+        switch (data.result_code) {
+          case SUCCESS:
+            dispatch(myProfile());
+            setIsLoad(false);
+            setLiveModalVisible(false);
+            getLiveMatchTrgt();
+
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
+            setIsClickable(true);
+            break;
         }
         
         setIsLoad(false);
@@ -151,7 +160,7 @@ export const Live = () => {
       console.log(error);
       show({ content: '오류입니다. 관리자에게 문의해주세요.' });
     } finally {
-      
+      setIsPopVisible(false);
     }
   }
 
