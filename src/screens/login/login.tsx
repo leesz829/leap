@@ -404,8 +404,11 @@ export const Login01 = () => {
 
             {/* ############################################################### 타이틀 */}
             <SpaceView mb={100} pl={20} pr={20}>
-              <SpaceView>
-                <Image source={IMAGE.logoLeap} style={{width: 200, height: 57}} />
+              <SpaceView viewStyle={_styles.logoDescArea}>
+                <Text style={_styles.logoDesc}>Limeeted Edition Amuse Play</Text>
+              </SpaceView>
+              <SpaceView mt={20}>
+                <Image source={IMAGE.logoLeapTmon} style={{width: '100%', height: 90}} />
                 {/* <SpaceView ml={145}><Text style={_styles.loginTitle}>리<Text style={{fontSize:12}}>미티드</Text> 프<Text style={{fontSize:12}}>리미엄</Text></Text></SpaceView> */}
               </SpaceView>
             </SpaceView>
@@ -632,6 +635,17 @@ const _styles = StyleSheet.create({
     fontSize: 25,
     color: '#D5CD9E',
     //lineHeight: 38,
+  },
+  logoDescArea: {
+    backgroundColor: '#0EE9F1',
+    borderRadius: 50,
+    paddingVertical: 5,
+    width: '70%'
+  },
+  logoDesc: {
+    fontFamily: 'Pretendard-Regular',
+    color: '#FFF',
+    textAlign: 'center',
   },
   container: {
     paddingTop: 5,

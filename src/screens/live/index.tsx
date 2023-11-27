@@ -62,6 +62,11 @@ export const Live = () => {
   const [isLoad, setIsLoad] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
 
+  // 선택 인상 코드
+  const [pickFaceCode, setPickFaceCode] = useState('');
+
+  // 선택 인상 점수
+  const [pickProfileScore, setPickProfileScore] = useState('');
 
   // 라이브 관련 데이터
   const [data, setData] = useState<any>({
@@ -90,11 +95,17 @@ export const Live = () => {
   const [pickFace, setPickFace] = useState(''); // 선택한 인상
 
   // 인상 선택 팝업 열기
-  const openImpressPop = async (pick:string) => {
-    setLiveModalVisible(false);
-    setIsPopVisible(true);
-
+  const openImpressPop = async (pick:string, code:string, profileScore:string) => {
+    setPickFaceCode(code);
     setPickFace(pick);
+    setPickProfileScore(profileScore);
+
+    if(pick == 'SKIP') {
+      insertLiveMatch();
+    }else {
+      setLiveModalVisible(false);
+      setIsPopVisible(true);
+    }
   };
 
   // 인상 선택 팝업 끄기
@@ -108,6 +119,41 @@ export const Live = () => {
     let index = Math.floor(contentOffset.x / (width - 80));
     setPage(index);
   };
+
+  const liveMemberSeq = data.live_member_info.member_seq;
+  const approvalProfileSeq = data.live_member_info?.approval_profile_seq;
+
+  const insertLiveMatch =async () => {
+
+    try {
+      const body = {
+        profile_score: pickProfileScore,
+        face_code: pickFaceCode,
+        member_seq: liveMemberSeq,
+        approval_profile_seq: approvalProfileSeq,
+      };
+
+      const { success, data } = await regist_profile_evaluation(body);
+
+      if(success) {
+        console.log('111111111')
+        if (data.result_code != '0000') {
+          console.log(data.result_msg);
+          return false;
+        }
+        
+        setIsLoad(false);
+        setIsEmpty(false); 
+      }else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.log(error);
+      show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+    } finally {
+      
+    }
+  }
 
   // ####################################################################################### LIVE 평가 회원 조회
   const getLiveMatchTrgt = async () => {
@@ -272,7 +318,10 @@ export const Live = () => {
 
           {/* 최하단 스킵, 인상 선택 버튼 */}
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <TouchableOpacity style={[_styles.bottomBtn,{width: width * 0.36, marginRight: 10}]}>
+            <TouchableOpacity 
+              style={[_styles.bottomBtn,{width: width * 0.36, marginRight: 10}]}
+              onPress={() => openImpressPop('SKIP', 'FACE_00', '6')}
+            >
               <Text style={[_styles.bottomTxt, {color: '#656565'}]}>스킵</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -295,23 +344,23 @@ export const Live = () => {
               style={_styles.liveModalBackground}
             >
             <SpaceView mt={300}>
-              <TouchableOpacity onPress={() => openImpressPop('#웃는게 이뻐요.')}>
+              <TouchableOpacity onPress={() => openImpressPop('#대화하고 싶은.', 'FACE_01', '7')}>
                 <Text style={_styles.faceModalText}>#대화하고 싶은.</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
+              <TouchableOpacity onPress={() => openImpressPop('#티키타카 잘 될 것 같은.', 'FACE_02', '7')}>
                 <Text style={_styles.faceModalText}>#티키타카 잘 될 것 같은.</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
+              <TouchableOpacity onPress={() => openImpressPop('#맛점 안부 묻고 싶은.', 'FACE_03', '7')}>
                 <Text style={_styles.faceModalText}>#맛점 안부 묻고 싶은.</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
+              <TouchableOpacity onPress={() => openImpressPop('#취미 공유하고 싶은.', 'FACE_04', '7')}>
                 <Text style={_styles.faceModalText}>#취미 공유하고 싶은.</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
+              <TouchableOpacity onPress={() => openImpressPop('#데이트 하고 싶은.', 'FACE_05', '9')}>
                 <Text style={_styles.faceModalText}>#데이트 하고 싶은.</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#눈이 이뻐요.')}>
-                <Text style={_styles.faceModalText}>#꿈구던 이상형.</Text>
+              <TouchableOpacity onPress={() => openImpressPop('#꿈꾸던 이상형.', 'FACE_06', '10')}>
+                <Text style={_styles.faceModalText}>#꿈꾸던 이상형.</Text>
               </TouchableOpacity>
             </SpaceView>
             <SpaceView mb={100}>
@@ -360,10 +409,12 @@ export const Live = () => {
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        style={[_styles.impressBtn, {backgroundColor: '#FFDD00', borderTopRightRadius: 10, borderBottomRightRadius: 10}]}>
-                      <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
-                        확인하기
-                      </CommonText>
+                        style={[_styles.impressBtn, {backgroundColor: '#FFDD00', borderTopRightRadius: 10, borderBottomRightRadius: 10}]}
+                        onPress={insertLiveMatch}
+                      >
+                        <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
+                          확인하기
+                        </CommonText>
                       </TouchableOpacity>
                     </View>
                   </SpaceView>

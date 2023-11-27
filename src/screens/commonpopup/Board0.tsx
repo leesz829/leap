@@ -145,7 +145,7 @@ export const Board0 = (props: Props) => {
 			>		
 				<ScrollView showsVerticalScrollIndicator={false}>
 
-					<SpaceView mt={30} mb={100}>
+					<SpaceView mt={30} mb={150}>
 						{noticeList.map((item, index) => (
 							<>
 								<SpaceView mb={10} key={item.board_seq}>

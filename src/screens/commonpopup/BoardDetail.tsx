@@ -68,43 +68,43 @@ export const BoardDetail = (props: Props) => {
 				end={{ x: 0, y: 1 }}
 				style={{paddingHorizontal: 20, minHeight: height}}
 			>		
-				<ScrollView style={{marginTop: 40, marginBottom: 70}}>
-          <View style={{flexDirection:'row'}}>
-            {boardData?.board_type == 'EVENT' &&
-              <Text style={_styles.iconType('#AFF20E')}>이벤트</Text>
-            }
-            {(boardData?.board_type == 'RECENT_NEWS' && boardData?.board_sub_type == 'NOTICE') &&
-              <Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
-            }
-            {(boardData?.board_type == 'RECENT_NEWS' && boardData?.board_sub_type == 'GUIDE') &&
-              <Text style={_styles.iconType('#FFDD00')}>가이드</Text>
-            }
-          </View>
+				<ScrollView style={{marginTop: 40, marginBottom: 170}}>
+					<View style={{flexDirection:'row'}}>
+						{boardData?.board_type == 'EVENT' &&
+						<Text style={_styles.iconType('#AFF20E')}>이벤트</Text>
+						}
+						{(boardData?.board_type == 'RECENT_NEWS' && boardData?.board_sub_type == 'NOTICE') &&
+						<Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
+						}
+						{(boardData?.board_type == 'RECENT_NEWS' && boardData?.board_sub_type == 'GUIDE') &&
+						<Text style={_styles.iconType('#FFDD00')}>가이드</Text>
+						}
+					</View>
 
-          {boardData?.board_seq && (
-            <View>
-              <SpaceView mt={10} viewStyle={_styles.descArea}>
-                <CommonText textStyle={{fontSize: 16}} type={'h5'} color={'#D5CD9E'}>{boardData?.title}</CommonText>
-              </SpaceView>
-              <CommonText textStyle={_styles.dateText} type={'h6'} color={'#445561'}>{boardData?.reg_dt}</CommonText>
-              <CommonText textStyle={{fontSize: 16}} type={'h5'} color={'#D5CD9E'}>{boardData?.content}</CommonText>
-                
-              {boardData?.board_type == 'EVENT' &&
-                <SpaceView mt={20}>
-                  <CommonBtn 
-                    value={'바로가기'} 
-                    type={'reNewGoBack'}
-                    width={'100%'}
-                    height={35}
-                    fontSize={13}
-                    borderRadius={5}
-                    onPress={() => {
-                      goLink('EVENT');
-                  }} />
-                </SpaceView>
-              }
-            </View>
-          )}
+					{boardData?.board_seq && (
+						<View>
+						<SpaceView mt={10} viewStyle={_styles.descArea}>
+							<CommonText textStyle={{fontSize: 16}} type={'h5'} color={'#D5CD9E'}>{boardData?.title}</CommonText>
+						</SpaceView>
+						<CommonText textStyle={_styles.dateText} type={'h6'} color={'#445561'}>{boardData?.reg_dt}</CommonText>
+						<CommonText textStyle={{fontSize: 16}} type={'h5'} color={'#D5CD9E'}>{boardData?.content}</CommonText>
+							
+						{boardData?.board_type == 'EVENT' &&
+							<SpaceView mt={20}>
+							<CommonBtn 
+								value={'바로가기'} 
+								type={'reNewGoBack'}
+								width={'100%'}
+								height={35}
+								fontSize={13}
+								borderRadius={5}
+								onPress={() => {
+								goLink('EVENT');
+							}} />
+							</SpaceView>
+						}
+						</View>
+					)}
 
 				</ScrollView>
 			</LinearGradient>

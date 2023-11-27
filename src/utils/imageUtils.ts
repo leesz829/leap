@@ -278,6 +278,7 @@ export const IMAGE = {
   popupLogo: require('assets/img/popup_logo.png'),
   clothesImg: require('assets/img/clothes.png'),
   logoLeap: require('assets/img/logo_leap.png'),
+  logoLeapTmon: require('assets/img/logo_leap_tmon.png'),
 };
 
 export const PROFILE_IMAGE = {

@@ -151,7 +151,7 @@ export const Message = (props: Props) => {
           		end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
         	>
-				<ScrollView style={{marginBottom: 60}}>
+				<ScrollView style={{marginBottom: 200}}>
           			<SpaceView pt={40} pl={25} pr={25} pb={25}>
             			<Text style={_styles.mainTitle}>
               			<Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>님에게{'\n'}전달해드리는 소식</Text>
