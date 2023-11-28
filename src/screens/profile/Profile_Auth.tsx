@@ -493,7 +493,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 					<SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
 						{isEmptyData(imgMngData.img_file_path) && (
 						<SpaceView mr={10}>
-							<Image source={findSourcePathLocal(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
+							<Image source={findSourcePath(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
 						</SpaceView>
 						)}
 						<SpaceView>
@@ -523,7 +523,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 ##### 인증 사진 렌더링
 ########################################################################################## */
 function AuthImageRender({ index, imgData, imgSelectedFn, mngModalFn }) {
-	const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+	const imgUrl = findSourcePath(imgData?.img_file_path); // 이미지 경로
 
 		return (
 		<>

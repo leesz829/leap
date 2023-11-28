@@ -305,7 +305,7 @@ export const SignUp_AddInfo = (props : Props) => {
 			>
 				<ScrollView showsHorizontalScrollIndicator={false}>
 					<SpaceView viewStyle={_styles.titleContainer}>
-						<Image source={findSourcePathLocal(mstImgPath)} style={_styles.addInfoImg} />
+						<Image source={findSourcePath(mstImgPath)} style={_styles.addInfoImg} />
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
 					</SpaceView>
 

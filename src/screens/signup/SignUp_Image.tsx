@@ -345,7 +345,7 @@ export const SignUp_Image = (props: Props) => {
 
   /* ########################################################################################## 프로필 사진 아이템 렌더링 */
   function ProfileImageItemNew({ index, imgData, imgSelectedFn }) {
-    const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+    const imgUrl = findSourcePath(imgData?.img_file_path); // 이미지 경로
     const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
     const imgStatus = imgData?.status; // 이미지 상태
     
@@ -384,7 +384,7 @@ export const SignUp_Image = (props: Props) => {
 
   /* ########################################################################################## 대표사진 영역 렌더링 */
 function MasterImageArea({ index, imgData, mngModalFn }) {
-  const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
+  const imgUrl = findSourcePath(imgData?.img_file_path); // 이미지 경로
   const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
   const imgStatus = imgData?.status; // 이미지 상태
 
@@ -540,7 +540,7 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
           <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
             {isEmptyData(imgMngData.img_file_path) && (
               <SpaceView mr={10}>
-                <Image source={findSourcePathLocal(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
+                <Image source={findSourcePath(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
               </SpaceView>
             )}
             <SpaceView>

@@ -307,7 +307,7 @@ export const Approval = (props: Props) => {
                 resizeMode="cover"
                 resizeMethod="scale"
                 style={_styles.profileImg}
-                source={findSourcePathLocal(apprData.mstImgPath)}
+                source={findSourcePath(apprData.mstImgPath)}
               />
           </SpaceView>
 
