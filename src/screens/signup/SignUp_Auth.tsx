@@ -49,7 +49,7 @@ export const SignUp_Auth = (props : Props) => {
 	const [currentAuthCode, setCurrentAuthCode] = React.useState('JOB'); // 현재 인증 코드
 	//const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
 	const [authList, setAuthList] = React.useState([]); // 인증 목록
-	
+
 	const [isMod, setIsMod] = React.useState({status: false}); // 수정 여부
 	
 	const authInfoArr = [
@@ -94,89 +94,86 @@ export const SignUp_Auth = (props : Props) => {
 			saveAuth(false, _authCode, _authDetailList, _authComment, _imgDelSeqStr);
 		}
 	};
-  
+
 	// ############################################################################# 인증 정보 조회
 	const getAuth = async () => {
 	  const body = {
-		member_seq: memberSeq,
+		  member_seq: memberSeq,
 	  };
 	  try {
-		const { success, data } = await get_member_auth_list(body);
-		if (success) {
-		  switch (data.result_code) {
-			case SUCCESS:
-			  if(isEmptyData(data.auth_list)) {
-				setAuthList(data?.auth_list);
-			  }
-  
-			  break;
-			default:
-			  show({
-				content: '오류입니다. 관리자에게 문의해주세요.',
-				confirmCallback: function () {},
-			  });
-			  break;
-		  }
-		} else {
-		  show({
-			content: '오류입니다. 관리자에게 문의해주세요.',
-			confirmCallback: function () {},
-		  });
-		}
+      const { success, data } = await get_member_auth_list(body);
+      if (success) {
+        switch (data.result_code) {
+        case SUCCESS:
+          if(isEmptyData(data.auth_list)) {
+            setAuthList(data?.auth_list);
+          }
+          break;
+        default:
+          show({
+            content: '오류입니다. 관리자에게 문의해주세요.',
+            confirmCallback: function () {},
+          });
+          break;
+        }
+      } else {
+        show({
+          content: '오류입니다. 관리자에게 문의해주세요.',
+          confirmCallback: function () {},
+        });
+      }
 	  } catch (error) {
-		console.log(error);
+		  console.log(error);
 	  } finally {
-		setIsLoading(false);
+		  setIsLoading(false);
 	  }
 	};
-  
+
+console.log(authList[0].member_auth_seq)
+
 	// ############################################################################# 인증 저장
 	const saveAuth = async (isTab:boolean, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
-  
-	  // 중복 클릭 방지 설정
+    // 중복 클릭 방지 설정
 	  if(isClickable) {
-		setIsClickable(false);
-		setIsLoading(true);
-  
-		const body = {
-			member_seq: memberSeq,
-			file_list: _authDetailList,
-			auth_code: _authCode,
-			auth_comment: _authComment,
-			img_del_seq_str: _imgDelSeqStr,
-		};
-		try {
-		  const { success, data } = await join_save_profile_auth(body);
-		  if (success) {
-			switch (data.result_code) {
-			  case SUCCESS:
-				if(isTab == false) {
-					navigation.navigate(ROUTES.APPROVAL, {
-						memberSeq: memberSeq,
-					});
-				}else {
-					getAuth();
-				}
+      setIsClickable(false);
+      setIsLoading(true);
+    
+      const body = {
+        member_seq: memberSeq,
+        file_list: _authDetailList,
+        auth_code:   _authCode,
+        auth_comment: _authComment,
+        img_del_seq_str: _imgDelSeqStr,
+      };
+      try {
+        const { success, data } = await join_save_profile_auth(body);
+        if (success) {
+          switch (data.result_code) {
+            case SUCCESS:
+            if(isTab == false) {
+              navigation.navigate(ROUTES.APPROVAL, {
+                memberSeq: memberSeq,
+              });
+            }else {
+              getAuth();
+            }
 
-				//getAuth();
-				break;
-			  default:
-				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-				break;
-			}
-		  } else {
-			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-		  }
-		} catch (error) {
-		  console.log(error);
-		} finally {
-		  setIsClickable(true);
-		  setIsLoading(false);
-		};
+            break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      };
 	  }
 	};
-
-	
 
 	// ############################################################ 최초 실행
 	React.useEffect(() => {
@@ -376,7 +373,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 		}
 
 	}, [_selectedAuthCode]);
-	
+
 	return (
 		<>
 			<LinearGradient
@@ -387,7 +384,8 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 			>
 				<ScrollView style={{marginBottom: 300}}  showsVerticalScrollIndicator={false}>
 					<View>
-						{isEmptyData(_authStatus) && (
+						{/* {isEmptyData(_authStatus) && isEmptyData(authDetailList) && ( */}
+            {isEmptyData(_authStatus) && (
 							<View style={_styles.authBoxStatus}>
 								<Text style={_styles.statusText(_authStatus)}>
 									{_authStatus == 'PROGRESS' && '심사중'}

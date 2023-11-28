@@ -633,7 +633,8 @@ const _styles = StyleSheet.create({
     backgroundColor: '#FFDD00',
     borderRadius: 5,
     paddingVertical: 12,
-    marginBottom: 15
+    marginBottom: 15,
+    overflow: 'hidden',
   },
   initBtn: {
     fontFamily: 'Pretendard-Light',

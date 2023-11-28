@@ -215,9 +215,6 @@ export const SignUp_Introduce = (props : Props) => {
 
 					<SpaceView mt={50}>
 						{interviewList.map((item, index) => {
-
-							console.log('item :::::: ',  item);
-
 							return isEmptyData(item?.common_code) && (
 								<>
 									<SpaceView mb={15}>
