@@ -129,10 +129,16 @@ export const SignUp_Auth = (props : Props) => {
 	  }
 	};
 
-console.log(authList[0].member_auth_seq)
-
 	// ############################################################################# 인증 저장
-	const saveAuth = async (isTab:boolean, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
+	const saveAuth = async (isTab:boolean, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {    
+    // 데이터 없을 시 저장 방지
+    if(!_authDetailList.length && !isEmptyData(_imgDelSeqStr) && !isEmptyData(_authComment)) {
+      navigation.navigate(ROUTES.APPROVAL, {
+        memberSeq: memberSeq,
+      });
+      return;
+    };
+
     // 중복 클릭 방지 설정
 	  if(isClickable) {
       setIsClickable(false);
@@ -384,8 +390,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 			>
 				<ScrollView style={{marginBottom: 300}}  showsVerticalScrollIndicator={false}>
 					<View>
-						{/* {isEmptyData(_authStatus) && isEmptyData(authDetailList) && ( */}
-            {isEmptyData(_authStatus) && (
+						{((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
 							<View style={_styles.authBoxStatus}>
 								<Text style={_styles.statusText(_authStatus)}>
 									{_authStatus == 'PROGRESS' && '심사중'}
@@ -905,7 +910,6 @@ function AuthMaterialRender({ authCode }) {
           </View>
         </>
       )}
-
 		</>
 	)
 };

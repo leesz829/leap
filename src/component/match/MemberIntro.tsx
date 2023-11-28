@@ -14,6 +14,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 const { width, height } = Dimensions.get('window');
 
 export default function MemberIntro({ memberData, isEditBtn, isNoDataArea, faceList }) {
+  console.log('faceList:::', isEmptyData(faceList));
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -47,7 +48,7 @@ export default function MemberIntro({ memberData, isEditBtn, isNoDataArea, faceL
             end={{ x: 1, y: 1 }}
             style={_styles.introWrap}
           >
-            {faceList.length > 0 &&
+            {isEmptyData(faceList) &&
               <SpaceView>
                 <SpaceView mb={5} viewStyle={{flexDirection: 'row'}}>
                   <SpaceView viewStyle={_styles.faceArea}>

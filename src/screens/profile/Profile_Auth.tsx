@@ -20,6 +20,7 @@ import { isEmptyData, imagePickerOpen } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
+import { CommonText } from 'component/CommonText';
 
 
 /* ################################################################################################################
@@ -398,9 +399,9 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView contentContainerStyle={{height: height * 1.2}} showsVerticalScrollIndicator={false}>
+				<ScrollView style={{marginBottom: 300}} showsVerticalScrollIndicator={false}>
 					<View>
-						{isEmptyData(_authStatus) && (
+            {((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
 							<View style={_styles.authBoxStatus}>
 								<Text style={_styles.statusText(_authStatus)}>
 									{_authStatus == 'PROGRESS' && '심사중'}
@@ -565,28 +566,361 @@ function AuthMaterialRender({ authCode }) {
 	
 	return (
 		<>
-			<View style={_styles.authInfoContainer}>
-				<View style={[_styles.authInfoBox, {backgroundColor: '#3D4348'}]}>
-					<Text style={_styles.authInfoTitle}>레벨</Text>
-					<Text style={_styles.authInfoTitle}>연봉</Text>
-					<Text style={_styles.authInfoTitle}>연소득</Text>
-				</View>
-				<View style={_styles.authInfoBox}>
-					<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>1</Text>
-					<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>3,000</Text>
-					<Text style={_styles.authInfoSubTitle}>4,000</Text>
-				</View>
-				<View style={_styles.authInfoBox}>
-					<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>2</Text>
-					<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>5,000</Text>
-					<Text style={_styles.authInfoSubTitle}>6,000</Text>
-				</View>
-				<View style={_styles.authInfoBox}>
-					<Text style={[_styles.authInfoSubTitle, {marginLeft: 10}]}>3</Text>
-					<Text style={[_styles.authInfoSubTitle, {marginLeft: 15}]}>6,000</Text>
-					<Text style={_styles.authInfoSubTitle}>7,000</Text>
-				</View>
-			</View>
+      {authCode == 'JOB' && (
+        <>
+          <SpaceView mt={20} mb={12}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>직업 심사 기준</CommonText>
+            </View>
+          </SpaceView>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>사기업</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>중소기업, 중견기업, 대기업</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>공무원</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>국내 모든 공무 직종</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>전문직</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>의료인, 법조인, 약사, 수의사, 회계, 세무, 무역, 부동산, 각종 기술사 등</Text>
+          </View>
+          <SpaceView mb={12} mt={20}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>세부 기준</CommonText>
+            </View>
+          </SpaceView>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>사기업</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>사원급, 과장급, 임원급, 대표</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>공무원</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>공무원 급수에 따라 차등하여 레벨 부여</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>전문직</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>운영 내규에 따라 차등하여 레벨 부여</Text>
+          </View>
+
+          <SpaceView mb={12} mt={13}>
+            <View style={styles.dotTextContainer}>
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>※ 개인사업자는 내규에 따라 별도 심사 가능</CommonText>
+            </View>
+          </SpaceView>
+        </>
+      )}
+
+      {authCode == 'EDU' && (
+        <>
+          <SpaceView mt={20} mb={12}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>THE(세계 대학 순위)에서 최근에 발표한 세계대학 순위에{'\n'}기초하여 학력 레벨이 부여됩니다.</CommonText>
+            </View>
+          </SpaceView>
+          <SpaceView mb={12}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>학력 심사 기준</CommonText>
+            </View>
+          </SpaceView>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 5</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 80점 이상</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 4</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 70점 이상</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 3</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 50~70점</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 2</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 30~50점</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 1</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 30점 미만</Text>
+          </View>
+          <SpaceView mb={12} mt={20}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: 'FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>세부 기준</CommonText>
+            </View>
+          </SpaceView>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>일반</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>학사 -  석사 - 박사에 따라 차등하여 레벨 가산</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>특수</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>의대, 법대, 약대, 교대, 사범대, 예체능 등 별도 레벨 가산</Text>
+          </View>
+
+          <SpaceView mb={12} mt={13}>
+            <View style={styles.dotTextContainer}>
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>※ THE 기준 외 국내외 대학은 내규에 따라 별도 심사 가능</CommonText>
+            </View>
+          </SpaceView>
+        </>
+      )}
+
+      {authCode == 'INCOME' && (
+        <>
+          <SpaceView mt={20}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>근로소득자 : 원청징수영수증 또는 법인 직인이 날인된 연봉 계약서</CommonText>
+            </View>
+          </SpaceView>
+          <SpaceView mt={10}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>법인 및 개인사업자 : 소득금액증명원, 부가가치세증명원</CommonText>
+            </View>
+          </SpaceView>
+          <SpaceView mt={10} mb={12}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>소득 심사 기준(단위: 만원)</CommonText>
+            </View>
+          </SpaceView>
+          <View style={[_styles.rowStyle, _styles.rowHeader]}>
+            <Text style={[_styles.rowTextLeft, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>구분</Text>
+            <Text style={[_styles.rowTextRight, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>연소득</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 1</Text>
+            <Text style={_styles.rowTextRight}>3,000</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 2</Text>
+            <Text style={_styles.rowTextRight}>5,000</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 3</Text>
+            <Text style={_styles.rowTextRight}>7,000</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 4</Text>
+            <Text style={_styles.rowTextRight}>10,000</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 5</Text>
+            <Text style={_styles.rowTextRight}>20,000</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 6</Text>
+            <Text style={_styles.rowTextRight}>50,000</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 7</Text>
+            <Text style={_styles.rowTextRight}>100,000</Text>
+          </View>
+        </>
+      )}
+
+      {authCode == 'ASSET' && 
+        <>
+          <SpaceView mt={20} viewStyle={{width: '96%'}}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>현금 또는 부동산 자산 중 1가지를 선택하여 증빙 자료를 올려주세요. 단, 2가지 모두 충족하시는 경우 한 단계 높은 레벨이 부여됩니다.(최대 7레벨)</CommonText>
+            </View>
+          </SpaceView>
+          <SpaceView mt={10} mb={12}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>자산 심사 기준(단위: 억원)</CommonText>
+            </View>
+          </SpaceView>
+          <View style={[_styles.rowStyle, _styles.rowHeader]}>
+            <Text style={[_styles.rowTextLeft, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>구분</Text>
+            <Text style={[_styles.rowTextCenter, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>현금</Text>
+            <Text style={[_styles.rowTextRight, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>부동산</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 1</Text>
+            <Text style={_styles.rowTextCenter}>1</Text>
+            <Text style={_styles.rowTextRight}>5</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 2</Text>
+            <Text style={_styles.rowTextCenter}>3</Text>
+            <Text style={_styles.rowTextRight}>10</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 3</Text>
+            <Text style={_styles.rowTextCenter}>5</Text>
+            <Text style={_styles.rowTextRight}>20</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 4</Text>
+            <Text style={_styles.rowTextCenter}>10</Text>
+            <Text style={_styles.rowTextRight}>30</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 5</Text>
+            <Text style={_styles.rowTextCenter}>30</Text>
+            <Text style={_styles.rowTextRight}>50</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 6</Text>
+            <Text style={_styles.rowTextCenter}>50</Text>
+            <Text style={_styles.rowTextRight}>100</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextLeft}>LV 7</Text>
+            <Text style={_styles.rowTextCenter}>100</Text>
+            <Text style={_styles.rowTextRight}>200</Text>
+          </View>
+        </>
+      }
+
+      {authCode == 'SNS' && (
+        <>
+          <SpaceView mt={20} mb={12}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>가장 높은 팔로워 수를 보유한 SNS 매체를 기준으로 레벨이 부여됩니다.</CommonText>
+            </View>
+          </SpaceView>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 1</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>500명 이상</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 2</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>1,000명 이상</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 3</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>2.500명 이상</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 4</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>5,000명 이상</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 5</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>1만명 이상</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 6</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>5만명 이상</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('40%')}>LV 7</Text>
+            <Text style={_styles.rowTextHalfRight('60%')}>10만명 이상</Text>
+          </View>
+        </>
+      )}
+
+      {authCode == 'VEHICLE' && (
+        <>
+          <SpaceView mt={20} mb={12} viewStyle={{width: '96%'}}>
+            <View style={styles.dotTextContainer}>
+              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
+              <CommonText
+                color={'#FFDD00'} 
+                fontWeight={'500'}
+                lineHeight={17}
+                type={'h5'}
+                textStyle={{marginTop: 4}}>증빙 자료로 제출한 자동차의 출고가에 따라 레벨이 부여됩니다.</CommonText>
+            </View>
+          </SpaceView>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('20%')}>LV 1</Text>
+            <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 2,000만원 이상의 차량</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('20%')}>LV 2</Text>
+            <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 4,000만원 이상의 차량</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('20%')}>LV 3</Text>
+            <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 7,000만원 이상의 고급 차량</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('20%')}>LV 4</Text>
+            <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 1억~2억원의 상당의 럭셔리카</Text>
+          </View>
+          <View style={_styles.rowStyle}>
+            <Text style={_styles.rowTextHalfLeft('20%')}>LV 5</Text>
+            <Text style={_styles.rowTextHalfRight('80%')}>슈퍼카 및 하이엔드급 럭셔리 차량</Text>
+          </View>
+        </>
+      )}
 		</>
 	)
 };
@@ -619,16 +953,17 @@ const _styles = StyleSheet.create({
 	},
 	authBoxTitle: (isOn: boolean) => {
 		return {
-			fontFamily: 'AppleSDGothicNeoB00',
+			fontFamily: 'Pretendard-Bold',
 			fontSize: 16,
 			color: '#D5CD9E',
 			textAlign: 'center',
 			paddingHorizontal: 20,
 			paddingVertical: 3,
-			borderRadius: 50,
+			borderRadius: Platform.OS == 'ios' ? 15 : 50,
 			borderWidth: 1,
 			borderColor: isOn ? '#FFFFFF' : '#D5CD9E',
 			backgroundColor: isOn ? '#FFFFFF' : 'transparent',
+      overflow: 'hidden',
 		};
 	},
 	authBoxStatus: {
@@ -648,13 +983,14 @@ const _styles = StyleSheet.create({
 		}
 
 		return {
-			fontFamily: 'AppleSDGothicNeoEB00',
+			fontFamily: 'Pretendard-Regular',
 			fontSize: 10,
 			color: _cr,
 			borderRadius: 5,
 			backgroundColor: '#FFF',
 			paddingVertical: 3,
 			paddingHorizontal: 10,
+      overflow: 'hidden',
 		};
 	},
 	contentsTitle: {
@@ -760,5 +1096,71 @@ const _styles = StyleSheet.create({
 			backgroundColor: !isMaster ? 'rgba(0, 0, 0, 0.5)' : 'transparent',
 		};
 	},
-
+	rowHeader: {
+		backgroundColor: '#3D4348',
+		borderTopLeftRadius: 15,
+		borderTopRightRadius: 15,
+		paddingHorizontal: 20,
+		marginTop: 10,
+	},
+	rowStyle: {
+		width: '100%',
+		borderStyle: 'solid',
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		paddingVertical: 5,
+		paddingHorizontal: 20,
+	},
+	rowTextLeft: {
+		fontFamily: 'Pretendard-Regular',
+		fontSize: 15,
+		lineHeight: 30,
+		letterSpacing: 0,
+		textAlign: 'left',
+		color: '#D5CD9E',
+		width: '33%',
+	},
+	rowTextCenter: {
+		fontFamily: 'Pretendard-Regular',
+		fontSize: 15,
+		lineHeight: 30,
+		letterSpacing: 0,
+		textAlign: 'center',
+		color: '#D5CD9E',
+		width: '33%',
+	},
+	rowTextRight: {
+		fontFamily: 'Pretendard-Regular',
+		fontSize: 15,
+		lineHeight: 30,
+		letterSpacing: 0,
+		textAlign: 'right',
+		color: '#D5CD9E',
+		width: '33%',
+	},
+	rowTextHalfLeft: (width:string) => {
+		return {
+		  fontFamily: 'Pretendard-Regular',
+		  fontSize: 15,
+		  lineHeight: 20,
+		  letterSpacing: 0,
+		  textAlign: 'left',
+		  color: '#D5CD9E',
+		  width: width,
+		  paddingVertical: 5,
+		};
+	},
+	rowTextHalfRight: (width:string) => {
+		return {
+		  fontFamily: 'Pretendard-Regular',
+		  fontSize: 15,
+		  lineHeight: 20,
+		  letterSpacing: 0,
+		  textAlign: 'left',
+		  color: '#D5CD9E',
+		  width: width,
+		  paddingVertical: 5,
+		};
+	},
 });
