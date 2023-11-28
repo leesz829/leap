@@ -9,7 +9,7 @@ import * as React from 'react';
 import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { usePopup } from 'Context';
-import { SUCCESS } from 'constants/reusltcode';
+import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { join_save_profile_add, get_member_introduce_guide } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
@@ -123,6 +123,9 @@ export const SignUp_Nickname = (props: Props) => {
                 nickname: nickname,
               });
               break;
+            case MEMBER_NICKNAME_DUP:
+                show({ content: '이미 사용하고 있는 닉네임 입니다.'});
+                break;
             default:
               show({ content: '오류입니다. 관리자에게 문의해주세요.' });
               break;

@@ -50,7 +50,17 @@ export const SignUp_Introduce = (props : Props) => {
 
 	const [interviewList, setInterviewList] = React.useState([]); // 인터뷰 목록
 
-
+  	// 추가 정보 데이터
+  	const [addData, setAddData] = React.useState({
+		height: '', // 키
+		business: '', // 직업1
+		job: '', // 직업2
+		form_body: '', // 체형
+		religion: '', // 종교
+		drinking: '', // 음주
+		smoking: '', // 흡연
+	});
+	
 	// ############################################################ 회원 소개 정보 조회
 	const getMemberIntro = async() => {
 		const body = {
@@ -72,6 +82,17 @@ export const SignUp_Introduce = (props : Props) => {
 						};
 						_interviewList.push(data);
 					});
+
+					setAddData({
+						height: data?.add_info?.height,
+						business: data?.add_info?.business,
+						job: data?.add_info?.job,
+						form_body: data?.add_info?.form_body,
+						religion: data?.add_info?.religion,
+						drinking: data?.add_info?.drinking,
+						smoking: data?.add_info?.smoking,
+					});
+
 					setInterviewList(_interviewList);
 					setIntroduceComment(data?.add_info?.introduce_comment);
 
@@ -109,6 +130,13 @@ export const SignUp_Introduce = (props : Props) => {
 				introduce_comment: introduceComment,
 				interview_list: interviewList,
 				join_status: 'INTRODUCE',
+				business: addData.business,
+				job: addData.job,
+				height: addData.height,
+				form_body: addData.form_body,
+				religion: addData.religion,
+				drinking: addData.drinking,
+				smoking: addData.smoking,
 			};
 			try {
 				const { success, data } = await join_save_profile_add(body);

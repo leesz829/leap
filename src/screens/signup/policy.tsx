@@ -123,22 +123,6 @@ export const Policy = (props: Props) => {
       }
     }); */
 
-    navigation.navigate({
-      name : ROUTES.SIGNUP_CHECK,
-      params : {
-        birthday: '19800714',
-        ci: 'test45',
-        name: '테스터45',
-        gender: 'W',
-        marketing_agree_yn: 'Y',
-        mobile: '01067888097',
-      }
-    });
-
-
-    return;
-
-
     if(!termsAgree) {
       show({ content: '이용약관에 동의해 주세요.' });
       return;
@@ -153,6 +137,18 @@ export const Policy = (props: Props) => {
       show({ content: '위치기반서비스 이용약관에 동의해 주세요.' });
       return;
     }
+
+    // navigation.navigate({
+    //   name : ROUTES.SIGNUP_CHECK,
+    //   params : {
+    //     birthday: '19800714',
+    //     ci: 'test45',
+    //     name: '테스터45',
+    //     gender: 'W',
+    //     marketing_agree_yn: 'Y',
+    //     mobile: '01067888097',
+    //   }
+    // });
 
     navigation.navigate({
       name : 'NiceAuth',

@@ -45,6 +45,7 @@ export const SignUp_AddInfo = (props : Props) => {
 	const mstImgPath = props.route.params?.mstImgPath; // 대표 사진 경로
 	const nickname = props.route.params?.nickname; // 닉네임
 
+
 	//const [value, setValue] = React.useState<any>(null);
 
 	// 추가 정보 데이터
@@ -56,6 +57,7 @@ export const SignUp_AddInfo = (props : Props) => {
 		religion: '', // 종교
 		drinking: '', // 음주
 		smoking: '', // 흡연
+		introduce_comment: '', // 자기소개
 	});
 
 	const [local, setLocal] = React.useState<any>('');
@@ -213,9 +215,6 @@ export const SignUp_AddInfo = (props : Props) => {
 			if(success) {
 				switch (data.result_code) {
 					case SUCCESS:
-
-						console.log('data?.add_info ::::: ' , data?.add_info);
-						
 						setAddData({
 							height: data?.add_info?.height,
 							business: data?.add_info?.business,
@@ -224,8 +223,10 @@ export const SignUp_AddInfo = (props : Props) => {
 							religion: data?.add_info?.religion,
 							drinking: data?.add_info?.drinking,
 							smoking: data?.add_info?.smoking,
-						})
-
+							introduce_comment: data?.add_info?.introduce_comment,
+						});
+						
+						getCommonCodeList(data?.add_info?.business,);
 						break;
 					default:
 						show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -259,10 +260,8 @@ export const SignUp_AddInfo = (props : Props) => {
 				drinking: addData.drinking,
 				smoking: addData.smoking,
 				join_status: '02',
+				introduce_comment: addData.introduce_comment,
 			};
-
-
-			console.log('body ::::::: ' , body);
 
 			try {
 				const { success, data } = await join_save_profile_add(body);
