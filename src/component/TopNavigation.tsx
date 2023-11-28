@@ -40,7 +40,7 @@ const TopNavigation: FC<Props> = (props) => {
   return (
     <>
       <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
+        colors={['#3D4348', '#3D4348']}
         style={{
           width: '100%',
           zIndex: 1,

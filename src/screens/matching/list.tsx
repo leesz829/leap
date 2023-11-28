@@ -436,7 +436,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                           }
 
                           return isEmptyData(i.slogan_name) && (
-                            <SpaceView mb={7} mr={5} viewStyle={_styles.authItemWrap}>
+                            <SpaceView key={'auth'+n} mb={7} mr={5} viewStyle={_styles.authItemWrap}>
                               <Image source={authIcon} style={styles.iconSquareSize(16)} />
                               <SpaceView ml={8}><Text style={_styles.faceText}>{i.slogan_name}</Text></SpaceView>
                             </SpaceView>

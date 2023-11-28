@@ -85,9 +85,13 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           <View>
             <Image style={_style.iconSize} source={isFocused ? ICON.profileYellow : ICON.profileGray} />
 
-            {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
+            {/* {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
               <View style={_style.newIcon} />
-            )}
+            )} */}
+
+            {isEmptyData(memberBase?.new_match_cnt) && memberBase?.msg_cnt > 0 &&
+              <View style={_style.iconArea}><Text style={_style.countText}>{memberBase?.new_match_cnt}</Text></View>
+            }
 
             {isEmptyData(memberBase?.storageRecMsgCd) && (
               <Animated.View style={[_style.storageLimitArea, storageDescStyle]}>
@@ -144,13 +148,15 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
     case 'Message': {
       return (
         <>
-          {isFocused ? <Image style={_style.iconSize} source={ICON.bellGold} /> : 
-            <Image style={_style.iconSize} source={ICON.bellGray} />
-          }
+          <SpaceView>
+            {isFocused ? <Image style={_style.iconSize} source={ICON.bellGold} /> : 
+              <Image style={_style.iconSize} source={ICON.bellGray} />
+            }
 
-          {memberBase?.msg_cnt != null && typeof memberBase?.msg_cnt != 'undefined' && memberBase?.msg_cnt > 0 &&
-            <View style={_style.iconArea}><Text style={_style.countText}>{memberBase?.msg_cnt}+</Text></View>
-          }
+            {isEmptyData(memberBase?.msg_cnt) && memberBase?.msg_cnt > 0 &&
+              <View style={_style.iconArea}><Text style={_style.countText}>{memberBase?.msg_cnt}</Text></View>
+            }
+          </SpaceView>
         </>
       );
     }
@@ -162,7 +168,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
               <Image style={_style.iconSize} source={ICON.cartGray} />
             }
 
-            {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
+            {/* {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
               <View style={_style.shopIconArea}><Text style={_style.newText}>NEW</Text></View>
             }
             {memberBase?.gender == 'W' && (
@@ -175,7 +181,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
                   <View style={_style.triangle}></View>
                 </Animated.View>
               </>
-            )}
+            )} */}
           </View>
         </>
       )
@@ -205,8 +211,8 @@ const _style = StyleSheet.create({
   },
   iconArea: {
     position: 'absolute',
-    top: 15,
-    right: 22,
+    top: 12,
+    right: -13,
   },
   countText: {
     backgroundColor: '#FFF',

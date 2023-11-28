@@ -208,18 +208,13 @@ export const Roby = (props: Props) => {
           });
 
           insertMemberPhoneBook(tmp_phone_book_arr.toString(), value);
-
-
-          console.log('000000000000000000000000');
         }).catch(error => {
           // 연락처 가져오기 실패
           console.log(error);
           setIsFriendMatch(true);
           insertMemberPhoneBook("", "Y");
-          console.log('11111111111111111111111111');
         });
       } else {
-        console.log('22222222222222222222222');
         setIsFriendMatch(true);
         show({ title: '아는 사람 제외', content: '기기에서 연락처 접근이 거부된 상태입니다. \n기기의 앱 설정에서 연락처 접근 가능한 상태로 변경해주세요.'});
         insertMemberPhoneBook("", "Y");
@@ -664,13 +659,13 @@ export const Roby = (props: Props) => {
                         <SpaceView mt={20}>
                           <Text style={{fontFamily: 'Pretendard-Regular', color: '#FFDD00'}}>대표 인상 TOP3</Text>
                         </SpaceView>
-                        <SpaceView mt={10} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <SpaceView mt={10} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                           {memberPeekData.faceLankList.map((item, index) => {
                             return index < 3 && (
                               <>
-                                <View key={'face' + index} style={[_styles.bestFaceContainer, {width: '33%', alignItems: 'center'}]}>
+                                <SpaceView key={'face' + index} mr={5} mb={7} viewStyle={[_styles.bestFaceContainer, {alignItems: 'center'}]}>
                                   <Text style={_styles.bestFaceText}>#{item?.face_code_name}</Text>
-                                </View>
+                                </SpaceView>
                               </>
                             )
                           })}
