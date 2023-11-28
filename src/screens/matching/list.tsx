@@ -242,7 +242,7 @@ export default function MatchingList(props: Props) {
 
         {!isEmpty ? (
           <>
-            <SpaceView pb={150}>
+            <SpaceView pb={190}>
               <FlatList
                 ref={scrollRef}
                 data={data.matchList}

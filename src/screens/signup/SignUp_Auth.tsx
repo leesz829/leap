@@ -149,9 +149,13 @@ export const SignUp_Auth = (props : Props) => {
 		  if (success) {
 			switch (data.result_code) {
 			  case SUCCESS:
-				navigation.navigate(ROUTES.APPROVAL, {
-				  memberSeq: memberSeq,
-				});
+				if(isTab == false) {
+					navigation.navigate(ROUTES.APPROVAL, {
+						memberSeq: memberSeq,
+					});
+				}else {
+					getAuth();
+				}
 
 				//getAuth();
 				break;
@@ -601,16 +605,17 @@ const _styles = StyleSheet.create({
 	},
 	authBoxTitle: (isOn: boolean) => {
 		return {
-			fontFamily: 'AppleSDGothicNeoB00',
+			fontFamily: 'Pretendard-Bold',
 			fontSize: 16,
 			color: '#D5CD9E',
 			textAlign: 'center',
 			paddingHorizontal: 20,
-			paddingVertical: 3,
+			paddingVertical: 5,
 			borderRadius: 50,
 			borderWidth: 1,
 			borderColor: isOn ? '#FFFFFF' : '#D5CD9E',
 			backgroundColor: isOn ? '#FFFFFF' : 'transparent',
+			overflow: 'hidden',
 		};
 	},
 	authBoxStatus: {
@@ -630,13 +635,14 @@ const _styles = StyleSheet.create({
 		}
 
 		return {
-			fontFamily: 'AppleSDGothicNeoEB00',
+			fontFamily: 'Pretendard-Regular',
 			fontSize: 10,
 			color: _cr,
 			borderRadius: 5,
 			backgroundColor: '#FFF',
 			paddingVertical: 3,
 			paddingHorizontal: 10,
+			overflow: 'hidden',
 		};
 	},
 	contentsTitle: {

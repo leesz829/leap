@@ -136,7 +136,6 @@ export const Live = () => {
       const { success, data } = await regist_profile_evaluation(body);
 
       if(success) {
-        console.log('111111111')
         switch (data.result_code) {
           case SUCCESS:
             dispatch(myProfile());

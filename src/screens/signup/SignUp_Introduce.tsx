@@ -163,7 +163,7 @@ export const SignUp_Introduce = (props : Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsVerticalScrollIndicator={false}>
+				<ScrollView style={{marginBottom: 80}} showsVerticalScrollIndicator={false}>
 					<SpaceView mt={20}>
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}프로필 소개 작성하기(선택)</Text>
 					</SpaceView>

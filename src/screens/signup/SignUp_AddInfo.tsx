@@ -330,7 +330,7 @@ export const SignUp_AddInfo = (props : Props) => {
 									onChangeText={(text) => setAddData({...addData, height: text})}
 									keyboardType="number-pad"
 									autoCapitalize={'none'}
-									style={_styles.optionText}
+									style={[_styles.optionText, {height: 30, width: 105}]}
 									maxLength={3}
 								/>
 							</View>

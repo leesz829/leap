@@ -436,7 +436,7 @@ export default function MatchDetail(props: Props) {
           <ScrollView style={{ flex: 1 }}>
               {data.profile_img_list.length > 0 && isLoad ? (
                 <>
-                  <SpaceView mb={100}>
+                  <SpaceView mb={140}>
                     
                     {/* ####################################################################################
                     ####################### 상단 영역
@@ -948,6 +948,7 @@ const _styles = StyleSheet.create({
       paddingHorizontal: ph,
       paddingVertical: 10,
       marginHorizontal: type == 'REQ' ? 5 : 0,
+      overflow: 'hidden',
     };
   },
   
