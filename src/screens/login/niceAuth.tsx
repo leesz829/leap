@@ -12,6 +12,7 @@ import { nice_auth, update_phone_number, create_temp_password } from 'api/models
 import { useUserInfo } from 'hooks/useUserInfo';
 import { myProfile } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
+import { isEmptyData } from 'utils/functions';
 
 
 /* ################################################################################################################
@@ -64,123 +65,95 @@ export const NiceAuth = (props: Props) => {
 									index: 1,
 									routes: [
 										{ name: ROUTES.LOGIN01 },
-										{
-											name: ROUTES.APPROVAL,
-											params: {
-												memberSeq: memberSeq,
-											}
-										}
+										{ name: ROUTES.APPROVAL, params: { memberSeq: memberSeq, }}
 									],
 								})
 							);
 						} else {
-							if (null != joinStatus) {
-								if (joinStatus == '01') {
+							if (isEmptyData(joinStatus)) {
+								if(joinStatus == 'PASSWORD') {
 									navigation.dispatch(
 										CommonActions.reset({
 											index: 1,
-											routes: [
+										  	routes: [
 												{ name: ROUTES.LOGIN01 },
-												{
-													name: ROUTES.SIGNUP_PASSWORD,
-													params: {
-														ci: dataJson.ci,
-													  	name: dataJson.name,
-														gender: gender,
-														mobile: dataJson.mobile,
-														birthday: dataJson.birthday,
-													  	memberSeq: memberSeq,
-													  	emailId: dataJson.email_id
-													}
-												  },
-												{
-													name: ROUTES.SIGNUP01,
-													params: {
-														memberSeq: memberSeq,
-														gender: gender,
-													}
-												}
+												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
+												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
 											],
 										})
 									);
-								} else if (joinStatus == '02') {
+								} else if(joinStatus == 'IMAGE') {
 									navigation.dispatch(
 										CommonActions.reset({
-											index: 1,
-											routes: [
+										  	index: 1,
+										  	routes: [
 												{ name: ROUTES.LOGIN01 },
-												{
-													name: ROUTES.SIGNUP_PASSWORD,
-													params: {
-														ci: dataJson.ci,
-													  	name: dataJson.name,
-														gender: gender,
-														mobile: dataJson.mobile,
-														birthday: dataJson.birthday,
-													  	memberSeq: memberSeq,
-													  	emailId: dataJson.email_id
-													}
-												  },
-												{
-													name: ROUTES.SIGNUP01,
-													params: {
-														memberSeq: memberSeq,
-														gender: gender,
-													}
-												},
-												{
-													name: ROUTES.SIGNUP02
-													, params: {
-														memberSeq: memberSeq,
-														gender: gender,
-													}
-												}
-											],
+												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
+												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
+												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+										  	],
 										})
 									);
-								} else if (joinStatus == '03' || joinStatus == '04') {
+								} else if(joinStatus == 'NICKNAME') {
 									navigation.dispatch(
 										CommonActions.reset({
-											index: 1,
-											routes: [
+										  	index: 1,
+										  	routes: [
 												{ name: ROUTES.LOGIN01 },
-												{
-													name: ROUTES.SIGNUP_PASSWORD,
-													params: {
-														ci: dataJson.ci,
-													  	name: dataJson.name,
-														gender: gender,
-														mobile: dataJson.mobile,
-														birthday: dataJson.birthday,
-													  	memberSeq: memberSeq,
-													  	emailId: dataJson.email_id
-													}
-												  },
-												{
-													name: ROUTES.SIGNUP01,
-													params: {
-														memberSeq: memberSeq,
-														gender: gender,
-													}
-												},
-												{
-													name: ROUTES.SIGNUP02
-													, params: {
-														memberSeq: memberSeq,
-														gender: gender,
-													}
-												},
-												{
-													name: ROUTES.SIGNUP03
-													, params: {
-														memberSeq: memberSeq,
-														gender: gender,
-														mstImgPath: mstImgPath,
-													}
-												}
-											],
+												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
+												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
+												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+                  								{ name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+										  	],
 										})
 									);
+								} else if(joinStatus == 'ADD') {
+									navigation.dispatch(
+										CommonActions.reset({
+										  	index: 1,
+										  	routes: [
+												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
+												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
+												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_INTEREST, params: { memberSeq: memberSeq, gender: gender, nickname: dataJson.nickname }},
+										  	],
+										})
+									);
+								} else if(joinStatus == 'INTEREST') {
+									navigation.dispatch(
+										CommonActions.reset({
+										  	index: 1,
+										  	routes: [
+												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
+												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
+												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_INTEREST, params: { memberSeq: memberSeq, gender: gender, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_INTRODUCE, params: { memberSeq: memberSeq, gender: gender, nickname: dataJson.nickname }},
+										  	],
+										})
+									);
+								} else if(joinStatus == 'INTRODUCE') {
+									navigation.dispatch(
+										CommonActions.reset({
+										  	index: 1,
+										  	routes: [
+												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
+												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
+												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_INTEREST, params: { memberSeq: memberSeq, gender: gender, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_INTRODUCE, params: { memberSeq: memberSeq, gender: gender, nickname: dataJson.nickname }},
+												{ name: ROUTES.SIGNUP_AUTH, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
+										  	],
+										})
+									);
+								} else if(joinStatus == 'AUTH') {
+									navigation.navigate(ROUTES.APPROVAL, { memberSeq: memberSeq });
 								}
 							}
 						}
@@ -239,13 +212,12 @@ export const NiceAuth = (props: Props) => {
 		// ########### 비밀번호 찾기
 		} else if(type == 'PW_SEARCH') {
 			let phoneNumberFmt = phoneNumber.replace(/-/g, "");
-			console.log('phoneNumberFmt ::::: ', phoneNumberFmt);
-
+			
 			if(phoneNumberFmt != dataJson.mobile) {
 				show({ 
 					content: '등록된 전화번호와 본인인증이 일치하지 않습니다.' ,
 					confirmCallback: async function() {
-						navigation.navigate('Login01');
+						navigation.navigate(ROUTES.LOGIN01);
 					}
 				});
 			} else {
@@ -316,7 +288,7 @@ export const NiceAuth = (props: Props) => {
 				show({
 					content: '임시 비밀번호가 메일로 전송되었습니다.\n로그인 후 비밀번호 변경 부탁드립니다.' ,
 					confirmCallback: async function() {
-						navigation.navigate('Login01');
+						navigation.navigate(ROUTES.LOGIN01);
 					}
 				});
 				break;

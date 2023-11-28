@@ -329,7 +329,7 @@ export const Profile1 = (props: Props) => {
               <LinearGradient
                 colors={['#ffffff', 'transparent']}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0.8 }}
                 style={_styles.imgDimArea} />
             </SpaceView>
           </>
@@ -465,12 +465,14 @@ export const Profile1 = (props: Props) => {
           </SpaceView>
 
           {/* ############################################################################################################# 자기 소개 영역 */}
-          <SpaceView pl={15} pr={15} mb={45} viewStyle={_styles.commentWrap}>
-            <IntroduceRender 
-              memberData={profileData?.member_info} 
-              isEditBtn={true}
-              comment={profileData?.member_add.introduce_comment} />
-          </SpaceView>
+          {isEmptyData(profileData?.member_add.introduce_comment) && (
+            <SpaceView pl={15} pr={15} mb={45} viewStyle={_styles.commentWrap}>
+              <IntroduceRender 
+                memberData={profileData?.member_info} 
+                isEditBtn={true}
+                comment={profileData?.member_add.introduce_comment} />
+            </SpaceView>
+          )}
 
           {/* ############################################################################################################# 프로필 인증 영역 */}
           <SpaceView pl={15} pr={15} mb={40}>
@@ -572,6 +574,7 @@ const _styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 3,
     paddingHorizontal: 10,
+    zIndex: 1,
   },
   mstMarkText: {
     fontFamily: 'Pretendard-Regular',
@@ -583,8 +586,8 @@ const _styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 200,
-    opacity: 0.9,
+    height: 130,
+    opacity: 0.5,
     borderRadius: 20,
   },
   imgStatusArea: {
