@@ -201,7 +201,7 @@ export const Profile_Introduce = (props: Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-200}}>
+				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-250}}>
 					<SpaceView mt={20} mb={30}>
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>님의{'\n'}프로필 정보 수정하기</Text>
 					</SpaceView>
@@ -278,7 +278,7 @@ export const Profile_Introduce = (props: Props) => {
 					</SpaceView>
 				</ScrollView>
 
-        <SpaceView mb={10} viewStyle={_styles.btnArea}>
+        <SpaceView mb={250} viewStyle={_styles.btnArea}>
           <SpaceView mt={10}>
             <CommonBtn
               value={'저장하기'}
@@ -353,7 +353,7 @@ const _styles = StyleSheet.create({
 		textAlign: 'right',
 	},
   btnArea: {
-    
+
   },
 
 });

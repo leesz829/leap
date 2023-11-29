@@ -8,8 +8,10 @@ import { Color } from 'assets/styles/Color';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmptyData } from 'utils/functions';
 import { ICON } from 'utils/imageUtils';
+import { STACK, ROUTES } from 'constants/routes';
 
 export default function InterviewRender({ title, isEditBtn, dataList }) {
+  const navigation = useNavigation<ScreenNavigationProp>();
 
   return (
     <>
@@ -29,21 +31,24 @@ export default function InterviewRender({ title, isEditBtn, dataList }) {
               <>
                 {e.answer != "" && e.answer != null && 
                   <>
-                    <SpaceView key={'interview_' + index} viewStyle={_styles.contentItemContainer}>
-                      <SpaceView mb={10} viewStyle={_styles.questionRow}>
-                        <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
-                      </SpaceView>
-                      <SpaceView viewStyle={_styles.answerRow}>
-                        <Text style={_styles.answerText}>"{e?.answer}"</Text>
+                    <SpaceView viewStyle={{width: '100%'}}>
+                      {(isEmptyData(isEditBtn) && isEditBtn) && (
+                        <TouchableOpacity 
+                          onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
+                          style={_styles.modBtn}>
+                          <Image source={ICON.squarePen} style={styles.iconSize16} />
+                          <Text style={_styles.modBtnText}>수정</Text>
+                        </TouchableOpacity>
+                      )}
+                      <SpaceView key={'interview_' + index} viewStyle={_styles.contentItemContainer}>
+                        <SpaceView mb={10} viewStyle={_styles.questionRow}>
+                          <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
+                        </SpaceView>
+                        <SpaceView viewStyle={_styles.answerRow}>
+                          <Text style={_styles.answerText}>"{e?.answer}"</Text>
+                        </SpaceView>
                       </SpaceView>
                     </SpaceView>
-                    
-                    {(isEmptyData(isEditBtn) && isEditBtn) && (
-                      <TouchableOpacity style={_styles.modBtn}>
-                        <Image source={ICON.squarePen} style={styles.iconSize16} />
-                        <Text style={_styles.modBtnText}>수정</Text>
-                      </TouchableOpacity>
-                    )}
                   </>
                 }
               </>

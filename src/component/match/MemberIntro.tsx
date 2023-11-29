@@ -14,7 +14,6 @@ import { useUserInfo } from 'hooks/useUserInfo';
 const { width, height } = Dimensions.get('window');
 
 export default function MemberIntro({ memberData, isEditBtn, isNoDataArea, faceList }) {
-  console.log('faceList:::', isEmptyData(faceList));
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
