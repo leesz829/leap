@@ -8,7 +8,6 @@ import type { FC } from 'react';
 import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { BasePopup } from 'screens/commonpopup/BasePopup';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -163,7 +162,7 @@ export function Wallet({ theme }) {
                 containerStyle={[_styles.tooltipDescContainer]}
                 popover={
                   <View style={[_styles.tooltipArea('royal'), ]}>
-                    <Text style={_styles.tooltipAreaText}>리미티드의 특수 재화.{'\n'}찐심을 보내는데 사용돼요.</Text>
+                    <Text style={_styles.tooltipAreaText}>리프의 특수 재화.{'\n'}찐심을 보내는데 사용돼요.</Text>
                   </View>
                 }>
 

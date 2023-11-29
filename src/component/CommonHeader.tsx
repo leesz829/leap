@@ -79,7 +79,7 @@ function CommonHeader({
       : navigation.dispatch(
           CommonActions.reset({
             index: 1,
-            routes: [{ name: ROUTES.LOGIN01 }],
+            routes: [{ name: ROUTES.LOGIN }],
           })
         );
   }
@@ -90,7 +90,7 @@ function CommonHeader({
         {isLogoType ? (
           <>
             <View style={{ ..._styles.headerLogoContainer}}>
-              <Image source={IMAGE.logoBanner} resizeMode={'cover'} style={{width: '100%', height: 43}} />
+              {/* <Image source={IMAGE.logoBanner} resizeMode={'cover'} style={{width: '100%', height: 43}} /> */}
             </View>
           </>
         ) : (

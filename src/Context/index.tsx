@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
-import { BasePopup } from 'screens/commonpopup/BasePopup';
-import { GuidePopup } from 'screens/commonpopup/GuidePopup';
-import { EventPopup } from 'screens/commonpopup/EventPopup';
-import { ResponsivePopup } from 'screens/commonpopup/ResponsivePopup';
-import { PromotionPopup } from 'screens/commonpopup/PromotionPopup';
-import { OpenProfilePopup } from 'screens/commonpopup/OpenProfilePopup';
+import { BasePopup } from 'screens/commonpopup/context/BasePopup';
+import { GuidePopup } from 'screens/commonpopup/context/GuidePopup';
+import { EventPopup } from 'screens/commonpopup/context/EventPopup';
+import { ResponsivePopup } from 'screens/commonpopup/context/ResponsivePopup';
+import { PromotionPopup } from 'screens/commonpopup/context/PromotionPopup';
+import { OpenProfilePopup } from 'screens/commonpopup/context/OpenProfilePopup';
 
 export const PopupContext = createContext({} as any);
 

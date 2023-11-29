@@ -1,5 +1,5 @@
 import { View, Image, StyleSheet, Text, Platform } from 'react-native';
-import { findSourcePath, ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import * as React from 'react';
 import { useProfileImg } from 'hooks/useProfileImg';
 import { useUserInfo } from 'hooks/useUserInfo';
@@ -73,9 +73,9 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
         )
       } else {
         if (isFocused) {
-          return <Image style={_style.iconSize} source={ICON.robyOn} />;
+          return <Image style={[_style.imgSize(isFocused)]} source={IMAGE.logoLeapTmon} resizeMode={'cover'} />;
         } else {
-          return <Image style={_style.iconSize} source={ICON.roby} />;
+          return <Image style={[_style.imgSize(isFocused)]} source={IMAGE.logoLeapTmon} resizeMode={'cover'} />;
         }
       };
     }
@@ -100,7 +100,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
                   <View style={_style.storageLimitTextArea(130)}><Text style={_style.storageText}>인증 레벨 30의 그 분이 등장 🤩</Text></View>
                 )}
                 {memberBase?.storageRecMsgCd == 'STR_REC_02' && (
-                  <View style={_style.storageLimitTextArea(195)}><Text style={_style.storageText}>리미티드가 드리는 절대 추천! 꼭 확인해 보세요 😍</Text></View>
+                  <View style={_style.storageLimitTextArea(195)}><Text style={_style.storageText}>리프가 드리는 절대 추천! 꼭 확인해 보세요 😍</Text></View>
                 )}
                 {memberBase?.storageRecMsgCd == 'STR_REC_03' && (
                   <View style={_style.storageLimitTextArea(160)}><Text style={_style.storageText}>럭셔리차 소유자분이 관심을 보내셨어요.</Text></View>
@@ -187,7 +187,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       )
     }
     default:
-      return <Image style={_style.iconSize} source={ICON.roby} />;
+      return <Image style={_style.iconSize} source={IMAGE.logoLeapTmon} />;
   }
 };
 

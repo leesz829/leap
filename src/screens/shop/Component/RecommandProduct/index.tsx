@@ -50,7 +50,7 @@ function RednerRecommend({ item, openModal }) {
   return (
     <TouchableOpacity style={styles.recommandItem} onPress={onPressItem}>
       <View style={styles.thumbImage} />
-      <Text style={styles.recommandTitle}>리미티드 기획상품</Text>
+      <Text style={styles.recommandTitle}>리프 기획상품</Text>
       <View style={styles.textContainer}>
         <Text style={styles.originPrice}>15,000</Text>
         <Text style={styles.salePrice}>7,500</Text>

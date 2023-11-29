@@ -65,7 +65,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   const images = [findSourcePath(item?.file_path + item?.file_name)];
 
   // 브랜드명
-  const brand_name = item?.brand_name != null ? item?.brand_name : '리미티드';
+  const brand_name = item?.brand_name != null ? item?.brand_name : '리프';
 
   // 상품명
   const prod_name = type == 'bm' ? item?.item_name : item?.prod_name;

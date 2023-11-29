@@ -64,7 +64,7 @@ export const NiceAuth = (props: Props) => {
 								CommonActions.reset({
 									index: 1,
 									routes: [
-										{ name: ROUTES.LOGIN01 },
+										{ name: ROUTES.LOGIN },
 										{ name: ROUTES.APPROVAL, params: { memberSeq: memberSeq, }}
 									],
 								})
@@ -76,7 +76,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 											index: 1,
 										  	routes: [
-												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.LOGIN },
 												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
 												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
 											],
@@ -87,7 +87,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 										  	index: 1,
 										  	routes: [
-												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.LOGIN },
 												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
 												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
 												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
@@ -99,7 +99,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 										  	index: 1,
 										  	routes: [
-												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.LOGIN },
 												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
 												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
 												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
@@ -112,7 +112,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 										  	index: 1,
 										  	routes: [
-												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.LOGIN },
 												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
 												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
 												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
@@ -126,7 +126,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 										  	index: 1,
 										  	routes: [
-												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.LOGIN },
 												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
 												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
 												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
@@ -141,7 +141,7 @@ export const NiceAuth = (props: Props) => {
 										CommonActions.reset({
 										  	index: 1,
 										  	routes: [
-												{ name: ROUTES.LOGIN01 },
+												{ name: ROUTES.LOGIN },
 												{ name: ROUTES.SIGNUP_PASSWORD, params: { ci: dataJson.ci, name: dataJson.name, gender: gender, mobile: dataJson.mobile, birthday: dataJson.birthday, memberSeq: memberSeq, emailId: dataJson.email_id }},
 												{ name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: gender, }},
 												{ name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: gender, mstImgPath: mstImgPath, nickname: dataJson.nickname }},
@@ -165,7 +165,7 @@ export const NiceAuth = (props: Props) => {
 									CommonActions.reset({
 										index: 1,
 										routes: [
-											{ name: ROUTES.LOGIN01 }
+											{ name: ROUTES.LOGIN }
 										],
 									})
 								);
@@ -178,7 +178,7 @@ export const NiceAuth = (props: Props) => {
 						CommonActions.reset({
 							index: 1,
 							routes: [
-								{ name: ROUTES.LOGIN01 }
+								{ name: ROUTES.LOGIN }
 								, {
 									name: ROUTES.SIGNUP_CHECK
 									, params: {
@@ -217,7 +217,7 @@ export const NiceAuth = (props: Props) => {
 				show({ 
 					content: '등록된 전화번호와 본인인증이 일치하지 않습니다.' ,
 					confirmCallback: async function() {
-						navigation.navigate(ROUTES.LOGIN01);
+						navigation.navigate(ROUTES.LOGIN);
 					}
 				});
 			} else {
@@ -288,7 +288,7 @@ export const NiceAuth = (props: Props) => {
 				show({
 					content: '임시 비밀번호가 메일로 전송되었습니다.\n로그인 후 비밀번호 변경 부탁드립니다.' ,
 					confirmCallback: async function() {
-						navigation.navigate(ROUTES.LOGIN01);
+						navigation.navigate(ROUTES.LOGIN);
 					}
 				});
 				break;

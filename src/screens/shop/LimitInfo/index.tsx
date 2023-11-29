@@ -85,7 +85,7 @@ export default function LimitInfo() {
           6월, 리밋샵 오픈!{'\n'}리밋 획득방법 안내
         </Text>
         <Text style={listHeader.subInfo}>
-          리미티드의 여성 회원은 특별하니까.{'\n'}지켜주고 싶은 마음이 담긴 선물 준비중!
+          리프의 여성 회원은 특별하니까.{'\n'}지켜주고 싶은 마음이 담긴 선물 준비중!
         </Text>
       </ImageBackground>
 
@@ -137,7 +137,7 @@ const listHeader = StyleSheet.create({
     marginTop: 20,
   },
   limitText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 13,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -146,7 +146,7 @@ const listHeader = StyleSheet.create({
     color: '#ffffff',
   },
   mainInfo: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 22,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -156,7 +156,7 @@ const listHeader = StyleSheet.create({
     marginTop: 10,
   },
   subInfo: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 13,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -179,7 +179,7 @@ const listHeader = StyleSheet.create({
     marginTop: 30,
   },
   tableHeaderText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 13,
     fontWeight: 'normal',
     fontStyle: 'normal',

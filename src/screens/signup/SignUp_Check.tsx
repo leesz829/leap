@@ -89,7 +89,7 @@ export const SignUp_Check = (props: Props) => {
               fontSize={14}
               borderRadius={5}
               onPress={() => {
-                navigation.navigate(ROUTES.LOGIN01);
+                navigation.navigate(ROUTES.LOGIN);
               }}
             />
           </SpaceView>

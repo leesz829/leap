@@ -66,7 +66,7 @@ export default function PointReward(element) {
 
             show({
               title: '보상획득',
-              content: '리미티드 포인트' + item_name + '등급 보상을 획득하셨습니다.',
+              content: '리프 포인트' + item_name + '등급 보상을 획득하셨습니다.',
               confirmCallback: function() {
                 getCashBackPayInfo();
               }
@@ -137,14 +137,14 @@ export default function PointReward(element) {
       {isLoading && <CommonLoading />}
 
       <View style={_styles.container}>
-        <CommonHeader title="리미티드 포인트 보상" right={<Wallet />} />
+        <CommonHeader title="리프 포인트 보상" right={<Wallet />} />
 
         <ScrollView style={_styles.scroll}>
           
           <View style={_styles.inner}>
             <View style={_styles.innerArea01}>
-              <Text style={_styles.innerText01}>상품을 구입하면{'\n'}리미티드 포인트가 충전돼요.</Text>
-              <Text style={_styles.innerText02}>리미티드 포인트는 매월 1일 초기화 됩니다.</Text>
+              <Text style={_styles.innerText01}>상품을 구입하면{'\n'}리프 포인트가 충전돼요.</Text>
+              <Text style={_styles.innerText02}>리프 포인트는 매월 1일 초기화 됩니다.</Text>
             </View>
 
             <View>
@@ -156,7 +156,7 @@ export default function PointReward(element) {
               </View>
             </View>
             {/* <Text style={styles.accReward}>누적보상 50,000</Text> 
-            <Text style={styles.lmitPoint}>리미티드 포인트</Text>*/}
+            <Text style={styles.lmitPoint}>리프 포인트</Text>*/}
           </View>
 
           <View style={{marginTop: 10}}>
@@ -183,7 +183,7 @@ export default function PointReward(element) {
             </View>
             <View>
               {/* <Text style={male.pointText}>
-                리미티드 포인트 <Text>✌️</Text>
+                리프 포인트 <Text>✌️</Text>
               </Text> */}
               <Text style={male.infoText}>
                 캐시백 보상까지 {CommaFormat(payInfo?.member_buy_price)} / {CommaFormat(payInfo?.target_buy_price)}
@@ -289,10 +289,10 @@ export default function PointReward(element) {
             {/* 아이콘 나오면 넣어야함 */}
             <Image style={_styles.modalIcon} />
             <Text style={_styles.normalText}>
-              리미티드 <Text style={_styles.boldText}>보상획득</Text>
+              리프 <Text style={_styles.boldText}>보상획득</Text>
             </Text>
             <Text style={_styles.infoText}>
-              리미티드 포인트 A등급 보상을 획득하셨습니다.
+              리프 포인트 A등급 보상을 획득하셨습니다.
             </Text>
             <TouchableOpacity style={_styles.confirmButton} onPress={closeModal}>
               <Text style={{ color: Color.gray6666 }}>확인</Text>
@@ -348,14 +348,14 @@ const _styles = StyleSheet.create({
     //marginTop: 65,
   },
   innerText01: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 22,
     color: '#333333',
     lineHeight: 27,
     marginBottom: 5,
   },
   innerText02: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     color: '#9D9D9D',
   },
@@ -457,7 +457,7 @@ const _styles = StyleSheet.create({
   },
   rewardButtonText: {
     color: 'white',
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 15,
   },
   moreText: {
@@ -577,13 +577,13 @@ const male = StyleSheet.create({
   pointText: {
     fontSize: 16,
     fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
   },
   infoText: {
     marginTop: 15,
     fontSize: 10,
     fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: Color.grayAAAA,
     textAlign: 'right',
   },
@@ -591,7 +591,7 @@ const male = StyleSheet.create({
     marginTop: 14,
     fontSize: 13,
     fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: Color.primary,
   },
   sliderContainer: {
@@ -604,7 +604,6 @@ const male = StyleSheet.create({
   sliderTrack: {
     height: 23,
     borderRadius: 13,
-    //backgroundColor: ColorType.grayDDDD,
     backgroundColor: 'transparent',
     position: 'absolute',
   },

@@ -24,7 +24,6 @@ export type RootParamList = {
 };
 
 export type StackParamList = {
-  Component: undefined;
   Main: NavigatorScreenParams<BottomParamList>;
   StartPage: undefined;
   Login: undefined;
@@ -35,20 +34,7 @@ export type StackParamList = {
     emailId: string;
     mrktAgreeYn: string;
   };
-  Login01: undefined;
   Policy: undefined;
-  Signup00: {
-    ci: string;
-    name: string;
-    gender: string;
-    mobile: string;
-    birthday: string;
-    sns_type: string;
-    sns_token: string;
-    marketing_agree_yn: string;
-    memberSeq: Number;
-    emailId: string;
-  };
   SignUp_Check: undefined;
   SignUp_ID: undefined;
   SignUp_Password: undefined;
@@ -58,33 +44,17 @@ export type StackParamList = {
   SignUp_Interest: undefined;
   SignUp_Introduce: undefined;
   SignUp_Auth: undefined;
-  Signup01: {
-    memberSeq: Number;
-    gender: string;
-  };
-  Signup02: {
-    memberSeq: Number;
-    gender: string;
-  };
-  Signup03: {
-    memberSeq: Number;
-    gender: string;
-    mstImgPath: string;
-  };
   Approval: {
     memberSeq: Number;
   };
   SecondAuthPopup: undefined; // 2차 인증 팝업
-  SignupPopUp2: undefined;
-  CommonPopup: undefined;
-  ReportPopup: undefined;
+  ReportPopup: undefined; // 신고하기 팝업
   LivePopup: undefined;
   Introduce: undefined;
-  Board0: undefined;
+  Board: undefined; // 게시판 메인
+  BoardDetail: undefined; // 게시판 상세
   Preference: undefined;
-  PreferencePopup: undefined;
   Profile: undefined;
-  Sample: undefined;
   Profile1: {
     isInterViewMove: boolean;
   };
@@ -136,7 +106,6 @@ export type BottomParamList = {
     headerType: String;
   };
   Live: undefined;
-  LiveSearch: undefined;
   Matching: undefined;
   MatchingList: undefined;
   Shop: undefined;

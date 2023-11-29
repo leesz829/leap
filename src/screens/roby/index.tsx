@@ -19,8 +19,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, Platform, PermissionsAndroid, Animated } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
-import { Privacy } from 'screens/commonpopup/privacy';
-import { Terms } from 'screens/commonpopup/terms';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -351,7 +349,7 @@ export const Roby = (props: Props) => {
   };
   const onPressPreferneces = () => {
     setIsVisible(false);
-    navigation.navigate(STACK.COMMON, { screen: 'Preference' });
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.PREFERENCE });
   };
   const onPressCustomerInquiry = () => {
     setIsVisible(false);
@@ -385,7 +383,7 @@ export const Roby = (props: Props) => {
 
   // 최근 소식 이동
   const onPressRecent = async () => {
-    navigation.navigate(STACK.COMMON, { screen: 'Board0' });
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.BOARD });
   };
 
   // 우편함 이동

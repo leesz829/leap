@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   nameText: {
     //marginTop: 25,
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 24,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     height: 30
   },
   addressText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   limitText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 17,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   amountText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 19,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   textLeft: {
     width: '100%',
     opacity: 0.76,
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 13,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   },
   textRight: {
     width: '100%',
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 17,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   historyText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 19,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   historySubText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     opacity: 0.64,
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   bidCompleteText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 9,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   readyText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 7,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   completeText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 7,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   brandName: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
     color: '#939393',
   },
   title: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 15,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     alignItems: `center`,
   },
   price: {
-    fontFamily: 'AppleSDGothicNeoH00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 17,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -578,11 +578,11 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   copyText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 9,
     fontWeight: 'normal',
     fontStyle: 'normal',
-    letterSpacing: 0,
+    letterSpacing: 0, 
     textAlign: 'left',
     color: '#742cf9',
   },

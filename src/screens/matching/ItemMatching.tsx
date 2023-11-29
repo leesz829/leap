@@ -29,8 +29,8 @@ import { formatNowDate, isEmptyData} from 'utils/functions';
 import VisualImage from 'component/match/VisualImage';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
-import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
-import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
+import InterestSendPopup from 'screens/commonpopup/match/InterestSendPopup';
+import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
 import AuthPickRender from 'component/match/AuthPickRender';
 
@@ -555,7 +555,7 @@ export default function ItemMatching(props: Props) {
               <CommonText 
                 textStyle={[_styles.reportText, {color: ColorType.black0000}]}
                 type={'h5'}>
-                신고사유를 알려주시면 더 좋은 리미티드를{'\n'}만드는데 도움이 됩니다.</CommonText>
+                신고사유를 알려주시면 더 좋은 리프를{'\n'}만드는데 도움이 됩니다.</CommonText>
             </SpaceView>
 
             <SpaceView>

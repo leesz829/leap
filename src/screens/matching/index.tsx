@@ -36,12 +36,11 @@ import { Slider } from '@miblanchard/react-native-slider';
 import ProfileAuth from 'component/ProfileAuth';
 import { formatNowDate, isEmptyData } from 'utils/functions';
 import { Watermark } from 'component/Watermark';
-import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
-import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
+import InterestSendPopup from 'screens/commonpopup/match/InterestSendPopup';
+import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import Carousel from 'react-native-snap-carousel';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import VisualImage from 'component/match/VisualImage';
-import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import MemberIntro from 'component/match/MemberIntro';
@@ -730,7 +729,7 @@ export default function Matching(props: Props) {
               <CommonText 
                 textStyle={[_styles.reportText, {color: ColorType.black0000}]}
                 type={'h5'}>
-                신고사유를 알려주시면 더 좋은 리미티드를{'\n'}만드는데 도움이 됩니다.</CommonText>
+                신고사유를 알려주시면 더 좋은 리프를{'\n'}만드는데 도움이 됩니다.</CommonText>
             </SpaceView>
 
             <SpaceView>
@@ -876,51 +875,6 @@ export default function Matching(props: Props) {
     );
   }
 }
-
-/**
- *  이미지 위 정보들
- */
-function AbsoluteView(data:any) {
-  return (
-    <View style={_styles.absoluteView}>
-      <View style={_styles.badgeContainer}>
-        <View style={_styles.authBadge}>
-          <Text style={_styles.whiteText}>인증 완료</Text>
-        </View>
-        <View style={_styles.redBadge}>
-          <Image source={ICON.whiteCrown} style={_styles.crownIcon} />
-          <Text style={_styles.whiteText}>{data.member?.profile_score}</Text>
-        </View>
-      </View>
-      <View style={_styles.nameContainer}>
-        <Text style={_styles.nameText}>{data.member?.nickname}, {data.member?.age}</Text>
-        <Image source={ICON.checkICon} style={_styles.checkIcon} />
-      </View>
-      <View style={_styles.distanceContainer}>
-        <Image source={ICON.marker} style={_styles.markerIcon} />
-        <Text style={_styles.regionText}>경기도 수원시 12.9Km</Text>
-      </View> 
-      <View style={_styles.buttonsContainer}>
-        <TouchableOpacity>
-          <Image source={ICON.closeCircle} style={_styles.smallButton} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Image source={ICON.ticketCircle} style={_styles.largeButton} />
-        </TouchableOpacity>
-        <TouchableOpacity style={_styles.freePassContainer}>
-          <Image source={ICON.heartCircle} style={_styles.largeButton} />
-          <View style={_styles.freePassBage}>
-            <Text style={_styles.freePassText}>자유이용권 ON</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Image source={ICON.starCircle} style={_styles.smallButton} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
-
 
 
 {/* #######################################################################################################
@@ -1203,7 +1157,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   refuseAreaTit: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 14,
     color: '#7986EE',
   },

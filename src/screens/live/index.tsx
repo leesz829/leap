@@ -19,7 +19,6 @@ import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { Modal, ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
-import { LiveSearch } from 'screens/live/LiveSearch';
 import { get_live_members, regist_profile_evaluation, get_common_code, update_additional } from 'api/models';
 import { useMemberseq } from 'hooks/useMemberseq';
 import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
@@ -310,7 +309,7 @@ export const Live = () => {
                 <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
                   <Text style={_styles.distanceText}>12.9Km</Text>
                   <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
-                  <Text style={_styles.introText}>리미티드의 여신</Text>
+                  <Text style={_styles.introText}>리프의 여신</Text>
                 </SpaceView>
               </SpaceView>
 
@@ -475,7 +474,7 @@ export const Live = () => {
   //                 </View>
   //               </View>
   //               <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
-  //               <Text style={_styles.introText}>리미티드의 여신</Text>
+  //               <Text style={_styles.introText}>리프의 여신</Text>
   //             </SpaceView>
   //           </SpaceView>
 

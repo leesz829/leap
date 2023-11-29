@@ -5,7 +5,7 @@ import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions, Platform } from 'react-native';
-import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
+import { ICON, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';

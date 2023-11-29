@@ -190,7 +190,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
                   <Image source={ICON.celebrityIcon01} style={styles.iconSquareSize(30)} />
 
                   <Animated.View style={[topBaseStyle]}>
-                    <Text style={_styles.topTitleText}>리미티드 추천 회원</Text>
+                    <Text style={_styles.topTitleText}>리프 추천 회원</Text>
                   </Animated.View>
                 </SpaceView>
                 <SpaceView>
@@ -206,7 +206,7 @@ export default function AuthPickRender({ _authLevel, _authList }) {
                   {_authLevel < 10 ? (
                     <>
                       <Image source={ICON.celebrityIcon01} style={styles.iconSquareSize(30)} />
-                      <Text style={_styles.topTitleText}>리미티드 추천 회원</Text>
+                      <Text style={_styles.topTitleText}>리프 추천 회원</Text>
                     </>
                   ) : _authLevel >= 10 && _authLevel < 15 ? (
                     <>

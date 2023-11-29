@@ -5,7 +5,6 @@ import { usePopup } from 'Context';
 import * as React from 'react';
 import { Alert } from 'react-native';
 import { Live } from 'screens/live';
-import { LiveSearch } from 'screens/live/LiveSearch';
 
 import { Roby } from 'screens/roby';
 import { Shop } from 'screens/shop';
@@ -88,13 +87,6 @@ const BottomNavigation = () => {
       <Stack.Screen
         name="Live"
         component={Live}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="LiveSearch"
-        component={LiveSearch}
         options={{
           headerShown: false,
         }}

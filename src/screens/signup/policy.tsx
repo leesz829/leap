@@ -14,9 +14,9 @@ import { ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { CommonSwich } from 'component/CommonSwich';
 import { Modalize } from 'react-native-modalize';
-import { Terms } from 'screens/commonpopup/terms';
-import { Privacy } from 'screens/commonpopup/privacy';
-import { LocationService } from 'screens/commonpopup/locationService';
+import { Terms } from 'screens/commonpopup/terms/Terms';
+import { Privacy } from 'screens/commonpopup/terms/Privacy';
+import { LocationService } from 'screens/commonpopup/terms/LocationService';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { ROUTES } from 'constants/routes';
 import LinearGradient from 'react-native-linear-gradient';
@@ -184,7 +184,7 @@ export const Policy = (props: Props) => {
           >
           <SpaceView mb={20} viewStyle={{paddingHorizontal:16}}>
             <CommonText textStyle={_styles.title}>
-              리미티드{'\n'}서비스 이용약관
+              리프{'\n'}서비스 이용약관
             </CommonText>
           </SpaceView>
 
@@ -330,7 +330,7 @@ export const Policy = (props: Props) => {
                 fontSize={14}
                 borderRadius={5}
                 onPress={() => {
-                  navigation.navigate(ROUTES.LOGIN01);
+                  navigation.navigate(ROUTES.LOGIN);
                 }}
               />
             </SpaceView>

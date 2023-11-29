@@ -3,7 +3,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { validateEmailChk } from 'utils/functions';
 import React, { useEffect } from 'react';
@@ -11,11 +11,12 @@ import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
-import * as hooksMember from 'hooks/member';
 import { useDispatch } from 'react-redux';
 import { usePopup } from 'Context';
 import { SUCCESS } from 'constants/reusltcode';
 import { search_email_id, search_password } from 'api/models';
+import LinearGradient from 'react-native-linear-gradient';
+import { ROUTES } from 'constants/routes';
 
 
 /* ################################################################################################################
@@ -27,6 +28,8 @@ import { search_email_id, search_password } from 'api/models';
 interface Props {
 	
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const SearchIdAndPwd = (props : Props) => {	
 
@@ -220,118 +223,131 @@ export const SearchIdAndPwd = (props : Props) => {
 
 	return (
 		<>
-			<CommonHeader title={'아이디/비밀번호 찾기'} />
-			<ScrollView contentContainerStyle={[styles.scrollContainer]} style={{backgroundColor: '#fff', }}>
+			{/* <CommonHeader title={'아이디/비밀번호 찾기'} /> */}
 
-				<View>
-					<View style={layoutStyle.alignCenter}>
-						{/* <SpaceView mb={5}>
-							<Image source={IMAGE.logoMark} style={[styles.logoMark, {width: 35, height: 35}]} />
-						</SpaceView> */}
-						<SpaceView mb={15}>
-							<Image source={IMAGE.logoRenew} style={[styles.logo, {width: 151, height: 105}]} />
+			<LinearGradient
+				colors={['#3D4348', '#1A1E1C']}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 1, y: 1 }}
+				style={_styles.wrap}
+			>
+				<ScrollView>
+					<SpaceView pl={20} pr={20}>
+						<View>
+							<SpaceView mt={50} mb={30}>
+								<Image source={IMAGE.logoLeapTmon} style={{width: 200, height: 57}} />
+							</SpaceView>
+
+							<SpaceView mb={50} mt={50}>
+								<View>
+									<CommonInput
+										label={'아이디 찾기'}
+										value={phoneNumber}
+										onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+										isMasking={false}
+										maxLength={13}
+										placeholder="휴대폰 번호를 입력해주세요."
+										placeholderTextColor={'#c6ccd3'} />
+
+									<View style={[_styles.btnArea]}>
+										<TouchableOpacity onPress={() => { btnSelectEmailIdFromPhoneNumber(); }}>
+											<Text style={_styles.btnText}>찾기</Text>
+										</TouchableOpacity>
+									</View>
+								</View>
+
+								<View>
+									{searchIdResult.code != null ? (
+										<Text style={{color: searchIdResult.textColor, marginTop: 10}}>{searchIdResult.message}</Text>
+									) : null}
+								</View>
+							</SpaceView>
+							
+
+							<SpaceView mb={24}>
+								
+								<View>
+									<CommonInput
+										label={'비밀번호 찾기'}
+										value={emailId}
+										onChangeText={(emailId) => setEmailId(emailId)}
+										placeholder="이메일을 입력해주세요."
+										placeholderTextColor={'#c6ccd3'} />
+
+									<View style={[_styles.btnArea]}>
+										<TouchableOpacity onPress={() => { btnSelectPasswordFromEmailId(); }}>
+											<Text style={_styles.btnText}>전송</Text>
+										</TouchableOpacity>
+									</View>
+								</View>
+
+								<View>
+									{searchPwdResult.code != null ? (
+										<Text style={{color: searchPwdResult.textColor, marginTop: 10}}>{searchPwdResult.message}</Text>
+									) : null}
+								</View>
+
+								{/* <CommonInput
+									label="비밀번호 찾기"
+									placeholder="이메일을 입력해주세요."
+									value={emailId}
+									onChangeText={(emailId) => setEmailId(emailId)}
+									isMasking={true}
+									maxLength={13}
+
+								/>
+								<CommonBtn value={'전송'} type={'purple'} onPress={() => setSelectPasswordPopup(true)} /> */}
+							</SpaceView>
+
+						</View>
+
+						<SpaceView mb={24}>
+							<TouchableOpacity onPress={() => { navigation.navigate(ROUTES.LOGIN); }}>
+								<Text style={_styles.prevBtnText}>로그인 하기</Text>
+							</TouchableOpacity>
 						</SpaceView>
-					</View>
-
-					<SpaceView mb={50} mt={50}>
-						<View>
-							<CommonInput
-								label={'아이디 찾기'}
-								value={phoneNumber}
-								onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
-								isMasking={false}
-								maxLength={13}
-								placeholder="휴대폰 번호를 입력해주세요."
-								placeholderTextColor={'#c6ccd3'} />
-
-							<View style={[_styles.inputBtn]}>
-								<CommonBtn value={'찾기'} 
-											type={'primary'} 
-											height={40} 
-											width={80} 
-											fontSize={13}
-											borderRadius={10}
-											onPress={() => {
-												btnSelectEmailIdFromPhoneNumber();
-											}} />
-							</View>
-						</View>
-
-						<View>
-							{searchIdResult.code != null ? (
-								<Text style={{color: searchIdResult.textColor, marginTop: 10}}>{searchIdResult.message}</Text>
-							) : null}
-						</View>
 					</SpaceView>
-					
-
-					<SpaceView mb={24}>
-						
-						<View>
-							<CommonInput
-								label={'비밀번호 찾기'}
-								value={emailId}
-								onChangeText={(emailId) => setEmailId(emailId)}
-								placeholder="이메일을 입력해주세요."
-								placeholderTextColor={'#c6ccd3'} />
-
-							<View style={[_styles.inputBtn]}>
-								<CommonBtn value={'전송'} 
-											type={'primary'} 
-											height={40} 
-											width={80} 
-											fontSize={13}
-											borderRadius={10}
-											onPress={() => {
-												btnSelectPasswordFromEmailId();
-												//searchPwdPopup();
-												//setSelectPasswordPopup(true)
-											}} />
-							</View>
-						</View>
-
-						<View>
-							{searchPwdResult.code != null ? (
-								<Text style={{color: searchPwdResult.textColor, marginTop: 10}}>{searchPwdResult.message}</Text>
-							) : null}
-						</View>
-
-						{/* <CommonInput
-							label="비밀번호 찾기"
-							placeholder="이메일을 입력해주세요."
-							value={emailId}
-							onChangeText={(emailId) => setEmailId(emailId)}
-							isMasking={true}
-							maxLength={13}
-
-						/>
-						<CommonBtn value={'전송'} type={'purple'} onPress={() => setSelectPasswordPopup(true)} /> */}
-					</SpaceView>
-
-				</View>
-
-				<SpaceView mb={24}>
-					<CommonBtn
-						value={'로그인 하기'}
-						type={'primary'}
-						onPress={() => {
-							navigation.navigate('Login01');
-						}}
-					/>
-				</SpaceView>
-			</ScrollView>
+				</ScrollView>
+			</LinearGradient>
 		</>
 	);
 };
 
 
 const _styles = StyleSheet.create({
-	inputBtn: {
+	wrap: {
+		minHeight: height,
+	},
+	btnText: {
+		backgroundColor: '#FFDD00',
+		color: '#3D4348',
+		fontFamily: 'Pretendard-Bold',
+		fontSize: 14,
+		textAlign: 'center',
+		borderRadius: 5,
+		overflow: 'hidden',
+		paddingVertical: 5,
+		paddingHorizontal: 20,
+	},
+	btnArea: {
 	  position: 'absolute',
 	  right: 0,
 	  top: 15,
 	  height: '100%',
 	  justifyContent: 'center',
+	},
+	prevBtnText: {
+		backgroundColor: '#262626',
+		borderColor: '#BBB18B',
+		borderWidth: 1,
+		color: '#D5CD9E',
+		fontFamily: 'Pretendard-Bold',
+		fontSize: 14,
+		textAlign: 'center',
+		borderRadius: 5,
+		overflow: 'hidden',
+		paddingVertical: 15,
+		paddingHorizontal: 20,
 	},
   
 });

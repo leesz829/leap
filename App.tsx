@@ -20,7 +20,7 @@ import { Color } from 'assets/styles/Color';
 import VersionCheck from 'react-native-version-check';
 import { get_app_version } from 'api/models';
 import RNExitApp from 'react-native-exit-app';
-import { BasePopup } from 'screens/commonpopup/BasePopup';
+import { BasePopup } from 'screens/commonpopup/context/BasePopup';
 import { GIF_IMG } from 'utils/imageUtils';
 import BackgroundTimer from 'react-native-background-timer';
 

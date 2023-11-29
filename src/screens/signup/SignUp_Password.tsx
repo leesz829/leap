@@ -122,7 +122,7 @@ export const SignUp_Password = (props: Props) => {
         navigation.reset({
           routes: [
             {
-              name : ROUTES.LOGIN01
+              name : ROUTES.LOGIN
             },
             {
               name: ROUTES.SIGNUP_PASSWORD,
@@ -196,7 +196,7 @@ export const SignUp_Password = (props: Props) => {
               navigation.reset({
                 routes: [
                   {
-                    name : ROUTES.LOGIN01
+                    name : ROUTES.LOGIN
                   },
                   {
                     name: ROUTES.SIGNUP_PASSWORD,

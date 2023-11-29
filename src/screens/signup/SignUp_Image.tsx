@@ -9,7 +9,7 @@ import React, { useRef } from 'react';
 import { View, ScrollView, Image, TouchableOpacity, StyleSheet, Dimensions, Text } from 'react-native';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
+import { ICON, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 import { Modalize } from 'react-native-modalize';
 import { usePopup } from 'Context';
 import { get_profile_imgage_guide, join_save_profile_image, update_join_master_image } from 'api/models';

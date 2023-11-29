@@ -202,7 +202,7 @@ function MalePannel({ payInfo }) {
           <TouchableOpacity onPress={onPressPointReward} hitSlop={commonStyle.hipSlop10}>
             <Text style={male.infoText}>매월 1일 시작되는 <Text style={male.cashbackText}>캐시백</Text> 생활</Text>
             <View style={male.pointIntroArea}>
-              <Text style={male.pointText}>리미티드 포인트</Text>
+              <Text style={male.pointText}>리프 포인트</Text>
               <View style={male.rewardBtn}><Text style={male.rewardAddText}>알아보기</Text></View>
             </View>
           </TouchableOpacity>

@@ -8,17 +8,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import {
-  SUCCESS,
-  LOGIN_REFUSE,
-  LOGIN_EMPTY,
-  LOGIN_WAIT,
-  LOGIN_EXIT,
-  SANCTIONS,
-  PASSWORD_ERROR,
-  LOGIN_BLOCK,
-  LOGIN_SLEEP,
-} from 'constants/reusltcode';
+import { SUCCESS, LOGIN_REFUSE, LOGIN_EMPTY, LOGIN_WAIT, LOGIN_EXIT, SANCTIONS, PASSWORD_ERROR, LOGIN_BLOCK, LOGIN_SLEEP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
@@ -55,7 +45,7 @@ GoogleSignin.configure({
 
 const { width, height } = Dimensions.get('window');
 
-export const Login01 = () => {
+export const Login = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { show } = usePopup();
@@ -209,7 +199,7 @@ export const Login01 = () => {
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.LOGIN },
                   { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
                   { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
                 ],
@@ -220,7 +210,7 @@ export const Login01 = () => {
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.LOGIN },
                   { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
                   { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
                   { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
@@ -232,7 +222,7 @@ export const Login01 = () => {
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.LOGIN },
                   { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
                   { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
                   { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
@@ -245,7 +235,7 @@ export const Login01 = () => {
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.LOGIN },
                   { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
                   { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
                   { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
@@ -259,7 +249,7 @@ export const Login01 = () => {
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.LOGIN },
                   { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
                   { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
                   { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
@@ -274,7 +264,7 @@ export const Login01 = () => {
               CommonActions.reset({
                 index: 1,
                 routes: [
-                  { name: ROUTES.LOGIN01 },
+                  { name: ROUTES.LOGIN },
                   { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
                   { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
                   { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
@@ -393,13 +383,13 @@ export const Login01 = () => {
 
   return (
     <>    
-      <ScrollView>
-        <LinearGradient
-          colors={['#3D4348', '#1A1E1C']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={_styles.loginContainer}
-        >
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.loginContainer}
+      >
+        <ScrollView>
           <SpaceView mt={60} viewStyle={[_styles.container]}>
 
             {/* ############################################################### 타이틀 */}
@@ -558,8 +548,8 @@ export const Login01 = () => {
               </SpaceView> */}
             </SpaceView>
           </SpaceView>
-        </LinearGradient>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
     </>
   );
 };

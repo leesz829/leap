@@ -4,7 +4,7 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { View, Image, StyleSheet, ScrollView, TouchableOpacity, Text, Dimensions } from 'react-native';
-import { IMAGE, PROFILE_IMAGE, ICON, findSourcePathLocal } from 'utils/imageUtils';
+import { IMAGE, ICON, findSourcePathLocal } from 'utils/imageUtils';
 import { RouteProp, useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
@@ -153,7 +153,7 @@ export const Approval = (props: Props) => {
       CommonActions.reset({
         index: 1,
         routes: [
-          { name: ROUTES.LOGIN01 },
+          { name: ROUTES.LOGIN },
           { name: ROUTES.APPROVAL , params: { memberSeq: memberSeq, }},
           { name: ROUTES.SIGNUP_PASSWORD, params: { ci: apprData.ci, name: apprData.name, gender: apprData.gender, mobile: apprData.mobile, birthday: apprData.birthday, memberSeq: memberSeq, emailId: apprData.emailId }},
         ],
@@ -164,7 +164,7 @@ export const Approval = (props: Props) => {
       CommonActions.reset({
         index: 1,
         routes: [
-          { name: ROUTES.LOGIN01 },
+          { name: ROUTES.LOGIN },
           { name: ROUTES.APPROVAL , params: { memberSeq: memberSeq, }},
           { name: ROUTES.SIGNUP_PASSWORD, params: { ci: apprData.ci, name: apprData.name, gender: apprData.gender, mobile: apprData.mobile, birthday: apprData.birthday, memberSeq: memberSeq, emailId: apprData.emailId }},
           { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: apprData.gender, }},

@@ -11,7 +11,7 @@ import { findSourcePath, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
-import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
+import { ICON } from 'utils/imageUtils';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { isEmptyData } from 'utils/functions';
 import CommonHeader from 'component/CommonHeader';

@@ -400,7 +400,7 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   brandText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -410,7 +410,7 @@ const _styles = StyleSheet.create({
     marginTop: 12,
   },
   giftName: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 24,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -436,7 +436,7 @@ const _styles = StyleSheet.create({
     justifyContent: `center`,
   },
   inventory: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -445,7 +445,7 @@ const _styles = StyleSheet.create({
     color: '#d3d3d3',
   },
   price: {
-    fontFamily: 'AppleSDGothicNeoH00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 25,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -480,7 +480,7 @@ const _styles = StyleSheet.create({
     paddingVertical: 8,
   },
   currencyText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -494,7 +494,7 @@ const _styles = StyleSheet.create({
     marginRight: 5,
   },
   currenyAmount: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -503,14 +503,14 @@ const _styles = StyleSheet.create({
     color: '#ffffff',
   },
   duration: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 14,
     textAlign: 'left',
     color: '#7b7b7b',
     marginLeft: 5,
   },
   durationSub: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: '#d3d3d3',
     marginLeft: 3,
   },
@@ -533,7 +533,7 @@ const _styles = StyleSheet.create({
     justifyContent: `center`,
   },
   tableHeaderText: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -553,7 +553,7 @@ const _styles = StyleSheet.create({
     padding: 4,
   },
   rowTextLeft: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -564,7 +564,7 @@ const _styles = StyleSheet.create({
     width: '33%',
   },
   rowTextCenter: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -575,7 +575,7 @@ const _styles = StyleSheet.create({
     width: '30%',
   },
   rowTextRight: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -586,7 +586,7 @@ const _styles = StyleSheet.create({
     width: '33%',
   },
   ItemRowTextLeft: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -597,7 +597,7 @@ const _styles = StyleSheet.create({
     width: '30%',
   },
   ItemRowTextLeftPurple: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -608,7 +608,7 @@ const _styles = StyleSheet.create({
     width: '30%',
   },
   ItemRowTextCenterPurple: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 16,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -620,7 +620,7 @@ const _styles = StyleSheet.create({
   },
   ItemRowTextRightPurple: {
     opacity: 0.8,
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -632,7 +632,7 @@ const _styles = StyleSheet.create({
   },
 
   ItemRowTextCenterRed: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 16,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -644,7 +644,7 @@ const _styles = StyleSheet.create({
   },
   ItemRowTextRightRed: {
     opacity: 0.8,
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -656,7 +656,7 @@ const _styles = StyleSheet.create({
   },
 
   ItemRowTextCenter: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 16,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -675,7 +675,7 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   itemText: {
-    fontFamily: 'AppleSDGothicNeoSB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -722,7 +722,7 @@ const _styles = StyleSheet.create({
     justifyContent: `center`,
   },
   puchageText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 15,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -732,7 +732,7 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
   },
   priceText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 18,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -741,7 +741,7 @@ const _styles = StyleSheet.create({
     marginRight: 20
   },
   priceRedText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 18,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -750,7 +750,7 @@ const _styles = StyleSheet.create({
     marginRight: 20
   },
   priceRedNoText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -758,20 +758,9 @@ const _styles = StyleSheet.create({
     color: '#FF5858',
     marginRight: 20
   },
-  /*
-  priceText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  */
   additionalText: {
     opacity: 0.23,
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',

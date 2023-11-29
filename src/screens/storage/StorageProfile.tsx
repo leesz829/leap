@@ -35,13 +35,12 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { Watermark } from 'component/Watermark';
 import LinearGradient from 'react-native-linear-gradient';
 import VisualImage from 'component/match/VisualImage';
-import AddInfo from 'component/match/AddInfo';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import MemberIntro from 'component/match/MemberIntro';
 import { formatNowDate, isEmptyData} from 'utils/functions';
-import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
-import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
+import InterestSendPopup from 'screens/commonpopup/match/InterestSendPopup';
+import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import Clipboard from '@react-native-clipboard/clipboard';
 import AuthPickRender from 'component/match/AuthPickRender';
 
@@ -787,7 +786,7 @@ export const StorageProfile = (props: Props) => {
               <CommonText 
                 textStyle={[_styles.reportText, {color: ColorType.black0000}]}
                 type={'h5'}>
-                신고사유를 알려주시면 더 좋은 리미티드를{'\n'}만드는데 도움이 됩니다.</CommonText>
+                신고사유를 알려주시면 더 좋은 리프를{'\n'}만드는데 도움이 됩니다.</CommonText>
             </SpaceView>
 
             <SpaceView mb={24}>

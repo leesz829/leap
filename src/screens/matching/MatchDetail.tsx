@@ -23,8 +23,8 @@ import ProfileAuth from 'component/match/ProfileAuth';
 import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import InterestRender from 'component/match/InterestRender';
-import InterestSendPopup from 'screens/commonpopup/InterestSendPopup';
-import SincereSendPopup from 'screens/commonpopup/SincereSendPopup';
+import InterestSendPopup from 'screens/commonpopup/match/InterestSendPopup';
+import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
 import AuthPickRender from 'component/match/AuthPickRender';
 import LinearGradient from 'react-native-linear-gradient';
@@ -418,7 +418,7 @@ export default function MatchDetail(props: Props) {
               <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { popupActive('interest'); }}>
-              <Text style={_styles.btnText('REQ', '#43ABAE')}>플러팅</Text>
+              <Text style={_styles.btnText('REQ', '#43ABAE')}>라이크</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
               <Text style={_styles.btnText('ZZIM', '#43ABAE')}>찜하기</Text>
@@ -655,7 +655,7 @@ export default function MatchDetail(props: Props) {
               <CommonText 
                 textStyle={[_styles.reportText, {color: ColorType.black0000}]}
                 type={'h5'}>
-                신고사유를 알려주시면 더 좋은 리미티드를{'\n'}만드는데 도움이 됩니다.</CommonText>
+                신고사유를 알려주시면 더 좋은 리프를{'\n'}만드는데 도움이 됩니다.</CommonText>
             </SpaceView>
 
             <SpaceView>
@@ -772,65 +772,6 @@ const _styles = StyleSheet.create({
     height: 7,
     backgroundColor: '#FE8C12',
   },
-  absoluteView: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: -width * 0.16,
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    paddingHorizontal: '8%',
-    zIndex: 1,
-    //display: 'none',
-  },
-  title: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-    marginTop: 20,
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  smallButton: {
-    width: width * 0.2,
-    height: width * 0.2,
-  },
-  largeButton: {
-    width: width * 0.3,
-    height: width * 0.3,
-    marginHorizontal: 10,
-  },
-  freePassContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  freePassBage: {
-    position: 'absolute',
-    bottom: 10,
-    borderRadius: 11,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#7986EE',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  freePassText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 11,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#7986EE',
-  },
-  padding: {
-    paddingHorizontal: 20,
-    marginTop: width * 0.15,
-  },
   boostPannel: {
     width: '100%',
     borderRadius: 10,
@@ -847,7 +788,7 @@ const _styles = StyleSheet.create({
     justifyContent: `center`,
   },
   boostBadgeText: {
-    fontFamily: 'AppleSDGothicNeoH00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 10,
     lineHeight: 19,
     letterSpacing: 0,
@@ -855,7 +796,7 @@ const _styles = StyleSheet.create({
     color: '#ffffff',
   },
   boostTitle: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 14,
     lineHeight: 22,
     letterSpacing: 0,
@@ -863,7 +804,7 @@ const _styles = StyleSheet.create({
     color: '#262626',
   },
   boostDescription: {
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     lineHeight: 22,
     letterSpacing: 0,
@@ -880,14 +821,14 @@ const _styles = StyleSheet.create({
     marginTop: 20,
   },
   reportTextBtn: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#ffffff',
   },
   reportText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 17,
     textAlign: 'left',
   },
@@ -909,13 +850,13 @@ const _styles = StyleSheet.create({
     borderStyle: 'dotted',
   },
   authNoDataTit: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     color: '#7986EE',
     textAlign: 'center',
   },
   authNoDataSubTit: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 10,
     color: '#C3C3C8',
     textAlign: 'center',

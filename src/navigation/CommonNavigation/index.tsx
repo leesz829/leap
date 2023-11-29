@@ -3,14 +3,9 @@ import { StackParamList } from '@types';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
 import { ReportPopup } from 'screens/commonpopup/ReportPopup';
 import { NiceAuth } from 'screens/login/niceAuth';
-import StartPage from 'screens/startpage';
 import BottomNavigation from '../TabNavigation';
 
-import Component from 'component';
-import { CommonPopup } from 'screens/commonpopup';
-import { Board0 } from 'screens/commonpopup/Board0';
-import { BoardDetail } from 'screens/commonpopup/BoardDetail';
-import { Preference } from 'screens/commonpopup/Preference';
+import { Preference } from 'screens/profile/Preference';
 import { Introduce } from 'screens/profile/Introduce';
 import { Profile } from 'screens/profile/Profile';
 import { Profile1 } from 'screens/profile/Profile1';
@@ -19,7 +14,6 @@ import { TutorialSetting } from 'screens/profile/TutorialSetting';
 import { CustomerInquiry } from 'screens/profile/CustomerInquiry';
 import { ChangePassword } from 'screens/profile/ChangePassword';
 import { SecondAuth } from 'screens/profile/SecondAuth';
-import { Sample } from 'screens/sample/sample';
 import { Approval } from 'screens/signup/Approval';
 import { Storage } from 'screens/storage/index';
 import { StorageProfile } from 'screens/storage/StorageProfile';
@@ -41,6 +35,9 @@ import MatchDetail from 'screens/matching/MatchDetail';
 import EventDetail from 'screens/event/EventDetail';
 import { ProfileImageSetting } from 'screens/profile/ProfileImageSetting';
 
+import { Board } from 'screens/board';
+import { BoardDetail } from 'screens/board/BoardDetail';
+
 import StoryRegi from 'screens/story/StoryRegi';
 import StoryEdit from 'screens/story/StoryEdit';
 import StoryDetail from 'screens/story/StoryDetail';
@@ -59,14 +56,11 @@ const CommonStack = createStackNavigator<StackParamList>();
 const CommonNavigation = () => {
   return (
     <CommonStack.Navigator screenOptions={{ headerShown: false }}>
-      <CommonStack.Screen name="Component" component={Component} />
       <CommonStack.Screen name="Main" component={BottomNavigation} />
-      <CommonStack.Screen name="StartPage" component={StartPage} />
-      <CommonStack.Screen name="CommonPopup" component={CommonPopup} />
       <CommonStack.Screen name="ReportPopup" component={ReportPopup} />
       <CommonStack.Screen name="LivePopup" component={LivePopup} />
       <CommonStack.Screen name="Introduce" component={Introduce} />
-      <CommonStack.Screen name="Board0" component={Board0} />
+      <CommonStack.Screen name="Board" component={Board} />
       <CommonStack.Screen name="BoardDetail" component={BoardDetail} />
       <CommonStack.Screen name="Preference" component={Preference} />
       <CommonStack.Screen name="Profile" component={Profile} />
@@ -77,7 +71,6 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="CustomerInquiry" component={CustomerInquiry} />
       <CommonStack.Screen name="SecondAuth" component={SecondAuth} />
       <CommonStack.Screen name="Approval" component={Approval} />
-      <CommonStack.Screen name="Sample" component={Sample} />
       <CommonStack.Screen name="NiceAuth" component={NiceAuth} />
       <CommonStack.Screen name="StorageProfile" component={StorageProfile} />
       <CommonStack.Screen name="Storage" component={Storage} />

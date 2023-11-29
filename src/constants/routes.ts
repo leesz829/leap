@@ -5,11 +5,11 @@ export const STACK = {
 };
 export const ROUTES = {
   LOGIN: 'Login',
-  LOGIN01: 'Login01',
   START_PAGE: 'StartPage',
   TITLE00: 'Title00',
   POLICY: 'Policy',
-  SIGNUP00: 'Signup00',
+
+  // 회원가입 관련
   SIGNUP_CHECK: 'SignUp_Check',
   SIGNUP_ID: 'SignUp_ID',
   SIGNUP_PASSWORD: 'SignUp_Password',
@@ -19,12 +19,9 @@ export const ROUTES = {
   SIGNUP_INTEREST: 'SignUp_Interest',
   SIGNUP_INTRODUCE: 'SignUp_Introduce',
   SIGNUP_AUTH: 'SignUp_Auth',
-  SIGNUP01: 'Signup01',
-  SIGNUP02: 'Signup02',
-  SIGNUP03: 'Signup03',
   APPROVAL: 'Approval',
+  
   SECOND_AUTH_POPUP: 'SecondAuthPopup',
-  SIGNUP_POPUP2: 'SignupPopUp2',
   NICE_AUTH: 'NiceAuth',
   SEARCH_IDPWD: 'SearchIdAndPwd',
   SHOP_INVENTORY: 'Inventory',
@@ -37,8 +34,15 @@ export const ROUTES = {
   ItemMatching: 'ItemMatching',
   MatchDetail: 'MatchDetail',
 
+  // 게시판 관련
+  BOARD: 'Board',
+  BOARD_DETAIL: 'BoardDetail',
+
+  // 프로필 관련
   PROFILE_ADDINFO: 'Profile_AddInfo',
   PROFILE_AUTH: 'Profile_Auth',
   PROFILE_INTEREST: 'Profile_Interest',
   PROFILE_INTRODUCE: 'Profile_Introduce',
+  PREFERENCE: 'Preference',
+  
 };

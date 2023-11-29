@@ -3,7 +3,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text } from 'react-native';
+import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
@@ -16,6 +16,7 @@ import { SUCCESS } from 'constants/reusltcode';
 import { STACK } from 'constants/routes';
 import { myProfile } from 'redux/reducers/authReducer';
 import { clearPrincipal } from 'redux/reducers/authReducer';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 /* ################################################################################################################
@@ -27,6 +28,8 @@ import { clearPrincipal } from 'redux/reducers/authReducer';
 interface Props {
 	
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const ChangePassword = (props : Props) => {
 
@@ -215,83 +218,101 @@ export const ChangePassword = (props : Props) => {
 	return (
 		<>
 			<CommonHeader title={'비밀번호 변경'} />
-			<ScrollView contentContainerStyle={[styles.scrollContainer]}>
-				<View style={{paddingHorizontal: 10}}>
-					<View style={layoutStyle.alignCenter}>
-						<SpaceView mt={15}>
-							<Image source={IMAGE.logoRenew} style={[styles.logo, {width: 151, height: 105}]} />
+
+			<LinearGradient
+				colors={['#3D4348', '#1A1E1C']}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 0, y: 1 }}
+				style={_styles.wrap}
+			>
+				<ScrollView>
+					<View style={{paddingHorizontal: 25}}>
+						<View style={layoutStyle.alignCenter}>
+							<SpaceView mt={20}>
+								<Image source={IMAGE.logoLeapTmon} style={{width: 200, height: 57}} />
+							</SpaceView>
+						</View>
+
+						<SpaceView mb={24} mt={60}>
+							<CommonInput
+								label="현재 비밀번호"
+								value={oldPassword}
+								onChangeText={(oldPassword) => setOldPassword(oldPassword)}
+								isMasking={true}
+								maxLength={20}
+
+							/>
+							{/* {isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)} */}
+							{oldPasswordConfirmMessage !== '' && (<Text style={{marginTop: 10, color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
 						</SpaceView>
-						{/* <SpaceView mt={30}>
-							<Image source={IMAGE.logoMarkRenew} style={styles.logoMark} />
-						</SpaceView> */}
-						{/* <SpaceView mb={15}>
-							<Image source={IMAGE.logoText} style={styles.logo} resizeMode="contain" />
-						</SpaceView> */}
+
+						<SpaceView mb={24}>
+							<CommonInput
+								label="새 비밀번호 입력"
+								value={newPassword}
+								onChangeText={(newPassword) => setNewPassword(newPassword)}
+								isMasking={true}
+								maxLength={20}
+								placeholderTextColor={'#c6ccd3'}
+								placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
+								fontSize={14}
+							/>
+							{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor, marginTop: 10}}>{newPasswordConfirmMessage}</Text>)}
+						</SpaceView>
+
+						<SpaceView mb={44}>
+							<CommonInput
+								label="새 비밀번호 재입력"
+								value={newPasswordChk}
+								onChangeText={(newPasswordChk) => setNewPasswordChk(newPasswordChk)}
+								isMasking={true}
+								maxLength={20}
+								placeholderTextColor={'#c6ccd3'}
+								placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
+								fontSize={14}
+							/>
+							{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor, marginTop: 10}}>{newPasswordChkConfirmMessage}</Text>)}
+						</SpaceView>
+
+						<SpaceView mb={24}>
+							<SpaceView>
+								<TouchableOpacity onPress={() => { validatePassword(); }}>
+									<Text style={_styles.btnText('#FFDD00', '#3D4348', '#FFDD00')}>비밀번호 변경</Text>
+								</TouchableOpacity>
+							</SpaceView>
+							<SpaceView mt={15}>
+								<TouchableOpacity onPress={() => { btnDeleteMyAccount(); }}>
+									<Text style={_styles.btnText('#262626', '#D5CD9E', '#BBB18B')}>탈퇴하기</Text>
+								</TouchableOpacity>
+							</SpaceView>
+						</SpaceView>
 					</View>
-
-					<SpaceView mb={24} mt={60}>
-						<CommonInput
-							label="현재 비밀번호"
-							value={oldPassword}
-							onChangeText={(oldPassword) => setOldPassword(oldPassword)}
-							isMasking={true}
-							maxLength={20}
-
-						/>
-						{/* {isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)} */}
-						{oldPasswordConfirmMessage !== '' && (<Text style={{marginTop: 10, color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
-					</SpaceView>
-
-					<SpaceView mb={24}>
-						<CommonInput
-							label="새 비밀번호 입력"
-							value={newPassword}
-							onChangeText={(newPassword) => setNewPassword(newPassword)}
-							isMasking={true}
-							maxLength={20}
-							placeholderTextColor={'#c6ccd3'}
-							placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
-							fontSize={15}
-						/>
-						{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor, marginTop: 10}}>{newPasswordConfirmMessage}</Text>)}
-					</SpaceView>
-
-					<SpaceView mb={24}>
-						<CommonInput
-							label="새 비밀번호 재입력"
-							value={newPasswordChk}
-							onChangeText={(newPasswordChk) => setNewPasswordChk(newPasswordChk)}
-							isMasking={true}
-							maxLength={20}
-							placeholderTextColor={'#c6ccd3'}
-							placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
-							fontSize={15}
-						/>
-						{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor, marginTop: 10}}>{newPasswordChkConfirmMessage}</Text>)}
-					</SpaceView>
-
-					<SpaceView mb={24}>
-						<SpaceView>
-							<CommonBtn
-								value={'비밀번호 변경'}
-								type={'primary'}
-								onPress={() => { 
-									validatePassword();
-								}}
-							/>
-						</SpaceView>
-						<SpaceView mt={5}>
-							<CommonBtn
-								value={'탈퇴하기'}
-								type={'primary'}
-								onPress={() => { 
-									btnDeleteMyAccount();
-								}}
-							/>
-						</SpaceView>
-					</SpaceView>
-				</View>
-			</ScrollView>
+				</ScrollView>
+			</LinearGradient>
 		</>
 	);
 };
+
+
+
+const _styles = StyleSheet.create({
+	wrap: {
+	  minHeight: height,
+	  paddingTop: 24,
+	},
+	btnText: (_bg:string, _cr:string, _bdcr:string) => {
+		return {
+			backgroundColor: _bg,
+			borderColor: _bdcr,
+			borderWidth: 1,
+			color: _cr,
+			fontFamily: 'Pretendard-Bold',
+			fontSize: 16,
+			textAlign: 'center',
+			borderRadius: 5,
+			overflow: 'hidden',
+			paddingVertical: 15,
+			paddingHorizontal: 20,
+		};
+	  },
+  });

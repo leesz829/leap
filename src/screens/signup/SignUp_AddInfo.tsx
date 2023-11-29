@@ -16,7 +16,7 @@ import { isEmptyData } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
-import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
+import { ICON, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 
 
 /* ################################################################################################################

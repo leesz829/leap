@@ -12,7 +12,7 @@ import { usePopup } from 'Context';
 import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
 import Image from 'react-native-fast-image';
-import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
+import { ICON } from 'utils/imageUtils';
 import { useUserInfo } from 'hooks/useUserInfo';
 import LinearGradient from 'react-native-linear-gradient';
 import { isEmptyData } from 'utils/functions';

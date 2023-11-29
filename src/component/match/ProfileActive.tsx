@@ -43,7 +43,7 @@ export default function ProfileActive({ memberData }) {
                 <Text style={_styles.profileEverageText}>라이브 평점</Text>
                 <Text style={_styles.profileActiveText1}>
                   <Text style={{ fontFamily: 'AppleSDGothicNeoEB00' }}>{memberData.nickname}</Text>
-                  님의 리미티드 대표 인상
+                  님의 리프 대표 인상
                 </Text>
                 <Text style={_styles.profileActiveText2}>{memberData.face_code_name}</Text>
                 <View style={_styles.sliderContainer}>
