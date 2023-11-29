@@ -37,7 +37,7 @@ import { findSourcePath, findSourcePathLocal, ICON } from 'utils/imageUtils';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { useDispatch } from 'react-redux';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
-import { STACK } from 'constants/routes';
+import { STACK, ROUTES } from 'constants/routes';
 import { SUCCESS } from 'constants/reusltcode';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CommonLoading } from 'component/CommonLoading';
@@ -483,6 +483,12 @@ export const Profile1 = (props: Props) => {
                 memberData={profileData?.member_info} />
             ) : (
               <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
+                <TouchableOpacity 
+                  onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_AUTH }); }} 
+                  style={[_styles.modBtn, {bottom: 80, right: 0}]}>
+                  <Image source={ICON.squarePen} style={styles.iconSize16} />
+                  <Text style={_styles.modBtnText}>수정</Text>
+                </TouchableOpacity>
                 <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
                 <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
               </SpaceView>
@@ -493,7 +499,7 @@ export const Profile1 = (props: Props) => {
           <SpaceView pl={15} pr={15} mb={35}>
             <InterviewRender 
               title={memberBase?.nickname + '에 대한 필독서'} 
-              isEditBtn={false}
+              isEditBtn={true}
               dataList={profileData.interview_list} />
           </SpaceView>
 

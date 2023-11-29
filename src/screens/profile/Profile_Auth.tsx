@@ -98,7 +98,12 @@ export const Profile_Auth = (props: Props) => {
 
   // ############################################################################# 인증 저장
 	const saveAuth = async (isTab:boolean, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
-  
+      // 데이터 없을 시 저장 방지
+	  if(!_authDetailList.length && !isEmptyData(_imgDelSeqStr) && !isEmptyData(_authComment)) {
+		navigation.goBack();
+		return;
+	  };
+
 	  // 중복 클릭 방지 설정
 	  if(isClickable) {
 		  setIsClickable(false);
@@ -401,7 +406,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 			>
 				<ScrollView style={{marginBottom: 300}} showsVerticalScrollIndicator={false}>
 					<View>
-            {((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
+            			{((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
 							<View style={_styles.authBoxStatus}>
 								<Text style={_styles.statusText(_authStatus)}>
 									{_authStatus == 'PROGRESS' && '심사중'}
