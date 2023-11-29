@@ -19,6 +19,7 @@ import {
   Modal,
   RefreshControl,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
@@ -133,7 +134,6 @@ export const Storage = (props: Props) => {
     {
       type: 'RES',
       title: '받은 관심',
-      color: '#FF7E8C',
       data: [],
       isNew: false,
       isSpecialExists: false,
@@ -141,7 +141,6 @@ export const Storage = (props: Props) => {
     {
       type: 'REQ',
       title: '보낸 관심',
-      color: '#697AE6',
       data: [],
       isNew: false,
       isSpecialExists: false,
@@ -149,7 +148,6 @@ export const Storage = (props: Props) => {
     {
       type: 'MATCH',
       title: '성공 매칭',
-      color: '#8669E6',
       data: [],
       isNew: false,
       isSpecialExists: false,
@@ -157,7 +155,6 @@ export const Storage = (props: Props) => {
     {
       type: 'ZZIM',
       title: '찜 목록',
-      color: '#69C9E6',
       data: [],
       isNew: false,
       isSpecialExists: false,
@@ -165,7 +162,6 @@ export const Storage = (props: Props) => {
     {
       type: 'LIVE',
       title: 'LIVE',
-      color: '#FFC100',
       data: [],
       isNew: false,
       isSpecialExists: false,
@@ -241,7 +237,6 @@ export const Storage = (props: Props) => {
             {
               type: 'RES',
               title: '받은 관심',
-              color: '#FF7E8C',
               data: resLikeListData,
               isNew: data.res_new_yn == 'Y' ? true : false,
               isSpecialExists: resSpecialCnt > 0 ? true : false,
@@ -249,7 +244,6 @@ export const Storage = (props: Props) => {
             {
               type: 'REQ',
               title: '보낸 관심',
-              color: '#697AE6',
               data: reqLikeListData,
               isNew: false,
               isSpecialExists: reqSpecialCnt > 0 ? true : false,
@@ -257,7 +251,6 @@ export const Storage = (props: Props) => {
             {
               type: 'MATCH',
               title: '성공 매칭',
-              color: '#8669E6',
               data: matchTrgtListData,
               isNew: data.succes_new_yn == 'Y' ? true : false,
               isSpecialExists: matchSpecialCnt > 0 ? true : false,
@@ -268,7 +261,6 @@ export const Storage = (props: Props) => {
             tabsData.push({
               type: 'ZZIM',
               title: '찜 목록',
-              color: '#69C9E6',
               data: zzimTrgtListData,
               isNew: false,
             });
@@ -278,7 +270,6 @@ export const Storage = (props: Props) => {
             tabsData.push({
               type: 'LIVE',
               title: 'LIVE',
-              color: '#FFC100',
               data: liveHighListData,
               isNew: data.live_res_new_yn == 'Y' ? true : false,
             });
@@ -613,7 +604,6 @@ export const Storage = (props: Props) => {
         {isShow && 
 
           <TouchableOpacity
-            style={[{borderRadius: 15, overflow: 'hidden', marginBottom: 12, marginRight: 13}/* , index%2 == 0 && {marginRight: 14} */]}
             disabled={matchStatus == 'REFUSE'}
             onPress={() => {
               popupProfileOpen(
@@ -628,100 +618,44 @@ export const Storage = (props: Props) => {
                 item.nickname,
               );
             }}>
-
-            {/* 이미지 영역 */}
-            <View>
-              <Image source={item.img_path} style={_styles.renderItemContainer} />
-            </View>
-
-            {/* 상단 영역 */}
-            <View style={_styles.renderItemTopContainer}>
-              <View style={{flexDirection: 'row', alignItems: 'center', height: 25}}>
-                {type == 'ZZIM' ? (
-                  <Image style={_styles.renderItemTopIcon} source={ICON.zzimCircle} />
-                ) : (
-                  <>
-                    {type == 'LIVE' ? (
-                      <>
-                        {isEmptyData(item.req_profile_score) &&
-                          <View style={_styles.liveScoreArea(item.match_type)}>
-                            <Text style={_styles.liveScoreText(item.match_type)}>★ {item.req_profile_score}</Text>
-                          </View>
-                        }
-                      </>
-                    ) : (
-                      <>
-                        <Image style={_styles.renderItemTopIcon} source={item.special_interest_yn == 'N' ? ICON.passCircle : ICON.royalPassCircle} />
-                        {isEmptyData(item?.special_level) && <Text style={_styles.levelText(isBlur)}>Lv.{item.special_level}</Text>}
-                      </>
-                    )}
-                  </>
-                )}
-              </View>
-
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-
-                {(((type == 'RES' || matchType == 'LIVE_RES') && item.res_check_yn == 'N') || (matchType == 'MATCH_REQ' && item.req_success_check_yn == 'N')) && (
-                  <View style={_styles.newDotted(tabColor)} />
-                )}
-                <Text style={[_styles.renderItemTopText]}>
-                  {item.keep_end_day > 0 ? item.keep_end_day + '일 남음' : '오늘까지'}
-                </Text>
-              </View>
-
-            </View>
-
-            {/* 하단 영역 */}
-            <View style={[_styles.renderItemBottomContainer]}>
-              <View style={{flexDirection: 'row', marginBottom: -2, justifyContent: 'space-between'}}>
-
-                {/* ############# 인증 레벨 노출 */}
-                <AuthLevel authAcctCnt={item.auth_acct_cnt} type={'SMALL'} />
-
-                {/* ############# 라이브 평점 노출 */}
-                <ProfileGrade profileScore={item.profile_score} type={'SMALL'} />
-
-              </View>
-
-              <Text style={_styles.renderItemBottomTextName}>{item.nickname}, {item.age}</Text>
-
-                {/* {isEmptyData(item.job_name) && isEmptyData(item.height) && 
-                  <Text style={_styles.renderItemBottomTextSpec}>
-                    {item.job_name} {isEmptyData(item.height) && item.height + 'cm'}
-                  </Text>
-                } */}
-            </View>
-
-            {(item.special_interest_yn == 'N' && isBlur) && (
-              <>
-                <View style={_styles.reqRenderItem}>
-                  <Text style={_styles.reqRenderItemText}>터치하고 열어보기</Text>
-                </View>
-
-                <BlurView 
-                  style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}
-                  blurType='dark'
-                  blurAmount={5} />
-              </>
-            )}
-
-            {/* 매칭 거절 표시 */}
-            {matchStatus == 'REFUSE' &&
-              <View style={_styles.refuseArea}>
-                <View style={_styles.refuseAreaTextArea}>
-                  <Text style={_styles.refuseAreaText}>매칭실패</Text>
-                </View>
-              </View>
-            }
-
+            <SpaceView mt={40}>
+              <SpaceView viewStyle={_styles.listArea}>
+                <SpaceView viewStyle={_styles.listHeader}>
+                  <Text style={_styles.listHeaderText}>라이크</Text>
+                  <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+                    <Image source={ICON.sparkler} style={styles.iconSize22} />
+                    <Text style={[_styles.listHeaderText, {color: '#000'}]}>SILVER</Text>
+                  </SpaceView>
+                </SpaceView>
+                <SpaceView viewStyle={_styles.listBody}>
+                  <Image source={item.img_path} style={_styles.renderItemContainer} />
+                  <SpaceView>
+                    <ScrollView horizontal={true} contentContainerStyle={[layoutStyle.row, layoutStyle.alignStart]}>
+                      <SpaceView ml={10} viewStyle={_styles.faceArea}>
+                        <Text style={_styles.faceText}>#웃는게 예뻐요.</Text>
+                      </SpaceView>
+                      <SpaceView ml={10} viewStyle={_styles.authArea}>
+                        <Text style={_styles.authText}>T.H.E 상위 대학 석사</Text>
+                      </SpaceView>
+                      <SpaceView ml={10} viewStyle={_styles.authArea}>
+                        <Text style={_styles.authText}>T.H.E 상위 대학 석사</Text>
+                      </SpaceView>
+                      <SpaceView ml={10} viewStyle={_styles.authArea}>
+                        <Text style={_styles.authText}>T.H.E 상위 대학 석사</Text>
+                      </SpaceView>
+                    </ScrollView>
+                    <Text style={_styles.memberInfo}>{item.nickname}, {item.age}</Text>
+                    <Text style={_styles.comment}>{item.comment}</Text>
+                    <Text style={_styles.comment}>{item.introduce_comment}</Text>
+                  </SpaceView>
+                </SpaceView>
+              </SpaceView>
+            </SpaceView>
           </TouchableOpacity>
         }
       </>
     );
-
   });
-
-
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -740,173 +674,66 @@ export const Storage = (props: Props) => {
     <>
       {isLoading && <CommonLoading />}
 
-      <View style={_styles.root}>
-        {/* <CommonHeader title={tabs[currentIndex].title} right={<Wallet theme />} /> */}
+      {props.route.params?.headerType == 'common' ? (
+        <CommonHeader title={'보관함'} />
+      ) : (
+        <TopNavigation currentPath={''} />
+      )}
 
-        {props.route.params?.headerType == 'common' ? (
-          <CommonHeader title={'보관함'} />
-        ) : (
-          <TopNavigation currentPath={''} />
-        )}
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.wrap}
+      >
+        <ScrollView>
+          <SpaceView mt={10}>
+            <SpaceView viewStyle={layoutStyle.alignCenter}>
+              <SpaceView viewStyle={_styles.tabArea}>
+                <TouchableOpacity onPress={() => (setCurrentIndex(0))}>
+                  <Text style={_styles.tabText(currentIndex == 0)}>받은관심</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => (setCurrentIndex(1))}>
+                  <Text style={_styles.tabText(currentIndex == 1)}>보낸관심</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => (setCurrentIndex(2))}>
+                  <Text style={_styles.tabText(currentIndex == 2)}>매칭성공</Text>
+                </TouchableOpacity>  
+              </SpaceView>
+            </SpaceView>
+            
+            <Carousel
+              ref={dataRef}
+              data={tabs}
+              firstItem={currentIndex}
+              //onSnapToItem={setCurrentIndex}
+              onBeforeSnapToItem={setCurrentIndex}
+              //activeAnimationType={'spring'}
+              sliderWidth={width}
+              itemWidth={width}
+              pagingEnabled
+              renderItem={({item, index}) => {
+                const type = item.type;
 
-        {/* ####################################################################################################
-        ##################################### 탭 Indicator
-        #################################################################################################### */}
-        <SpaceView mb={6}>
-          <ScrollView 
-            horizontal 
-            ref={tabScrollRef}
-            showsHorizontalScrollIndicator={false} 
-            style={_styles.topContainer}>
-
-            <View style={_styles.dotContainer}>
-              {tabs.map((item, index) => (
-                <>
-                  <SpaceView key={index} pt={10}>
-                    <TouchableOpacity onPress={() => { onPressDot(index); }}>
-                      <View style={[_styles.tabItem(index === currentIndex, item.color)]}>
-                        <Text style={_styles.tabItemText}>{item.title} | {item.data.length}</Text>
-                      </View>
-                    </TouchableOpacity>
-                    {item.isNew && ( <View style={_styles.newIcon(item.color)} /> )}
-                  </SpaceView>
-                </>
-              ))}
-            </View>
-          </ScrollView>
-        </SpaceView>
-        
-        {/* ####################################################################################################
-        ##################################### 배너 영역
-        #################################################################################################### */}
-        <SpaceView mt={5} mb={6} viewStyle={_styles.bannerArea}>
-          <View>
-            <Text style={_styles.bannerText01}>관심과 찐심은 직진이에요.</Text>
-            <Text style={_styles.bannerText02}>
-              관심을 수락하면 상대방이 <Text style={{color: '#FFC100'}}>내 연락처를 열람</Text>할 수 있어요.{'\n'}
-              호감 가는 사람의 관심과 찐심을 받아 주세요.
-            </Text>
-          </View>
-          <View style={{position: 'absolute', right: 10, bottom: 8}}>
-            <Image source={ICON.loveIcon} style={styles.iconSquareSize(35)} />
-          </View>
-        </SpaceView>
-
-        {/* ####################################################################################################
-        ##################################### 설정 영역
-        #################################################################################################### */}
-        {(tabs[currentIndex]?.type != 'ZZIM' && tabs[currentIndex]?.data.length > 0) &&
-          <SpaceView mt={7} mb={3} pl={22} pr={22}>
-            <View style={[_styles.row, {minHeight: 30}]}>
-              {(tabs[currentIndex].type != 'LIVE' && tabs[currentIndex]?.data.length > 0) &&
-                <>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={_styles.showText}>찐심만 보기</Text>
-                    <ToggleSwitch
-                      isOn={isSpecialVisible}
-                      onColor={Color.primary}
-                      offColor={Color.grayDDDD}
-                      size="small"
-                      onToggle={(isOn) => setIsSpecialVisible(isOn) }
-                    />
-                  </View>
-                </>
-              }
-
-              {tabs[currentIndex]?.type == 'LIVE' &&
-                <View style={_styles.liveTabArea}>
-                  <TouchableOpacity onPress={() => { onLiveTab('RES'); }} style={_styles.liveTabItem(isLiveResVisible, 'RES')}>
-                    <Text style={_styles.liveTabText(isLiveResVisible, 'RES')}>받은 LIVE</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => { onLiveTab('REQ'); }} style={_styles.liveTabItem(isLiveReqVisible, 'REQ')}>
-                    <Text style={_styles.liveTabText(isLiveReqVisible, 'REQ')}>보낸 LIVE</Text>
-                  </TouchableOpacity>
-                </View>
-              }
-
-              {((tabs[currentIndex]?.type == 'RES' || tabs[currentIndex]?.type == 'MATCH' || tabs[currentIndex]?.type == 'LIVE') && tabs[currentIndex]?.data.length > 0) && (
-                <>
-                  {tabs[currentIndex]?.isNew ? (
-                    <TouchableOpacity onPress={() => { allCheck(tabs[currentIndex]?.type); }} style={_styles.checkArea}>
-                      <Image source={ICON.checkOnIcon} style={styles.iconSquareSize(17)} />
-                      <Text style={_styles.checkAreaText('#333333')}>{tabs[currentIndex]?.type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <View style={_styles.checkArea}>
-                      <Image source={ICON.checkOffIcon} style={styles.iconSquareSize(17)} />
-                      <Text style={_styles.checkAreaText('#D5D5D5')}>{tabs[currentIndex]?.type == 'MATCH' ? '성공 매칭을' : '새 관심들을'} 모두 확인했어요.</Text>
-                    </View>
-                  )}
-                </>
-              )}
-              
-            </View>
-          </SpaceView>
-        }
-
-        {/* ####################################################################################################
-        ##################################### 아이템 슬라이드 영역
-        #################################################################################################### */}
-        <SpaceView mt={10}>
-          <Carousel
-            ref={dataRef}
-            data={tabs}
-            firstItem={currentIndex}
-            //onSnapToItem={setCurrentIndex}
-            onBeforeSnapToItem={setCurrentIndex}
-            //activeAnimationType={'spring'}
-            sliderWidth={width}
-            itemWidth={width}
-            pagingEnabled
-            renderItem={({item, index}) => {
-              const type = item.type;
-              const color = item.color;
-
-              return (
-                <>
-                  {(tabs[currentIndex]?.type == type && !isLoading) &&
-                    <View key={'storage_' + index}>
-                      {item.data.length == 0 ? (
-                        <SpaceView viewStyle={_styles.noData}>
-                          <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
-                        </SpaceView>
-                      ) : (
-                        <>
-                          {(isSpecialVisible && !item.isSpecialExists && item.type != 'ZZIM' && item.type != 'LIVE') ? (
-                            <SpaceView viewStyle={_styles.noData}>
-                              <Text style={_styles.noDataText}>찐심이 없습니다.</Text>
-                            </SpaceView>
-                          ) : (
-                            <>
-                              <ScrollView 
-                                showsVerticalScrollIndicator={false} 
-                                style={{width: '100%', height: height-250}}
-                                /*refreshControl={
-                                  <RefreshControl
-                                    refreshing={isRefreshing}
-                                    onRefresh={handleRefresh}
-                                    // progressViewOffset={} // 이 속성을 사용하여 새로고침 진행 표시기 위치를 조정할 수 있습니다.
-                                    // size={} // 새로고침 진행 표시기의 크기를 조정할 수 있습니다.
-                                    // tintColor={} // 새로고침 진행 표시기의 색상을 변경할 수 있습니다.
-                                    title={'새로고침'} // 새로고침 진행 표시기 아래에 표시될 텍스트를 설정할 수 있습니다.
-                                  >
-                                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', zIndex: 10, position: 'absolute', top: 0, }}>
-                                      {isRefreshing && <ActivityIndicator size="large" color="#0000ff" />}
-                                      {isRefreshing && <Text>새로고침 중...</Text>}
-                                    </View>
-                                  </RefreshControl>
-                                }*/>
-
-                                <View style={_styles.imageWarpper}>
+                return (
+                  <>
+                    {(tabs[currentIndex]?.type == type && !isLoading) &&
+                      <View key={'storage_' + index}>
+                        {item.data.length == 0 ? (
+                          <SpaceView viewStyle={_styles.noData}>
+                            <Text style={_styles.noDataText}>{item.title}이 없습니다.</Text>
+                          </SpaceView>
+                        ) : (
+                          <>
+                            {(isSpecialVisible && !item.isSpecialExists && item.type != 'ZZIM' && item.type != 'LIVE') ? (
+                              <SpaceView viewStyle={_styles.noData}>
+                                <Text style={_styles.noDataText}>찐심이 없습니다.</Text>
+                              </SpaceView>
+                            ) : (
+                              <>
                                   <FlatList
-                                    //style={_styles.itemWrap}
-                                    contentContainerStyle={_styles.itemWrap}
                                     data={item.data}
                                     keyExtractor={(item, index) => index.toString()}
-                                    //numColumns={2} // 2열로 표시하도록 설정
-                                    //initialNumToRender={6}
-                                    //maxToRenderPerBatch={6}
-                                    //windowSize={10}
                                     removeClippedSubviews={true}
                                     getItemLayout={(data, index) => (
                                       {
@@ -918,76 +745,24 @@ export const Storage = (props: Props) => {
                                     renderItem={({ item: innerItem, index: innerIndex }) => {
                                       return (
                                         <View key={index}>
-                                          <StorageRenderItem item={innerItem} index={innerIndex} type={type} tabColor={color} />
+                                          <StorageRenderItem item={innerItem} index={innerIndex} type={type} />
                                         </View>
                                       )
                                     }}
                                   />
-                                </View>
-
-                                <View style={{ height: 130 }} />
-                              </ScrollView>
-                            </>
-                          )}
-                        </>
-                      )}
-                    </View>
-                  }
-                </>
-              )
-            }}
-          />
-        </SpaceView>
-      </View>
-
-      {/* ####################################################################################################
-      ##################################### 프로필 열람 팝업
-      #################################################################################################### */}
-      <Modal visible={isProfileOpenVisible} transparent={true}>
-        <View style={modalStyle.modalBackground}>
-          <View style={modalStyle.modalStyle1}>
-            <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
-              <CommonText fontWeight={'700'} type={'h5'} color={'#676767'}>프로필 열람</CommonText>
-            </SpaceView>
-
-            <SpaceView viewStyle={[modalStyle.modalBody]}>
-              {isEmptyData(profileOpenData.message) && (
-                <SpaceView mt={-5} mb={10} viewStyle={_styles.openPopupMessageArea}>
-                  <Text style={_styles.openPopupMessageTit}>{profileOpenData.nickname}님의 메시지</Text>
-
-                  <ScrollView style={{maxHeight: 100}} showsVerticalScrollIndicator={false}>
-                    <Text style={_styles.openPopupMessageText}>"{profileOpenData.message}"</Text>
-                  </ScrollView>
-                </SpaceView>
-              )}
-
-              <SpaceView mt={7} viewStyle={_styles.openPopupDescArea}>
-                <Text style={_styles.openPopupDescText}>상대방의 프로필을 열람 하시겠습니까?</Text>
-                <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                  <Image style={styles.iconSquareSize(25)} source={ICON.passCircle} resizeMode={'contain'} />
-                  <Text style={_styles.openPopupDescIcon}>X 15</Text>
-                </SpaceView>
-              </SpaceView>
-            </SpaceView>
-
-            <View style={modalStyle.modalBtnContainer}>
-              <TouchableOpacity
-                style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 20}]}
-                onPress={() => { setIsProfileOpenVisible(false); }}>
-                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소하기</CommonText>
-              </TouchableOpacity>
-
-              <View style={modalStyle.modalBtnline} />
-
-              <TouchableOpacity
-                style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 20}]}
-                onPress={() => { goProfileOpen(profileOpenData.match_seq, profileOpenData.tgt_member_seq, profileOpenData.type, profileOpenData.match_type); }}>
-                <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>확인하기</CommonText>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+                              </>
+                            )}
+                          </>
+                        )}
+                      </View>
+                    }
+                  </>
+                )
+              }}
+            />
+          </SpaceView>
+        </ScrollView>
+      </LinearGradient>
     </>
   );
 };
@@ -999,147 +774,91 @@ export const Storage = (props: Props) => {
 ###################################################################################################### */}
 
 const _styles = StyleSheet.create({
-  root: {
-    backgroundColor: 'white',
-    height: height,
-    width: width,
+  wrap: {
+    minHeight: height,
+    padding: 10,
   },
-  itemWrap: {
+  tabArea: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '100%',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#292F33',
+    borderRadius: Platform.OS == 'ios' ? 20 : 50,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    width: '50%',
   },
-  topContainer: {
-    marginHorizontal: 24,
-    overflow: 'hidden',
-  },
-  dotContainer: {
-    flexDirection: 'row',
-  },
-  dot: {
-    width: 9,
-    height: 9,
-    backgroundColor: '#e2e2e2',
+  tabText: (isOn: boolean) => {
+		return {
+			fontFamily: 'MinSans-Bold',
+			color: isOn ? '#FFDD00' : '#445561',
+		};
+	},
+  listArea: {
+    backgroundColor: '#1A1E1C',
     borderRadius: 5,
+    overflow: 'hidden',
+    width: '95%',
   },
-  row: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
+  listHeader: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#F1D30E',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
-  showText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 26,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-    marginRight: 8,
+  listHeaderText: {
+    fontFamily: 'MinSans-Bold',
+    color: '#FFF6BE',
   },
-  imageWarpper: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    width: '100%',
-    //paddingHorizontal: 21,
-    paddingLeft: 21,
+  listBody: {
+    flexDirection: 'row',
+    padding: 10,
   },
   renderItemContainer: {
-    width: (width - 54) / 2,
-    height: (width - 54) / 2,
-    borderRadius: 15,
-    backgroundColor: '#000000',
-    borderWidth: 1,
-    borderColor: '#ebe9ef',
+    width: (width - 54) / 4,
+    height: (width - 54) / 4,
+    borderRadius: 100,
+    backgroundColor: '#FFDD00',
+    borderWidth: 2,
+    borderColor: '#FFDD00',
     overflow: 'hidden',
   },
-  renderItemTopContainer: {
-    position: 'absolute',
-    flexDirection: `row`,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    left: 0,
-    right: 0,
-    top: 5,
-    zIndex: 1,
-    paddingHorizontal: 4,
+  faceArea: {
+    backgroundColor: '#FFF8CC',
+    borderRadius: Platform.OS == 'ios' ? 20 : 50,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
-  renderItemTopIcon: {
-    width: 25,
-    height: 25,
-    marginRight: 1,
+  faceText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
+    color: '#4A4846',
   },
-  renderItemTopZzimIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 1,
+  authArea: {
+    backgroundColor: '#878787',
+    borderRadius: Platform.OS == 'ios' ? 20 : 50,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
-  renderItemTopText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 13,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-    marginRight: 3,
+  authText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
+    color: '#FFF',
   },
-  renderItemBottomContainer: {
-    position: 'absolute',
-    flexDirection: 'column',
-    justifyContent: `center`,
-    left: 10,
-    bottom: 10,
+  memberInfo: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 20,
+    color: '#FFDD00',
+    marginTop: 5,
+    marginLeft: 10,
   },
-  renderItemBottomTextName: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 14,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-    marginTop: 2,
-  },
-  renderItemBottomTextSpec: {
-    opacity: 0.86,
-    fontFamily: 'AppleSDGothicNeoR00',
-    fontSize: 10,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  levelText: (isBlur: boolean) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoB00',
-      fontSize: 13,
-      color: '#fff',
-      backgroundColor: isBlur ? 'rgba(0, 0, 0, 0.4)' : 'transparent',
-      paddingHorizontal: isBlur ? 8 : 0,
-      paddingVertical: isBlur ? 1 : 0,
-      borderRadius: isBlur ? 10 : 0,
-      overflow: 'hidden',
-      textAlign: 'center',
-    }
-  },
-  tabItem: (isOn: boolean, itemColor: string) => {
-    return {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 12,
-      height: 25,
-      borderRadius: 20,
-      marginRight: 5,
-      backgroundColor: isOn ? itemColor : '#ECECEC',
-    }
-  },
-  tabItemText: {
-    fontSize: 14,
-    fontFamily: 'AppleSDGothicNeoEB00',
-    color: ColorType.white,
-    letterSpacing: 0,
-    textAlign: 'left',
+  comment: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
+    color: '#D5CD9E',
+    marginLeft: 10,
   },
   noData: {
     paddingHorizontal: 20,
@@ -1149,195 +868,7 @@ const _styles = StyleSheet.create({
   },
   noDataText: {
     fontSize: 16,
-    fontFamily: 'AppleSDGothicNeoB00',
-    color: '#646467',
+    fontFamily: 'Pretendard-SemiBold',
+    color: '#FFDD00',
   },
-  reqRenderThumb: {
-    width: '100%', 
-    height: '100%', 
-    backgroundColor: '#fff', 
-    opacity: 0.9,
-  },
-  reqRenderItem: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%', 
-    height: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
-  },
-  reqRenderItemText: {
-    color: '#fff',
-    fontSize: 14,
-    fontFamily: 'AppleSDGothicNeoB00',
-    marginTop: '70%',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    paddingHorizontal: 13,
-    paddingVertical: 2,
-    borderRadius: 15,
-    overflow: 'hidden',
-  },
-  liveTabArea: {
-    flexDirection: 'row',
-  },
-  liveTabItem: (isOn: boolean, type: string) => {
-    return {
-      backgroundColor: isOn ? type == 'RES' ? '#FE0456' : '#7986EE' : '#fff',
-      borderWidth: 1,
-      borderColor: type == 'RES' ? '#FE0456' : '#7986EE',
-      borderRadius: 8,
-      width: 65,
-      height: 22,
-      alignItems: `center`,
-      justifyContent: `center`,
-      marginRight: 4,
-    }
-  },
-  liveTabText: (isOn: boolean, type: string) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoEB00',
-      fontSize: 11,
-      color: !isOn ? type == 'RES' ? '#FE0456' : '#7986EE' : '#fff',
-    };
-  },
-  liveScoreArea: (type: string) => {
-    return {
-      flexDirection: `row`,
-      alignItems: `center`,
-      justifyContent: `center`,
-      borderWidth: 1,
-      borderColor: type == 'LIVE_RES' ? '#FE0456' : '#7986EE',
-      borderRadius: 5,
-      paddingHorizontal: 5,
-      height: 19,
-      backgroundColor: type == 'LIVE_RES' ? '#FE0456' : '#7986EE',
-      marginTop: 2,
-      marginLeft: 3,
-    };
-  },
-  liveScoreText: (type: string) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoB00',
-      fontSize: 12,
-      color: '#fff',
-    };
-  },
-  newIcon: (itemColor: string) => {
-    return {
-      position: 'absolute',
-      top: 3,
-      right: 5,
-      width: 8,
-      height: 8,
-      backgroundColor: itemColor,
-      borderRadius: 30,
-    };
-  },
-  checkArea: {
-    flexDirection: 'row',
-    backgroundColor: '#EFF3FE',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 30,
-    overflow: 'hidden',
-  },
-  checkAreaText: (itemColor: string) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoM00',
-      fontSize: 12,
-      color: itemColor,
-      marginLeft: 5,
-    };
-  },
-  newDotted: (itemColor: string) => {
-    return {
-      width: 8,
-      height: 8,
-      backgroundColor: itemColor,
-      borderRadius: 30,
-      marginRight: 5,
-    };
-  },
-  bannerArea: {
-    height: 65,
-    backgroundColor: '#1E67D4',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    marginHorizontal: 23,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  bannerText01: {
-    color: '#85FFEE',
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 16,
-    marginTop: -4,
-  },
-  bannerText02: {
-    color: '#ffffff',
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
-  },
-  refuseArea: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  refuseAreaTextArea: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  refuseAreaText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 14,
-    color: '#ffffff',
-    textAlign: 'center',
-    paddingVertical: 5,
-  },
-  openPopupMessageArea: {
-    width: '100%',
-    backgroundColor: '#F6F7FE',
-    alignItems: 'center',
-    paddingVertical: 15,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  openPopupMessageTit: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 14,
-    color: '#646464',
-    marginBottom: 10,
-  },
-  openPopupMessageText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 12,
-    color: '#646464',
-  },
-  openPopupDescArea: {
-    alignItems: 'center',
-  },
-  openPopupDescText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 14,
-    color: '#646464',
-  },
-  openPopupDescIcon: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 16,
-    color: '#697AE6',
-    marginLeft: 3,
-  },
-  
 });

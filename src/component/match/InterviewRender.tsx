@@ -31,16 +31,8 @@ export default function InterviewRender({ title, isEditBtn, dataList }) {
               <>
                 {e.answer != "" && e.answer != null && 
                   <>
-                    <SpaceView viewStyle={{width: '100%'}}>
-                      {(isEmptyData(isEditBtn) && isEditBtn) && (
-                        <TouchableOpacity 
-                          onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
-                          style={_styles.modBtn}>
-                          <Image source={ICON.squarePen} style={styles.iconSize16} />
-                          <Text style={_styles.modBtnText}>수정</Text>
-                        </TouchableOpacity>
-                      )}
-                      <SpaceView key={'interview_' + index} viewStyle={_styles.contentItemContainer}>
+                    <SpaceView key={'interview_' + index} viewStyle={_styles.contentItemContainer}>
+                      <SpaceView>
                         <SpaceView mb={10} viewStyle={_styles.questionRow}>
                           <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
                         </SpaceView>
@@ -48,6 +40,14 @@ export default function InterviewRender({ title, isEditBtn, dataList }) {
                           <Text style={_styles.answerText}>"{e?.answer}"</Text>
                         </SpaceView>
                       </SpaceView>
+                      {(isEmptyData(isEditBtn) && isEditBtn) && (
+                      <TouchableOpacity
+                        onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
+                        style={_styles.modBtn} key={index}>
+                        <Image source={ICON.squarePen} style={styles.iconSize16} />
+                        <Text style={_styles.modBtnText}>수정</Text>
+                      </TouchableOpacity>
+                    )}
                     </SpaceView>
                   </>
                 }
@@ -99,8 +99,9 @@ const _styles = StyleSheet.create({
     backgroundColor: '#FE8C12',
   },
   contentItemContainer: {
-    //width: '100%',
-    //justifyContent: 'flex-start',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     //minHeight: 60,
     borderRadius: 10,
     marginBottom: 20,
@@ -129,11 +130,13 @@ const _styles = StyleSheet.create({
     color: '#F3DEA6',
   },
   modBtn: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
+    // position: 'absolute',
+    // top: 0,
+    // right: 0,
     flexDirection: 'row',
     alignItems: 'center',
+    width: 65,
+    height: 25,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderRadius: 10,
     paddingVertical: 3,

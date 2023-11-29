@@ -968,7 +968,7 @@ const _styles = StyleSheet.create({
 			borderWidth: 1,
 			borderColor: isOn ? '#FFFFFF' : '#D5CD9E',
 			backgroundColor: isOn ? '#FFFFFF' : 'transparent',
-      overflow: 'hidden',
+      		overflow: 'hidden',
 		};
 	},
 	authBoxStatus: {
