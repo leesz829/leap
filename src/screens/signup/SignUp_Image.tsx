@@ -1,9 +1,5 @@
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styles';
-import { CommonBtn } from 'component/CommonBtn';
-import CommonHeader from 'component/CommonHeader';
-import { CommonText } from 'component/CommonText';
-import { ImagePicker } from 'component/ImagePicker';
 import SpaceView from 'component/SpaceView';
 import React, { useRef } from 'react';
 import { View, ScrollView, Image, TouchableOpacity, StyleSheet, Dimensions, Text } from 'react-native';
@@ -16,7 +12,6 @@ import { get_profile_imgage_guide, join_save_profile_image, update_join_master_i
 import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
-import { CommonImagePicker } from 'component/CommonImagePicker';
 import { isEmptyData, imagePickerOpen } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -345,11 +340,9 @@ export const SignUp_Image = (props: Props) => {
 
   /* ########################################################################################## 프로필 사진 아이템 렌더링 */
   function ProfileImageItemNew({ index, imgData, imgSelectedFn }) {
-    const imgUrl = findSourcePath(imgData?.img_file_path); // 이미지 경로
+    const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
     const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
     const imgStatus = imgData?.status; // 이미지 상태
-    
-    //console.log('imgData111111 ::::: ' , imgData);
   
     return (
       <TouchableOpacity 
@@ -366,9 +359,11 @@ export const SignUp_Image = (props: Props) => {
                 key={imgUrl}
                 source={imgUrl}
               />
-              <View style={_styles.imageDisabled(false)}>
-                <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : '반려'}</Text>
-              </View>
+
+              {/* 반려/승인인 경우 상태 표시 */}
+              {(imgStatus == 'REFUSE' || imgStatus == 'ACCEPT') && (
+                <View style={_styles.statusMarkArea(imgStatus)} />
+              )}
             </SpaceView>
           </>
         ) : (
@@ -384,7 +379,7 @@ export const SignUp_Image = (props: Props) => {
 
   /* ########################################################################################## 대표사진 영역 렌더링 */
 function MasterImageArea({ index, imgData, mngModalFn }) {
-  const imgUrl = findSourcePath(imgData?.img_file_path); // 이미지 경로
+  const imgUrl = findSourcePathLocal(imgData?.img_file_path); // 이미지 경로
   const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
   const imgStatus = imgData?.status; // 이미지 상태
 
@@ -407,12 +402,19 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
               </View>
             )} */}
 
+            {/* 대표사진 표시 */}
             {index == 0 && (
               <SpaceView viewStyle={_styles.mstMarkWrap}>
                 <Text style={_styles.mstMarkText}>대표사진</Text>
               </SpaceView>
             )}
 
+            {/* 상태 표시 */}
+            <SpaceView viewStyle={_styles.imgStatusArea}>
+              <Text style={_styles.imgStatusText(imgStatus)}>{imgStatus == 'PROGRESS' ? '심사중' : imgStatus == 'ACCEPT' ? '승인' : '반려'}</Text>
+            </SpaceView>
+
+            {/* 수정 버튼 */}
             <TouchableOpacity 
               onPress={() => { mngModalFn(imgData, index+1, imgUrl);}} 
               style={_styles.modBtn}
@@ -420,6 +422,13 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
               <Image source={ICON.userPen} style={styles.iconSquareSize(17)} />
               <Text style={_styles.modBtnText}>수정</Text>
             </TouchableOpacity>
+
+            {/* 딤 처리 */}
+            <LinearGradient
+              colors={['#ffffff', 'transparent']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 0.8 }}
+              style={_styles.imgDimArea} />
           </SpaceView>
         </>
       ) : (
@@ -493,7 +502,7 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
                     {index == 4 && <MasterImageArea index={4} imgData={imgData.orgImgUrl05} mngModalFn={imgMng_onOpen} fileCallBackFn={fileCallBack5} /> }
                     {index == 5 && <MasterImageArea index={5} imgData={imgData.orgImgUrl06} mngModalFn={imgMng_onOpen} fileCallBackFn={fileCallBack6} /> } */}
 
-                    <MasterImageArea index={currentImgIdx} imgData={profileImageList[currentImgIdx]} mngModalFn={imgMng_onOpen} />
+                    <MasterImageArea key={'mi'+index} index={currentImgIdx} imgData={profileImageList[currentImgIdx]} mngModalFn={imgMng_onOpen} />
                   </>
                 )
               })}
@@ -540,7 +549,7 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
           <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
             {isEmptyData(imgMngData.img_file_path) && (
               <SpaceView mr={10}>
-                <Image source={findSourcePath(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
+                <Image source={findSourcePathLocal(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
               </SpaceView>
             )}
             <SpaceView>
@@ -664,7 +673,7 @@ const _styles = StyleSheet.create({
   },
   modBtn: {
     position: 'absolute',
-    top: 10,
+    bottom: 10,
     right: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -745,6 +754,50 @@ const _styles = StyleSheet.create({
       fontFamily: 'Pretendard-SemiBold',
       fontSize: 12,
       color: status == 'REFUSE' ? ColorType.redF20456 : '#fff',
+    };
+  },
+  statusMarkArea: (status: string) => {
+    return {
+      position: 'absolute',
+      top: 5,
+      right: 5,
+      borderRadius: 8,
+      width: 10,
+      height: 10,
+      overflow: 'hidden',
+      backgroundColor: status == 'REFUSE' ? '#FF6B4D' : '#3CF5E2',
+    };
+  },
+  imgDimArea: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 130,
+    opacity: 0.5,
+    borderRadius: 20,
+  },
+  imgStatusArea: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    zIndex: 1,
+  },
+  imgStatusText: (status: string) => {
+    let cr = '#D5CD9E';
+    if(status == 'REFUSE') {
+      cr = '#FF4D29';
+    } else if(status == 'ACCEPT') {
+      cr = '#15F3DC';
+    }
+    return {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 14,
+      color: cr,
+      backgroundColor: '#FFFFFF',
+      borderRadius: 10,
+      paddingVertical: 2,
+      paddingHorizontal: 10,
     };
   },
 

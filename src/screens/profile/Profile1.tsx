@@ -313,11 +313,9 @@ export const Profile1 = (props: Props) => {
               )}
 
               {/* 상태 표시 */}
-              {imgStatus != 'ACCEPT' && (
-                <SpaceView viewStyle={_styles.imgStatusArea}>
-                  <Text style={_styles.imgStatusText(imgStatus)}>{imgStatus == 'PROGRESS' ? '심사중' : imgStatus == 'ACCEPT' ? '승인' : '반려'}</Text>
-                </SpaceView>
-              )}
+              <SpaceView viewStyle={_styles.imgStatusArea}>
+                <Text style={_styles.imgStatusText(imgStatus)}>{imgStatus == 'PROGRESS' ? '심사중' : imgStatus == 'ACCEPT' ? '승인' : '반려'}</Text>
+              </SpaceView>
 
               {/* 수정 버튼 */}
               <TouchableOpacity onPress={() => { mngModalFn(imgData, index+1, imgUrl);}} style={_styles.modBtn}>
@@ -603,10 +601,16 @@ const _styles = StyleSheet.create({
     zIndex: 1,
   },
   imgStatusText: (status: string) => {
+    let cr = '#D5CD9E';
+    if(status == 'REFUSE') {
+      cr = '#FF4D29';
+    } else if(status == 'ACCEPT') {
+      cr = '#15F3DC';
+    }
     return {
       fontFamily: 'Pretendard-Regular',
       fontSize: 14,
-      color: '#D5CD9E',
+      color: cr,
       backgroundColor: '#FFFFFF',
       borderRadius: 10,
       paddingVertical: 2,

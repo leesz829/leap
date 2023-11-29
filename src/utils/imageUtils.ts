@@ -247,6 +247,7 @@ export const IMAGE = {
   heartImg02: require('assets/img/heart_img02.png'),
   logoLeap: require('assets/img/logo_leap.png'),
   logoLeapTmon: require('assets/img/logo_leap_tmon.png'),
+  logoLeapTit: require('assets/img/logo_leap_tit.png'),
 };
 
 export const PROFILE_IMAGE = {

@@ -245,13 +245,13 @@ export const SignUp_Password = (props: Props) => {
 
   return (
     <>
-      <ScrollView>
-        <LinearGradient
-          colors={['#3D4348', '#1A1E1C']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={_styles.signUpContainer}
-        >
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={_styles.signUpContainer}
+      >
+        <ScrollView>
           <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
             <CommonText textStyle={_styles.title}>
               사용하실{'\n'}비밀번호를 입력해주세요.
@@ -270,7 +270,7 @@ export const SignUp_Password = (props: Props) => {
                   value={emailId}
                   onChangeText={(text) => setEmailId(text)}
                   autoCapitalize={'none'}
-                  style={_styles.textInputStyle}
+                  style={_styles.textInputStyle('#D5CD9E')}
                   maxLength={50}
                   editable={false}
                 />
@@ -287,7 +287,7 @@ export const SignUp_Password = (props: Props) => {
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   autoCapitalize={'none'}
-                  style={_styles.textInputStyle}
+                  style={_styles.textInputStyle('#F3E270')}
                   secureTextEntry={true}
                   maxLength={20}
                 />
@@ -301,7 +301,7 @@ export const SignUp_Password = (props: Props) => {
                 )}
               </SpaceView>
               <View style={{width: '100%'}}>
-                <Text style={_styles.noticeText}><Text style={{color: '#FFDD00'}}>8글자 이상, 20글자 이하</Text>, 영문포함, <Text style={{color: '#FFDD00'}}>숫자포함</Text>, 특수기호 허용</Text>
+                <Text style={_styles.noticeText}><Text style={{color: '#FFDD00'}}>8글자 이상, 20글자 이하</Text>, 영문 포함, <Text style={{color: '#FFDD00'}}>숫자 포함</Text>, 특수기호 포함</Text>
               </View>
             </SpaceView>
 
@@ -315,7 +315,7 @@ export const SignUp_Password = (props: Props) => {
                   value={passwordChk}
                   onChangeText={(text) => setPasswordChk(text)}
                   autoCapitalize={'none'}
-                  style={_styles.textInputStyle}
+                  style={_styles.textInputStyle('#F3E270')}
                   secureTextEntry={true}
                   maxLength={20}
                 />
@@ -372,8 +372,8 @@ export const SignUp_Password = (props: Props) => {
               />
             </SpaceView>
           </SpaceView>
-        </LinearGradient>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
     </>
   );
 };
@@ -420,13 +420,17 @@ const _styles = StyleSheet.create({
     bottom: 10,
     right: 0,
   },
-  textInputStyle: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3E270',
-    padding: 0,
-    color: '#F3E270',
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
+  textInputStyle: (cr:string) => {
+    return {
+      borderBottomWidth: 1,
+      borderBottomColor: '#F3E270',
+      padding: 0,
+      color: isEmptyData(cr) ? cr : '#F3E270',
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 14,
+      paddingBottom: 5,
+      paddingTop: 5,
+    };
   },
 
 });

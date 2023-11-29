@@ -355,27 +355,6 @@ export const Login = () => {
   // ########################################################################## 초기 실행
   useEffect(() => {
     if(isFocus) {
-
-      /* requestPermissions().then((result) => {
-        Geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setLatitude(latitude);
-            setLongitude(longitude);
-
-            //await AsyncStorage.setItem(JWT_TOKEN, data.token_param.jwt_token);
-          },
-          (error) => {
-            console.log(error.code, error.message);
-          },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        );
-
-        if(Platform.OS == 'android') {
-          requestNotificationPermission();
-        };
-      }); */
-
       setActivate(false);
       requestLocationPermission();
     };
@@ -393,13 +372,13 @@ export const Login = () => {
           <SpaceView mt={60} viewStyle={[_styles.container]}>
 
             {/* ############################################################### 타이틀 */}
-            <SpaceView mb={100} pl={20} pr={20}>
-              <SpaceView viewStyle={_styles.logoDescArea}>
+            <SpaceView mb={80} pl={20} pr={20}>
+              {/* <SpaceView viewStyle={_styles.logoDescArea}>
                 <Text style={_styles.logoDesc}>Limeeted Edition Amuse Play</Text>
-              </SpaceView>
-              <SpaceView mt={20}>
-                <Image source={IMAGE.logoLeapTmon} style={{width: '100%', height: 90}} />
-                {/* <SpaceView ml={145}><Text style={_styles.loginTitle}>리<Text style={{fontSize:12}}>미티드</Text> 프<Text style={{fontSize:12}}>리미엄</Text></Text></SpaceView> */}
+              </SpaceView> */}
+              <SpaceView viewStyle={{alignItems: 'center'}}>
+                {/* <Image source={IMAGE.logoLeapTmon} style={{width: '100%', height: 90}} /> */}
+                <Image source={IMAGE.logoLeapTit} style={{width: 320, height: 134}} />
               </SpaceView>
             </SpaceView>
 

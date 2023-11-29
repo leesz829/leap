@@ -90,14 +90,13 @@ export const SignUp_ID = (props: Props) => {
 
   return (
     <>
-      <ScrollView>
-        <LinearGradient
-          colors={['#3D4348', '#1A1E1C']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={_styles.signUpContainer}
-        >
-        
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={_styles.signUpContainer}
+      >
+        <ScrollView>
           <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
             <CommonText textStyle={_styles.title}>
               아이디로 사용하실{'\n'}이메일을 입력해주세요.
@@ -156,8 +155,8 @@ export const SignUp_ID = (props: Props) => {
               />
             </SpaceView>
           </SpaceView>
-        </LinearGradient>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
     </>
   );
 };
@@ -211,6 +210,8 @@ const _styles = StyleSheet.create({
     color: '#F3E270',
     fontFamily: 'Pretendard-Bold',
     fontSize: 14,
+    paddingBottom: 5,
+    paddingTop: 5,
   },
 
 });

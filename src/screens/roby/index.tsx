@@ -38,8 +38,6 @@ import { myProfile } from 'redux/reducers/authReducer';
 
 
 
-const { width, height } = Dimensions.get('window');
-
 /* ################################################################################################################
 ###### 로비
 ################################################################################################################ */
@@ -48,6 +46,8 @@ interface Props {
   navigation: StackNavigationProp<BottomParamList, 'Roby'>;
   route: RouteProp<BottomParamList, 'Roby'>;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const Roby = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
