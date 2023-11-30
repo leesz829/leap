@@ -383,7 +383,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
               activeOpacity={0.8} 
             >
               {currentImgIdx == 0 && (
-                <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+                <SpaceView pl={30} pr={30} viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
                   <SpaceView mb={5}><Text style={_styles.infoText(14)}>{item.distance}Km</Text></SpaceView>
                   <SpaceView mb={3}><Text style={_styles.infoText(25)}>{item.nickname}, {item.age}</Text></SpaceView>
                   <SpaceView><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>

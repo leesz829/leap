@@ -226,6 +226,7 @@ export const ICON = {
   cartYellow: require('assets/icon/icon-cart-yellow.png'),
   cartGray: require('assets/icon/icon-cart-gray.png'),
   sparkler: require('assets/icon/icon-sparkler.png'),
+  reportBtn: require('assets/icon/icon-report_btn.png'),
 };
 
 export const GIF_IMG = {

@@ -5,6 +5,9 @@ import { ICON } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 import { CommonText } from './CommonText';
 import SpaceView from './SpaceView';
+import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
+
+
 
 interface Props {
   items: { label: string; value: string }[];
@@ -26,21 +29,19 @@ export const RadioCheckBox_3: FC<Props> = (props) => {
 
         return (
           <SpaceView key={index + 'check'}>
-            <TouchableOpacity style={[ styles.checkWrap ]}
+            <TouchableOpacity style={[ _styles.checkWrap ]}
               onPress={() => onPressFn(index, item.value)}>
                 
-              <View
-                style={[
-                  styles.checkContainer,
-                  index === checkIndex && styles.active,
-                ]}>
-                <Image
-                  source={index === checkIndex ? ICON.checkOn : ICON.checkOff}
-                  style={styles.iconStyle}/>
-              </View>
+              {/* <View style={[ styles.checkContainer, index === checkIndex && styles.active ]}>
+                <Image source={index === checkIndex ? ICON.checkOn : ICON.checkGold} style={styles.iconStyle}/>
+              </View> */}
+
+              <SpaceView ml={25}>
+                <Image source={index === checkIndex ? ICON.checkYellow : ICON.checkGold} style={styles.iconSquareSize(20)}/>
+              </SpaceView>
 
               <SpaceView ml={8}>
-                <CommonText fontWeight={'500'} color={index === checkIndex ? '#697AE6' : '#B2B2B2'}>{item.label}</CommonText>
+                <CommonText fontWeight={'500'} color={index === checkIndex ? '#697AE6' : '#B2B2B2'} textStyle={_styles.labelText}>{item.label}</CommonText>
               </SpaceView>
               
             </TouchableOpacity>
@@ -53,12 +54,12 @@ export const RadioCheckBox_3: FC<Props> = (props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   checkWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 0,
+    paddingBottom: 15,
   },
   iconStyle: {
     width: 12,
@@ -77,4 +78,10 @@ const styles = StyleSheet.create({
     backgroundColor: Color.primary,
     borderColor: Color.primary,
   },
+  labelText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16,
+    color: '#D5CD9E',
+  },
+
 });

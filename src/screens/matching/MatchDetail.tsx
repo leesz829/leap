@@ -418,11 +418,11 @@ export default function MatchDetail(props: Props) {
               <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { popupActive('interest'); }}>
-              <Text style={_styles.btnText('REQ', '#43ABAE')}>라이크</Text>
+              <Text style={_styles.btnText('REQ', '#43ABAE')}>호감 보내기</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
+            {/* <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
               <Text style={_styles.btnText('ZZIM', '#43ABAE')}>찜하기</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </SpaceView>
         )}
 
@@ -446,6 +446,10 @@ export default function MatchDetail(props: Props) {
                       {/* ############################################################## 상단 이미지 영역 */}
                       <SpaceView viewStyle={_styles.profileImgWrap}>
                         <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
+
+                        <TouchableOpacity onPress={() => { report_onOpen(); }} style={{position: 'absolute', top: 10, right: 25}}>
+                          <Image source={ICON.reportBtn} style={styles.iconSquareSize(32)} />
+                        </TouchableOpacity>
                       </SpaceView>
 
                       <SpaceView viewStyle={_styles.infoArea}>
@@ -454,7 +458,7 @@ export default function MatchDetail(props: Props) {
                             <SpaceView mb={5}><Text style={_styles.infoText(14)}>{data?.match_member_info.distance}Km</Text></SpaceView>
                           )}
                           <SpaceView mb={8}><Text style={_styles.infoText(25)}>{data?.match_member_info.nickname}, {data?.match_member_info.age}</Text></SpaceView>
-                          <SpaceView><Text style={_styles.infoText(16)}>{data?.match_member_info.comment}</Text></SpaceView>
+                          <SpaceView pl={30} pr={30}><Text style={_styles.infoText(16)}>{data?.match_member_info.comment}</Text></SpaceView>
                         </SpaceView>
                       </SpaceView>
 
@@ -572,13 +576,13 @@ export default function MatchDetail(props: Props) {
                       {/* <AddInfo memberData={data?.match_member_info} /> */}
 
                     {/* ############################################################## 신고하기 영역 */}
-                    {type != 'ME' && (
+                    {/* {type != 'ME' && (
                       <TouchableOpacity onPress={() => { report_onOpen(); }}>
                         <View style={_styles.reportButton}>
                           <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
                         </View>
                       </TouchableOpacity>
-                    )}
+                    )} */}
 
                   </SpaceView>
 
@@ -626,45 +630,46 @@ export default function MatchDetail(props: Props) {
           ref={report_modalizeRef}
           adjustToContentHeight={false}
           handleStyle={modalStyle.modalHandleStyle}
-          modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]}
+          /* modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]} */
+          modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#333B41'}}
           modalHeight={550}
           FooterComponent={
             <>
-              <SpaceView>
-                <CommonBtn value={'신고 및 차단하기'} 
-                      type={'black'}
-                      height={59} 
-                      fontSize={19}
-                      borderRadius={1}
-                      onPress={popupReport}/>
+              <SpaceView pl={25} pr={25} pb={20} viewStyle={{backgroundColor: '#333B41'}}>
+                <SpaceView mb={10}>
+                  <TouchableOpacity onPress={popupReport} style={_styles.reportBtnArea('#FFDD00', '#FFDD00')}>
+                    <Text style={_styles.reportBtnText('#3D4348')}>신고 및 차단하기</Text>
+                  </TouchableOpacity>
+                </SpaceView>
+
+                <SpaceView>
+                  <TouchableOpacity onPress={report_onClose} style={_styles.reportBtnArea('#333B41', '#BBB18B')}>
+                    <Text style={_styles.reportBtnText('#D5CD9E')}>취소</Text>
+                  </TouchableOpacity>
+                </SpaceView>
               </SpaceView>
             </>
-          }>
-
-          <View style={modalStyle.modalHeaderContainer}>
-            <CommonText fontWeight={'700'} type={'h3'}>
-              사용자 신고 및 차단하기
-            </CommonText>
-            <TouchableOpacity onPress={report_onClose}>
-              <Image source={ICON.xBtn2} style={{width: 20, height: 20}} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 30}]}>
-            <SpaceView mb={13} viewStyle={{borderBottomWidth: 1, borderColor: '#e0e0e0', paddingBottom: 20}}>
-              <CommonText 
-                textStyle={[_styles.reportText, {color: ColorType.black0000}]}
-                type={'h5'}>
-                신고사유를 알려주시면 더 좋은 리프를{'\n'}만드는데 도움이 됩니다.</CommonText>
+          }
+        >
+          <SpaceView viewStyle={{backgroundColor: '#333B41'}}>
+            <SpaceView mt={25} ml={30}>
+              {/* <CommonText fontWeight={'700'} type={'h3'}>사용자 신고 및 차단하기</CommonText> */}
+              <Text style={_styles.reportTitle}>사용자 신고 및 차단하기</Text>
+              {/* <TouchableOpacity onPress={report_onClose}>
+                <Image source={ICON.xBtn2} style={{width: 20, height: 20}} />
+              </TouchableOpacity> */}
             </SpaceView>
 
-            <SpaceView>
-              <RadioCheckBox_3
-                  items={data.report_code_list}
-                  callBackFunction={reportCheckCallbackFn}
-              />
-            </SpaceView>
-          </View>
+            <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 0}]}>
+              <SpaceView mt={15} mb={13} viewStyle={{borderBottomWidth: 1, borderColor: '#777777', paddingBottom: 15, paddingHorizontal: 25}}>
+                <Text style={_styles.reportText}>신고사유를 알려주시면 더 좋은 리프를{'\n'}만드는데 도움이 됩니다.</Text>
+              </SpaceView>
+
+              <SpaceView>
+                <RadioCheckBox_3 items={data.report_code_list} callBackFunction={reportCheckCallbackFn} />
+              </SpaceView>
+            </View>
+          </SpaceView>
         </Modalize>
 
 
@@ -690,9 +695,9 @@ export default function MatchDetail(props: Props) {
         {/* ##################################################################################
                     인증 Pick
         ################################################################################## */}
-        {data?.match_member_info?.auth_acct_cnt >= 5 && (
+        {/* {data?.match_member_info?.auth_acct_cnt >= 5 && (
           <AuthPickRender _authLevel={data?.match_member_info?.auth_acct_cnt} _authList={data?.second_auth_list}  />
-        )}
+        )} */}
 
       </>
   );
@@ -811,27 +816,6 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#8e8e8e',
   },
-  reportButton: {
-    height: 43,
-    borderRadius: 21.5,
-    backgroundColor: '#363636',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: 20,
-  },
-  reportTextBtn: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  reportText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 17,
-    textAlign: 'left',
-  },
   emptyText: {
     textAlign: 'center',
     fontSize: 16,
@@ -892,5 +876,64 @@ const _styles = StyleSheet.create({
       overflow: 'hidden',
     };
   },
+
+
+
+
+
+
+
+
+
+  reportTitle: {
+    fontFamily: 'Pretendard-ExtraBold',
+		fontSize: 20,
+		color: '#D5CD9E',
+		textAlign: 'left',
+  },
+  reportButton: {
+    height: 43,
+    borderRadius: 21.5,
+    backgroundColor: '#363636',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    marginTop: 20,
+  },
+  reportTextBtn: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+  },
+  reportText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 17,
+    color: '#E1DFD1',
+    textAlign: 'left',
+  },
+  reportBtnArea: (bg:number, bdc:number) => {
+		return {
+			/* width: '50%',
+			height: 48, */
+			backgroundColor: bg,
+			alignItems: 'center',
+			justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: bdc,
+      borderRadius: 5,
+      paddingVertical: 13,
+		}
+	},
+  reportBtnText: (cr:string) => {
+		return {
+		  fontFamily: 'Pretendard-Bold',
+		  fontSize: 16,
+		  color: isEmptyData(cr) ? cr : '#fff',
+		};
+	},
+
+
   
 });
