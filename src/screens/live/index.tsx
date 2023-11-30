@@ -295,6 +295,7 @@ export const Live = () => {
                 onPress={() => { nextImage(); }}
                 style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2, zIndex: 1}} />
 
+              {/* 인디케이터 */}
               <SpaceView viewStyle={_styles.pagingContainer}>
                 {imgList?.map((i, n) => {
                   return n <= 5 && (
@@ -583,17 +584,17 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pagingDotStyle: {
-    width: 19,
+    width: 20,
     height: 2,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: '#34447A',
     borderRadius: 4,
   },
   dotContainerStyle: {
-    marginRight: 2,
-    marginLeft: 2,
+    //marginRight: 2,
+    //marginLeft: 2,
   },
   activeDot: {
-    backgroundColor: 'white',
+    backgroundColor: '#A29552',
   },
   impressImgBox: {
     zIndex: 1,

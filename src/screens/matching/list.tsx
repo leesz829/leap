@@ -351,6 +351,8 @@ const MatchRenderItem = ({ item, fnDetail }) => {
         <SpaceView viewStyle={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
 
           <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
+
+            {/* 이미지 */}
             {imgList.length > 0 && (
               <Image
                 source={findSourcePath(imgList[currentImgIdx].img_file_path)}
@@ -359,14 +361,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
               />
             )}
 
-            <TouchableOpacity 
-              onPress={() => { prevImage(); }}
-              style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2}} />
-
-            <TouchableOpacity 
-              onPress={() => { nextImage(); }}
-              style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
-
+            {/* 인디케이터 */}
             <SpaceView viewStyle={_styles.pagingContainer}>
               {imgList?.map((i, n) => {
                 return n < 3 && (
@@ -378,15 +373,30 @@ const MatchRenderItem = ({ item, fnDetail }) => {
             </SpaceView>
 
             <TouchableOpacity 
+              onPress={() => { prevImage(); }}
+              style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2}} />
+
+            <TouchableOpacity 
+              onPress={() => { nextImage(); }}
+              style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
+
+            <TouchableOpacity 
               style={_styles.infoArea}
               onPress={() => { fnDetail(item?.member_seq); }}
               activeOpacity={0.8} 
             >
               {currentImgIdx == 0 && (
                 <SpaceView pl={30} pr={30} viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+
+                  {/* 거리 */}
                   <SpaceView mb={5}><Text style={_styles.infoText(14)}>{item.distance}Km</Text></SpaceView>
+
+                  {/* 닉네임, 나이 */}
                   <SpaceView mb={3}><Text style={_styles.infoText(25)}>{item.nickname}, {item.age}</Text></SpaceView>
+
+                  {/* 한줄소개 */}
                   <SpaceView><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>
+
                 </SpaceView>
               )}
               {currentImgIdx == 1 && (
@@ -645,24 +655,24 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     top: 30,
     left: 0,
-    right: 0,
+    right: 10,
     zIndex: 1,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
   },
   pagingDotStyle: {
-    width: 19,
+    width: 20,
     height: 2,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: '#34447A',
     borderRadius: 4,
   },
   dotContainerStyle: {
-    marginRight: 2,
-    marginLeft: 2,
+    //marginRight: 2,
+    //marginLeft: 2,
   },
   activeDot: {
-    backgroundColor: 'white',
+    backgroundColor: '#A29552',
   },
 
 });

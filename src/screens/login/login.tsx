@@ -369,7 +369,7 @@ export const Login = () => {
         style={_styles.loginContainer}
       >
         <ScrollView>
-          <SpaceView mt={60} viewStyle={[_styles.container]}>
+          <SpaceView mt={60} mb={30} viewStyle={[_styles.container]}>
 
             {/* ############################################################### 타이틀 */}
             <SpaceView mb={80} pl={20} pr={20}>
