@@ -217,6 +217,7 @@ export const SignUp_Auth = (props : Props) => {
 			{authList.map((item, index) => {
 				return currentAuthCode == item?.common_code && (
 					<AuthRender 
+						key={'auth_item'+index}
 						_data={item}
 						_selectedAuthCode={selectedAuthCode} 
 						_modActiveFn={modActive}

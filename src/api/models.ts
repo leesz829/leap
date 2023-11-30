@@ -112,6 +112,8 @@ import {
   SAVE_PROFILE_AUTH,
   GET_MEMBER_INTEREST,
   SAVE_MEMBER_INTEREST,
+  JOIN_SAVE_PROFILE_NICKNAME,
+  JOIN_SAVE_PROFILE_INTRODUCE,
 } from './route';
 
 /* ========================================================================================================
@@ -308,6 +310,26 @@ export async function join_save_profile_add(body: {
 }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
   return send(JOIN_SAVE_PROFILE_ADD, 'POST', { ...body, push_token }, false, false);
+}
+
+// 회원가입시 프로필 닉네임을 저장한다.
+export async function join_save_profile_nickname(body: {
+  member_seq: number;
+  nickname: string;
+  comment: string;
+}) {
+  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+  return send(JOIN_SAVE_PROFILE_NICKNAME, 'POST', { ...body, push_token }, false, false);
+}
+
+// 회원가입시 프로필 소개를 저장한다.
+export async function join_save_profile_introduce(body: {
+  member_seq: number;
+  introduce_comment: string;
+  interview_list: any;
+}) {
+  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+  return send(JOIN_SAVE_PROFILE_INTRODUCE, 'POST', { ...body, push_token }, false, false);
 }
 
 

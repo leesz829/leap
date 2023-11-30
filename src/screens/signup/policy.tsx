@@ -14,9 +14,9 @@ import { ICON } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { CommonSwich } from 'component/CommonSwich';
 import { Modalize } from 'react-native-modalize';
-import { Terms } from 'screens/commonpopup/terms/Terms';
-import { Privacy } from 'screens/commonpopup/terms/Privacy';
-import { LocationService } from 'screens/commonpopup/terms/LocationService';
+import Terms from 'screens/commonpopup/terms/Terms';
+import Privacy from 'screens/commonpopup/terms/Privacy';
+import LocationService from 'screens/commonpopup/terms/LocationService';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { ROUTES } from 'constants/routes';
 import LinearGradient from 'react-native-linear-gradient';
@@ -68,41 +68,59 @@ export const Policy = (props: Props) => {
     }
   };
   
-  // 이용약관 팝업
+  // 이용약관 팝업 Ref
   const terms_modalizeRef = useRef<Modalize>(null);
-  const terms_onOpen = () => {
-    terms_modalizeRef.current?.open();
+
+  // 이용약관 팝업 활성화
+  const termsModalOpen = () => {
+    terms_modalizeRef?.current?.open();
   };
-  const terms_onClose = () => {
-    terms_modalizeRef.current?.close();
+
+  // 이용약관 팝업 콜백 함수
+  const callbackTermsPopup = (isAgree:boolean) => {
+    if(isAgree) {
+      setTermsAgree(true);
+    }
   };
 
   // 개인정보 취급방침 팝업
   const privacy_modalizeRef = useRef<Modalize>(null);
-  const privacy_onOpen = () => {
-    privacy_modalizeRef.current?.open();
+
+  // 개인정보 취급방침 팝업 활성화
+  const privacyModalOpen = () => {
+    privacy_modalizeRef?.current?.open();
   };
-  const privacy_onClose = () => {
-    privacy_modalizeRef.current?.close();
+  
+  // 개인정보 취급방침 팝업 콜백 함수
+  const callbackPrivacyPopup = (isAgree:boolean) => {
+    if(isAgree) {
+      setPrivacyAgree(true);
+    }
   };
 
   // 위치기반 서비스 이용약관 팝업
   const location_modalizeRef = useRef<Modalize>(null);
-  const location_onOpen = () => {
-    location_modalizeRef.current?.open();
+
+  // 위치기반 서비스 이용약관 팝업 활성화
+  const locationModalOpen = () => {
+    location_modalizeRef?.current?.open();
   };
-  const location_onClose = () => {
-    location_modalizeRef.current?.close();
+
+  // 위치기반 서비스 이용약관 팝업 콜백 함수
+  const callbackLocationPopup = (isAgree:boolean) => {
+    if(isAgree) {
+      setLocationAgree(true);
+    }
   };
 
   // toggle 활성화
   const toggleActive = async (type:string, value: boolean) => {
     if(type == 'terms') {
-      terms_onOpen();
+      termsModalOpen();
     } else if(type == 'privacy') {
-      privacy_onOpen();
+      privacyModalOpen();
     } else if(type == 'location') {
-      location_onOpen();
+      locationModalOpen();
     } else if(type == 'marketing') {
       setMrktAgree(value);
     }
@@ -125,7 +143,7 @@ export const Policy = (props: Props) => {
       return;
     }
 
-    navigation.navigate({
+    /* navigation.navigate({
       name : ROUTES.SIGNUP_CHECK,
       params : {
         birthday: '19860429',
@@ -137,7 +155,7 @@ export const Policy = (props: Props) => {
       }
     });
 
-    return;
+    return; */
 
     navigation.navigate({
       name : 'NiceAuth',
@@ -164,12 +182,10 @@ export const Policy = (props: Props) => {
 
   return (
     <>
-      {/* <CommonHeader title={'서비스 정책'} /> */}
-      
       <LinearGradient
         colors={['#3D4348', '#1A1E1C']}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        end={{ x: 0, y: 1 }}
         style={_styles.policyContainer}
       >
         <ScrollView>
@@ -336,192 +352,17 @@ export const Policy = (props: Props) => {
       {/* ###############################################
                     이용약관 팝업
       ############################################### */}
-      <Modalize
-        ref={terms_modalizeRef}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer}
-        adjustToContentHeight={false}
-        modalHeight={height - 150}
-        FooterComponent={
-          <>
-            <SpaceView viewStyle={[styles.rowStyle]}>
-              <View style={[layoutStyle.flex1]}>
-                <CommonBtn
-                  value={'취소'}
-                  type={'gray'}
-                  borderRadius={1}
-                  onPress={() => {
-                    setTermsAgree(false);
-                    terms_onClose();
-                  }}
-                  width={195}
-                />
-              </View>
-              <View style={[layoutStyle.flex1]}>
-                <CommonBtn
-                  value={'동의 후 닫기'}
-                  type={'primary'}
-                  borderRadius={1}
-                  onPress={() => {
-                    setTermsAgree(true);
-                    terms_onClose();
-                  }}
-                  width={195}
-                />
-              </View>
-            </SpaceView>
-          </>
-        }
-        HeaderComponent={
-          <>
-            <View style={modalStyle.modalHeaderContainer}>
-              <CommonText fontWeight={'700'} type={'h3'}>
-                (필수)이용약관
-              </CommonText>
-              <TouchableOpacity onPress={terms_onClose} hitSlop={commonStyle.hipSlop15}>
-                <Image source={ICON.xBtn2} style={styles.iconSize24} />
-              </TouchableOpacity>
-            </View>
-          </>
-        }
-      >
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          <SpaceView
-            mb={24}
-            viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}
-          >
-            <Terms />
-          </SpaceView>
-        </View>
-      </Modalize>
+      <Terms modalRef={terms_modalizeRef} callBackFunc={callbackTermsPopup} />
 
       {/* ###############################################
                      개인정보 취급방침 팝업
          ############################################### */}
-      <Modalize
-        ref={privacy_modalizeRef}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer}
-        adjustToContentHeight={false}
-        modalHeight={height - 150}
-        FooterComponent={
-          <>
-            <SpaceView viewStyle={[styles.rowStyle]}>
-              <View style={[layoutStyle.flex1]}>
-                <CommonBtn
-                  value={'취소'}
-                  type={'gray'}
-                  borderRadius={1}
-                  onPress={() => {
-                    setPrivacyAgree(false);
-                    privacy_onClose();
-                  }}
-                  width={195}
-                />
-              </View>
-              <View style={[layoutStyle.flex1]}>
-                <CommonBtn
-                  value={'동의 후 닫기'}
-                  type={'primary'}
-                  borderRadius={1}
-                  onPress={() => {
-                    setPrivacyAgree(true);
-                    privacy_onClose();
-                  }}
-                  width={195}
-                />
-              </View>
-            </SpaceView>
-          </>
-        }
-        HeaderComponent={
-          <>
-            <View style={modalStyle.modalHeaderContainer}>
-              <CommonText fontWeight={'700'} type={'h3'}>
-                개인정보 취급방침
-              </CommonText>
-              <TouchableOpacity onPress={privacy_onClose} hitSlop={commonStyle.hipSlop15}>
-                <Image source={ICON.xBtn2} style={styles.iconSize24} />
-              </TouchableOpacity>
-            </View>
-          </>
-        }
-      >
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          {/* <SpaceView mb={24}>
-						<CommonDatePicker />
-					</SpaceView> */}
-
-          <SpaceView
-            mb={24}
-            viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}
-          >
-            <Privacy />
-          </SpaceView>
-        </View>
-      </Modalize>
+      <Privacy modalRef={privacy_modalizeRef} callBackFunc={callbackPrivacyPopup} />
 
       {/* ###############################################
                      위치기반 서비스 이용약관 팝업
          ############################################### */}
-      <Modalize
-        ref={location_modalizeRef}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer}
-        adjustToContentHeight={false}
-        modalHeight={height - 150}
-        FooterComponent={
-          <>
-            <SpaceView viewStyle={[styles.rowStyle]}>
-              <View style={[layoutStyle.flex1]}>
-                <CommonBtn
-                  value={'취소'}
-                  type={'gray'}
-                  borderRadius={1}
-                  onPress={() => {
-                    setLocationAgree(false);
-                    location_onClose();
-                  }}
-                  width={195}
-                />
-              </View>
-              <View style={[layoutStyle.flex1]}>
-                <CommonBtn
-                  value={'동의 후 닫기'}
-                  type={'primary'}
-                  borderRadius={1}
-                  onPress={() => {
-                    setLocationAgree(true);
-                    location_onClose();
-                  }}
-                  width={195}
-                />
-              </View>
-            </SpaceView>
-          </>
-        }
-        HeaderComponent={
-          <>
-            <View style={modalStyle.modalHeaderContainer}>
-              <CommonText fontWeight={'700'} type={'h3'}>
-                위치기반 서비스 이용약관
-              </CommonText>
-              <TouchableOpacity onPress={location_onClose} hitSlop={commonStyle.hipSlop15}>
-                <Image source={ICON.xBtn2} style={styles.iconSize24} />
-              </TouchableOpacity>
-            </View>
-          </>
-        }
-      >
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          <SpaceView
-            mb={24}
-            viewStyle={{ width: width - 32, backgroundColor: Color.grayF8F8 }}
-          >
-            <LocationService />
-          </SpaceView>
-        </View>
-      </Modalize>
+      <LocationService modalRef={location_modalizeRef} callBackFunc={callbackLocationPopup} />
 
     </>
   );

@@ -29,6 +29,8 @@ export const JOIN_CANCEL = '/join/joinCancel'
 export const JOIN_SAVE_PROFILE_IMAGE = '/join/saveProfileImage'
 export const JOIN_SAVE_PROFILE_AUTH = '/join/saveProfileAuth'
 export const JOIN_SAVE_PROFILE_ADD = '/join/saveProfileAdd'
+export const JOIN_SAVE_PROFILE_NICKNAME = '/join/saveProfileNickname'
+export const JOIN_SAVE_PROFILE_INTRODUCE = '/join/saveProfileIntroduce'
 
 
 

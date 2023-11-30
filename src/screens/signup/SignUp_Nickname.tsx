@@ -10,7 +10,7 @@ import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions } from 
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
-import { join_save_profile_add, get_member_introduce_guide } from 'api/models';
+import { join_save_profile_nickname, get_member_introduce_guide } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
@@ -102,20 +102,12 @@ export const SignUp_Nickname = (props: Props) => {
         member_seq: memberSeq,
         nickname: nickname,
         comment: comment,
-        join_status: 'ADD',
       };
       try {
-        const { success, data } = await join_save_profile_add(body);
+        const { success, data } = await join_save_profile_nickname(body);
         if (success) {
           switch (data.result_code) {
             case SUCCESS:
-              /* navigation.navigate(ROUTES.SIGNUP_ADDINFO, {
-                memberSeq: memberSeq,
-                gender: gender,
-                mstImgPath: mstImgPath,
-                nickname: nickname,
-              }); */
-
               navigation.navigate(ROUTES.SIGNUP_ADDINFO, {
                 memberSeq: memberSeq,
                 gender: gender,

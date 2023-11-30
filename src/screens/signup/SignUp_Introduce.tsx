@@ -4,17 +4,18 @@ import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions } from 'react-native';
+import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { usePopup } from 'Context';
-import { join_save_profile_add, get_member_introduce_guide } from 'api/models';
+import { join_save_profile_introduce, get_member_introduce_guide } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 import { isEmptyData } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 
 
@@ -129,17 +130,9 @@ export const SignUp_Introduce = (props : Props) => {
 				member_seq: memberSeq,
 				introduce_comment: introduceComment,
 				interview_list: interviewList,
-				join_status: 'INTRODUCE',
-				business: addData.business,
-				job: addData.job,
-				height: addData.height,
-				form_body: addData.form_body,
-				religion: addData.religion,
-				drinking: addData.drinking,
-				smoking: addData.smoking,
 			};
 			try {
-				const { success, data } = await join_save_profile_add(body);
+				const { success, data } = await join_save_profile_introduce(body);
 				if (success) {
 					switch (data.result_code) {
 						case SUCCESS:
@@ -152,7 +145,7 @@ export const SignUp_Introduce = (props : Props) => {
 							break;
 						default:
 							show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-						break;
+							break;
 					}
 				} else {
 					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -185,58 +178,77 @@ export const SignUp_Introduce = (props : Props) => {
 
 	return (
 		<>
-			<LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 0, y: 1 }}
-				style={_styles.wrap}
-			>
-				<ScrollView style={{marginBottom: 80}} showsVerticalScrollIndicator={false}>
-					<SpaceView mt={20}>
-						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}프로필 소개 작성하기(선택)</Text>
-					</SpaceView>
+			
+				<LinearGradient
+					colors={['#3D4348', '#1A1E1C']}
+					start={{ x: 0, y: 0 }}
+					end={{ x: 0, y: 1 }}
+					style={_styles.wrap}
+				>
+					<KeyboardAwareScrollView
+						keyboardShouldPersistTaps="always"
+						keyboardOpeningTime={0}
+						alwaysBounceHorizontal={false}
+						alwaysBounceVertical={false}
+						contentInsetAdjustmentBehavior="automatic"
+						showsHorizontalScrollIndicator={false}
+						showsVerticalScrollIndicator={false}
+						automaticallyAdjustContentInsets={false}
+						extraScrollHeight={30}
+						enableOnAndroid>
 
-					<SpaceView mt={35}>
-						<TextInput
-							value={introduceComment}
-							onChangeText={(text) => setIntroduceComment(text)}
-							autoCapitalize={'none'}
-							multiline={true}
-							style={_styles.textInputBox(110)}
-							placeholder={'프로필 카드 상단에 공개되는 내 상세 소개 입력'}
-							placeholderTextColor={'#FFFDEC'}
-							maxLength={3000}
-							caretHidden={true}
-              			/>
-						<SpaceView>
-							<Text style={_styles.countText}>({isEmptyData(introduceComment) ? introduceComment.length : 0}/3000)</Text>
-						</SpaceView>
-					</SpaceView>
+						<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 
-					<SpaceView mt={50}>
-						{interviewList.map((item, index) => {
-							return isEmptyData(item?.common_code) && (
-								<>
-									<SpaceView mb={15}>
-										<Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
-										<TextInput
-											defaultValue={item?.answer}
-											onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
-											autoCapitalize={'none'}
-											multiline={true}
-											style={_styles.textInputBox(70)}
-											placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
-											placeholderTextColor={'#FFFDEC'}
-											maxLength={200}
-											caretHidden={true}
-										/>
+							<ScrollView showsVerticalScrollIndicator={false} style={{height: height-250}}>
+								<SpaceView mt={20}>
+									<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}프로필 소개 작성하기(선택)</Text>
+								</SpaceView>
+
+								<SpaceView mt={35}>
+									<TextInput
+										value={introduceComment}
+										onChangeText={(text) => setIntroduceComment(text)}
+										autoCapitalize={'none'}
+										multiline={true}
+										style={_styles.textInputBox(110)}
+										placeholder={'프로필 카드 상단에 공개되는 내 상세 소개 입력'}
+										placeholderTextColor={'#FFFDEC'}
+										maxLength={3000}
+										//caretHidden={true}
+									/>
+									<SpaceView>
+										<Text style={_styles.countText}>({isEmptyData(introduceComment) ? introduceComment.length : 0}/3000)</Text>
 									</SpaceView>
-								</>
-							)
-						})}
-					</SpaceView>
+								</SpaceView>
 
-					<SpaceView mb={30}>
+								<SpaceView mt={50}>
+									{interviewList.map((item, index) => {
+										return isEmptyData(item?.common_code) && (
+											<>
+												<SpaceView mb={15}>
+													<Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
+														<TextInput
+															defaultValue={item?.answer}
+															onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+															autoCapitalize={'none'}
+															multiline={true}
+															style={_styles.textInputBox(70)}
+															placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
+															placeholderTextColor={'#FFFDEC'}
+															maxLength={200}
+															caretHidden={true}
+														/>
+												</SpaceView>
+											</>
+										)
+									})}
+								</SpaceView>
+							</ScrollView>
+
+						</TouchableWithoutFeedback>
+					</KeyboardAwareScrollView>
+
+					<SpaceView mb={250} viewStyle={_styles.btnArea}>
 						<SpaceView mt={40}>
 							<CommonBtn
 								value={'멤버쉽 인증하기(선택)'}
@@ -264,8 +276,9 @@ export const SignUp_Introduce = (props : Props) => {
 							/>
 						</SpaceView>
 					</SpaceView>
-				</ScrollView>
-			</LinearGradient>
+
+				</LinearGradient>
+			
 		</>
 	);
 };
@@ -310,4 +323,8 @@ const _styles = StyleSheet.create({
 		color: '#fff',
 		textAlign: 'right',
 	},
+	btnArea: {
+
+	},
+
 });

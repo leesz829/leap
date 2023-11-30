@@ -378,7 +378,7 @@ export const Login = () => {
               </SpaceView> */}
               <SpaceView viewStyle={{alignItems: 'center'}}>
                 {/* <Image source={IMAGE.logoLeapTmon} style={{width: '100%', height: 90}} /> */}
-                <Image source={IMAGE.logoLeapTit} style={{width: 320, height: 134}} />
+                <Image source={IMAGE.logoLeapTit02} style={{width: 320, height: 134}} resizeMode={'cover'} />
               </SpaceView>
             </SpaceView>
 

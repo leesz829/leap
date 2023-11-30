@@ -245,6 +245,20 @@ export const SignUp_AddInfo = (props : Props) => {
 	// ############################################################################# 저장 함수
 	const saveFn = async () => {
 
+		if(!isEmptyData(addData.height) || !addData.height.trim()) {
+			show({ content: '키를 입력해 주세요.' });
+			return;
+		}
+		if(!isEmptyData(addData.business) || !addData.business.trim() || !isEmptyData(addData.job) || !addData.job.trim()) {
+			show({ content: '직업을 선택해 주세요.' });
+			return;
+		}
+
+		if(!isEmptyData(addData.form_body) || !addData.form_body.trim()) {
+			show({ content: '체형을 선택해 주세요.' });
+			return;
+		}
+
 		// 중복 클릭 방지 설정
 		if(isClickable) {
 			setIsClickable(false);
@@ -259,7 +273,7 @@ export const SignUp_AddInfo = (props : Props) => {
 				religion: addData.religion,
 				drinking: addData.drinking,
 				smoking: addData.smoking,
-				join_status: '02',
+				join_status: 'ADD',
 				introduce_comment: addData.introduce_comment,
 			};
 
