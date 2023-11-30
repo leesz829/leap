@@ -48,7 +48,7 @@ export const Message = (props: Props) => {
 	const isFocus = useIsFocused();
 	const { show } = usePopup();  // 공통 팝업
 
-  	const memberBase = useUserInfo(); //hooksMember.getBase();
+  	const memberBase = useUserInfo();
 
 	const toggleAccordion = (index) => {
 		setActiveIndex(activeIndex === index ? -1 : index);
@@ -157,49 +157,53 @@ export const Message = (props: Props) => {
               			<Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>님에게{'\n'}전달해드리는 소식</Text>
           			</SpaceView>
 
-          			{messageList.map((item : any, index) => (
-            			<SpaceView key={item.msg_send_seq}>
-              				<View style={_styles.rowContainer}>
-                				<TouchableOpacity
-                  					style={_styles.inner}
-                  					onPress={() => { toggleAccordion(item.msg_send_seq); }}
-                  					activeOpacity={0.3}>
-                  
-                  					<View style={[_styles.titleContainer, activeIndex === item.msg_send_seq && _styles.active]}>
-                    					<CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{item.title}</CommonText>
-                  					</View>
+					{memberBase?.member_seq != 905 && (
+						<>
+							{messageList.map((item : any, index) => (
+								<SpaceView key={item.msg_send_seq}>
+									<View style={_styles.rowContainer}>
+										<TouchableOpacity
+											style={_styles.inner}
+											onPress={() => { toggleAccordion(item.msg_send_seq); }}
+											activeOpacity={0.3}>
+						
+											<View style={[_styles.titleContainer, activeIndex === item.msg_send_seq && _styles.active]}>
+												<CommonText textStyle={_styles.titleText} fontWeight={'500'} type={'h5'}>{item.title}</CommonText>
+											</View>
 
-                  					<View style={[_styles.iconContainer, activeIndex === item.msg_send_seq && _styles.activeIcon]}>
-                    					<Image source={ICON.circleArrow} style={styles.iconSquareSize(18)} />
-                  					</View>
-                				</TouchableOpacity>
-              				</View>
+											<View style={[_styles.iconContainer, activeIndex === item.msg_send_seq && _styles.activeIcon]}>
+												<Image source={ICON.circleArrow} style={styles.iconSquareSize(18)} />
+											</View>
+										</TouchableOpacity>
+									</View>
 
-              				{activeIndex === item.msg_send_seq && (
-                				<View style={_styles.descContainer}>
-                  					<View style={_styles.descText}>
-                    					<CommonText fontWeight={'300'} color={'#E1DFD1'}>{item.contents}</CommonText>
-                    					<View style={_styles.dateArea}>
-                      						<CommonText fontWeight={'300'} color={'#E1DFD1'} textStyle={_styles.dateText}>{item.reg_dt}</CommonText>
-                    					</View>
-                  					</View>
+									{activeIndex === item.msg_send_seq && (
+										<View style={_styles.descContainer}>
+											<View style={_styles.descText}>
+												<CommonText fontWeight={'300'} color={'#E1DFD1'}>{item.contents}</CommonText>
+												<View style={_styles.dateArea}>
+													<CommonText fontWeight={'300'} color={'#E1DFD1'} textStyle={_styles.dateText}>{item.reg_dt}</CommonText>
+												</View>
+											</View>
 
-                  					{(
-                    					item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
-                    					|| item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
-                    					|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14' || item.msg_type == 'MSG_TP_16' || item.msg_type == 'MSG_TP_28'
-                    					|| item.msg_type == 'MSG_TP_30' || item.msg_type == 'MSG_TP_31' || item.msg_type == 'MSG_TP_32' || item.msg_type == 'MSG_TP_33'
-                  					) &&
-                    					<SpaceView mt={10} mb={15}>
-                      						<TouchableOpacity disabled={item.link_end_yn == 'Y' ? true : false} onPress={() => { goLink(item); }}>
-                        						<Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
-                      						</TouchableOpacity>
-                    					</SpaceView>
-                  					}
-                				</View>
-              				)}
-            			</SpaceView>
-          			))}
+											{(
+												item.msg_type == 'MSG_TP_02' || item.msg_type == 'MSG_TP_03' || item.msg_type == 'MSG_TP_04' || item.msg_type == 'MSG_TP_05' 
+												|| item.msg_type == 'MSG_TP_06' || item.msg_type == 'MSG_TP_07' || item.msg_type == 'MSG_TP_08' || item.msg_type == 'MSG_TP_09'
+												|| item.msg_type == 'MSG_TP_10' || item.msg_type == 'MSG_TP_14' || item.msg_type == 'MSG_TP_16' || item.msg_type == 'MSG_TP_28'
+												|| item.msg_type == 'MSG_TP_30' || item.msg_type == 'MSG_TP_31' || item.msg_type == 'MSG_TP_32' || item.msg_type == 'MSG_TP_33'
+											) &&
+												<SpaceView mt={10} mb={15}>
+													<TouchableOpacity disabled={item.link_end_yn == 'Y' ? true : false} onPress={() => { goLink(item); }}>
+														<Text style={_styles.linkText(item.link_end_yn == 'Y' ? true : false)}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
+													</TouchableOpacity>
+												</SpaceView>
+											}
+										</View>
+									)}
+								</SpaceView>
+							))}
+						</>
+					)}
         		</ScrollView>
       		</LinearGradient>
 		</>
