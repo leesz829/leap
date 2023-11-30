@@ -16,6 +16,7 @@ import { CommonLoading } from 'component/CommonLoading';
 import { CommonBtn } from 'component/CommonBtn';
 import { STACK, ROUTES } from 'constants/routes';
 import LinearGradient from 'react-native-linear-gradient';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 /* ################################################################################################################
@@ -37,6 +38,8 @@ export const Board = (props: Props) => {
 	const { show } = usePopup();
 	const [isLoading, setIsLoading] = useState(false);
 	const isFocus = useIsFocused();
+
+	const memberBase = useUserInfo();
 
 	const [noticeList, setnoticeList] = React.useState([]);
 
@@ -147,50 +150,53 @@ export const Board = (props: Props) => {
 				<ScrollView showsVerticalScrollIndicator={false}>
 
 					<SpaceView mt={30} mb={150}>
-						{noticeList.map((item, index) => (
-							<>
-								<SpaceView mb={10} key={item.board_seq}>
-									<View style={_styles.rowContainer}>
-										<TouchableOpacity
-											style={_styles.inner}
-											activeOpacity={0.3}
-											onPress={() => (
-												onPressBoardDetail(item)
-												//sstoggleAccordion(item);
-												)			
-											}>
-											
-											<View style={[_styles.titleContainer, activeIndex === item.board_seq && _styles.active]}>
-												<View style={{flexDirection:'row'}}>
-													{item.board_type == 'EVENT' &&
-														<Text style={_styles.iconType('#AFF20E')}>이벤트</Text>
-													}
-													{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'NOTICE') &&
-														<Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
-													}
-													{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'GUIDE') &&
-														<Text style={_styles.iconType('#FFDD00')}>가이드</Text>
-													}
+						{noticeList.map((item, index) => {
+
+							return (memberBase?.member_seq != 905 || (memberBase?.member_seq == 905 && (item.board_seq == 63 || item.board_seq == 82))) && (
+								<>
+									<SpaceView mb={10} key={item.board_seq}>
+										<View style={_styles.rowContainer}>
+											<TouchableOpacity
+												style={_styles.inner}
+												activeOpacity={0.3}
+												onPress={() => (
+													onPressBoardDetail(item)
+													//sstoggleAccordion(item);
+													)			
+												}>
+												
+												<View style={[_styles.titleContainer, activeIndex === item.board_seq && _styles.active]}>
+													<View style={{flexDirection:'row'}}>
+														{item.board_type == 'EVENT' &&
+															<Text style={_styles.iconType('#AFF20E')}>이벤트</Text>
+														}
+														{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'NOTICE') &&
+															<Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
+														}
+														{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'GUIDE') &&
+															<Text style={_styles.iconType('#FFDD00')}>가이드</Text>
+														}
+													</View>
+
+													<View>
+														{(item.new_yn == 'Y' && item.view_yn == 'N') && (
+															<View style={_styles.newIcon} />
+														)}
+														<CommonText textStyle={_styles.titleText} type={'h5'} fontWeight={'200'} color={'#D5CD9E'}>{item.title}</CommonText>
+														<CommonText type={'h6'} fontWeight={'200'} color={'#445561'}>{item.reg_dt}</CommonText>
+													</View>
 												</View>
 
-												<View>
-													{(item.new_yn == 'Y' && item.view_yn == 'N') && (
-														<View style={_styles.newIcon} />
-													)}
-													<CommonText textStyle={_styles.titleText} type={'h5'} fontWeight={'200'} color={'#D5CD9E'}>{item.title}</CommonText>
-													<CommonText type={'h6'} fontWeight={'200'} color={'#445561'}>{item.reg_dt}</CommonText>
+												<View style={[_styles.iconContainer, activeIndex === item.board_seq && _styles.activeIcon]}>
+													{/* <Image source={ICON.arrBottom} style={_styles.iconStyle} /> */}
+													<Image source={ICON.circleArrow} style={styles.iconSize18} />
 												</View>
-											</View>
-
-											<View style={[_styles.iconContainer, activeIndex === item.board_seq && _styles.activeIcon]}>
-												{/* <Image source={ICON.arrBottom} style={_styles.iconStyle} /> */}
-												<Image source={ICON.circleArrow} style={styles.iconSize18} />
-											</View>
-										</TouchableOpacity>
-									</View>
-								</SpaceView>
-							</>
-						))}
+											</TouchableOpacity>
+										</View>
+									</SpaceView>
+								</>
+							)
+						})}
 					</SpaceView>
 
 				</ScrollView>
