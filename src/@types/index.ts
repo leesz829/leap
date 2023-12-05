@@ -74,6 +74,8 @@ export type StackParamList = {
     matchSeq: Number;
     trgtMemberSeq: Number;
     memberSeqList: [];
+    matchType: string;
+    message: string;
   };
   ImagePreview: {
     imgList: [];

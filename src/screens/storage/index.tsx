@@ -105,7 +105,7 @@ export const Storage = (props: Props) => {
     match_seq: 0,
     nickname: '',
     message: '',
-    tgt_member_seq: 0,
+    trgt_member_seq: 0,
     type: '',
     match_type: '',
   });
@@ -373,7 +373,7 @@ export const Storage = (props: Props) => {
   // ################################################################################# 프로필 열람 팝업 활성화
   const popupProfileOpen = async (
     match_seq: any,
-    tgt_member_seq: any,
+    trgt_member_seq: any,
     type: any,
     profile_open_yn: any,
     member_status: any,
@@ -410,17 +410,18 @@ export const Storage = (props: Props) => {
         match_seq: match_seq,
         nickname: nickname,
         message: message,
-        tgt_member_seq: tgt_member_seq,
+        trgt_member_seq: trgt_member_seq,
         type: type,
         match_type: match_type,
       });
 
     } else {
-      navigation.navigate(STACK.COMMON, { screen: 'StorageProfile', params: {
+      navigation.navigate(STACK.COMMON, { screen: 'MatchDetail', params: {
         matchSeq: match_seq,
-        tgtMemberSeq: tgt_member_seq,
+        trgtMemberSeq: trgt_member_seq,
         type: type,
         matchType: match_type,
+        message: message,
       } });
 
       navigation.setParams({ loadPage: type });
@@ -428,7 +429,7 @@ export const Storage = (props: Props) => {
   };
 
   // ################################################################################# 프로필 열람 이동
-  const goProfileOpen = async (match_seq:any, tgt_member_seq:any, type:any, match_type:any) => {
+  const goProfileOpen = async (match_seq:any, trgt_member_seq:any, type:any, match_type:any, message:string) => {
     let req_profile_open_yn = '';
     let res_profile_open_yn = '';
 
@@ -451,25 +452,32 @@ export const Storage = (props: Props) => {
   
       try {
         const { success, data } = await update_match(body);
+
         if(success) {
           if (data.result_code == '0000') {
+            
             dispatch(myProfile());
             setIsProfileOpenVisible(false);
-            navigation.navigate(STACK.COMMON, {
-              screen: 'StorageProfile', 
+            navigation.navigate(STACK.COMMON, { 
+              screen: 'MatchDetail', 
               params: {
                 matchSeq: match_seq,
-                tgtMemberSeq: tgt_member_seq,
+                trgtMemberSeq: trgt_member_seq,
                 type: type,
-                matchType: match_type
+                matchType: match_type,
+                message: message
               }
             });
   
             navigation.setParams({ loadPage: type });
-  
+
           } else if (data.result_code == '6010') {
-            show({ content: '보유 패스가 부족합니다.', isCross: true, });
-            return false;
+            setIsProfileOpenVisible(false);
+            show({ 
+              content: '보유 큐브가 부족합니다.',
+              isCross: true,
+              confirmCallback: function () {},
+            });
           } else {
             console.log(data.result_msg);
             show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true, });
@@ -570,13 +578,13 @@ export const Storage = (props: Props) => {
     const matchStatus = item?.match_status; // 매칭 상태
 
     let isShow = true;  // 노출 여부
-    let tgt_member_seq = '';
+    let trgt_member_seq = '';
     let profile_open_yn = 'N';
     let isBlur = false;
 
     let bgColor = '#F1D30E';
     let matchStatusKor = '라이크';
-    if(item?.match_status == 'PROGRESS' && item?.special_interest_yn == 'Y') {
+    if(item?.match_status == 'PROGRESS' ||  item?.match_status == 'ACCEPT' && item?.special_interest_yn == 'Y') {
       bgColor = '#E95B36';
       matchStatusKor = '슈퍼 라이크';
     }else if(item?.match_status == 'LIVE_HIGH') {
@@ -600,7 +608,7 @@ export const Storage = (props: Props) => {
 
     // 대상 회원 번호, 프로필 열람 여부 설정
     if(type == 'RES' || matchType == 'LIVE_RES') {
-      tgt_member_seq = item?.req_member_seq;
+      trgt_member_seq = item?.req_member_seq;
       profile_open_yn = item?.res_profile_open_yn;
 
       if(item?.res_profile_open_yn == 'N') {
@@ -608,14 +616,14 @@ export const Storage = (props: Props) => {
       };
 
     } else if(type == 'REQ' || matchType == 'LIVE_REQ') {
-      tgt_member_seq = item?.res_member_seq;
+      trgt_member_seq = item?.res_member_seq;
       profile_open_yn = 'Y';
 
     } else if(type == 'MATCH' || type == 'ZZIM') {
       if (item?.req_member_seq != memberSeq) {
-        tgt_member_seq = item?.req_member_seq;
+        trgt_member_seq = item?.req_member_seq;
       } else {
-        tgt_member_seq = item?.res_member_seq;
+        trgt_member_seq = item?.res_member_seq;
       };
       profile_open_yn = 'Y';
     };
@@ -632,7 +640,7 @@ export const Storage = (props: Props) => {
                   onPress={() => {
                     popupProfileOpen(
                       item?.match_seq,
-                      tgt_member_seq,
+                      trgt_member_seq,
                       type,
                       profile_open_yn,
                       item?.member_status,
@@ -711,7 +719,7 @@ export const Storage = (props: Props) => {
                   onPress={() => {
                     popupProfileOpen(
                       item?.match_seq,
-                      tgt_member_seq,
+                      trgt_member_seq,
                       type,
                       profile_open_yn,
                       item?.member_status,
@@ -891,7 +899,7 @@ export const Storage = (props: Props) => {
 
                 <TouchableOpacity
                   style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomRightRadius: 20}]}
-                  onPress={() => { goProfileOpen(profileOpenData.match_seq, profileOpenData.tgt_member_seq, profileOpenData.type, profileOpenData.match_type); }}>
+                  onPress={() => { goProfileOpen(profileOpenData.match_seq, profileOpenData.trgt_member_seq, profileOpenData.type, profileOpenData.match_type, profileOpenData.message); }}>
                   <CommonText textStyle={{fontSize: 16}} fontWeight={'600'} color={'#445561'}>확인하기</CommonText>
                   <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                     <Image style={styles.iconSquareSize(25)} source={ICON.polygonGreen} resizeMode={'contain'} />

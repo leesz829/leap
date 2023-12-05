@@ -12,7 +12,7 @@ import TopNavigation from 'component/TopNavigation';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
-import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, Platform } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
@@ -28,7 +28,9 @@ import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
 import AuthPickRender from 'component/match/AuthPickRender';
 import LinearGradient from 'react-native-linear-gradient';
-
+import { update_match_status, resolve_match, get_matched_member_info } from 'api/models';
+import { ROUTES, STACK } from 'constants/routes';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 
 interface Props {
@@ -48,11 +50,16 @@ export default function MatchDetail(props: Props) {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
   const { show } = usePopup(); // 공통 팝업
+  const [isClickable, setIsClickable] = useState(true); // 클릭 여부
 
   const type = props.route.params.type; // 유형
   const matchSeq = props.route.params.matchSeq; // 매칭 번호
   const trgtMemberSeq = props.route.params.trgtMemberSeq; // 대상 회원 번호
   const memberSeqList = props.route.params.memberSeqList; // 회원 번호 목록
+  const matchType = props.route.params.matchType;
+
+  // 전화번호 복사 여부
+  const [isCopyHpState, setIsCopyHpState] = useState(true);
 
   const [isLoad, setIsLoad] = useState(false); // 로딩 여부
   const [isEmpty, setIsEmpty] = useState(false); // 빈값 여부
@@ -71,6 +78,10 @@ export default function MatchDetail(props: Props) {
     report_code_list: [],
     safe_royal_pass: Number,
     use_item: {},
+  });
+
+  const [matchData, setMatchData] = useState<any>({
+    match_base: {},
   });
 
   // 신고목록
@@ -122,6 +133,9 @@ export default function MatchDetail(props: Props) {
     setSincereSendModalVisible(false);
     setMessage('');
   };
+
+  // 본인 보유 아이템 정보
+  const [freeContactYN, setFreeContactYN] = useState('N');
 
   // ######################################################################################## 데일리 매칭 정보 조회
   const getMatchInfo = async () => {
@@ -182,6 +196,156 @@ export default function MatchDetail(props: Props) {
       console.log(error);
     } finally {
     }
+  };
+
+  // ############################################################ 매칭 회원 정보 조회
+  const selectMatchMemberInfo = async () => {
+    const body = {
+      match_seq: matchSeq
+    };
+    try {
+      const { success, data } = await get_matched_member_info(body);
+
+      if(success) {
+        if (data.result_code == '0000') {
+
+          const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
+          setMatchData({
+            match_base: data?.match_base,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoad(true);
+    }
+  };
+
+  // ############################################################ 매칭 상태 변경(수락, 거절)
+  const updateMatchStatus = async (status: any) => {
+    show({ 
+      content: status == 'ACCEPT' ? '상대방과의 매칭을 수락합니다. ' : '다음 기회로 미룰까요?' ,
+      cancelCallback: function() {
+        
+      },
+      confirmCallback: async function() {
+        const body = {
+          match_seq: matchSeq,
+          match_status: status,
+        };
+        try {
+          const { success, data } = await update_match_status(body);
+          if(success) {
+            if(data.result_code == '0000') {
+
+              if(status == 'ACCEPT') {
+                navigation.navigate(STACK.TAB, {
+                  screen: 'MatchDeatil',
+                  params: {
+                    headerType: '',
+                    loadPage: 'MATCH',
+                  },
+                });
+              } else {
+                navigation.goBack();
+              }
+            } else {
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+        }
+      }
+    });
+  };
+
+  // ############################################################ 연락처 열기 팝업 활성화
+  const hpOpenPopup = async () => {    
+    let tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (matchData.match_base.special_interest_yn == 'Y' ? '50' : '100');
+    let subContent = '';
+
+    if('Y' == freeContactYN){
+      tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요? \n';
+      subContent = '연락처 프리오퍼 사용중';
+    }
+
+    show({ 
+      title: '연락처 공개',
+      content: tmpContent,
+      subContent: subContent,
+      cancelCallback: function() {
+
+      },
+      confirmCallback: function() {
+        goHpOpen();
+      },
+    });
+  }
+
+  // ############################################################ 연락처 열기
+  const goHpOpen = async () => {
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+
+      const body = {
+        match_seq: matchData.match_base.match_seq
+      };
+
+      try {
+        const { success, data } = await resolve_match(body);
+
+        if(success) {
+          if (data.result_code == '0000') {
+            dispatch(myProfile());
+          } else if(data.result_code == '5000') {
+            show({
+              title: '연락처 열람 알림',
+              content: '이미 열람된 연락처 입니다.\n보관함 이동 후 다시 조회 해주세요.',
+              isCross: true,
+              confirmCallback: function () {
+                navigation.goBack();
+              },
+            });
+          } else {
+            show({
+              title: '재화 부족',
+              content: '보유 재화가 부족합니다.',
+              isCross: true,
+              confirmCallback: function () {},
+            });
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        selectMatchMemberInfo();
+      }
+    }
+  };
+
+  // ############################################################ 클립보드 복사
+  const onCopyPress = async (value: string) => {
+    try {
+      await Clipboard.setString(value);
+      show({
+        type: 'RESPONSIVE',
+        content: '클립보드에 복사되었습니다.',
+      });
+
+      setIsCopyHpState(false);
+
+      const timer = setTimeout(() => {
+        setIsCopyHpState(true);
+      }, 3500);
+    } catch(e) {
+      console.log('e ::::::: ' , e);
+    };
   };
 
   /* #############################################
@@ -378,6 +542,7 @@ export default function MatchDetail(props: Props) {
       setIsEmpty(false);
       // 데일리 매칭 정보 조회
       getMatchInfo();
+      selectMatchMemberInfo();
     }
   }, [isFocus]);
 
@@ -405,14 +570,18 @@ export default function MatchDetail(props: Props) {
           CommonActions.reset({ index: 1, routes: [{ name: 'Login01' }] })
         );
   }
-  
 
   return (
       <>
-        <CommonHeader title={'프로필 상세'} />
+        <CommonHeader title={
+          type == 'RES' ? '받은관심' 
+          : type == 'REQ' ? '보낸관심' 
+          : type == 'MATCH' ? '매칭성공'
+          : '프로필 상세'
+        } />
 
         {/* ############################################################################################### 버튼 영역 */}
-        {data.profile_img_list.length > 0 && isLoad && type != 'ME' && (
+        {data.profile_img_list.length > 0 && isLoad && type != 'ME' && !matchSeq &&(
           <SpaceView viewStyle={_styles.btnWrap}>
             <TouchableOpacity onPress={() => { popupActive('pass'); }}>
               <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
@@ -425,6 +594,76 @@ export default function MatchDetail(props: Props) {
             </TouchableOpacity> */}
           </SpaceView>
         )}
+
+        {/* ############################################################################################### 매칭 영역 */}
+        {matchSeq &&
+          <SpaceView viewStyle={_styles.btnWrap}>
+            <SpaceView viewStyle={_styles.matchArea}>
+              <SpaceView mb={20} viewStyle={[layoutStyle.columCenter]}>
+                <SpaceView viewStyle={_styles.matchTitleArea}>
+                  <Text style={_styles.matchTitle}>{type == 'RES' ? '관심' : type == 'REQ' ? '좋아요' : '메시지'}</Text>
+                </SpaceView>
+                {props.route.params.message &&
+                  <SpaceView mt={10} pl={5} pr={5}>
+                    <Text style={_styles.matchMsg}>{props.route.params.message}</Text>
+                  </SpaceView>
+                }
+
+              </SpaceView>
+              <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyCenter]}>
+
+                {type == 'RES' &&
+                <>
+                  <SpaceView mr={5}>
+                    <TouchableOpacity onPress={() => updateMatchStatus('REFUSE') } style={[_styles.matchResBtn, {backgroundColor: '#FFF'}]}>
+                      <Text style={_styles.matchResBtnText}>거절</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                  <SpaceView ml={5}>
+                    <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={[_styles.matchResBtn, {backgroundColor: '#FFDD00'}]}>
+                      <Text style={_styles.matchResBtnText}>수락</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </>
+              }
+
+              {type == 'REQ' &&
+                <SpaceView viewStyle={_styles.matchReqArea}>
+                  <Text style={_styles.matchReqText}>상대방의 응답을 기다리고 있어요.</Text>
+                </SpaceView>
+              }
+
+              {type == 'MATCH' &&
+                <SpaceView viewStyle={[layoutStyle.justifyCenter, layoutStyle.alignCenter, {width: '100%'}]}>
+                  {(matchData.match_base.res_member_seq == memberBase.member_seq && matchData.match_base.res_phone_open_yn == 'Y') ||
+                  (matchData.match_base.req_member_seq == memberBase.member_seq && matchData.match_base.req_phone_open_yn == 'Y') ? (
+                    <>
+                      <TouchableOpacity
+                        disabled={!isCopyHpState}
+                        style={_styles.matchSuccArea}
+                        onPress={() => { onCopyPress(data.match_member_info.phone_number); }}>
+                        <Text style={_styles.matchSuccText}>{data.match_member_info.phone_number}</Text>
+                      </TouchableOpacity>
+                      <Text style={_styles.clipboardCopyDesc}>연락처를 터치하면 클립보드에 복사되요.</Text>
+                    </>
+                  ):(
+                    <TouchableOpacity 
+                    style={_styles.matchSuccArea}
+                    onPress={() => {
+                      hpOpenPopup();
+                    }}
+                  >
+                    <Text style={_styles.matchSuccText}>연락처 확인하기</Text>
+                  </TouchableOpacity>
+                  )}
+                </SpaceView>
+              }
+
+            </SpaceView>
+            {type == 'RES' && <Text style={_styles.matchResDesc}>관심을 수락하면 서로의 연락처를 열람할 수 있어요.</Text>}
+            </SpaceView>
+          </SpaceView>
+        }
 
         <LinearGradient
             colors={['#3D4348', '#1A1E1C']}
@@ -935,5 +1174,75 @@ const _styles = StyleSheet.create({
 	},
 
 
-  
+  matchArea: {
+    borderRadius: 10,
+    paddingVertical: 30,
+    backgroundColor: 'rgba(51, 59, 65, 0.8)',
+    width: '95%',
+  },
+  matchTitleArea: {
+    backgroundColor: '#FFF',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: Platform.OS == 'ios' ? 20 : 50,
+  },
+  matchTitle: {
+    textAlign: 'center',
+    fontFamily: 'Pretendard-SemiBold',
+    color: '#D5CD9E',
+  },
+  matchMsg: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#E1DFD1',
+  },
+  matchResBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 60,
+    borderRadius: 10,
+  },
+  matchResBtnText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#3D4348',
+  },
+  matchReqArea: {
+    borderWidth: 2,
+    borderColor: '#D5CD9E',
+    width: '95%',
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderStyle: 'dashed',
+  },
+  matchReqText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#D5CD9E',
+    textAlign: 'center',
+  },
+  matchSuccArea: {
+    width: '95%',
+    backgroundColor: '#FFDD00',
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  matchSuccText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#3D4348',
+    textAlign: 'center',
+  },
+  matchResDesc: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    color: '#FFFDEC',
+  },  
+  clipboardCopyDesc: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    color: '#FFFDEC',
+    marginTop: 10,
+  },
 });
