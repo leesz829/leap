@@ -136,6 +136,12 @@ export const Profile1 = (props: Props) => {
             interest_list: data?.mbr_interest_list,
         });
 
+        dispatch(setPartialPrincipal({
+          mbr_base : data?.mbr_base,
+          mbr_img_list : data.mbr_img_list,
+          mbr_interview_list : data.mbr_interview_list,
+        }));
+
       } else {
         show({ content: '오류입니다. 관리자에게 문의해주세요.' });
       }
