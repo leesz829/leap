@@ -378,9 +378,11 @@ export async function update_additional(body: {
 }
 
 // 회원의 보관함 정보를 조회한다.
-export async function get_member_storage() {
+export async function get_member_storage(body: {
+  newYn: string;
+}) {
   const inventory_connect_dt = await AsyncStorage.getItem('INVENTORY_CONNECT_DT');
-  return send(STORAGE, 'POST', { inventory_connect_dt }, true, false);
+  return send(STORAGE, 'POST', { ...body, inventory_connect_dt }, true, false);
 }
 // 회원의 선호이성 정보를 저장한다.
 export async function update_prefference(body: {

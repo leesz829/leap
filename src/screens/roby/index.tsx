@@ -602,7 +602,7 @@ export const Roby = (props: Props) => {
                     </View>
                     <Text style={[_styles.respectGradeText, {marginHorizontal: 5}]}>|</Text>
                     <View>
-                      <View style={[_styles.greenDot, {display: memberBase?.social_grade >= 8 && memberBase?.social_grade < 10 < 6 ? 'flex' : 'none'}]}></View>
+                      <View style={[_styles.greenDot, {display: memberBase?.social_grade >= 8 && memberBase?.social_grade < 10 ? 'flex' : 'none'}]}></View>
                       <Text style={[_styles.respectGradeText, {color: memberBase?.social_grade >= 8 && memberBase?.social_grade < 10 ? '#32F9E4' : '#E1DFD1'}]}>VIP</Text>
                     </View>
                     <Text style={[_styles.respectGradeText, {marginHorizontal: 5}]}>|</Text>

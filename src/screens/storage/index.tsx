@@ -118,11 +118,9 @@ export const Storage = (props: Props) => {
    ######## - matchTrgtList : 내가 받은 관심 목록
    #################################################*/
   const [dataStorage, setDataStorage] = React.useState<any>({
-    resLikeList: [],
-    reqLikeList: [],
-    matchTrgtList: [],
-    zzimTrgtList: [],
-    liveHighList: [],
+    resList: [],
+    reqList: [],
+    successList: [],
     resSpecialCnt: 0,
     reqSpecialCnt: 0,
     matchSpecialCnt: 0,
@@ -136,35 +134,18 @@ export const Storage = (props: Props) => {
       title: '받은 관심',
       data: [],
       isNew: false,
-      isSpecialExists: false,
     },
     {
       type: 'REQ',
       title: '보낸 관심',
       data: [],
       isNew: false,
-      isSpecialExists: false,
     },
     {
       type: 'MATCH',
       title: '성공 매칭',
       data: [],
       isNew: false,
-      isSpecialExists: false,
-    },
-    {
-      type: 'ZZIM',
-      title: '찜 목록',
-      data: [],
-      isNew: false,
-      isSpecialExists: false,
-    },
-    {
-      type: 'LIVE',
-      title: 'LIVE',
-      data: [],
-      isNew: false,
-      isSpecialExists: false,
     },
   ]);
 
@@ -173,7 +154,11 @@ export const Storage = (props: Props) => {
     setIsLoading(true);
 
     try {
-      const { success, data } = await get_member_storage();
+      const body = {
+        newYn: 'Y',
+      };
+
+      const { success, data } = await get_member_storage(body);
       if(success) {
         if (data.result_code != '0000') {
           console.log(data.result_msg);
@@ -186,155 +171,47 @@ export const Storage = (props: Props) => {
           // ##### 보관함 데이터 구성
           let tabsData = [];
 
-          let resLikeListData = [];
-          let reqLikeListData = [];
-          let matchTrgtListData = [];
-          let zzimTrgtListData = [];
-          let liveHighListData = [];
-          let zzimItemUseYn = data.zzim_item_use_yn;
+          let resListData = [];
+          let reqListData = [];
+          let successListData = [];
 
-          let resSpecialCnt = 0;
-          let reqSpecialCnt = 0;
-          let matchSpecialCnt = 0;
-
-          resLikeListData = dataUtils.getStorageListData(
-            data.res_like_list
-          );
-
-          reqLikeListData = dataUtils.getStorageListData(
-            data.req_like_list
-          );
-
-          matchTrgtListData = dataUtils.getStorageListData(
-            data.match_trgt_list
-          );
-
-          if(typeof data.zzim_trgt_list != 'undefined') {
-            zzimTrgtListData = dataUtils.getStorageListData(
-              data.zzim_trgt_list
-            );
-          };
-
-          liveHighListData = dataUtils.getStorageListData(
-            data.live_high_list
-          );
-
-          resLikeListData.map(({ special_interest_yn }: { special_interest_yn: any }) => {
-            if(special_interest_yn == 'Y') { resSpecialCnt = resSpecialCnt+1; }
-          });
-
-          reqLikeListData.map(({ special_interest_yn }: { special_interest_yn: any }) => {
-            if(special_interest_yn == 'Y') { reqSpecialCnt = reqSpecialCnt+1; }
-          });
-
-          matchTrgtListData.map(({ special_interest_yn }: { special_interest_yn: any }) => {
-            if(special_interest_yn == 'Y') { matchSpecialCnt = matchSpecialCnt+1; }
-          });
-
-        
-          liveHighListData.map((item, index) => (
-            item.match_type == 'LIVE_RES' ? resLikeListData.push(item) : ''
-          ));
-
-          liveHighListData.map((item, index) => (
-            item.match_type == 'LIVE_REQ' ? reqLikeListData.push(item) : ''
-          ));
-
-          zzimTrgtListData.map((item, index) => (
-            item.match_type == 'ZZIM' ? reqLikeListData.push(item) : ''
-          ));
+          resListData = dataUtils.getStorageListData(data?.res_list);
+          reqListData = dataUtils.getStorageListData(data?.req_list);
+          successListData = dataUtils.getStorageListData(data?.success_list);
 
           // tabs 데이터 구성
           tabsData = [
             {
               type: 'RES',
               title: '받은 관심',
-              data: resLikeListData,
-              isNew: data.res_new_yn == 'Y' ? true : false,
-              isSpecialExists: resSpecialCnt > 0 ? true : false,
+              data: resListData,
+              isNew: data?.res_new_yn == 'Y' ? true : false,
             },
             {
               type: 'REQ',
               title: '보낸 관심',
-              data: reqLikeListData,
+              data: reqListData,
               isNew: false,
-              isSpecialExists: reqSpecialCnt > 0 ? true : false,
             },
             {
               type: 'MATCH',
               title: '성공 매칭',
-              data: matchTrgtListData,
-              isNew: data.succes_new_yn == 'Y' ? true : false,
-              isSpecialExists: matchSpecialCnt > 0 ? true : false,
+              data: successListData,
+              isNew: data?.succes_new_yn == 'Y' ? true : false,
             },
           ];
 
-          // if(zzimItemUseYn == 'Y') {
-          //   tabsData.push({
-          //     type: 'ZZIM',
-          //     title: '찜 목록',
-          //     data: zzimTrgtListData,
-          //     isNew: false,
-          //   });
-          // };
-
-          // if(liveHighListData.length > 0) {
-          //   tabsData.push({
-          //     type: 'LIVE',
-          //     title: 'LIVE',
-          //     data: liveHighListData,
-          //     isNew: data.live_res_new_yn == 'Y' ? true : false,
-          //   });
-          // };
-
-
-          let tmpResSpecialCnt = 0;
-          let tmpReqSpecialCnt = 0;
-          let tmpMatchSpecialCnt = 0;
-
-          if(data?.res_like_list.length > 0) {
-            data?.res_like_list.map(({ special_interest_yn } : { special_interest_yn: any }) => {
-                if (special_interest_yn == 'Y') {
-                  tmpResSpecialCnt++;
-                }
-              }
-            );
-          };
-
-          if(data?.req_like_list.length > 0) {
-            data?.req_like_list.map(({ special_interest_yn }: { special_interest_yn: any }) => {
-                if (special_interest_yn == 'Y') {
-                  tmpReqSpecialCnt++;
-                }
-              }
-            );
-          };
-
-          if(data?.match_trgt_list.length > 0) {
-            data?.match_trgt_list.map(({ special_interest_yn }: { special_interest_yn: any }) => {
-                if (special_interest_yn == 'Y') {
-                  tmpMatchSpecialCnt++;
-                }
-              }
-            );
-          };
-
           setDataStorage({
             ...dataStorage,
-            resLikeList: resLikeListData,
-            reqLikeList: reqLikeListData,
-            matchTrgtList: matchTrgtListData,
-            zzimTrgtList: zzimTrgtListData,
-            liveHighList: liveHighListData,
-            resSpecialCnt: tmpResSpecialCnt,
-            reqSpecialCnt: tmpReqSpecialCnt,
-            matchSpecialCnt: tmpMatchSpecialCnt,
-            zzimItemUseYn: zzimItemUseYn,
+            resList: resListData,
+            reqList: reqListData,
+            successList: successListData,
+            zzimItemUseYn: data?.zzim_item_use_yn,
           });
 
           setTabs(tabsData);
 
-          if(!isReal) {
+          /* if(!isReal) {
             if(loadPage == 'ZZIM' || loadPage == 'LIVE') {
               if((loadPage == 'ZZIM' && zzimItemUseYn != 'Y') || (loadPage == 'LIVE' && data.live_high_list.length == 0)) {
                 onPressDot(0);
@@ -360,7 +237,8 @@ export const Storage = (props: Props) => {
             };
   
             navigation.setParams({ loadPage: 'RES' });
-          }
+          } */
+          
         }
       }
     } catch (error) {
@@ -632,7 +510,8 @@ export const Storage = (props: Props) => {
       <>
         {isShow && 
           <SpaceView>
-            {item?.special_interest_yn == 'Y' ?
+            {/* ############################################################################# 찐심 UI 구분 */}
+            {item?.special_interest_yn == 'Y' ? (
               <>
                 <TouchableOpacity
                   style={{marginBottom: 20}}
@@ -649,7 +528,8 @@ export const Storage = (props: Props) => {
                       item?.message,
                       item?.nickname,
                     );
-                }}>
+                  }}
+                >
                   <SpaceView>
                     <SpaceView viewStyle={_styles.listArea}>
                       <SpaceView viewStyle={[_styles.listHeader, {backgroundColor: bgColor}]}>
@@ -711,7 +591,7 @@ export const Storage = (props: Props) => {
                   </SpaceView>
                 </ScrollView>
               </>
-              :
+            ) : (
               <>
                 <TouchableOpacity
                   style={{marginBottom: 20}}
@@ -735,7 +615,7 @@ export const Storage = (props: Props) => {
                         <Text style={_styles.listHeaderText}>{matchStatusKor}</Text>
                         <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
                           <Image source={ICON.sparkler} style={styles.iconSize22} />
-                          <Text style={[_styles.listHeaderText, {color: '#000'}]}>SILVER</Text>
+                          <Text style={[_styles.listHeaderText, {color: '#000'}]}>{item?.social_grade}</Text>
                         </SpaceView>
                       </SpaceView>
 
@@ -775,7 +655,7 @@ export const Storage = (props: Props) => {
                   </SpaceView>
                 </ScrollView>
               </>
-            }
+            )}
           </SpaceView>
         }
       </>
