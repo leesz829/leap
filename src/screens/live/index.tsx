@@ -99,7 +99,7 @@ export const Live = () => {
     setPickProfileScore(profileScore);
 
     if(pick == 'SKIP') {
-      insertLiveMatch();
+      insertLiveMatch(pick, code, profileScore);
     }else {
       setLiveModalVisible(false);
       setIsPopVisible(true);
@@ -122,12 +122,12 @@ export const Live = () => {
   const approvalProfileSeq = data.live_member_info?.approval_profile_seq;
 
   // ####################################################################################### 라이브 등록
-  const insertLiveMatch =async () => {
+  const insertLiveMatch = async (pick:string, code:string, profileScore:string) => {
 
     try {
       const body = {
-        profile_score: pickProfileScore,
-        face_code: pickFaceCode,
+        profile_score: pick == 'SKIP' ? profileScore : pickProfileScore,
+        face_code: pick == 'SKIP' ? code : pickFaceCode,
         member_seq: liveMemberSeq,
         approval_profile_seq: approvalProfileSeq,
       };
