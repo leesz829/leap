@@ -331,8 +331,7 @@ export const Shop = () => {
       getShopMain(isPopupShow);
     }
   }, [isFocus]);
-
-
+console.log('productList:::::', productList)
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -349,7 +348,7 @@ export const Shop = () => {
         end={{ x: 0, y: 1 }}
         style={_styles.wrap}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView style={{marginBottom: 10}} showsVerticalScrollIndicator={false}>
           {/* <View style={{minHeight: memberBase.gender == 'M' ? 300 : 330, zIndex: 1, backgroundColor: '#ffffff'}}> */}
 
             {/* ############################################### 상단 배너 */}
@@ -416,26 +415,26 @@ export const Shop = () => {
             </View>
           </TouchableOpacity> */}
 
-          <SpaceView>
-            <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, {marginLeft: -5}]}>
-              <Image source={ICON.polygonGreen} style={styles.iconSize24} />
-              <Text style={_styles.myCubeTitle}>보유 큐브</Text>
+          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingHorizontal: 15,}]}>
+            <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter,{marginLeft: -5}]}>
+              <Image source={ICON.cubeCyan} style={styles.iconSize40} />
+              <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
+              <Image source={ICON.megaCubeCyan} style={[styles.iconSize40, {marginLeft: 10}]} />
+              <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
             </SpaceView>
-            <Text style={_styles.myCubeContents}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
+            <TouchableOpacity 
+              style={[layoutStyle.row, layoutStyle.alignCenter, _styles.inventoryBtn]}
+              onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}
+            >
+              <Image source={ICON.menuCyan} style={styles.iconSize20} />
+              <Text style={_styles.inventoryText}>보유 아이템</Text>
+            </TouchableOpacity>
           </SpaceView>
 
-          <LinearGradient
-            colors={['#092032', '#344756']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={_styles.itemDescArea}
-          >
-            <Image source={ICON.polygonGreen} style={[styles.iconSize48, {marginBottom: 10}]} />
-            <Text style={_styles.itemDescText}>리프의 기본 재화입니다. 이성에게 라이크를 보내거나{'\n'}내게 온 라이크를 확인하는데 사용합니다.</Text>
-          </LinearGradient>
+          <SpaceView mt={80} mb={10} viewStyle={{borderWidth: 1, borderColor: '#EDEDED', width: width}}></SpaceView>
 
           {/* ############################################### 카테고리별 */}
-          <SpaceView mb={200}>
+          <SpaceView mb={200} viewStyle={{marginHorizontal: 15}}>
             <CategoryShop 
               loadingFunc={loadingFunc} 
               itemUpdateFunc={getShopMain}
@@ -468,14 +467,20 @@ const categoryList = [
   {
     label: '패스상품',
     value: 'PASS',
+    imgActive: ICON.polygonGreen,
+    imgUnactive: ICON.polygonGray,
   },
   {
     label: '부스팅상품',
     value: 'SUBSCRIPTION',
+    imgActive: ICON.drinkCyan,
+    imgUnactive: ICON.drinkGray,
   },
   {
     label: '패키지상품',
     value: 'PACKAGE',
+    imgActive: ICON.cardCyan,
+    imgUnactive: ICON.cardGray,
   },
 ];
 
@@ -538,34 +543,26 @@ function ListFooterComponent() {
 
 const _styles = StyleSheet.create({
   wrap: {
-    paddingHorizontal: 15,
+    //paddingHorizontal: 15,
     paddingTop: 20,
     minHeight: height,
   },
-  myCubeTitle: {
+  inventoryBtn: {
+    backgroundColor: '#445561',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+  },
+  inventoryText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 17,
     color: '#32F9E4',
-    marginTop: -2
+    marginLeft: 5,
   },
-  myCubeContents: {
+  myCubeDesc: {
     fontFamily: 'Pretendard-Medium',
-    fontSize: 32,
+    fontSize: 20,
     color: '#32F9E4',
-  },
-  itemDescArea: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 40,
-    borderRadius: 10,
-    marginTop: 40,
-  },
-  itemDescText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 12,
-    color: '#E1DFD1',
-    textAlign: 'center',
+    marginTop: -8,
   },
 
   bannerWrapper: {
@@ -604,20 +601,20 @@ const _styles = StyleSheet.create({
   pointText: {
     fontSize: 16,
     fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
   },
   infoText: {
     marginTop: 8,
     fontSize: 10,
     fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: Color.grayAAAA,
   },
   cashbackText: {
     marginTop: 14,
     fontSize: 10,
     fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: Color.primary,
   },
   sliderContainer: {
@@ -673,18 +670,18 @@ const _styles = StyleSheet.create({
     width: 10,
     height: 19,
   },
-  inventoryText : {
-    marginRight: 30,
-    justifyContent: 'center',
-    marginTop: -5,
-  },
+  // inventoryText : {
+  //   marginRight: 30,
+  //   justifyContent: 'center',
+  //   marginTop: -5,
+  // },
   inventoryTextTit : {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-SeminBold',
     fontSize: 15,
     color: '#646467',
   },
   inventoryTextSubTit : {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 12,
     color: '#939393',
     letterSpacing: 0,
@@ -696,7 +693,7 @@ const _styles = StyleSheet.create({
   },
   newText: {
     backgroundColor: '#FF7E8C',
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 10,
     color: ColorType.white,
     borderRadius: 10,

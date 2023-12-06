@@ -227,6 +227,16 @@ export const ICON = {
   cartGray: require('assets/icon/icon-cart-gray.png'),
   sparkler: require('assets/icon/icon-sparkler.png'),
   reportBtn: require('assets/icon/icon-report_btn.png'),
+  cardCyan: require('assets/icon/icon-card-cyan.png'),
+  cardGray: require('assets/icon/icon-card-gray.png'),
+  drinkCyan: require('assets/icon/icon-drink-cyan.png'),
+  drinkGray: require('assets/icon/icon-drink-gray.png'),
+  dotCyan: require('assets/icon/icon-dot-cyan.png'),
+  dotGray: require('assets/icon/icon-dot-gray.png'),
+  polygonGray: require('assets/icon/icon-polygon-gray.png'),
+  megaCubeCyan: require('assets/icon/icon-megacube-cyan.png'),
+  cubeCyan: require('assets/icon/icon-cube-cyan.png'),
+  menuCyan: require('assets/icon/icon-menu-cyan.png'),
 };
 
 export const GIF_IMG = {

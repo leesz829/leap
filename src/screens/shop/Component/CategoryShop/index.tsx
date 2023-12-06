@@ -26,6 +26,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { isEmptyData } from 'utils/functions';
 import { commonStyle, layoutStyle, styles } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 interface Props {
@@ -271,21 +272,27 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
   return (
     <>
       <ScrollView style={_styles.categoryWrap} showsVerticalScrollIndicator={false}>
-        <View style={_styles.categoriesContainer}>
 
-          {/* {categoryList?.map((item, index) => (
-            <TouchableOpacity
-              key={`category-${item.value}-${index}`}
-              activeOpacity={0.8}
-              style={_styles.categoryBorder(item.value === selectedCategoryData.value)}
-              onPress={() => onPressCategoryFunc(item)}>
-
-              <Text style={_styles.categoryText(item.value === selectedCategoryData.value)}>
-                {item?.label}
-              </Text>
-            </TouchableOpacity>
-          ))} */}
-        </View>
+        <LinearGradient
+          colors={['#092032', '#344756']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={_styles.itemDescArea}
+        >
+          <SpaceView mb={10} viewStyle={_styles.tabBtnArea}>
+            {categoryList?.map((item, index) => (
+              <TouchableOpacity
+                key={`category-${item.value}-${index}`}
+                onPress={() => onPressCategoryFunc(item)}>
+                <Image source={item.value === selectedCategoryData.value ? item.imgActive : item.imgUnactive} style={[styles.iconSize32, {marginTop: 4}]} />
+              </TouchableOpacity>
+            ))}
+          </SpaceView>
+          <Image source={selectedCategoryData.value == 'PASS' ? ICON.polygonGreen
+            : selectedCategoryData.value == 'SUBSCRIPTION' ? ICON.drinkCyan
+            : ICON.cardCyan} style={[styles.iconSize60, {marginBottom: 10}]} />
+          <Text style={_styles.itemDescText}>큐브는 리프에서 사용하는 재화입니다.{'\n'}쓰임새가 다른 큐브와 메가큐브 2가지로 구분합니다.</Text>
+        </LinearGradient>
 
         {productList?.map((item, index) => (
           <RenderItem
@@ -327,9 +334,14 @@ function RenderItem({ item, openModal }) {
   return (
     <TouchableOpacity style={_styles.itemContainer} onPress={onPressItem}>
       <View style={_styles.itemWrap}>
-        <View style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter]}>
-          <Image source={ICON.polygonGreen} style={styles.iconSquareSize(38)} />
-          <Text style={_styles.itemNameText}>{item?.item_name}</Text>
+        <View style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, {width: '60%'}]}>
+          <SpaceView viewStyle={_styles.cubeCircleArea}>
+            <Image source={ICON.cubeCyan} style={[styles.iconSquareSize(38)]} />
+          </SpaceView>
+          <SpaceView viewStyle={{width: '70%'}} ml={20}>
+            <Text style={_styles.itemName}>{item?.item_name}</Text>
+            <Text style={_styles.itemDesc}>Lorem ipsum dolor sit amet, consectetur adipisicin</Text>
+          </SpaceView>
           {/* {isNew &&
             <View style={_styles.iconArea}>
               <Text style={_styles.newText}>NEW</Text>
@@ -343,32 +355,29 @@ function RenderItem({ item, openModal }) {
           )}
         </View>
 
-        <View style={_styles.textContainer}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-            {item?.discount_rate && item.discount_rate != 0 ?
-              <SpaceView viewStyle={{alignItems: 'flex-end'}}>
-                <SpaceView viewStyle={_styles.discountArea}>
-                  <Text style={_styles.discountRate}>{item.discount_rate + '%'}</Text>
-                </SpaceView>
-                <Text style={_styles.originPriceText}>{CommaFormat(item.original_price)}원</Text>
-              </SpaceView>
-              : <></>
-            }
+        <View style={_styles.priceArea}>
+          <View>
+            <Text style={_styles.price}>
+              {CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'INAPP' ? '원' : '')}
+            </Text>
 
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={_styles.price}>
-                {CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'INAPP' ? '원' : '')}
-              </Text>
+            {item.money_type_code == 'PASS' && (
+              <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.passCircle} resizeMode={'contain'} /></SpaceView>
+            )}
 
-              {item.money_type_code == 'PASS' && (
-                <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.passCircle} resizeMode={'contain'} /></SpaceView>
-              )}
-
-              {item.money_type_code == 'ROYAL_PASS' && (
-                <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.royalPassCircle} resizeMode={'contain'} /></SpaceView>
-              )}
-            </View>
+            {item.money_type_code == 'ROYAL_PASS' && (
+              <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.royalPassCircle} resizeMode={'contain'} /></SpaceView>
+            )}
           </View>
+
+          {item?.discount_rate && item.discount_rate != 0 &&
+            <SpaceView mt={2} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
+              <SpaceView viewStyle={_styles.discountArea}>
+                <Text style={_styles.discountRate}>{item.discount_rate + '%'}</Text>
+              </SpaceView>
+              <Text style={_styles.originPriceText}>{CommaFormat(item.original_price)}원</Text>
+            </SpaceView>
+          }
         </View>
       </View>
     </TouchableOpacity>
@@ -386,21 +395,6 @@ const _styles = StyleSheet.create({
     //height: height - 450,
     marginTop: 20,
   },
-  categoriesContainer: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'flex-start',
-  },
-  categoryBorder: (isSelected: boolean) => {
-    return {
-      paddingVertical: 4,
-      paddingHorizontal: 10,
-      borderWidth: 1,
-      borderColor: isSelected ? Color.primary : Color.grayAAAA,
-      borderRadius: 9,
-      marginLeft: 4,
-    };
-  },
   categoryText: (isSelected: boolean) => {
     return {
       fontSize: 14,
@@ -415,20 +409,21 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: '100%',
   },
   tumbs: {
     width: 38,
     height: 38,
   },
-  itemNameText: {
+  itemName: {
     fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
+    fontSize: 20,
     color: '#32F9E4',
-    marginTop: -2,
   },
-  textContainer: {
-    marginLeft: 10,
-    flexDirection: 'column',
+  itemDesc: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 11,
+    color: '#D5CD9E',
   },
   discountArea: {
     backgroundColor: '#FFF',
@@ -447,12 +442,19 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Light',
     textDecorationLine: 'line-through',
     color:'#E1DFD1',
+    marginLeft: 5,
+  },
+  priceArea: {
+    borderWidth: 1,
+    borderColor: '#F1D30E',
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
   },
   price: {
     fontFamily: 'Pretendard-Medium',
-    fontSize: 22,
-    color: '#D5CD9E',
-    marginLeft: 4,
+    fontSize: 20,
+    color: '#F1D30E',
   },
   boxWrapper: {
     flexDirection: `row`,
@@ -504,6 +506,37 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 1,
     zIndex: 1,
+  },
+  cubeCircleArea: {
+    borderWidth: 1,
+    borderColor: '#32F9E4',
+    backgroundColor: '#292F33',
+    borderRadius: 50,
+    paddingTop: 3,
+    width: 40,
+    height: 40,
+    overflow: 'hidden',
+  },
+  tabBtnArea: {
+    backgroundColor: '#292F33',
+    borderRadius: 20, 
+    width: '50%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  itemDescArea: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+    borderRadius: 10,
+  },
+  itemDescText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 12,
+    color: '#E1DFD1',
+    textAlign: 'center',
   },
 });
 
