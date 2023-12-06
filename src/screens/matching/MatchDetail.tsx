@@ -52,11 +52,14 @@ export default function MatchDetail(props: Props) {
   const { show } = usePopup(); // 공통 팝업
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
 
-  const type = props.route.params.type; // 유형
+  const type = props.route.params.type; // 유형(OPEN:열람, ME:본인, STORAGE:보관함)
   const matchSeq = props.route.params.matchSeq; // 매칭 번호
   const trgtMemberSeq = props.route.params.trgtMemberSeq; // 대상 회원 번호
   const memberSeqList = props.route.params.memberSeqList; // 회원 번호 목록
   const matchType = props.route.params.matchType;
+
+  // 타이틀
+  const [titleText, setTitleText] = useState('');
 
   // 전화번호 복사 여부
   const [isCopyHpState, setIsCopyHpState] = useState(true);
@@ -137,7 +140,7 @@ export default function MatchDetail(props: Props) {
   // 본인 보유 아이템 정보
   const [freeContactYN, setFreeContactYN] = useState('N');
 
-  // ######################################################################################## 데일리 매칭 정보 조회
+  // ######################################################################################## 매칭 정보 조회
   const getMatchInfo = async () => {
     try {
       /* if(type != 'DAILY_REPLAY') {
@@ -166,8 +169,10 @@ export default function MatchDetail(props: Props) {
         if (data.result_code == '0000') {
           //setData(data);
 
+          // 회원 정보 저장
           dispatch(myProfile());
 
+          // 데이터 구성
           const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
           setData({
             match_member_info: data?.match_member_info,
@@ -180,6 +185,14 @@ export default function MatchDetail(props: Props) {
             safe_royal_pass: data?.safe_royal_pass,
             use_item: data?.use_item,
           });
+
+          // 타이틀 설정
+          let _titleText = '프로필 상세';
+          if(type == 'STORAGE') {
+            //if()
+          }
+
+          setTitleText(_titleText);
 
           if(data?.match_member_info == null || data?.profile_img_list?.length == 0) {
             setIsLoad(false);
@@ -566,15 +579,12 @@ export default function MatchDetail(props: Props) {
   const goMove = async () => {
     navigation.canGoBack()
       ? navigation.goBack()
-      : navigation.dispatch(
-          CommonActions.reset({ index: 1, routes: [{ name: 'Login01' }] })
-        );
+      : navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login01' }] }));
   }
 
   return (
       <>
-        <CommonHeader title={
-          type == 'RES' ? '받은관심' 
+        <CommonHeader title={type == 'RES' ? '받은관심' 
           : type == 'REQ' ? '보낸관심' 
           : type == 'MATCH' ? '매칭성공'
           : '프로필 상세'

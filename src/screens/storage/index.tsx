@@ -21,7 +21,7 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import { ICON, IMAGE } from 'utils/imageUtils';
+import { ICON, IMAGE, findSourcePath } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
 import { useState, useRef } from 'react';
 import axios from 'axios';
@@ -106,7 +106,6 @@ export const Storage = (props: Props) => {
     nickname: '',
     message: '',
     trgt_member_seq: 0,
-    type: '',
     match_type: '',
   });
 
@@ -175,9 +174,13 @@ export const Storage = (props: Props) => {
           let reqListData = [];
           let successListData = [];
 
-          resListData = dataUtils.getStorageListData(data?.res_list);
+          /* resListData = dataUtils.getStorageListData(data?.res_list);
           reqListData = dataUtils.getStorageListData(data?.req_list);
-          successListData = dataUtils.getStorageListData(data?.success_list);
+          successListData = dataUtils.getStorageListData(data?.success_list); */
+
+          resListData = data?.res_list;
+          reqListData = data?.req_list;
+          successListData = data?.success_list;
 
           // tabs 데이터 구성
           tabsData = [
@@ -270,11 +273,7 @@ export const Storage = (props: Props) => {
         msg = '해당 회원은 계정이 정지된 회원이에요.';
       }
 
-      show({
-        title: '프로필 열람 실패',
-        content: msg,
-      });
-
+      show({ title: '프로필 열람 실패', content: msg });
       return;
     };
     
@@ -289,25 +288,27 @@ export const Storage = (props: Props) => {
         nickname: nickname,
         message: message,
         trgt_member_seq: trgt_member_seq,
-        type: type,
         match_type: match_type,
       });
 
     } else {
-      navigation.navigate(STACK.COMMON, { screen: 'MatchDetail', params: {
-        matchSeq: match_seq,
-        trgtMemberSeq: trgt_member_seq,
-        type: type,
-        matchType: match_type,
-        message: message,
-      } });
+      navigation.navigate(STACK.COMMON, { 
+        screen: 'MatchDetail',
+        params: {
+          matchSeq: match_seq,
+          trgtMemberSeq: trgt_member_seq,
+          type: 'STORAGE',
+          matchType: match_type,
+          message: message,
+        }
+      });
 
       navigation.setParams({ loadPage: type });
     }
   };
 
   // ################################################################################# 프로필 열람 이동
-  const goProfileOpen = async (match_seq:any, trgt_member_seq:any, type:any, match_type:any, message:string) => {
+  const goProfileOpen = async (match_seq:any, trgt_member_seq:any, match_type:any, message:string) => {
     let req_profile_open_yn = '';
     let res_profile_open_yn = '';
 
@@ -316,9 +317,9 @@ export const Storage = (props: Props) => {
       setIsClickable(false);
       setIsLoading(true);
 
-      if (type == 'REQ' || match_type == 'LIVE_REQ') {
+      if(match_type == 'REQ') {
         req_profile_open_yn = 'Y';
-      } else if (type == 'RES' || match_type == 'LIVE_RES') {
+      } else if(match_type == 'RES') {
         res_profile_open_yn = 'Y';
       }
   
@@ -341,7 +342,7 @@ export const Storage = (props: Props) => {
               params: {
                 matchSeq: match_seq,
                 trgtMemberSeq: trgt_member_seq,
-                type: type,
+                type: 'STORAGE',
                 matchType: match_type,
                 message: message
               }
@@ -351,14 +352,9 @@ export const Storage = (props: Props) => {
 
           } else if (data.result_code == '6010') {
             setIsProfileOpenVisible(false);
-            show({ 
-              content: '보유 큐브가 부족합니다.',
-              isCross: true,
-              confirmCallback: function () {},
-            });
+            show({ content: '보유 큐브가 부족합니다.', isCross: true });
           } else {
-            console.log(data.result_msg);
-            show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true, });
+            show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true });
           }
         }
       } catch (error) {
@@ -451,59 +447,68 @@ export const Storage = (props: Props) => {
 
 
   /* ################################################################################ 보관함 아이템 렌더링 */
-  const StorageRenderItem = React.memo(({ item, index, type }) => {
-    const matchType = item?.match_type; // 매칭 유형
-    const matchStatus = item?.match_status; // 매칭 상태
+  const StorageRenderItem = React.memo(({ item, index }) => {
+    //const _type = item?.type; // 유형
+    const _matchType = item?.match_type; // 매칭 유형
+    const _matchStatus = item?.match_status; // 매칭 상태
+    const _trgtMemberSeq = item?.trgt_member_seq; // 
+    const _imgFilePath = findSourcePath(item?.img_file_path);
+    const _comment = item?.comment;
+    const _nickname = item?.nickname;
+    const _age = item?.age;
+    const _bestFace = item?.best_face;
+    const _socialGrade = item?.social_grade;
+    const _profileOpenYn = item?.profile_open_yn;
+
+    const _authList = item?.auth_list;
+    const _imgList = item?.img_list;
 
     let isShow = true;  // 노출 여부
-    let trgt_member_seq = '';
     let profile_open_yn = 'N';
     let isBlur = false;
 
     let bgColor = '#F1D30E';
     let matchStatusKor = '라이크';
-    if(item?.match_status == 'PROGRESS' ||  item?.match_status == 'ACCEPT' && item?.special_interest_yn == 'Y') {
+    if((_matchStatus == 'PROGRESS' ||  _matchStatus == 'ACCEPT') && item?.special_interest_yn == 'Y') {
       bgColor = '#E95B36';
       matchStatusKor = '슈퍼 라이크';
-    }else if(item?.match_status == 'LIVE_HIGH') {
+    }else if(_matchStatus == 'LIVE_HIGH') {
       bgColor = '#D5CD9E';
       matchStatusKor = '플러팅';
-    }else if(item?.match_status == 'ZZIM') {
+    }else if(_matchStatus == 'ZZIM') {
       bgColor = '#32F9E4';
       matchStatusKor = '찜';
     };
 
-    // 노출 여부 설정
-    if(type == 'REQ' || type == 'RES' || type == 'MATCH') {
-      if(isSpecialVisible && item?.special_interest_yn == 'N') {
-        isShow = false;
-      }
-    } else if(type == 'LIVE') {
-      if((matchType == 'LIVE_RES' && !isLiveResVisible) || (matchType == 'LIVE_REQ' && !isLiveReqVisible)) {
-        isShow = false;
-      }
-    }
-
     // 대상 회원 번호, 프로필 열람 여부 설정
-    if(type == 'RES' || matchType == 'LIVE_RES') {
-      trgt_member_seq = item?.req_member_seq;
+    /* if(_type == 'RES' || matchType == 'LIVE_RES') {
       profile_open_yn = item?.res_profile_open_yn;
 
       if(item?.res_profile_open_yn == 'N') {
         isBlur = true;
       };
 
-    } else if(type == 'REQ' || matchType == 'LIVE_REQ') {
-      trgt_member_seq = item?.res_member_seq;
+    } else if(_type == 'REQ' || matchType == 'LIVE_REQ') {
       profile_open_yn = 'Y';
 
     } else if(type == 'MATCH' || type == 'ZZIM') {
-      if (item?.req_member_seq != memberSeq) {
-        trgt_member_seq = item?.req_member_seq;
-      } else {
-        trgt_member_seq = item?.res_member_seq;
-      };
       profile_open_yn = 'Y';
+    }; */
+
+
+    /* 상세 이동 함수 */
+    const goDetailFn = () => {
+      popupProfileOpen(
+        item?.match_seq,
+        _trgtMemberSeq,
+        'STORAGE',
+        _profileOpenYn,
+        item?.member_status,
+        _matchType,
+        item?.special_interest_yn,
+        item?.message,
+        item?.nickname,
+      );
     };
 
     return (
@@ -515,20 +520,9 @@ export const Storage = (props: Props) => {
               <>
                 <TouchableOpacity
                   style={{marginBottom: 20}}
-                  disabled={matchStatus == 'REFUSE'}
-                  onPress={() => {
-                    popupProfileOpen(
-                      item?.match_seq,
-                      trgt_member_seq,
-                      type,
-                      profile_open_yn,
-                      item?.member_status,
-                      matchType,
-                      item?.special_interest_yn,
-                      item?.message,
-                      item?.nickname,
-                    );
-                  }}
+                  disabled={_matchStatus == 'REFUSE'}
+                  activeOpacity={0.7}
+                  onPress={goDetailFn}
                 >
                   <SpaceView>
                     <SpaceView viewStyle={_styles.listArea}>
@@ -536,30 +530,32 @@ export const Storage = (props: Props) => {
                         <Text style={_styles.listHeaderText}>{matchStatusKor}</Text>
                         <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
                           <Image source={ICON.sparkler} style={styles.iconSize22} />
-                          <Text style={[_styles.listHeaderText, {color: '#000'}]}>SILVER</Text>
+                          <Text style={[_styles.listHeaderText, {color: '#000'}]}>{_socialGrade}</Text>
                         </SpaceView>
                       </SpaceView>
 
                       <SpaceView viewStyle={_styles.listBody}>
                         <SpaceView>
                           <SpaceView viewStyle={{width: '100%', flexDirection: 'row', justifyContent: 'space-between', borderRadius: 5, overflow: 'hidden'}}>
-                            <Image source={item?.img_path} style={{width: '33%', height: height * 0.2}} />
-                            <Image source={item?.img_path} style={{width: '33%', height: height * 0.2}} />
-                            <Image source={item?.img_path} style={{width: '33%', height: height * 0.2}} />
+                            <Image source={findSourcePath(_imgList[0]?.img_file_path)} style={{width: '33%', height: 193}} />
+                            <Image source={findSourcePath(_imgList[1]?.img_file_path)} style={{width: '33%', height: 193}} />
+                            <Image source={findSourcePath(_imgList[2]?.img_file_path)} style={{width: '33%', height: 193}} />
                           </SpaceView>
 
                           <LinearGradient
                             colors={['rgba(31, 36, 39, 0.9)', 'rgba(36, 36, 36, 0.1)']}
                             start={{ x: 1, y: 0 }}
                             end={{ x: 0, y: 0 }}
-                            style={{position: 'absolute', top: 0, right: 0, height: '100%', width: '55%', paddingRight: 5}}
+                            style={{position: 'absolute', top: 0, right: 0, height: '100%', width: '67%', paddingRight: 5}}
                           >
-                            <SpaceView mb={10} viewStyle={[_styles.faceArea,{width: '60%', marginLeft: 'auto'}]}>
-                              <Text style={[_styles.faceText, {textAlign: 'center'}]}>#웃는게 예뻐요.</Text>
-                            </SpaceView>
-                            <Text style={[_styles.memberInfo, {textAlign: 'right'}]}>{item?.nickname}, {item?.age}</Text>
-                            <Text style={[_styles.comment, {textAlign: 'right', marginTop: 5}]}>{item?.comment}한줄소개</Text>
-                            <Text style={[_styles.comment, {textAlign: 'right', marginBottom: 5}]}>{item?.introduce_comment}두줄소개</Text>
+                            {isEmptyData(_bestFace) && (
+                              <SpaceView mb={10} viewStyle={[_styles.faceArea, {marginLeft: 'auto'}]}>
+                                <Text style={[_styles.faceText, {textAlign: 'center'}]}>#{_bestFace}</Text>
+                              </SpaceView>
+                            )}
+                            <SpaceView mt={5} ml={10}><Text style={[_styles.memberInfo, {textAlign: 'right'}]}>{_nickname}, {_age}</Text></SpaceView>
+                            <SpaceView ml={10} mt={5}><Text style={[_styles.comment, {textAlign: 'right'}]} numberOfLines={2}>{_comment}</Text></SpaceView>
+                            {/* <Text style={[_styles.comment, {textAlign: 'right', marginBottom: 5}]}>{item?.introduce_comment}두줄소개</Text> */}
                           </LinearGradient>
                         </SpaceView>
                       </SpaceView>
@@ -567,93 +563,98 @@ export const Storage = (props: Props) => {
                   </SpaceView>
                 </TouchableOpacity>
 
-                <ScrollView
-                  style={{position: 'absolute', top: 150, right: 10, overflow: 'hidden', height: 60}}
+                {/* <ScrollView
+                  style={{position: 'absolute', top: 150, right: 10, overflow: 'hidden', height: 100}}
                   showsHorizontalScrollIndicator={false}
                 >
                   <SpaceView>
-                    <SpaceView mb={5} viewStyle={_styles.authArea}>
-                      <Image source={ICON.authEdu} style={styles.iconSize16} />
-                      <Text style={_styles.authText}>T.H.E 상위 대학 석사</Text>
-                    </SpaceView>
-                    <SpaceView mb={5} viewStyle={_styles.authArea}>
-                      <Image source={ICON.authJob} style={styles.iconSize16} />
-                      <Text style={_styles.authText}>중견기업 대표</Text>
-                    </SpaceView>
-                    <SpaceView mb={5} viewStyle={_styles.authArea}>
-                      <Image source={ICON.authAsset} style={styles.iconSize16} />
-                      <Text style={_styles.authText}>T.H.E 상위 대학 석사</Text>
-                    </SpaceView>
-                    <SpaceView mb={5} viewStyle={_styles.authArea}>
-                      <Image source={ICON.authJob} style={styles.iconSize16} />
-                      <Text style={_styles.authText}>중견기업 대표</Text>
-                    </SpaceView>
+                    {_authList.map((i, n) => {
+                      const isLast = _authList.length == (n+1) ? true : false;
+                      return (
+                        <SpaceView key={_trgtMemberSeq + n} mb={5} viewStyle={_styles.authArea}>
+                          <Image source={ICON.authEdu} style={styles.iconSize16} />
+                          <Text style={_styles.authText}>{i.slogan_name}</Text>
+                        </SpaceView>
+                      )
+                    })}
+                  </SpaceView>
+                </ScrollView> */}
+
+                <ScrollView
+                  style={{position: 'absolute', bottom: -40, left: 10, right: 10, overflow: 'hidden', height: 100}}
+                  showsHorizontalScrollIndicator={false}
+                  horizontal={true}
+                >
+                  <SpaceView viewStyle={{flexDirection: 'row'}}>
+                    {_authList.map((i, n) => {
+                      const isLast = _authList.length == (n+1) ? true : false;
+                      return (
+                        <SpaceView key={_trgtMemberSeq + n} mr={isLast ? 10 : 5} viewStyle={_styles.authArea}>
+                          <Image source={ICON.authEdu} style={styles.iconSize16} />
+                          <Text style={_styles.authText}>{i.slogan_name}</Text>
+                        </SpaceView>
+                      )
+                    })}
                   </SpaceView>
                 </ScrollView>
               </>
             ) : (
               <>
-                <TouchableOpacity
-                  style={{marginBottom: 20}}
-                  disabled={matchStatus == 'REFUSE'}
-                  onPress={() => {
-                    popupProfileOpen(
-                      item?.match_seq,
-                      trgt_member_seq,
-                      type,
-                      profile_open_yn,
-                      item?.member_status,
-                      matchType,
-                      item?.special_interest_yn,
-                      item?.message,
-                      item?.nickname,
-                    );
-                  }}>
-                  <SpaceView>
-                    <SpaceView viewStyle={_styles.listArea}>
-                      <SpaceView viewStyle={[_styles.listHeader, {backgroundColor: bgColor}]}>
-                        <Text style={_styles.listHeaderText}>{matchStatusKor}</Text>
-                        <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-                          <Image source={ICON.sparkler} style={styles.iconSize22} />
-                          <Text style={[_styles.listHeaderText, {color: '#000'}]}>{item?.social_grade}</Text>
-                        </SpaceView>
+                <SpaceView mb={20}>
+                  <SpaceView viewStyle={_styles.listArea}>
+                    <SpaceView viewStyle={[_styles.listHeader, {backgroundColor: bgColor}]}>
+                      <Text style={_styles.listHeaderText}>{matchStatusKor}</Text>
+                      <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+                        <Image source={ICON.sparkler} style={styles.iconSize22} />
+                        <Text style={[_styles.listHeaderText, {color: '#000'}]}>{_socialGrade}</Text>
                       </SpaceView>
+                    </SpaceView>
 
-                      <SpaceView viewStyle={_styles.listBody}>
-                        <Image source={item?.img_path} style={_styles.renderItemContainer} />
-                        <SpaceView mt={25}>
-                          <Text style={_styles.memberInfo}>{item?.nickname}, {item?.age}</Text>
-                          <Text style={_styles.comment}>{item?.comment}한줄소개</Text>
-                          <Text style={_styles.comment}>{item?.introduce_comment}두줄소개</Text>
-                        </SpaceView>
+                    <SpaceView viewStyle={_styles.listBody}>
+
+                      {/* 대표 이미지 */}
+                      <TouchableOpacity disabled={_matchStatus == 'REFUSE'} onPress={goDetailFn}>
+                        <Image source={_imgFilePath} style={_styles.renderItemContainer} />
+                      </TouchableOpacity>
+                    
+                      <SpaceView>
+
+                        {/* 인상, 인증 정보 노출 */}
+                        {(isEmptyData(_bestFace) || _authList.length > 0) && (
+                          <ScrollView
+                            style={{marginLeft: 10, marginTop: 5,}}
+                            showsHorizontalScrollIndicator={false}
+                            horizontal={true}
+                          >
+                            <SpaceView viewStyle={[layoutStyle.row]}>
+
+                              {isEmptyData(_bestFace) && (
+                                <SpaceView mr={5} viewStyle={_styles.faceArea}><Text style={_styles.faceText}>#{_bestFace}</Text></SpaceView>
+                              )}
+
+                              {_authList.map((i, n) => {
+                                const isLast = _authList.length == (n+1) ? true : false;
+                                return (
+                                  <SpaceView key={_trgtMemberSeq + n} mr={isLast ? 90 : 5} viewStyle={_styles.authArea}>
+                                    <Image source={ICON.authEdu} style={styles.iconSize16} />
+                                    <Text style={_styles.authText}>{i.slogan_name}</Text>
+                                  </SpaceView>
+                                )
+                              })}
+                            </SpaceView>
+                          </ScrollView>
+                        )}
+
+                        {/* 닉네임, 나이, 소개 정보 */}
+                        <TouchableOpacity disabled={_matchStatus == 'REFUSE'} onPress={goDetailFn}>
+                          <SpaceView ml={10}><Text style={_styles.memberInfo}>{_nickname}, {_age}</Text></SpaceView>
+                          <SpaceView ml={10}><Text style={_styles.comment} numberOfLines={2}>{_comment}</Text></SpaceView>
+                          {/* <Text style={_styles.comment}>{item?.introduce_comment}두줄소개</Text> */}
+                        </TouchableOpacity>
                       </SpaceView>
                     </SpaceView>
                   </SpaceView>
-                </TouchableOpacity>
-
-                <ScrollView
-                  style={{position: 'absolute', top: 40, left: 105}}
-                  showsHorizontalScrollIndicator={false}
-                  horizontal={true}
-                >
-                  <SpaceView viewStyle={[layoutStyle.row]}>
-                    <SpaceView viewStyle={_styles.faceArea}>
-                      <Text style={_styles.faceText}>#웃는게 예뻐요.</Text>
-                    </SpaceView>
-                    <SpaceView ml={10} viewStyle={_styles.authArea}>
-                      <Image source={ICON.authEdu} style={styles.iconSize16} />
-                      <Text style={_styles.authText}>T.H.E 상위 대학 석사</Text>
-                    </SpaceView>
-                    <SpaceView ml={10} viewStyle={_styles.authArea}>
-                      <Image source={ICON.authEdu} style={styles.iconSize16} />
-                      <Text style={_styles.authText}>T.H.E 상위 대학 석사</Text>
-                    </SpaceView>
-                    <SpaceView ml={10} viewStyle={_styles.authArea}>
-                    <Image source={ICON.authAsset} style={styles.iconSize16} />
-                      <Text style={_styles.authText}>T.H.E 상위 대학 석사</Text>
-                    </SpaceView>
-                  </SpaceView>
-                </ScrollView>
+                </SpaceView>
               </>
             )}
           </SpaceView>
@@ -691,6 +692,10 @@ export const Storage = (props: Props) => {
         end={{ x: 0, y: 1 }}
         style={_styles.wrap}
       >
+        
+        {/* ############################################################################################################
+        ###### 탭 영역
+        ############################################################################################################ */}
         <SpaceView mt={10}>
           <SpaceView viewStyle={layoutStyle.alignCenter}>
             <SpaceView viewStyle={_styles.tabArea}>
@@ -707,7 +712,10 @@ export const Storage = (props: Props) => {
           </SpaceView>
         </SpaceView>
 
-        <SpaceView viewStyle={{flex: 1, height: height}} mb={200} mt={40}>
+        {/* ############################################################################################################
+        ###### 컨텐츠 영역
+        ############################################################################################################ */}
+        <SpaceView viewStyle={{flex: 1, height: height}} mb={160} mt={40}>
           {!tabs[currentIndex].data.length ?
               <SpaceView viewStyle={_styles.noData}>
                 <Text ref={dataRef} style={_styles.noDataText}>
@@ -716,20 +724,21 @@ export const Storage = (props: Props) => {
               </SpaceView>
               :
               <FlatList
-              ref={dataRef}
-              data={tabs[currentIndex].data}
-              keyExtractor={(item, index) => index.toString()}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item, index }) => {
-                const type = tabs[currentIndex].type;
+                ref={dataRef}
+                data={tabs[currentIndex].data}
+                keyExtractor={(item, index) => index.toString()}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item, index }) => {
+                  const type = tabs[currentIndex].type;
 
-                return (
-                  <View key={index}>
-                    <StorageRenderItem item={item} index={index} type={type} />
-                  </View>
-                )
-              }}
-            />
+                  return (
+                    <View key={index}>
+                      <StorageRenderItem item={item} index={index} />
+                    </View>
+                  )
+                }}
+              />
           }
 
 
@@ -779,7 +788,7 @@ export const Storage = (props: Props) => {
 
                 <TouchableOpacity
                   style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomRightRadius: 20}]}
-                  onPress={() => { goProfileOpen(profileOpenData.match_seq, profileOpenData.trgt_member_seq, profileOpenData.type, profileOpenData.match_type, profileOpenData.message); }}>
+                  onPress={() => { goProfileOpen(profileOpenData.match_seq, profileOpenData.trgt_member_seq, profileOpenData.match_type, profileOpenData.message); }}>
                   <CommonText textStyle={{fontSize: 16}} fontWeight={'600'} color={'#445561'}>확인하기</CommonText>
                   <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                     <Image style={styles.iconSquareSize(25)} source={ICON.polygonGreen} resizeMode={'contain'} />
@@ -855,7 +864,9 @@ const _styles = StyleSheet.create({
     backgroundColor: '#FFF8CC',
     borderRadius: Platform.OS == 'ios' ? 20 : 50,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 25,
   },
   faceText: {
     fontFamily: 'Pretendard-SemiBold',
@@ -866,10 +877,10 @@ const _styles = StyleSheet.create({
     backgroundColor: 'rgba(112, 112, 112, 0.6)',
     borderRadius: Platform.OS == 'ios' ? 20 : 50,
     paddingHorizontal: 10,
-    paddingVertical: 5,
     flexDirection: 'row',
-    //justifyContent: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
+    height: 25,
   },
   authText: {
     fontFamily: 'Pretendard-SemiBold',
@@ -881,14 +892,11 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 20,
     color: '#FFDD00',
-    marginTop: 5,
-    marginLeft: 10,
   },
   comment: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     color: '#D5CD9E',
-    marginLeft: 10,
   },
   noData: {
     paddingHorizontal: 20,
