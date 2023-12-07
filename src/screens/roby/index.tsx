@@ -659,7 +659,7 @@ export const Roby = (props: Props) => {
                         </SpaceView>
                         <SpaceView mt={10} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                           {memberPeekData.faceLankList.map((item, index) => {
-                            return index < 3 && (
+                            return item?.face_code_name && index < 3 && (
                               <>
                                 <SpaceView key={'face' + index} mr={5} mb={7} viewStyle={[_styles.bestFaceContainer, {alignItems: 'center'}]}>
                                   <Text style={_styles.bestFaceText}>#{item?.face_code_name}</Text>
@@ -855,7 +855,6 @@ const _styles = StyleSheet.create({
   profileImageWrap: {
     width: 140,
     height: 140,
-    borderStyle: 'solid',
     borderWidth: 7,
     borderColor: '#FFDD00',
     borderRadius: 80,

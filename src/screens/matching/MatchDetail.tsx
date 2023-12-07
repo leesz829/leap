@@ -56,7 +56,7 @@ export default function MatchDetail(props: Props) {
   const matchSeq = props.route.params.matchSeq; // 매칭 번호
   const trgtMemberSeq = props.route.params.trgtMemberSeq; // 대상 회원 번호
   const memberSeqList = props.route.params.memberSeqList; // 회원 번호 목록
-  const matchType = props.route.params.matchType;
+  const matchType = props.route.params.matchType; // 매칭 유형(REQ:보낸매칭, RES:받은매칭)
 
   // 타이틀
   const [titleText, setTitleText] = useState('');
@@ -72,6 +72,7 @@ export default function MatchDetail(props: Props) {
 
   // 매칭 회원 관련 데이터
   const [data, setData] = useState<any>({
+    match_base: {},
     match_member_info: {},
     profile_img_list: [],
     second_auth_list: [],
@@ -81,10 +82,6 @@ export default function MatchDetail(props: Props) {
     report_code_list: [],
     safe_royal_pass: Number,
     use_item: {},
-  });
-
-  const [matchData, setMatchData] = useState<any>({
-    match_base: {},
   });
 
   // 신고목록
@@ -156,11 +153,10 @@ export default function MatchDetail(props: Props) {
       }
 
       const body = {
-        //type: 'STORY',
         type: type,
         match_member_seq: matchMemberSeq,
-        match_seq: null,
-      }
+        match_seq: isEmptyData(matchSeq) ? matchSeq : null,
+      };
 
       const { success, data } = await get_match_detail(body);
       setIsCardIndex(isCardIndex + 1);
@@ -175,6 +171,7 @@ export default function MatchDetail(props: Props) {
           // 데이터 구성
           const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
           setData({
+            match_base: data?.match_base,
             match_member_info: data?.match_member_info,
             profile_img_list: data?.profile_img_list,
             second_auth_list: auth_list,
@@ -189,7 +186,15 @@ export default function MatchDetail(props: Props) {
           // 타이틀 설정
           let _titleText = '프로필 상세';
           if(type == 'STORAGE') {
-            //if()
+            if(data?.match_base.match_status == 'ACCEPT') {
+              _titleText = '매칭 성공';
+            } else {
+              if(matchType == 'RES') {
+                _titleText = '받은관심';
+              } else {
+                _titleText = '보낸관심';
+              }
+            }
           }
 
           setTitleText(_titleText);
@@ -208,30 +213,6 @@ export default function MatchDetail(props: Props) {
     } catch (error) {
       console.log(error);
     } finally {
-    }
-  };
-
-  // ############################################################ 매칭 회원 정보 조회
-  const selectMatchMemberInfo = async () => {
-    const body = {
-      match_seq: matchSeq
-    };
-    try {
-      const { success, data } = await get_matched_member_info(body);
-
-      if(success) {
-        if (data.result_code == '0000') {
-
-          const auth_list = data?.second_auth_list.filter(item => item.auth_status == 'ACCEPT');
-          setMatchData({
-            match_base: data?.match_base,
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoad(true);
     }
   };
 
@@ -277,7 +258,7 @@ export default function MatchDetail(props: Props) {
 
   // ############################################################ 연락처 열기 팝업 활성화
   const hpOpenPopup = async () => {    
-    let tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (matchData.match_base.special_interest_yn == 'Y' ? '50' : '100');
+    let tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (data.match_base.special_interest_yn == 'Y' ? '50' : '100');
     let subContent = '';
 
     if('Y' == freeContactYN){
@@ -289,9 +270,7 @@ export default function MatchDetail(props: Props) {
       title: '연락처 공개',
       content: tmpContent,
       subContent: subContent,
-      cancelCallback: function() {
-
-      },
+      cancelCallback: function() {},
       confirmCallback: function() {
         goHpOpen();
       },
@@ -306,7 +285,7 @@ export default function MatchDetail(props: Props) {
       setIsClickable(false);
 
       const body = {
-        match_seq: matchData.match_base.match_seq
+        match_seq: data.match_base.match_seq
       };
 
       try {
@@ -337,7 +316,7 @@ export default function MatchDetail(props: Props) {
         console.log(error);
       } finally {
         setIsClickable(true);
-        selectMatchMemberInfo();
+        getMatchInfo();
       }
     }
   };
@@ -346,10 +325,7 @@ export default function MatchDetail(props: Props) {
   const onCopyPress = async (value: string) => {
     try {
       await Clipboard.setString(value);
-      show({
-        type: 'RESPONSIVE',
-        content: '클립보드에 복사되었습니다.',
-      });
+      show({ type: 'RESPONSIVE', content: '클립보드에 복사되었습니다.' });
 
       setIsCopyHpState(false);
 
@@ -555,7 +531,6 @@ export default function MatchDetail(props: Props) {
       setIsEmpty(false);
       // 데일리 매칭 정보 조회
       getMatchInfo();
-      selectMatchMemberInfo();
     }
   }, [isFocus]);
 
@@ -584,14 +559,10 @@ export default function MatchDetail(props: Props) {
 
   return (
       <>
-        <CommonHeader title={type == 'RES' ? '받은관심' 
-          : type == 'REQ' ? '보낸관심' 
-          : type == 'MATCH' ? '매칭성공'
-          : '프로필 상세'
-        } />
+        <CommonHeader title={titleText} />
 
         {/* ############################################################################################### 버튼 영역 */}
-        {data.profile_img_list.length > 0 && isLoad && type != 'ME' && !matchSeq &&(
+        {data.profile_img_list.length > 0 && isLoad && type != 'ME' && type != 'STORAGE' && (
           <SpaceView viewStyle={_styles.btnWrap}>
             <TouchableOpacity onPress={() => { popupActive('pass'); }}>
               <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
@@ -605,72 +576,78 @@ export default function MatchDetail(props: Props) {
           </SpaceView>
         )}
 
-        {/* ############################################################################################### 매칭 영역 */}
-        {matchSeq &&
+        {/* ############################################################################################### 보관함 상세 하단 영역 */}
+        {type == 'STORAGE' &&
           <SpaceView viewStyle={_styles.btnWrap}>
             <SpaceView viewStyle={_styles.matchArea}>
+
               <SpaceView mb={20} viewStyle={[layoutStyle.columCenter]}>
                 <SpaceView viewStyle={_styles.matchTitleArea}>
-                  <Text style={_styles.matchTitle}>{type == 'RES' ? '관심' : type == 'REQ' ? '좋아요' : '메시지'}</Text>
+                  <Text style={_styles.matchTitle}>{data?.match_base.match_status == 'ACCEPT' ? '메시지' : matchType == 'RES' ? '관심' : '좋아요'}</Text>
                 </SpaceView>
-                {props.route.params.message &&
+                {data?.match_base?.message &&
                   <SpaceView mt={10} pl={5} pr={5}>
-                    <Text style={_styles.matchMsg}>{props.route.params.message}</Text>
+                    <Text style={_styles.matchMsg}>"{data?.match_base?.message}"</Text>
                   </SpaceView>
                 }
-
               </SpaceView>
-              <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyCenter]}>
 
-                {type == 'RES' &&
-                <>
-                  <SpaceView mr={5}>
-                    <TouchableOpacity onPress={() => updateMatchStatus('REFUSE') } style={[_styles.matchResBtn, {backgroundColor: '#FFF'}]}>
-                      <Text style={_styles.matchResBtnText}>거절</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                  <SpaceView ml={5}>
-                    <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={[_styles.matchResBtn, {backgroundColor: '#FFDD00'}]}>
-                      <Text style={_styles.matchResBtnText}>수락</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                </>
-              }
+              <SpaceView mt={10} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter]}>
 
-              {type == 'REQ' &&
-                <SpaceView viewStyle={_styles.matchReqArea}>
-                  <Text style={_styles.matchReqText}>상대방의 응답을 기다리고 있어요.</Text>
-                </SpaceView>
-              }
+                {/* ################################# 성공 매칭 구분 */}
+                {data?.match_base.match_status == 'ACCEPT' ? (
+                  <>
+                    <SpaceView viewStyle={[layoutStyle.justifyCenter, layoutStyle.alignCenter, {width: '100%'}]}>
+                      {(data.match_base.res_member_seq == memberBase.member_seq && data.match_base.res_phone_open_yn == 'Y') ||
+                      (data.match_base.req_member_seq == memberBase.member_seq && data.match_base.req_phone_open_yn == 'Y') ? (
+                        <>
+                          <TouchableOpacity
+                            disabled={!isCopyHpState}
+                            style={_styles.matchSuccArea('#FFFFFF')}
+                            onPress={() => { onCopyPress(data.match_member_info.phone_number); }}>
+                            <Text style={_styles.matchSuccText('#D5CD9E')}>{data.match_member_info.phone_number}</Text>
+                          </TouchableOpacity>
+                          <Text style={_styles.clipboardCopyDesc}>연락처를 터치하면 클립보드에 복사되요.</Text>
+                        </>
+                      ) : (
+                        <TouchableOpacity style={_styles.matchSuccArea('#FFDD00')} onPress={() => { hpOpenPopup(); }}>
+                          <Text style={_styles.matchSuccText('#3D4348')}>연락처 확인하기</Text>
+                        </TouchableOpacity>
+                      )}
+                    </SpaceView>
+                  </>
+                ) : (
+                  <>
+                    {matchType == 'RES' &&
+                      <>
+                        <SpaceView>
+                          <SpaceView viewStyle={{flexDirection:'row'}}>
+                            <SpaceView mr={5}>
+                              <TouchableOpacity onPress={() => updateMatchStatus('REFUSE') } style={[_styles.matchResBtn, {backgroundColor: '#FFF'}]}>
+                                <Text style={_styles.matchResBtnText}>거절</Text>
+                              </TouchableOpacity>
+                            </SpaceView>
+                            <SpaceView ml={5}>
+                              <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={[_styles.matchResBtn, {backgroundColor: '#FFDD00'}]}>
+                                <Text style={_styles.matchResBtnText}>수락</Text>
+                              </TouchableOpacity>
+                            </SpaceView>
+                          </SpaceView>
+                          <SpaceView>
+                            <Text style={_styles.matchResDesc}>관심을 수락하면 서로의 연락처를 열람할 수 있어요.</Text>
+                          </SpaceView>
+                        </SpaceView>
+                      </>
+                    }
 
-              {type == 'MATCH' &&
-                <SpaceView viewStyle={[layoutStyle.justifyCenter, layoutStyle.alignCenter, {width: '100%'}]}>
-                  {(matchData.match_base.res_member_seq == memberBase.member_seq && matchData.match_base.res_phone_open_yn == 'Y') ||
-                  (matchData.match_base.req_member_seq == memberBase.member_seq && matchData.match_base.req_phone_open_yn == 'Y') ? (
-                    <>
-                      <TouchableOpacity
-                        disabled={!isCopyHpState}
-                        style={_styles.matchSuccArea}
-                        onPress={() => { onCopyPress(data.match_member_info.phone_number); }}>
-                        <Text style={_styles.matchSuccText}>{data.match_member_info.phone_number}</Text>
-                      </TouchableOpacity>
-                      <Text style={_styles.clipboardCopyDesc}>연락처를 터치하면 클립보드에 복사되요.</Text>
-                    </>
-                  ):(
-                    <TouchableOpacity 
-                    style={_styles.matchSuccArea}
-                    onPress={() => {
-                      hpOpenPopup();
-                    }}
-                  >
-                    <Text style={_styles.matchSuccText}>연락처 확인하기</Text>
-                  </TouchableOpacity>
-                  )}
-                </SpaceView>
-              }
-
-            </SpaceView>
-            {type == 'RES' && <Text style={_styles.matchResDesc}>관심을 수락하면 서로의 연락처를 열람할 수 있어요.</Text>}
+                    {matchType == 'REQ' &&
+                      <SpaceView viewStyle={_styles.matchReqArea}>
+                        <Text style={_styles.matchReqText}>상대방의 응답을 기다리고 있어요.</Text>
+                      </SpaceView>
+                    }
+                  </>
+                )}
+              </SpaceView>
             </SpaceView>
           </SpaceView>
         }
@@ -1186,14 +1163,14 @@ const _styles = StyleSheet.create({
 
   matchArea: {
     borderRadius: 10,
-    paddingVertical: 30,
-    backgroundColor: 'rgba(51, 59, 65, 0.8)',
+    paddingVertical: 20,
+    backgroundColor: 'rgba(51, 59, 65, 0.9)',
     width: '95%',
   },
   matchTitleArea: {
     backgroundColor: '#FFF',
     paddingHorizontal: 10,
-    paddingVertical: 2,
+    width: 60,
     borderRadius: Platform.OS == 'ios' ? 20 : 50,
   },
   matchTitle: {
@@ -1208,7 +1185,7 @@ const _styles = StyleSheet.create({
   },
   matchResBtn: {
     paddingVertical: 10,
-    paddingHorizontal: 60,
+    paddingHorizontal: 65,
     borderRadius: 10,
   },
   matchResBtnText: {
@@ -1230,18 +1207,22 @@ const _styles = StyleSheet.create({
     color: '#D5CD9E',
     textAlign: 'center',
   },
-  matchSuccArea: {
-    width: '95%',
-    backgroundColor: '#FFDD00',
-    paddingVertical: 10,
-    borderRadius: 10,
-  },
-  matchSuccText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
-    color: '#3D4348',
-    textAlign: 'center',
-  },
+  matchSuccArea: (bgcr:string) => {
+		return {
+		  width: '95%',
+      backgroundColor: bgcr,
+      paddingVertical: 10,
+      borderRadius: 10,
+		};
+	},
+  matchSuccText: (cr:string) => {
+		return {
+		  fontFamily: 'Pretendard-Bold',
+      fontSize: 16,
+      color: cr,
+      textAlign: 'center',
+		};
+	},
   matchResDesc: {
     marginTop: 10,
     textAlign: 'center',
