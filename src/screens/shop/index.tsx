@@ -292,6 +292,7 @@ export const Shop = () => {
     }
   };
 
+  // ######################################################### 리밋샵 이동
   const onPressLimitShop = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
   };

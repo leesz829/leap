@@ -15,6 +15,9 @@ import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
 import { CommonLoading } from 'component/CommonLoading';
 import SpaceView from 'component/SpaceView';
+import { ScrollView } from 'react-native-gesture-handler';
+import { styles } from 'assets/styles/Styles';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const DATA = [
@@ -38,6 +41,7 @@ const DATA = [
 
 
 export default function MileageShop() {
+  const navigation = useNavigation<ScreenNavigationProp>();
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
 
@@ -154,73 +158,119 @@ export default function MileageShop() {
     setTab(value);
   };
 
+  // ######################################################### 주문내역 이동
+  const onPressLimitShop = () => {
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Order });
+  };
+
   return (
     <>
       {isLoading && <CommonLoading />}
 
       <CommonHeader title="리밋샵" />
 
-      <View style={_styles.root}>
-        <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={_styles.root}>
 
-        <SectionGrid
-          itemDimension={tab.value == 'gifticon' ? (Dimensions.get('window').width -75) / 3 : Dimensions.get('window').width - 37}
-          sections={data}
-          fixed={true}
-          /* ListHeaderComponent={
-            
-          } */
-          stickySectionHeadersEnabled={false}
-          // 상시판매 프로세스 적용으로 인해 삭제
-          // renderSectionHeader={renderSectionHeader}
-          renderItem={(props) => {
-            //console.log('props : ', JSON.stringify(props));
-            const { item, index, rowIndex } = props;
-            return (
-              <>
-                {!isLoading ? (
-                  <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} />
-                ) : (
-                  <View></View>
-                )}
-              </>
-            )
-          }}
-        />
-      </View>
+          <TouchableOpacity onPress={onPressLimitShop}>
+            <Text style={{color: '#FFF', backgroundColor: 'green', width: 120, textAlign: 'center'}}>주문내역 임시 버튼</Text>
+          </TouchableOpacity>
+
+
+          <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
+
+          <SectionGrid
+            itemDimension={tab.value == 'gifticon' ? (Dimensions.get('window').width -75) / 2 : Dimensions.get('window').width - 37}
+            sections={data}
+            fixed={true}
+            /* ListHeaderComponent={
+              
+            } */
+            stickySectionHeadersEnabled={false}
+            // 상시판매 프로세스 적용으로 인해 삭제
+            // renderSectionHeader={renderSectionHeader}
+            renderItem={(props) => {
+              //console.log('props : ', JSON.stringify(props));
+              const { item, index, rowIndex } = props;
+              return (
+                <>
+                  {!isLoading ? (
+                    <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} />
+                  ) : (
+                    <View></View>
+                  )}
+                </>
+              )
+            }}
+          />
+        </LinearGradient>
     </>
   );
 }
 
 // ######################################################################### 카테고리 렌더링
 const RenderCategory = ({ onPressTab, tab }) => {
-  return categories?.map((item, index) => (
-    <TouchableOpacity
-      key={index}
-      activeOpacity={0.8}
-      style={_styles.categoryBorder(item.value === tab.value)}
-      onPress={() => onPressTab(item)}>
+  // return categories?.map((item, index) => (
+  //   <TouchableOpacity
+  //     key={index}
+  //     activeOpacity={0.8}
+  //     style={_styles.categoryBorder(item.value === tab.value)}
+  //     onPress={() => onPressTab(item)}>
 
-      <Text style={_styles.categoryText(item.value === tab.value)}>
-        {item?.label}
-      </Text>
-    </TouchableOpacity>
-  ));
+  //     <Text style={_styles.categoryText(item.value === tab.value)}>
+  //       {item?.label}
+  //     </Text>
+  //   </TouchableOpacity>
+  // ));
+  return (
+    <ScrollView 
+      horizontal={true}
+      showsVerticalScrollIndicator={false}
+    >
+      <TouchableOpacity style={[_styles.brandLogoArea, {backgroundColor: '#D5CD9E'}]}>
+        <Text style={{fontFamily:'Pretendard-SemiBold', fontSize: 12, color: '#FFF'}}>ALL</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={_styles.brandLogoArea}>
+        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+      </TouchableOpacity>
+      <TouchableOpacity style={_styles.brandLogoArea}>
+        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+      </TouchableOpacity>
+      <TouchableOpacity style={_styles.brandLogoArea}>
+        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+      </TouchableOpacity>
+      <TouchableOpacity style={_styles.brandLogoArea}>
+        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+      </TouchableOpacity>
+      <TouchableOpacity style={_styles.brandLogoArea}>
+        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+      </TouchableOpacity>
+    </ScrollView>
+  );
 };
 
 // ######################################################################### List Header 렌더링
 function ListHeaderComponent({ onPressTab, tab }) {
   return (
-    <View>
-      <View style={{ flex: 1 }}>
-        <View style={{ marginTop: 70, paddingHorizontal: 20 }}>
+    <SpaceView>
+      <SpaceView viewStyle={{ flex: 1 }}>
+        <SpaceView viewStyle={{ marginTop: 90, paddingHorizontal: 20 }}>
           <BannerPannel />
-        </View>
-      </View>
-      <View style={_styles.categoriesContainer}>
+        </SpaceView>
+      </SpaceView>
+      <SpaceView viewStyle={_styles.categoriesContainer}>
+        <SpaceView mb={10}>
+          <Text style={_styles.allBrandText}>ALL BRAND</Text>
+        </SpaceView>
         <RenderCategory onPressTab={onPressTab} tab={tab} />
-      </View>
-    </View>
+        <SpaceView mt={20} viewStyle={{borderBottomColor: '#D5CD9E', borderBottomWidth: 1}}>
+          <Text style={[_styles.allBrandText, {marginBottom: 5}]}>GIFTICON</Text>
+        </SpaceView>
+      </SpaceView>
+    </SpaceView>
   );
 }
 
@@ -316,7 +366,6 @@ const RenderItem = ({ item, type, callFn }) => {
     }
   }
 
-
   return (
     <>
       {/* boutique : 경매 상품 목록,  gifticon : 기프티콘 재고 상품 목록 */}
@@ -374,20 +423,19 @@ const RenderItem = ({ item, type, callFn }) => {
           <View style={{ flexDirection: 'column' }}>
 
             <SpaceView viewStyle={_styles.thumbArea}>
+              <View style={_styles.rpArea}>
+                <Text style={_styles.priceText(11)}>{type === 'gifticon' ? CommaFormat(item?.buy_price) : CommaFormat(item?.now_buy_price)} RP</Text>
+              </View>
+              <Image style={_styles.logoArea} source={ICON.naverLogo} />
               <Image style={_styles.thumb} source={imagePath} resizeMode={'cover'} />
             </SpaceView>
 
             <View style={{ paddingHorizontal: 3 }}>
-              <Text style={_styles.brandName}>{item?.brand_name}</Text>
+              {/* <Text style={_styles.brandName}>{item?.brand_name}</Text> */}
               <Text style={_styles.productName(type)}>{item?.prod_name}</Text>
 
-              <SpaceView mt={5}>
-                <View style={[_styles.textContainer]}>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={_styles.priceText(12)}>{type === 'gifticon' ? CommaFormat(item?.buy_price) : CommaFormat(item?.now_buy_price)}</Text>
-                    <Image source={ICON.crown} style={_styles.crown} />
-                  </View>
-                </View>
+              <SpaceView>
+
                 <View style={_styles.textContainer}>
                     {
                       item.prod_cnt > 0 ?
@@ -402,7 +450,7 @@ const RenderItem = ({ item, type, callFn }) => {
             </View>
 
             <Text style={_styles.remainText}>{remainTime}</Text>
-          </View>        
+          </View>
         </TouchableOpacity>
       )}
 
@@ -449,12 +497,17 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   categoriesContainer: {
-    marginTop: 160,
+    marginTop: 200,
     marginBottom: 10,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'flex-start',
-    paddingHorizontal: 20
+    //flexDirection: `row`,
+    //alignItems: `center`,
+    //justifyContent: 'flex-start',
+    paddingHorizontal: 20,
+  },
+  allBrandText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 16,
+    color: '#D5CD9E',
   },
   categoryBorder: (isSelected: boolean) => {
     return {
@@ -475,8 +528,7 @@ const _styles = StyleSheet.create({
     };
   },
   renderItem: {
-    width: (Dimensions.get('window').width - 75) / 3,
-    marginTop: 10,
+    width: (Dimensions.get('window').width - 75) / 2,
     flex: 1,
   },
   renderItem02: {
@@ -500,19 +552,47 @@ const _styles = StyleSheet.create({
   thumbArea: {
     
   },
+  brandLogoArea: {
+    backgroundColor: '#FFF',
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
   textArea: {
     width: (Dimensions.get('window').width) / 2.5,
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
+  rpArea: {
+    position: 'absolute',
+    bottom: 7,
+    right: 7,
+    zIndex: 10,
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  logoArea: {
+    position: 'absolute',
+    top: 7,
+    left: 7,
+    width: 15,
+    height: 15,
+    zIndex: 10,
+  },
   thumb: {
-    width: (Dimensions.get('window').width - 75) / 3,
-    height: (Dimensions.get('window').width - 75) / 3,
+    width: (Dimensions.get('window').width - 75) / 2,
+    height: (Dimensions.get('window').width - 75) / 2,
     borderRadius: 5,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#445561',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#445561',
   },
   thumb02: {
     width: (Dimensions.get('window').width) / 2,
@@ -522,19 +602,19 @@ const _styles = StyleSheet.create({
   },
   brandName: {
     fontSize: 10,
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Light',
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#7986ee',
+    color: '#D5CD9E',
     marginTop: 5,
   },
   productName: (type: string) => {
     return {
       fontSize: type == 'boutique' ? 14 : 13,
-      fontFamily: 'AppleSDGothicNeoM00',
+      fontFamily: 'Pretendard-Light',
       letterSpacing: 0,
       textAlign: 'left',
-      color: '#363636',
+      color: '#D5CD9E',
       marginTop: 2,
     };
   },
@@ -547,28 +627,27 @@ const _styles = StyleSheet.create({
 
   priceText: (fontSize:number) => {
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-Medium',
       fontSize: fontSize,
-      fontWeight: 'bold',
       letterSpacing: 0,
       textAlign: 'left',
-      color: '#363636',
+      color: '#32F9E4',
     };
   },
   hintText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
     letterSpacing: 0,
     textAlign: 'left',
     //color: '#d3d3d3',
-    color: '#C1C1C1',
+    color: '#E1DFD1',
   },
   soldOutText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#FE0456',
+    color: '#FF0060',
   },
   remainText: {
     position: 'absolute',

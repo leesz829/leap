@@ -237,6 +237,7 @@ export const ICON = {
   megaCubeCyan: require('assets/icon/icon-megacube-cyan.png'),
   cubeCyan: require('assets/icon/icon-cube-cyan.png'),
   menuCyan: require('assets/icon/icon-menu-cyan.png'),
+  naverLogo: require('assets/icon/icon-naver-logo.png'),
 };
 
 export const GIF_IMG = {

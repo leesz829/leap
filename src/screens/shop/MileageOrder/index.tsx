@@ -86,34 +86,27 @@ export default function MileageOrder() {
         backIcon={ICON.back}
         walletTextStyle={{ color: 'white' }} />
 
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
         <LinearGradient
-          colors={['#895dfa', '#6b6dfa']}
-          style={{ width: '100%', height: Dimensions.get('window').width * 0.55, justifyContent: 'center' }}
+          colors={['#3D4348', '#1A1E1C']}
+          style={{ minHeight: Dimensions.get('window').height }}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 1 }}
         >
           <View style={styles.paddingBox}>
+
+          <LinearGradient
+          colors={['#092032', '#344756']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.itemDescArea}
+        > 
+          <Text>보유 RP</Text>
+          <Text style={styles.amountText}>{CommaFormat(me?.mileage_point)}</Text>
+          <Text style={styles.itemDescText}>교환한 기프티콘은 'KT비즈콘'을 통해 SMS문자 메세지로 발송됩니다.</Text>
+        </LinearGradient>
+
+
             <Text style={styles.nameText}>{me?.nickname}</Text>
-            <View style={styles.addressBox}>
-              {/*
-                <TextInput
-                  defaultValue={'교환한 기프티콘은 KT 비즈콘으로 문자 발송됩니다 :)'}
-                  onChangeText={(text) => setMemberAddr(text) }
-                  style={[style ㅕㅜㅛs.addressText]}
-                  multiline={false}
-                  placeholder={'!'}
-                  placeholderTextColor={'#c6ccd3'}
-                  numberOfLines={1}
-                  maxLength={100}
-                /> 
-              */}
-              
-              <Text style={styles.addressText} numberOfLines={1}>
-                교환한 기프티콘은 KT 비즈콘으로 문자 발송됩니다 :)
-              </Text>
-              {/* <Image style={styles.pencil} source={ICON.pencil} /> */}
-            </View>
             <View style={styles.limitBox}>
               <View style={styles.leftBox}>
                 <Image source={ICON.roundCrown} style={styles.roundCrown} />
@@ -123,7 +116,7 @@ export default function MileageOrder() {
             </View>
           </View>
           <View style={styles.line} />
-        </LinearGradient>
+
         { /* 주문내역 상태창 노출 */ }
         { /*
         <View style={styles.backMargin}>
@@ -172,8 +165,7 @@ export default function MileageOrder() {
             <Text style={{fontFamily: 'AppleSDGothicNeoB00'}}>주문 내역이 없습니다.</Text>
           </SpaceView>
         )}
-
-      </View>
+        </LinearGradient>
     </>
   );
 }
@@ -594,6 +586,16 @@ const styles = StyleSheet.create({
   },
   addressTxt: {
 
-  }
-
+  },
+  itemDescArea: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+  },
+  itemDescText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 12,
+    color: '#E1DFD1',
+    textAlign: 'center',
+  },
 });
