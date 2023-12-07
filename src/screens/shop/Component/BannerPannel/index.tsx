@@ -10,7 +10,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { CommaFormat } from 'utils/functions';
 import { get_cashback_pay_info } from 'api/models';
 import SpaceView from 'component/SpaceView';
-import { commonStyle } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle } from 'assets/styles/Styles';
 import LinearGradient from 'react-native-linear-gradient';
 
 
@@ -43,128 +43,31 @@ function FemalePannel() {
   return (
     <>
       <View style={female.floatWrapper(route.name)}>
+        <LinearGradient
+          colors={['#FE927C', '#FE7C92']}
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 0 }}
+          style={{borderRadius: 10, paddingHorizontal: 20, paddingVertical: 10}}>
 
-        {route.name !== ROUTES.Mileage_Shop ? (
+          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyBetween]}>
+            <SpaceView viewStyle={female.rpStoreBtn}>
+              <Text style={female.lmtButtonText5}>RP Store</Text>
+            </SpaceView>
+            <TouchableOpacity style={female.rpStoreBtn}>
+              <Text style={female.lmtButtonText4}>나가기</Text>
+            </TouchableOpacity>
+          </SpaceView>
 
-          <LinearGradient
-            colors={['#7D1BD2', '#306FD9', '#306FD9']}
-            start={{ x: 1, y: 1 }}
-            end={{ x: 0, y: 3 }}
-            style={female.floatContainer(route.name)}>
+          <SpaceView mt={10}>
+            <Text style={female.bannerDesc}>보유한 RP로 원하는 상품을{'\n'}교환할 수 있는 혜택을 누려 보세요!</Text>
+          </SpaceView>
 
-            <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
-              <SpaceView mb={20} pt={3} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20}}>
-                <View style={{ flexDirection: 'column'}}>
-                  <SpaceView>
-                    <Text style={female.openText}>리밋상점 오픈!</Text>
-                  </SpaceView>
-
-                  <SpaceView mt={17}>
-                    <Text style={female.femaleTxt01}>보유 리밋</Text>
-                    <Text style={female.femaleTxt02}>
-                      그동안 리밋을 열심히 모으셨네요!{'\n'}
-                      쏠쏠한 기프티콘 선물을 기대해 보세요!
-                    </Text>
-                  </SpaceView>
-                </View>
-
-                <View style={{ flexDirection: 'column', paddingRight: 5}}>
-                  <View style={{ flexDirection: 'column' }}>
-                    <SpaceView viewStyle={female.myBox02}>
-                      <TouchableOpacity onPress={onPressLimitInfo}>
-                        <View style={female.myBox}>
-                          <Text style={female.infoText02}>리밋획득방법안내</Text>
-                          <Image source={ICON.currencyTooltip} style={{ width: 14, height: 12, bottom:3}} />
-                        </View>
-                        <SpaceView mt={40}>
-                          <Text style={female.rate(route.name)}>{CommaFormat(me?.mileage_point)}</Text>
-                          <Image style={female.crown} source={ICON.crown} />
-                        </SpaceView>
-                      </TouchableOpacity>
-                    </SpaceView>
-                  </View>
-                </View>
-              </SpaceView>
-
-              <View style={female.limeDotted}>
-                <Image source={ICON.dottedIcon} style={{width: '100%', height: 1}} />
-              </View>
-
-              <SpaceView pt={8} pr={15} viewStyle={female.btnArea}>
-                <TouchableOpacity onPress={onPressLimitShop} hitSlop={commonStyle.hipSlop20} style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
-                  <Text style={female.joinBtnTxt}>리밋샵 입장하기</Text>
-                  <Image source={ICON.playIcon} style={{width: 20, height: 20}} />
-                </TouchableOpacity>
-              </SpaceView>
-            </View>
-          </LinearGradient>
-
-        ) : (
-
-          <View style={female.floatContainer(route.name)}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              
-              <View style={{ flexDirection: 'column'}}>
-                <SpaceView mb={20} mt={route.name === ROUTES.Mileage_Shop ? 10 : 0}>
-                  <Text style={female.pointText}>
-                    {me?.nickname} <Text>✨</Text>
-                  </Text>
-                </SpaceView>
-              </View>
-
-              <View style={{ flexDirection: 'column', alignItems: 'flex-end'}}>
-                <View>
-                  <TouchableOpacity
-                    style={female.lmtShopPayButton}
-                    onPress={onPressMileageOrder}
-                    hitSlop={commonStyle.hipSlop20}>
-
-                    <Text style={female.lmtButtonText3}>구매내역</Text>
-                  </TouchableOpacity>
-                  
-                  {/*
-                  <TouchableOpacity onPress={onPressMileageHistory}>
-                    <Image
-                      style={female.mileageHistoryButton}
-                      source={ICON.mileageHistory}
-                    />
-                  </TouchableOpacity>
-                
-                  <TouchableOpacity onPress={onPressMileageOrder}>
-                    <Image
-                      style={female.mileageOrderButton}
-                      source={ICON.mileageOrder}
-                    />
-                  </TouchableOpacity>
-                  */}
-                </View>
-                
-                <View style={{ flexDirection: 'column' }}>
-                  <SpaceView viewStyle={female.myBox}>
-                    <TouchableOpacity onPress={onPressLimitInfo}>
-                      <View style={female.myBox}>
-                        <Text style={female.infoText}>리밋 획득방법 안내</Text>
-                        <Image source={ICON.currencyTooltip} style={{ width: 14, height: 12, bottom:3}} />
-                      </View>
-
-                      <View style={{ marginTop: 10 }}>
-                        <Text style={female.rate(route.name)}>
-                          {CommaFormat(me?.mileage_point)}
-                        </Text>
-                        <Image style={female.crown} source={ICON.crown} />
-                      </View>
-                    </TouchableOpacity>
-                  </SpaceView>
-                </View>
-
-              </View>
-            </View>
-          </View>
-        )}
-
+          <SpaceView mt={20} viewStyle={[layoutStyle.justifyEnd, layoutStyle.row, layoutStyle.alignEnd]}>
+            <Text style={female.bannerRp}>{CommaFormat(me?.mileage_point)}</Text>
+            <Text style={female.bannerRpText}>RP</Text>
+          </SpaceView>
+        </LinearGradient>
       </View>
-
-        
     </>
   );
 }
@@ -515,6 +418,21 @@ const female = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 1
   },
+  lmtButtonText4: {
+    fontFamily: 'Pretendard-Bold', 
+    color: '#F1D30E',
+  },
+  lmtButtonText5: {
+    fontFamily: 'MinSans-Bold', 
+    fontSize: 20,
+    color: '#F1D30E',
+  },
+  rpStoreBtn: {
+    backgroundColor: '#FFF',
+    borderRadius: 50,
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+  },
   myBox: {
     flexDirection: `row`,
     alignItems: 'flex-end',
@@ -577,5 +495,21 @@ const female = StyleSheet.create({
     fontSize: 18,
     color: '#CAAAFF',
     marginRight: 10,
+  },
+  bannerDesc: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 16,
+    color: '#FFF',
+  },
+  bannerRpText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 17,
+    color: '#32F9E4',
+    marginLeft: 15,
+  },
+  bannerRp: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 32,
+    color: '#32F9E4',
   },
 });
