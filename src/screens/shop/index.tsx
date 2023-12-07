@@ -292,6 +292,10 @@ export const Shop = () => {
     }
   };
 
+  const onPressLimitShop = () => {
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
+  };
+
   // ############################################################################# 초기 실행 실행
   useFocusEffect(
     React.useCallback(() => {
@@ -331,7 +335,7 @@ export const Shop = () => {
       getShopMain(isPopupShow);
     }
   }, [isFocus]);
-console.log('productList:::::', productList)
+
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -430,6 +434,10 @@ console.log('productList:::::', productList)
               <Text style={_styles.inventoryText}>보유 아이템</Text>
             </TouchableOpacity>
           </SpaceView>
+
+          <TouchableOpacity style={{backgroundColor: '#FFF', width: 130, marginTop: 10}} onPress={onPressLimitShop}>
+            <Text>RP STORE 임시 버튼</Text>
+          </TouchableOpacity>
 
           <SpaceView mt={80} mb={10} viewStyle={{borderWidth: 1, borderColor: '#EDEDED', width: width}}></SpaceView>
 

@@ -227,7 +227,7 @@ export default function Inventory() {
 
   function renderItem({ item, index }) {
     const isNew = (typeof item.connect_date == 'undefined' || item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
-
+console.log('item::::', item);
     return (
       <View style={_styles.renderItem}>
         <View style={{ flexDirection: 'row' }}>
