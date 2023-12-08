@@ -18,7 +18,8 @@ export default function BannerPannel({ payInfo }) {
   const me = useUserInfo();
 
   if (!me) return null;
-  return me?.gender !== 'M' ? <FemalePannel /> : <MalePannel payInfo={payInfo} />;
+  // return me?.gender !== 'M' ? <FemalePannel /> : <MalePannel payInfo={payInfo} />;
+  return me?.gender !== 'M' && <FemalePannel />;
 }
 
 // ############################################################################################### 여성회원 Pannel
@@ -51,10 +52,10 @@ function FemalePannel() {
 
           <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyBetween]}>
             <SpaceView viewStyle={female.rpStoreBtn}>
-              <Text style={female.lmtButtonText5}>RP Store</Text>
+              <Text style={female.rpStoreText}>RP Store</Text>
             </SpaceView>
-            <TouchableOpacity style={female.rpStoreBtn}>
-              <Text style={female.lmtButtonText4}>나가기</Text>
+            <TouchableOpacity style={female.rpStoreBtn} onPress={() => (navigation.goBack())}>
+              <Text style={female.rpStoreBtnText}>나가기</Text>
             </TouchableOpacity>
           </SpaceView>
 
@@ -138,9 +139,9 @@ function MalePannel({ payInfo }) {
           </View>
         </TouchableOpacity>
         
-        {/* <TouchableOpacity onPress={onPressPointReward} style={male.TooltipButton} hitSlop={commonStyle.hipSlop10}>
+        <TouchableOpacity onPress={onPressPointReward} style={male.TooltipButton} hitSlop={commonStyle.hipSlop10}>
           <Image source={ICON.currencyTooltip} style={male.imageTooltip} />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
 
         <View style={male.gradeArea}>
           <Text style={male.gradeText}><Text style={male.gradeEtc}>RANK</Text>{payInfo?.tmplt_name}</Text>
@@ -160,22 +161,6 @@ function MalePannel({ payInfo }) {
 ################################################################################################################ */}
 
 const _styles = StyleSheet.create({
-  iconArea: {
-    position: 'absolute',
-    top: -14,
-    left: -14,
-    zIndex: 1,
-  },
-  newText: {
-    backgroundColor: '#FF7E8C',
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 10,
-    color: ColorType.white,
-    borderRadius: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    overflow: 'hidden',
-  },
   gradient: (value:any) => {
     let percent = 0;
 
@@ -311,118 +296,11 @@ const female = StyleSheet.create({
       marginTop: type == 'Cashshop' ? -105 : -70,
     };
   },
-  floatContainer: (type:string) => {
-    return {
-      position: 'relative',
-      padding: type == 'Cashshop' ? 0 : 25,
-      backgroundColor: 'white',
-      width: '100%',
-      height: type == 'Cashshop' ? 170 : 120,
-      borderRadius: 15,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-      justifyContent: 'space-around',
-    };
-  },
-  pointText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-  },
-  mileageHistoryButton: {
-    width: 25,
-    height: 25,
-    borderRadius: 13,
-    marginRight: 8,
-  },
-  mileageOrderButton: {
-    width: 25,
-    height: 25,
-    borderRadius: 13,
-  },
-  infoText: {
-    opacity: 0.83,
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 10,
-    letterSpacing: 0,
-    textAlign: 'right',
-    color: '#b1b1b1',
-    textAlignVertical: 'bottom',
-  },
-  infoText02: {
-    opacity: 0.83,
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 10,
-    textAlign: 'right',
-    color: '#FFFFFF',
-    marginRight: 4,
-  },
-  row: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-between',
-  },
-  lmtShopButton: {
-    borderRadius: 5,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#7986ee',
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: 5,
-    paddingVertical: 3,
-    width: 100,
-  },
-  lmtShopPayButton: {
-    borderRadius: 5,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#7986ee',
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: 5,
-    paddingVertical: 2,
-    width: 70,
-  },
-  lmtButtonText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 10,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#7986ee',
-  },
-  lmtButtonText2: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 11,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#7986ee',
-    paddingHorizontal: 8,
-    paddingVertical: 2
-  },
-  lmtButtonText3: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 11,
-    letterSpacing: 0,
-    color: '#7986ee',
-    paddingHorizontal: 10,
-    paddingVertical: 1
-  },
-  lmtButtonText4: {
+  rpStoreBtnText: {
     fontFamily: 'Pretendard-Bold', 
     color: '#F1D30E',
   },
-  lmtButtonText5: {
+  rpStoreText: {
     fontFamily: 'MinSans-Bold', 
     fontSize: 20,
     color: '#F1D30E',
@@ -432,69 +310,6 @@ const female = StyleSheet.create({
     borderRadius: 50,
     paddingHorizontal: 12,
     paddingVertical: 2,
-  },
-  myBox: {
-    flexDirection: `row`,
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    marginTop: 8,
-  },
-  myBox02: {
-    marginTop: -10
-  },
-  rate: (type:string) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoEB00',
-      fontSize: 29,
-      textAlign: 'right',
-      color: type == 'Cashshop' ? '#CAAAFF' : '#8657d4',
-    };
-  },
-  crown: {
-    width: 12.7,
-    height: 8.43,
-    position: 'absolute',
-    right: 3,
-    top: 0,
-  },
-  limeDotted: {
-    width: '100%',
-    height: 1,
-    /* borderWidth: 1,
-    borderColor: '#5D2CAE',
-    borderStyle: 'dotted', */
-  },
-  btnArea: {
-    /* borderTopWidth: 2,
-    borderTopColor: '#5D2CAE',
-    borderStyle: 'dotted', */
-  },
-  openText: {
-    backgroundColor: '#7986EE',
-    color: '#fff',
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 10,
-    textAlign: 'center',
-    borderRadius: 11,
-    paddingVertical: 3,
-    width: 90,
-    overflow: 'hidden',
-  },
-  femaleTxt01: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 19,
-    color: '#CAAAFF',
-  },
-  femaleTxt02: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 10,
-    color: '#FFFFFF',
-  },
-  joinBtnTxt: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 18,
-    color: '#CAAAFF',
-    marginRight: 10,
   },
   bannerDesc: {
     fontFamily: 'Pretendard-SemiBold',

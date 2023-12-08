@@ -238,6 +238,12 @@ export const ICON = {
   cubeCyan: require('assets/icon/icon-cube-cyan.png'),
   menuCyan: require('assets/icon/icon-menu-cyan.png'),
   naverLogo: require('assets/icon/icon-naver-logo.png'),
+  circleS: require('assets/icon/icon-circle-s.png'),
+  circleA: require('assets/icon/icon-circle-a.png'),
+  circleB: require('assets/icon/icon-circle-b.png'),
+  circleC: require('assets/icon/icon-circle-c.png'),
+  circleD: require('assets/icon/icon-circle-d.png'),
+  circleE: require('assets/icon/icon-circle-e.png'),
 };
 
 export const GIF_IMG = {

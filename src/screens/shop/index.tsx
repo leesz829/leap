@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Text,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import TopNavigation from 'component/TopNavigation';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
@@ -70,6 +71,7 @@ export const Shop = () => {
   const dispatch = useDispatch();
   const isFocus = useIsFocused();
   const { show } = usePopup(); // 공통 팝업
+  const [isVisible, setIsVisible] = useState(false);
 
   const [productModalVisible, setProductModalVisible] = useState(false); // 상품 모달 VIsible
   const [targetItem, setTargetItem] = useState(null); // 타겟 아이템
@@ -141,7 +143,6 @@ export const Shop = () => {
               },
               etcCallback: async function(item) {
                 openProductModal(item);
-                console.log('item :::::::: ' , item);
               },
             });
           };
@@ -276,10 +277,10 @@ export const Shop = () => {
   // ######################################################### 상품상세 팝업 열기
   const openProductModal = (item) => {
 
-    show({ content: '준비중입니다.' });
+    // show({ content: '준비중입니다.' });
 
-    /* setTargetItem(item);
-    setProductModalVisible(true); */
+    setTargetItem(item);
+    setProductModalVisible(true);
   };
 
   // ######################################################### 상품상세 팝업 닫기
@@ -436,11 +437,28 @@ export const Shop = () => {
             </TouchableOpacity>
           </SpaceView>
 
+          <SpaceView mt={20} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
+            <Image source={ICON.circleA} style={styles.iconSquareSize(70)} />
+            <SpaceView ml={10} mb={5}>
+              <Text style={_styles.rewardTitle}>
+                <Text style={{color: '#F1D30E'}}>S등급</Text> 
+                보상은 <Text style={{color: '#32F9E4'}}>&#123;아이템이름&#125;</Text> 입니다.
+              </Text>
+              <Text style={_styles.rewardDesc}>10,000원 더 결제하면 S등급 달성!</Text>
+            </SpaceView>
+            <TouchableOpacity 
+              style={_styles.rewardBtn}
+              onPress={() => (setIsVisible(true))}
+              >
+              <Text style={_styles.rewardBtnText}>리워드 플랜</Text>
+            </TouchableOpacity>
+          </SpaceView>
+
+          <SpaceView mt={10} mb={10} viewStyle={{borderWidth: 1, borderColor: '#EDEDED', width: width}}></SpaceView>
+
           <TouchableOpacity style={{backgroundColor: '#FFF', width: 130, marginTop: 10}} onPress={onPressLimitShop}>
             <Text>RP STORE 임시 버튼</Text>
           </TouchableOpacity>
-
-          <SpaceView mt={80} mb={10} viewStyle={{borderWidth: 1, borderColor: '#EDEDED', width: width}}></SpaceView>
 
           {/* ############################################### 카테고리별 */}
           <SpaceView mb={200} viewStyle={{marginHorizontal: 15}}>
@@ -467,6 +485,80 @@ export const Shop = () => {
         item={targetItem}
         closeModal={closeProductModal}
       />
+
+      <Modal isVisible={isVisible}>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={_styles.container}
+        >
+          <View style={_styles.titleBox}>
+            <Text style={_styles.titleText}>리프 캐시백 보상 플랜</Text>
+          </View>
+          
+          <View>
+            <SpaceView viewStyle={_styles.rewardDescArea}>
+              <Text style={_styles.rewardAreaText}>인앱상품 구매 시 캐시백 포인트가 충전됩니다.{'\n'}캐시백 보상으로 리프에서도 스마트한 쇼핑 라이프되세요!</Text>
+              <Text style={_styles.rewardTip}>TIP.캐시백 포인트는 매월 1일 초기화 됩니다.</Text>
+            </SpaceView>
+          </View>
+
+          <SpaceView viewStyle={{paddingHorizontal: 15}}>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleS} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleA} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleB} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleC} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleD} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleE} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
+              </SpaceView>
+            </SpaceView>
+          </SpaceView>
+
+          <View style={_styles.bottomBox}>
+            <TouchableOpacity 
+              style={[_styles.allButton]} 
+              onPress={() => (setIsVisible(false))}>
+
+              <Text style={_styles.allButtonText}>확인</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </Modal>
     </>
   );
 };
@@ -579,143 +671,124 @@ const _styles = StyleSheet.create({
     width: `100%`,
     height: 250,
   },
-  topBanner: {
-    backgroundColor: Color.primary,
-    width: Dimensions.get('window').width,
-    height: 250,
-    justifyContent: 'flex-end',
+  rewardTitle: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#D5CD9E',
   },
-  floatWrapper: {
-    width: `100%`,
-    position: 'absolute',
-    bottom: -50,
-  },
-  floatContainer: {
-    padding: 25,
-    backgroundColor: 'white',
-    width: Dimensions.get('window').width - 40,
-    height: 100,
-    marginHorizontal: 20,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    justifyContent: 'space-around',
-  },
-  pointText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Pretendard-Medium',
-  },
-  infoText: {
-    marginTop: 8,
+  rewardDesc: {
+    fontFamily: 'Pretendard-Light',
     fontSize: 10,
-    fontWeight: 'bold',
-    fontFamily: 'Pretendard-Medium',
-    color: Color.grayAAAA,
+    color: '#ABA99A',
   },
-  cashbackText: {
-    marginTop: 14,
-    fontSize: 10,
-    fontWeight: 'bold',
-    fontFamily: 'Pretendard-Medium',
-    color: Color.primary,
+  rewardBtn: {
+    backgroundColor: '#000',
+    paddingVertical: 2,
+    paddingHorizontal: 7,
+    borderRadius: 10,
+    marginLeft: 50,
   },
-  sliderContainer: {
+  rewardBtnText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#D5CD9E',
+  },
+
+  container: {
     width: '100%',
-    marginTop: 8,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: ColorType.primary,
+    borderRadius: 20,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
-  sliderTrack: {
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: ColorType.grayDDDD,
-  },
-  TooltipButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-  },
-  imageTooltip: {
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
-  },
-  floatingButtonWrapper: {
-    borderRadius: 25,
-    position: 'absolute',
-    bottom: 13,
-    right: 15,
-  },
-  floatingButton: {
-    width: 72,
-    height: 72,
-    borderRadius: 25,
-  },
-  inventoryArea: {
+  titleBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#DAD7DE',
-    borderRadius: 10,
-    marginHorizontal: 15,
-    marginTop: 30,
-    paddingLeft: 2,
-    paddingRight: 20,
+    justifyContent: 'flex-start',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    overflow: 'hidden',
   },
-  inventoryIcon: {
-    width: 65,
-    height: 65,
-    marginTop: 0,
+  titleText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 18,
+    color: '#FFDD00',
   },
-  arrowIcon: {
-    width: 10,
-    height: 19,
+  rewardDescArea: {
+    width: '100%',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
+  bottomBox: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 20,
+    marginRight: 10,
+    marginTop: 20,
+  },
+  allButton: {
+    backgroundColor: '#FFDD00',
+    paddingVertical: 2,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+  },
+  allButtonText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#3D4348',
+  },
+  rpAmtText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#FFDD00',
+    marginBottom: 2,
+  },
+  rewardAreaText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#D5CD9E',
+  },
+  rewardTip: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#ABA99A',
+    marginBottom: 15,
+  },
+
+    // inventoryArea: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   borderWidth: 1,
+  //   borderColor: '#DAD7DE',
+  //   borderRadius: 10,
+  //   marginHorizontal: 15,
+  //   marginTop: 30,
+  //   paddingLeft: 2,
+  //   paddingRight: 20,
+  // },
+  // inventoryIcon: {
+  //   width: 65,
+  //   height: 65,
+  //   marginTop: 0,
+  // },
+  // arrowIcon: {
+  //   width: 10,
+  //   height: 19,
+  // },
   // inventoryText : {
   //   marginRight: 30,
   //   justifyContent: 'center',
   //   marginTop: -5,
   // },
-  inventoryTextTit : {
-    fontFamily: 'Pretendard-SeminBold',
-    fontSize: 15,
-    color: '#646467',
-  },
-  inventoryTextSubTit : {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 12,
-    color: '#939393',
-    letterSpacing: 0,
-  },
-  iconArea: {
-    position: 'absolute',
-    top: 10,
-    right: -8,
-  },
-  newText: {
-    backgroundColor: '#FF7E8C',
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 10,
-    color: ColorType.white,
-    borderRadius: 10,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    overflow: 'hidden',
-  },
-  giftIconArea: {
-    position: 'absolute',
-    top: -42,
-    left: 3,
-    zIndex: 1,
-    overflow: 'hidden',
-  },
-
+  // inventoryTextTit : {
+  //   fontFamily: 'Pretendard-SeminBold',
+  //   fontSize: 15,
+  //   color: '#646467',
+  // },
+  // inventoryTextSubTit : {
+  //   fontFamily: 'Pretendard-Medium',
+  //   fontSize: 12,
+  //   color: '#939393',
+  //   letterSpacing: 0,
+  // },
 });

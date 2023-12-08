@@ -227,7 +227,7 @@ export default function Inventory() {
 
   function renderItem({ item, index }) {
     const isNew = (typeof item.connect_date == 'undefined' || item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
-console.log('item::::', item);
+
     return (
       <View style={_styles.renderItem}>
         <View style={{ flexDirection: 'row' }}>
@@ -348,13 +348,6 @@ const _styles = StyleSheet.create({
     width: '70%',
     paddingHorizontal: 15,
   },
-  categoryText: (isSelected: boolean) => {
-    return {
-      fontSize: 20,
-      fontFamily: 'Pretendard-Regular',
-      color: isSelected ? Color.blue01 : Color.grayAAAA,
-    };
-  },
   categoryBtn: (type: string) => {
     return {
       width: type == 'ALL' ? 25 : 40,
@@ -368,14 +361,6 @@ const _styles = StyleSheet.create({
     borderBottomColor: '#707070',
     borderBottomWidth: 1,
     paddingHorizontal: 16,
-  },
-  thumb: {
-    width: '30%',
-    height: ((Dimensions.get('window').width - 32) * 8 * 0.3) / 11,
-    borderRadius: 5,
-    backgroundColor: '#d1d1d1',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   title: {
     fontFamily: 'Pretendard-Bold',
@@ -393,24 +378,6 @@ const _styles = StyleSheet.create({
     textAlign: 'left',
     color: '#939393',
     marginTop: 5,
-  },
-  qtyArea: {
-    position: 'absolute',
-    bottom: 4,
-    right: 4,
-    borderRadius: 7,
-    overflow: 'hidden',
-  },
-  qtyText: (type:string) => {
-    return {
-      fontFamily: 'AppleSDGothicNeoM00',
-      fontSize: 12,
-      textAlign: 'left',
-      color: type == 'KEEP_MINUTE' ? '#FFC100' : '#FFF',
-      paddingHorizontal: 6,
-      paddingVertical: 1,
-      zIndex: 1,
-    };
   },
   buttonWrapper: {
     width: '25%',
@@ -449,21 +416,6 @@ const _styles = StyleSheet.create({
       color: used ? '#3D4348' : '#b5b5b5',
     };
   },
-  iconArea: {
-    position: 'absolute',
-    top: 4,
-    left: 5,
-  },
-  newText: {
-    backgroundColor: '#FF7E8C',
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 11,
-    color: ColorType.white,
-    borderRadius: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    overflow: 'hidden',
-  },
   passAllBtnArea: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -501,6 +453,48 @@ const _styles = StyleSheet.create({
     fontSize: 16,
     color: '#445561',
   },
+  
+  // thumb: {
+  //   width: '30%',
+  //   height: ((Dimensions.get('window').width - 32) * 8 * 0.3) / 11,
+  //   borderRadius: 5,
+  //   backgroundColor: '#d1d1d1',
+  //   borderWidth: 1,
+  //   borderColor: '#e0e0e0',
+  // },
+  // qtyArea: {
+  //   position: 'absolute',
+  //   bottom: 4,
+  //   right: 4,
+  //   borderRadius: 7,
+  //   overflow: 'hidden',
+  // },
+  // qtyText: (type:string) => {
+  //   return {
+  //     fontFamily: 'AppleSDGothicNeoM00',
+  //     fontSize: 12,
+  //     textAlign: 'left',
+  //     color: type == 'KEEP_MINUTE' ? '#FFC100' : '#FFF',
+  //     paddingHorizontal: 6,
+  //     paddingVertical: 1,
+  //     zIndex: 1,
+  //   };
+  // },
+  // iconArea: {
+  //   position: 'absolute',
+  //   top: 4,
+  //   left: 5,
+  // },
+  // newText: {
+  //   backgroundColor: '#FF7E8C',
+  //   fontFamily: 'AppleSDGothicNeoEB00',
+  //   fontSize: 11,
+  //   color: ColorType.white,
+  //   borderRadius: 8,
+  //   paddingHorizontal: 6,
+  //   paddingVertical: 2,
+  //   overflow: 'hidden',
+  // },
 });
 
 const categories = [

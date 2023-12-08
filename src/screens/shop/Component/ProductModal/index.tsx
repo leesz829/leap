@@ -41,6 +41,7 @@ import { ROUTES, STACK } from 'constants/routes';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { CommonBtn } from 'component/CommonBtn';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 interface Props {
@@ -171,9 +172,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         setComfirmModalVisible(false);
 
         if(Platform.OS == 'android') {
-          show({ content: '패스가 부족합니다.' });
+          show({ content: '큐브가 부족합니다.' });
         } else {
-          Alert.alert('알림', '패스가 부족합니다.', [{ text: '확인' }]);
+          Alert.alert('알림', '큐브가 부족합니다.', [{ text: '확인' }]);
         }
         
         return;
@@ -185,9 +186,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         setComfirmModalVisible(false);
 
         if(Platform.OS == 'android') {
-          show({ content: '로얄패스가 부족합니다.' });
+          show({ content: '메가큐브가 부족합니다.' });
         } else {
-          Alert.alert('알림', '로얄패스가 부족합니다.', [{ text: '확인' }]);
+          Alert.alert('알림', '메가큐브가 부족합니다.', [{ text: '확인' }]);
         }
         
         return;
@@ -340,7 +341,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     const body = dataParam;
 
     const { success, data } = await purchase_product(body);
-    console.log('data :::: ', data);
+
     if (success) {
       if(data?.result_code == '0000') {
         setIsPayLoading(false);
@@ -401,133 +402,147 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       },
     })
   ).current;
-console.log('item:::', item);
+
   return (
     <>
-      <Modal 
-        isVisible={isVisible} 
-        style={modalStyleProduct.modal}
-        //onSwipeComplete={toggleModal}
-        //onBackdropPress={toggleModal} // 모달 외부 터치 시 모달 닫기
-        //swipeDirection="down" // 아래 방향으로 스와이프
-        //propagateSwipe={true}
-        onRequestClose={() => { closeModal(false); }}>
+      {type == 'bm' ?
+        ////////////////////////////// BM상품 팝업창
+        <Modal 
+          isVisible={isVisible} 
+          style={modalStyleProduct.modal}
+          //onSwipeComplete={toggleModal}
+          //onBackdropPress={toggleModal} // 모달 외부 터치 시 모달 닫기
+          //swipeDirection="down" // 아래 방향으로 스와이프
+          //propagateSwipe={true}
+          onRequestClose={() => { closeModal(false); }}>
 
-        <View style={[modalStyleProduct.root, {minHeight: type == 'gifticon' ? '80%' : '45%'}]}>
-          {type == 'gifticon' &&
-            <View {...panResponder.panHandlers}>
-              <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+          <View style={[modalStyleProduct.root, {minHeight: '45%'}]}>
+            <View style={modalStyleProduct.infoContainer}>
+              <SpaceView>
+                <Text style={modalStyleProduct.title}>상품구매</Text>
+                <SpaceView mt={30} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
+                  <Image source={ICON.polygonGreen} style={styles.iconSize40} />
+                  <Text style={[modalStyleProduct.giftName, {marginTop: 0}]}>{prod_name}</Text>
+                </SpaceView>
+                <Text style={modalStyleProduct.giftDesc}>{item?.item_contents}</Text>
+              </SpaceView>
+
+              <View style={modalStyleProduct.infoContents}>
+                <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: height - 625}}>
+                  <View>
+                    <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
+                  </View>
+                </ScrollView>
+              </View>
               
-                <ViewPager
-                  data={images}
-                  style={modalStyleProduct.pagerView}
-                  renderItem={(data) => <Image key={data.index} source={data} style={modalStyleProduct.itemImages} resizeMode={'contain'} />} 
+              <View
+                style={[
+                  modalStyleProduct.bottomContainer,
+                  {
+                    marginBottom: bottom + 10,
+                  },
+                ]}
+              >
+                <View style={modalStyleProduct.rowBetween}>
+                  <TouchableOpacity 
+                    style={modalStyleProduct.puchageButton} 
+                    onPress={() => {
+                      setComfirmModalVisible(true);
+                    }}>
+                      <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
+                      {item?.discount_rate > 0 &&
+                        <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}</Text>
+                      }
+                      <Text style={modalStyleProduct.puchageText}>구매하기</Text>
+                  </TouchableOpacity>
+                </View>
+                <CommonBtn
+                  value={'취소'}
+                  type={'reNewGoBack'}
+                  borderRadius={5}
+                  onPress={toggleModal}
                 />
               </View>
             </View>
-          }
-          <View style={modalStyleProduct.infoContainer}>
-            {brand_name != '' && brand_name != null && type == 'gifticon' ? (
-              <Text style={modalStyleProduct.brandText}>{brand_name}</Text>
-            ) : null}
 
-            <SpaceView>
-              <Text style={modalStyleProduct.title}>상품구매</Text>
-              <SpaceView mt={30} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
-                {type != 'gifticon' && <Image source={ICON.polygonGreen} style={styles.iconSize40} />}
-                <Text style={[modalStyleProduct.giftName, {marginTop: 0}]}>{prod_name}</Text>
-              </SpaceView>
-              <Text style={modalStyleProduct.giftDesc}>{item?.item_contents}</Text>
-            </SpaceView>
-            
-            <View style={modalStyleProduct.rowBetween}>
-              <Text style={modalStyleProduct.inventory}>
-                {type == 'gifticon' ? CommaFormat(item?.prod_cnt) + '개 남음' : null}
-
-                {/* {CommaFormat(item?.buy_count_max)}개 남음 */}
-              </Text>
-            </View>
-
-            <View style={modalStyleProduct.infoContents}>
-              <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: height - 625}}>
-                <View>
-                  <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
-                </View>
-              </ScrollView>
-            </View>
-            
-            <View
-              style={[
-                modalStyleProduct.bottomContainer,
-                {
-                  marginBottom: bottom + 10,
-                },
-              ]}
-            >
-              <View style={modalStyleProduct.rowBetween}>
-                <TouchableOpacity 
-                  style={modalStyleProduct.puchageButton} 
-                  onPress={() => {
-                    setComfirmModalVisible(true);
-                  }}>
-                    <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
-                    {item?.discount_rate > 0 &&
-                      <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}</Text>
-                    }
-                    <Text style={modalStyleProduct.puchageText}>구매하기</Text>
-                </TouchableOpacity>
-              </View>
-              <CommonBtn
-                value={'취소'}
-                type={'reNewGoBack'}
-                borderRadius={5}
-                onPress={toggleModal}
-              />
-            </View>
           </View>
 
-        </View>
+          {/* ###################### 구매하기 Confirm 팝업 */}
+          <Modal isVisible={comfirmModalVisible} transparent={true} style={modalStyleProduct.modal}>
+              {isPayLoading && <CommonLoading />}
+              <View style={modalStyle.modalBackground}>
+              <View style={[modalStyle.modalStyle1, {backgroundColor: '#3D4348'}]}>
 
-        {/* ###################### 구매하기 Confirm 팝업 */}
-        <Modal isVisible={comfirmModalVisible} transparent={true} style={modalStyleProduct.modal}>
-            {isPayLoading && <CommonLoading />}
-            <View style={modalStyle.modalBackground}>
-            <View style={modalStyle.modalStyle1}>
+                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
+                  <CommonText fontWeight={'700'} type={'h5'} color={'#D5CD9E'}>
+                    상품 구매
+                  </CommonText>
+                </SpaceView>
 
-              <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
-                <CommonText fontWeight={'700'} type={'h5'} color={'#676767'}>
-                  상품 구매
-                </CommonText>
-              </SpaceView>
+                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
+                  <CommonText type={'h5'} textStyle={layoutStyle.textCenter} color={'#D5CD9E'}>
+                    상품을 구매하시겠습니까?
+                  </CommonText>
+                </SpaceView>
 
-              <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
-                <CommonText type={'h5'} textStyle={layoutStyle.textCenter} color={'#646464'}>
-                  상품을 구매하시겠습니까?
-                </CommonText>
-              </SpaceView>
-
-              <View style={modalStyle.modalBtnContainer}>
-                <TouchableOpacity
-                  style={[modalStyle.modalBtn, {backgroundColor: Color.grayD6D3D3, borderBottomLeftRadius: 5}]}
-                  onPress={() => setComfirmModalVisible(false)}>
-                  <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>취소할래요!</CommonText>
-                </TouchableOpacity>
-
-                <View style={modalStyle.modalBtnline} />
-
-                  <TouchableOpacity 
-                    style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomRightRadius: 5}]}
-                    onPress={() => purchaseBtn()}>
-                    <CommonText type={'h5'} fontWeight={'500'} color={ColorType.white}>
-                      구매하기
-                    </CommonText>
+                <View style={modalStyle.modalBtnContainer}>
+                  <TouchableOpacity
+                    style={[modalStyle.modalBtn, {backgroundColor: '#FFF', borderBottomLeftRadius: 5}]}
+                    onPress={() => setComfirmModalVisible(false)}>
+                    <CommonText type={'h5'} fontWeight={'500'} color={'#3D4348'}>취소할래요!</CommonText>
                   </TouchableOpacity>
+
+                  <View style={modalStyle.modalBtnline} />
+
+                    <TouchableOpacity 
+                      style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomRightRadius: 5}]}
+                      onPress={() => purchaseBtn()}>
+                      <CommonText type={'h5'} fontWeight={'500'} color={'#3D4348'}>
+                        구매하기
+                      </CommonText>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
 
-      </Modal>
+        </Modal>
+      :
+        ///////////////////////////  기프티콘 상품 교환 팝업창
+        <Modal isVisible={isVisible} onRequestClose={() => { closeModal(); }}>
+          <LinearGradient
+            colors={['#3D4348', '#1A1E1C']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={modalStyleProduct.container}
+          >
+            <View style={modalStyleProduct.titleBox}>
+              <Text style={modalStyleProduct.titleText}>기프티콘 교환</Text>
+            </View>
+            
+            <View style={modalStyleProduct.contentBody}>
+              <SpaceView viewStyle={modalStyleProduct.giftDescArea}>
+                  <Text style={modalStyleProduct.prodDesc}>{item?.prod_content}</Text>
+                  <Text style={modalStyleProduct.rpAmtText}>{item?.buy_price}RP로 기프티콘 교환합니다.</Text>
+              </SpaceView>
+            </View>
+
+            <View style={modalStyleProduct.bottomBox}>
+              <TouchableOpacity 
+                style={[modalStyleProduct.allButton, {backgroundColor: '#FFF', marginRight: 5}]} 
+                onPress={toggleModal}>
+
+                <Text style={modalStyleProduct.allButtonText}>취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={modalStyleProduct.allButton}
+                onPress={() => purchaseBtn()}>
+                <Text style={[modalStyleProduct.allButtonText]}>확인</Text>
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+        </Modal>
+      }
     </>
   );
 }
@@ -706,6 +721,68 @@ const modalStyleProduct = StyleSheet.create({
   infoContents: {
     marginTop: 10,
     paddingTop: 10,
+  },
+
+  container: {
+    width: '100%',
+    borderRadius: 20,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  titleBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  titleText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 18,
+    color: '#FFDD00',
+  },
+  contentBody: {
+    flexDirection: 'column',
+    alignItems: `center`,
+  },
+  giftDescArea: {
+    width: '100%',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+  bottomBox: {
+    width: '100%',
+    flexDirection: `row`,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    overflow: 'hidden',
+    paddingRight: 15,
+  },
+  allButton: {
+    borderRadius: 50,
+    paddingVertical: 4,
+    paddingHorizontal: 30,
+    backgroundColor: '#FFDD00',
+    marginBottom: 20,
+  },
+  allButtonText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#3D4348',
+  },
+  rpAmtText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#FFDD00',
+    marginBottom: 2,
+  },
+  prodDesc: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 14,
+    color: '#D5CD9E',
+    marginBottom: 15,
   },
 });
 

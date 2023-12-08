@@ -439,7 +439,7 @@ const RenderItem = ({ item, type, callFn }) => {
                 <View style={_styles.textContainer}>
                     {
                       item.prod_cnt > 0 ?
-                        <Text style={_styles.hintText}>{item.prod_cnt}개 남음 ({item.buy_cnt}/{item.base_buy_sanction_cnt}구매)</Text> :
+                        <Text style={_styles.hintText}>{item.prod_cnt}개 남음 ({item.buy_cnt}/{item.base_buy_sanction_cnt}구매가능)</Text> :
                         <Text style={_styles.soldOutText}>품절</Text>
                     }
                     

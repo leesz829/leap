@@ -24,6 +24,8 @@ import SpaceView from 'component/SpaceView';
 import { useNavigation } from '@react-navigation/native';
 import { ScreenNavigationProp } from '@types';
 import { ROUTES, STACK } from 'constants/routes';
+import { useProfileImg } from 'hooks/useProfileImg';
+import { layoutStyle } from 'assets/styles/Styles';
 
 const DATA = [
   {
@@ -34,7 +36,8 @@ const DATA = [
 
 export default function MileageOrder() {
   const me = useUserInfo();
-  
+  const mbrProfileImgList = useProfileImg();
+
   const [memberAddr, setMemberAddr] = useState('');
   const [orderList, setOrderList] = useState([]);
   const [orderStatus, setOrderStatus] = useState({
@@ -93,63 +96,24 @@ export default function MileageOrder() {
           end={{ x: 0, y: 1 }}
         >
           <View style={styles.paddingBox}>
-
-          <LinearGradient
-          colors={['#092032', '#344756']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.itemDescArea}
-        > 
-          <Text>보유 RP</Text>
-          <Text style={styles.amountText}>{CommaFormat(me?.mileage_point)}</Text>
-          <Text style={styles.itemDescText}>교환한 기프티콘은 'KT비즈콘'을 통해 SMS문자 메세지로 발송됩니다.</Text>
-        </LinearGradient>
-
-
-            <Text style={styles.nameText}>{me?.nickname}</Text>
-            <View style={styles.limitBox}>
-              <View style={styles.leftBox}>
-                <Image source={ICON.roundCrown} style={styles.roundCrown} />
-                <Text style={styles.limitText}>리밋</Text>
-              </View>
+            <SpaceView mb={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+              <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.profileImg} />
+              <Text style={styles.nameText}>{me?.nickname}</Text>
+            </SpaceView>
+            
+            <LinearGradient
+              colors={['#092032', '#344756']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.itemDescArea}
+            > 
+              <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 17, color: '#32F9E4'}}>보유 RP</Text>
               <Text style={styles.amountText}>{CommaFormat(me?.mileage_point)}</Text>
-            </View>
-          </View>
-          <View style={styles.line} />
+              <Text style={styles.itemDescText}>교환한 기프티콘은 'KT비즈콘'을 통해 SMS문자 메세지로 발송됩니다.</Text>
+            </LinearGradient>
 
-        { /* 주문내역 상태창 노출 */ }
-        { /*
-        <View style={styles.backMargin}>
-          <TouchableOpacity activeOpacity={1} style={styles.purpleBg}>
-            <Text style={styles.textLeft}>입찰완료</Text>
-            <Text style={styles.textRight}>{orderStatus.bid_success}건</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-            <Text style={[styles.textLeft, { color: '#9d9d9d' }]}>입찰실패</Text>
-            <Text style={[styles.textRight, { color: '#9d9d9d' }]}>{orderStatus.bid_fail}건</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-            <Text style={[styles.textLeft, { color: '#706afa' }]}>배송준비</Text>
-            <Text style={[styles.textRight, { color: '#706afa' }]}>{orderStatus.dlvr}건</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={styles.whiteBg}>
-            <Text style={[styles.textLeft, { color: '#742dfa' }]}>주문완료</Text>
-            <Text style={[styles.textRight, { color: '#742dfa' }]}>{orderStatus.order_complet}건</Text>
-          </TouchableOpacity>
-        </View>
-        */ }
-        
-        
-
-        <View style={styles.orderHistory}>
-          <View style={styles.rowBetween}>
-            <Text style={styles.historyText}>
-              주문내역
-              <Text style={styles.historySubText}>(최근 3개월 내역)</Text>
-            </Text>
-            {/* <Text style={styles.dateText}>23/01/04</Text> */}
           </View>
-        </View>
+                
 
         {orderList.length > 0 ? (
           <FlatList
@@ -157,13 +121,18 @@ export default function MileageOrder() {
             showsHorizontalScrollIndicator={false}
             pagingEnabled={true}
             horizontal={false} */
+            style={{marginBottom: 350}}
             data={orderList}
             renderItem={(data) => <RenderItem data={data} />}
           />
         ) : (
-          <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center', height: 150}}>
-            <Text style={{fontFamily: 'AppleSDGothicNeoB00'}}>주문 내역이 없습니다.</Text>
-          </SpaceView>
+          <>
+            <View style={styles.line} />
+
+            <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center', height: 150}}>
+              <Text style={{fontFamily: 'Pretendard-Medium', color: '#D5CD9E'}}>주문 내역이 없습니다.</Text>
+            </SpaceView>
+          </>
         )}
         </LinearGradient>
     </>
@@ -173,7 +142,7 @@ export default function MileageOrder() {
 const RenderItem = ({ data }) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
-  const dateStr = data.item.title;
+  const dateStr = data.item.title.replace(/\//g, '.');
   const prodList = data.item.data;
 
   const onPressMileageOrder = () => {
@@ -195,36 +164,38 @@ const RenderItem = ({ data }) => {
           }}
         >
           <View style={styles.itemBox} key={'order_item_' + idx}>
-            <ImageBackground source={findSourcePath(item?.file_path + item?.file_name)} style={styles.thumb}>
-              {/* 분기 */}
+            <SpaceView viewStyle={styles.thumbArea}>
+              <ImageBackground source={findSourcePath(item?.file_path + item?.file_name)} style={styles.thumb}>
+                {/* 분기 */}
 
-              {item.status_code == 'COMPLET' ? (
+                {item.status_code == 'COMPLET' ? (
+                  <View style={styles.completeMark}>
+                    <Text style={styles.completeText}>판매완료</Text>
+                  </View>
+                ) : null}
+
+                {/* 주문목록 상태 노출 */}
+                {/* <View style={styles.bidCompleteMark}>
+                  <Text style={styles.bidCompleteText}>입찰완료</Text>
+                </View>
+                <View style={styles.readyMark}>
+                  <Text style={styles.readyText}>발송준비</Text>
+                </View>
                 <View style={styles.completeMark}>
-                  <Text style={styles.completeText}>판매완료</Text>
-                </View>
-              ) : null}
+                  <Text style={styles.completeText}>배송완료</Text>
+                </View> */}
+                
+              </ImageBackground>
+            </SpaceView>
 
-              {/* 주문목록 상태 노출 */}
-              {/* <View style={styles.bidCompleteMark}>
-                <Text style={styles.bidCompleteText}>입찰완료</Text>
-              </View>
-              <View style={styles.readyMark}>
-                <Text style={styles.readyText}>발송준비</Text>
-              </View>
-              <View style={styles.completeMark}>
-                <Text style={styles.completeText}>배송완료</Text>
-              </View> */}
-              
-            </ImageBackground>
-
+            <SpaceView viewStyle={styles.brandLogo}>
+                <Image source={ICON.naverLogo} style={{width: 20, height: 20}} />
+            </SpaceView>
             <View style={styles.itemInfoBox}>
-              <Text style={styles.brandName}>{item.brand_name}</Text>
+              <SpaceView viewStyle={styles.priceBox}>
+                <Text style={styles.price}>{CommaFormat(item?.buy_price)}RP</Text>
+              </SpaceView>
               <Text style={styles.title}>{item.prod_name}</Text>
-              <View style={styles.rowBetween2}>
-                <View style={styles.row}>
-                  <Text style={styles.price}>{CommaFormat(item?.buy_price)}</Text>
-                  <Image source={ICON.crown} style={styles.crown} />
-                </View>
 
                 {/* 조건부 */}
                 {item.invc_num != null ? (
@@ -233,7 +204,6 @@ const RenderItem = ({ data }) => {
                   </View>
                 ) : null}
                 {/* 조건부 */}
-              </View>
             </View>
           </View>
         </TouchableOpacity>
@@ -254,201 +224,57 @@ const RenderItem = ({ data }) => {
 
 const styles = StyleSheet.create({
   paddingBox: {
-    paddingHorizontal: 32,
+    paddingHorizontal: 16,
     //marginTop: 20,
   },
   nameText: {
     //marginTop: 25,
-    fontFamily: 'Pretendard-ExtraBold',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 24,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
+    color: '#FFDD00',
   },
-  addressBox: {
-    marginTop: 10,
-    minWidth: Dimensions.get('window').width * 0.84,
-    borderRadius: 15.5,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    paddingHorizontal: 20,
-    paddingVertical: 1,
-    height: 30
-  },
-  addressText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-    overflow: 'hidden',
-  },
-  pencil: {
-    width: 24,
-    height: 24,
-  },
-  limitBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  leftBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  roundCrown: {
-    width: 20,
-    height: 20,
-  },
-  limitText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 17,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-    marginLeft: 6,
+  profileImg: {
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: '#FFDD00',
+    marginRight: 5,
   },
   amountText: {
-    fontFamily: 'Pretendard-ExtraBold',
-    fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 32,
+    color: '#32F9E4',
   },
   line: {
     height: 1,
-    opacity: 0.09,
-    backgroundColor: '#ffffff',
-    marginTop: 10,
-    marginHorizontal: 30,
-  },
-  backMargin: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-around',
-    paddingHorizontal: '3%',
-    marginTop: -Dimensions.get('window').width * 0.1,
-  },
-  purpleBg: {
-    width: Dimensions.get('window').width * 0.218,
-    height: Dimensions.get('window').width * 0.2,
-    borderRadius: 10,
-    backgroundColor: '#742dfa',
-    padding: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  whiteBg: {
-    width: Dimensions.get('window').width * 0.218,
-    height: Dimensions.get('window').width * 0.2,
-
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
-    padding: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  textLeft: {
-    width: '100%',
-    opacity: 0.76,
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 13,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  textRight: {
-    width: '100%',
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 17,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'right',
-    color: '#ffffff',
-  },
-  orderHistory: {
-    marginTop: 20,
-    paddingHorizontal: 24,
-  },
-  rowBetween: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-between',
-  },
-  historyText: {
-    fontFamily: 'Pretendard-ExtraBold',
-    fontSize: 19,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 26,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#333333',
-  },
-  historySubText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#a3a3a3',
+    backgroundColor: '#ABA99A',
+    marginTop: 40,
   },
   dateText: {
-    opacity: 0.64,
     fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
+    fontSize: 24,
     textAlign: 'left',
-    color: '#363636',
+    color: '#F3E270',
   },
   itemBox: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: Color.grayDDDD,
+  },
+  thumbArea: {
+    width: Dimensions.get('window').width * 0.2,
+    height: Dimensions.get('window').width * 0.2,
+    borderRadius: 50,
+    overflow: 'hidden',
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   thumb: {
-    width: Dimensions.get('window').width * 0.25,
-    height: Dimensions.get('window').width * 0.2,
+    width: Dimensions.get('window').width * 0.15,
+    height: Dimensions.get('window').width * 0.1,
     borderRadius: 5,
     backgroundColor: '#d1d1d1',
     borderStyle: 'solid',
@@ -515,51 +341,40 @@ const styles = StyleSheet.create({
   },
   itemInfoBox: {
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    width: Dimensions.get('window').width * 0.75 - 48,
+    justifyContent: 'flex-end',
+    //width: Dimensions.get('window').width * 0.75 - 48,
     marginLeft: 10,
   },
-  brandName: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 10,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#939393',
+  brandLogo: {
+    position: 'absolute',
+    left: 15,
+    top: 15,
+    width: 20,
+    height: 20,
+    borderRadius: 50,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 15,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#363636',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 14,
+    color: '#D5CD9E',
+    marginTop: 5,
   },
-  rowBetween2: {
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  row: {
-    flexDirection: `row`,
-    alignItems: `center`,
+  priceBox: {
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    paddingVertical: 2,
+    paddingHorizontal: 10,
   },
   price: {
     fontFamily: 'Pretendard-Medium',
-    fontSize: 17,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#212121',
-  },
-  crown: {
-    width: 12.7,
-    height: 8.43,
-    marginLeft: 6,
+    fontSize: 11,
+    color: '#32F9E4',
   },
   copyCode: {
     borderRadius: 5,
@@ -582,10 +397,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 25,
     marginRight: 20,
-    marginBottom: 10
-  },
-  addressTxt: {
-
+    marginBottom: 10,
+    borderBottomColor: '#ABA99A',
+    borderBottomWidth: 1,
+    paddingBottom: 5,
   },
   itemDescArea: {
     paddingVertical: 20,
@@ -593,9 +408,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   itemDescText: {
-    fontFamily: 'Pretendard-Medium',
+    fontFamily: 'Pretendard-Light',
     fontSize: 12,
-    color: '#E1DFD1',
+    color: '#ABA99A',
     textAlign: 'center',
+    marginTop: 40,
   },
 });
