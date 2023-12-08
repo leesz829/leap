@@ -50,8 +50,6 @@ import { BlurView } from "@react-native-community/blur";
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 //import Modal from 'react-native-modal';
 import Image from 'react-native-fast-image';
-import AuthLevel from 'component/common/AuthLevel';
-import ProfileGrade from 'component/common/ProfileGrade';
 
 
 

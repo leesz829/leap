@@ -161,6 +161,7 @@ export const ICON = {
   celebrityIcon06: require('assets/icon/celebrity_icon06.png'),
   secret: require('assets/icon/icon-secret.png'),
   mail: require('assets/icon/icon-mail.png'),
+  mailGold: require('assets/icon/icon-mail-gold.png'),
   megaphone: require('assets/icon/icon-megaphone.png'),
   closeLight: require('assets/icon/icon-close-light.png'),
   storyHeart: require('assets/icon/icon-story-heart.png'),

@@ -8,8 +8,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { STACK, ROUTES } from 'constants/routes';
 import { modalStyle, layoutStyle, commonStyle, styles } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
-import AuthLevel from 'component/common/AuthLevel';
-import ProfileGrade from 'component/common/ProfileGrade';
 import { useUserInfo } from 'hooks/useUserInfo';
 
 

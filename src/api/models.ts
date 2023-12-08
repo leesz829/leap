@@ -701,8 +701,10 @@ export async function report_matched_user(body: {
 }
 
 //LIVE에서 평가할 프로필을 조회한다.
-export async function get_live_members() {
-  return send(LIVE_MEMBERS, 'POST', undefined, true, false);
+export async function get_live_members(body: {
+  newYn: string;
+}) {
+  return send(LIVE_MEMBERS, 'POST', body, true, false);
 }
 
 //매칭 정보를 변경한다.

@@ -70,7 +70,7 @@ export const Live = () => {
   const [data, setData] = useState<any>({
     live_member_info: LiveMemberInfo,
     live_profile_img: [LiveProfileImg],
-    distance: '',
+    face_type_list: [],
   });
 
   const imgList = data.live_profile_img;
@@ -124,48 +124,54 @@ export const Live = () => {
   // ####################################################################################### 라이브 등록
   const insertLiveMatch = async (pick:string, code:string, profileScore:string) => {
 
-    try {
-      const body = {
-        profile_score: pick == 'SKIP' ? profileScore : pickProfileScore,
-        face_code: pick == 'SKIP' ? code : pickFaceCode,
-        member_seq: liveMemberSeq,
-        approval_profile_seq: approvalProfileSeq,
-      };
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
 
-      const { success, data } = await regist_profile_evaluation(body);
-
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            dispatch(myProfile());
-            setIsLoad(false);
-            setLiveModalVisible(false);
-            getLiveMatchTrgt();
-
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
-            setIsClickable(true);
-            break;
+      try {
+        const body = {
+          profile_score: pick == 'SKIP' ? profileScore : pickProfileScore,
+          face_code: pick == 'SKIP' ? code : pickFaceCode,
+          member_seq: liveMemberSeq,
+          approval_profile_seq: approvalProfileSeq,
+        };
+  
+        const { success, data } = await regist_profile_evaluation(body);
+  
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              dispatch(myProfile());
+              setIsLoad(false);
+              setIsEmpty(false); 
+              setLiveModalVisible(false);
+              getLiveMatchTrgt();
+  
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
+              break;
+          }
+        }else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
         }
-        
-        setIsLoad(false);
-        setIsEmpty(false); 
-      }else {
+      } catch (error) {
+        console.log(error);
         show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      } finally {
+        setIsPopVisible(false);
+        setIsClickable(true);
       }
-    } catch (error) {
-      console.log(error);
-      show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-    } finally {
-      setIsPopVisible(false);
-    }
-  }
+    };
+  };
 
   // ####################################################################################### LIVE 평가 회원 조회
   const getLiveMatchTrgt = async () => {
     try {
-      const { success, data } = await get_live_members();
+      const body = {
+        newYn: 'Y',
+      };
+      const { success, data } = await get_live_members(body);
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
@@ -203,7 +209,7 @@ export const Live = () => {
               setData({
                 live_member_info: tmpMemberInfo,
                 live_profile_img: tmpProfileImgList,
-                distance: data?.distance_val,
+                face_type_list: data?.face_type_list,
               });
 
               setIsLoad(true);              
@@ -237,6 +243,7 @@ export const Live = () => {
       return () => {
         setIsLoad(false);
         setIsEmpty(false);
+        setLiveModalVisible(false);
       };
     }, []),
   );
@@ -271,9 +278,9 @@ export const Live = () => {
           /> */}
 
           <View style={_styles.imgItemWrap}>
-            <View style={_styles.mmbrStatusView}>
+            {/* <View style={_styles.mmbrStatusView}>
               <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
-            </View>
+            </View> */}
 
             <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
               {imgList.length > 0 && (
@@ -308,9 +315,11 @@ export const Live = () => {
 
               <SpaceView viewStyle={_styles.infoArea}>
                 <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Text style={_styles.distanceText}>12.9Km</Text>
+                  {data.live_member_info.distance && data.live_member_info.distance > 0 && (
+                    <Text style={_styles.distanceText}>{data.live_member_info.distance}Km</Text>
+                  )}
                   <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
-                  <Text style={_styles.introText}>리프의 여신</Text>
+                  <Text style={_styles.introText}>{data.live_member_info.comment}</Text>
                 </SpaceView>
               </SpaceView>
 
@@ -328,7 +337,7 @@ export const Live = () => {
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <TouchableOpacity 
               style={[_styles.bottomBtn,{width: width * 0.36, marginRight: 10}]}
-              onPress={() => openImpressPop('SKIP', 'FACE_00', '6')}
+              onPress={() => openImpressPop('SKIP', 'FACE_TYPE_SKIP', '6')}
             >
               <Text style={[_styles.bottomTxt, {color: '#656565'}]}>스킵</Text>
             </TouchableOpacity>
@@ -346,40 +355,28 @@ export const Live = () => {
           ######################################################################################################################### */}
           <Modal visible={liveModalVisible} style={{margin: 0}} transparent={true}>
             <LinearGradient
-              colors={['rgba(9, 32, 50, 0.7)', 'rgba(52, 71, 86, 0.7)']}
+              colors={['rgba(9, 32, 50, 0.85)', 'rgba(52, 71, 86, 0.85)']}
               start={{ x: 0, y: 1 }}
               end={{ x: 0, y: 0 }} 
               style={_styles.liveModalBackground}
             >
-            <SpaceView mt={300}>
-              <TouchableOpacity onPress={() => openImpressPop('#대화하고 싶은.', 'FACE_01', '7')}>
-                <Text style={_styles.faceModalText}>#대화하고 싶은.</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#티키타카 잘 될 것 같은.', 'FACE_02', '7')}>
-                <Text style={_styles.faceModalText}>#티키타카 잘 될 것 같은.</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#맛점 안부 묻고 싶은.', 'FACE_03', '7')}>
-                <Text style={_styles.faceModalText}>#맛점 안부 묻고 싶은.</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#취미 공유하고 싶은.', 'FACE_04', '7')}>
-                <Text style={_styles.faceModalText}>#취미 공유하고 싶은.</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#데이트 하고 싶은.', 'FACE_05', '9')}>
-                <Text style={_styles.faceModalText}>#데이트 하고 싶은.</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => openImpressPop('#꿈꾸던 이상형.', 'FACE_06', '10')}>
-                <Text style={_styles.faceModalText}>#꿈꾸던 이상형.</Text>
-              </TouchableOpacity>
-            </SpaceView>
-            <SpaceView mb={100}>
-              <TouchableOpacity
-                onPress={() => {
-                  setLiveModalVisible(false);
-                }}
-              >
-                <Image source={ICON.circleX} style={styles.iconSize40} />
-              </TouchableOpacity>
-            </SpaceView>
+              <ScrollView>
+                  {data?.face_type_list.map((item, index) => {
+                    return item.common_code != 'FACE_TYPE_SKIP' && (
+                      <TouchableOpacity 
+                        key={'face'+index} 
+                        onPress={() => openImpressPop('#' + item.code_name, item.common_code, item.code_memo)}>
+                        <Text style={_styles.faceModalText}>#{item.code_name}</Text>
+                      </TouchableOpacity>
+                    )
+                  })}
+              </ScrollView>
+              
+              <SpaceView viewStyle={_styles.liveModalXBtn}>
+                <TouchableOpacity hitSlop={commonStyle.hipSlop20} onPress={() => { setLiveModalVisible(false); }}>
+                  <Image source={ICON.circleX} style={styles.iconSize40} />
+                </TouchableOpacity>
+              </SpaceView>
             </LinearGradient>
           </Modal>
 
@@ -444,54 +441,7 @@ export const Live = () => {
       </SpaceView>
     </>
   );
-
-  /* 이미지 렌더링 */
-  // function RenderItem({ item }) {
-
-  //   return (
-  //     <>
-  //       <View style={_styles.imgItemWrap}>
-  //         <View style={_styles.mmbrStatusView}>
-  //           <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
-  //         </View>
-  //         <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
-  //           <Image
-  //             source={{uri: item?.url?.uri}}
-  //             style={{
-  //               width: width * 0.85,
-  //               height: height * 0.67, 
-  //             }}
-  //             resizeMode={'cover'}
-  //           />
-            
-  //           <SpaceView viewStyle={_styles.infoArea}>
-  //             <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-  //               <Text style={_styles.distanceText}>12.9Km</Text>
-  //               <View>
-  //                 <View style={_styles.indocatorContainer}>
-  //                   {data?.live_profile_img.map((e, index) => (
-  //                     <View style={[ _styles.indicator, { backgroundColor: index === page ? '#A6ABEE' : '#34447A' }, ]} key={index} />
-  //                   ))}
-  //                 </View>
-  //               </View>
-  //               <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
-  //               <Text style={_styles.introText}>리프의 여신</Text>
-  //             </SpaceView>
-  //           </SpaceView>
-
-  //           <LinearGradient
-  //             colors={['transparent', '#000000']}
-  //             start={{ x: 0, y: 0 }}
-  //             end={{ x: 0, y: 1 }}
-  //             style={_styles.thumnailDimArea} />
-  //           <Watermark value={memberBase?.phone_number}/>
-  //         </SpaceView>
-  //       </View>
-  //     </>
-  //   );
-  // }
 };
-
 
 
 {/* #######################################################################################################
@@ -550,9 +500,10 @@ const _styles = StyleSheet.create({
   },
   faceModalText: {
     color: '#FFF',
-    marginBottom: 20,
-    fontSize: 22,
-    fontFamily: 'Pretendard-Bold',
+    marginBottom: 25,
+    fontSize: 26,
+    fontFamily: 'Pretendard-SemiBold',
+    textAlign: 'center',
   },
   mmbrStatusView: {
     position: 'absolute',
@@ -628,6 +579,15 @@ const _styles = StyleSheet.create({
   liveModalBackground: {
     height,
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    paddingVertical: 150,
   },
+  liveModalXBtn: {
+    position: 'absolute',
+    bottom: 100,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+
 });

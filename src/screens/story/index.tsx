@@ -18,8 +18,6 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { ColorType } from '@types';
 import { isEmptyData } from 'utils/functions';
 import { STACK } from 'constants/routes';
-import AuthLevel from 'component/common/AuthLevel';
-import ProfileGrade from 'component/common/ProfileGrade';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { CommonLoading } from 'component/CommonLoading';
 import LinearGradient from 'react-native-linear-gradient';

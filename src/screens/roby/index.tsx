@@ -534,10 +534,23 @@ export const Roby = (props: Props) => {
 
           <SpaceView ml={16} mr={16}>
 
+            {/* ################################################################################ 최근소식, 우편함 버튼 영역 */}
+            <SpaceView viewStyle={_styles.etcBtnArea}>
+              <TouchableOpacity onPress={onPressRecent} style={[_styles.etcBtnItem, {marginRight: 10}]}>
+                <Image source={ICON.mailGold} style={styles.iconSquareSize(14)} />
+                <Text style={_styles.etcBtnText}>+{memberBase?.new_board_cnt}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={onPressMail} style={_styles.etcBtnItem}>
+                <Image source={ICON.bellYellow} style={styles.iconSquareSize(12)} />
+                <Text style={_styles.etcBtnText}>+{memberBase?.msg_cnt}</Text>
+              </TouchableOpacity>
+            </SpaceView>
+
             {/* ################################################################################ 멤버십 영역 */}
-            <SpaceView mt={60} mb={10}>
-              <Text style={_styles.mmbrshipTitle}>멤버십 인증</Text>
-              <View style={{flexDirection: 'row', alignItems: 'flex-end', marginTop: -15}}>
+            <SpaceView mt={60} mb={35}>
+              <Text style={_styles.mmbrshipTitle}>멤버십 레벨</Text>
+              <View style={{flexDirection: 'row', alignItems: 'flex-end', marginTop: -25}}>
                 <View style={{width: '70%', marginBottom: 5}}>
                   <SpaceView viewStyle={{zIndex: 1}}>
                     <LinearGradient
@@ -555,12 +568,13 @@ export const Roby = (props: Props) => {
                     trackClickable={false}
                     disabled
                   />
-                  </View>
-                  <View> 
-                    <Text style={_styles.mmbrshipCntText}><Text style={_styles.mmbrshipCnt}>{memberBase?.auth_acct_cnt}</Text>/45</Text>
-                  </View>
+                </View>
+                <SpaceView> 
+                  <Text style={_styles.mmbrshipCntText}><Text style={_styles.mmbrshipCnt}>{memberBase?.auth_acct_cnt}</Text>/45</Text>
+                </SpaceView>
               </View>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', marginVertical: 20}}>
+
+              {/* <View style={{flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', marginVertical: 20}}>
                 <TouchableOpacity onPress={onPressRecent}>
                   <View style={_styles.noticeContainer}>
                     <Image source={ICON.radioYellow} style={styles.iconSize16} />
@@ -573,7 +587,7 @@ export const Roby = (props: Props) => {
                     <Text style={_styles.noticeText}>+{memberBase?.msg_cnt}</Text>
                   </View>
                 </TouchableOpacity>
-              </View>
+              </View> */}
             </SpaceView>
 
             {/* ################################################################################ 리스펙트 등급 영역 */}
@@ -582,44 +596,61 @@ export const Roby = (props: Props) => {
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={_styles.respectContainer}>
+
               <SpaceView>
                 <SpaceView pl={15} pr={15} pt={16} pb={16}  viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={[_styles.respectText(20), {marginRight: 20}]}>리스펙트 등급</Text>
-                  <ProfileGrade profileScore={memberBase?.social_grade} type={'BIG'} />
+                  <Text style={[_styles.respectText('#D5CD9E', 20), {marginRight: 20}]}>리스펙트 등급</Text>
+                  <ProfileGrade grade={memberBase?.respect_grade} type={'BIG'} />
                 </SpaceView>
-                <View style={_styles.underline}></View>
+
+                <View style={_styles.underline} />
+
                 <View style={_styles.respectContents}>
-                  <Text style={[_styles.respectText(14), {fontSize: 14}]}>등급 효과</Text>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <View>
-                      <View style={[_styles.greenDot, {display: memberBase?.social_grade < 6 ? 'flex' : 'none'}]}></View>
-                      <Text style={[_styles.respectGradeText, {color: memberBase?.social_grade < 6 ? '#32F9E4' : '#E1DFD1'}]}>SILVER</Text>
+
+                  <SpaceView ml={6} mr={6}>
+                    <SpaceView mb={10}>
+                      <Text style={[_styles.respectText('#E1DFD1', 14), {fontSize: 14}]}>등급 효과</Text>
+                    </SpaceView>
+                    
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <View>
+                        <View style={_styles.greenDot(memberBase?.respect_grade == 'SILVER')} />
+                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'SILVER')}>SILVER</Text>
+                      </View>
+
+                      <SpaceView mt={7} viewStyle={[{marginHorizontal: 7, borderColor: '#E1DFD1', borderRightWidth: 2, height: 13 }]} />
+
+                      <View>
+                        <View style={_styles.greenDot(memberBase?.respect_grade == 'GOLD')} />
+                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'GOLD')}>GOLD</Text>
+                      </View>
+
+                      <SpaceView mt={7} viewStyle={[{marginHorizontal: 7, borderColor: '#E1DFD1', borderRightWidth: 2, height: 13 }]} />
+
+                      <View>
+                      <View style={_styles.greenDot(memberBase?.respect_grade == 'VIP')} />
+                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'VIP')}>VIP</Text>
+                      </View>
+
+                      <SpaceView mt={7} viewStyle={[{marginHorizontal: 7, borderColor: '#E1DFD1', borderRightWidth: 2, height: 13 }]} />
+
+                      <View>
+                      <View style={_styles.greenDot(memberBase?.respect_grade == 'VVIP')} />
+                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'VVIP')}>VVIP</Text>
+                      </View>
                     </View>
-                    <Text style={[_styles.respectGradeText, {marginHorizontal: 5}]}>|</Text>
-                    <View>
-                      <View style={[_styles.greenDot, {display: memberBase?.social_grade >= 6 && memberBase?.social_grade < 8 ? 'flex' : 'none'}]}></View>
-                      <Text style={[_styles.respectGradeText, {color: memberBase?.social_grade >= 6 && memberBase?.social_grade < 8 ? '#32F9E4' : '#E1DFD1'}]}>GOLD</Text>
-                    </View>
-                    <Text style={[_styles.respectGradeText, {marginHorizontal: 5}]}>|</Text>
-                    <View>
-                      <View style={[_styles.greenDot, {display: memberBase?.social_grade >= 8 && memberBase?.social_grade < 10 ? 'flex' : 'none'}]}></View>
-                      <Text style={[_styles.respectGradeText, {color: memberBase?.social_grade >= 8 && memberBase?.social_grade < 10 ? '#32F9E4' : '#E1DFD1'}]}>VIP</Text>
-                    </View>
-                    <Text style={[_styles.respectGradeText, {marginHorizontal: 5}]}>|</Text>
-                    <View>
-                      <View style={[_styles.greenDot, {display: memberBase?.social_grade > 10 ? 'flex' : 'none'}]}></View>
-                      <Text style={[_styles.respectGradeText, {color: memberBase?.social_grade > 10 ? '#32F9E4' : '#E1DFD1'}]}>VVIP</Text>
-                    </View>
-                  </View>
+                  </SpaceView>
 
                   <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View style={[_styles.respectBox]}>
-                      <Image source={ICON.cardGold} style={styles.iconSize16} />
-                      <Text style={[_styles.respectText(12), {marginLeft: 5, textAlign: 'center'}]}>매일 데일리 카드{'\n'}무료 열람 2회</Text>
+                      <Image source={ICON.cardGold} style={styles.iconSquareSize(14)} />
+                      <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>
+                        블라인드 카드 매일 2회 무료
+                      </Text>
                     </View>
                     <View style={[_styles.respectBox]}>
-                      <Image source={ICON.moneyBill} style={styles.iconSize16} />
-                      <Text style={[_styles.respectText(12), {marginLeft: 5, textAlign: 'center'}]}>월요일마다{'\n'}보너스 코인 15개</Text>
+                      <Image source={ICON.moneyBill} style={styles.iconSquareSize(14)} />
+                      <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>월요일마다 보너스 코인 15개</Text>
                     </View>
                   </View>
                 </View>
@@ -898,6 +929,7 @@ const _styles = StyleSheet.create({
     fontSize: 24,
     color: '#D5CD9E',
     marginLeft: 10,
+    marginTop: 1,
   },
   mmbrshipCnt: {
     fontSize: 42,
@@ -914,18 +946,18 @@ const _styles = StyleSheet.create({
     return {
       position: 'absolute',
       width: percent + '%',
-      height: 25,
+      height: 12,
       zIndex: 1,
       borderRadius: 50,
     };
   },
   sliderContainerStyle: {
-    height: 25,
+    height: 12,
     borderRadius: 50,
     backgroundColor: '#FFF',
   },
   sliderThumbStyle: {
-    height: 25,
+    height: 12,
     borderRadius: 50,
     backgroundColor: '#5E5E5E',
   },
@@ -946,48 +978,55 @@ const _styles = StyleSheet.create({
     marginLeft: 5,
   },
   respectContainer: {
-    borderRadius: 20,
+    borderRadius: 10,
     paddingVertical: 10,
   },
-  respectText: (_fs:number) => {
+  respectText: (cr:string,_fs:number) => {
     return {
       fontFamily: 'Pretendard-SemiBold',
       fontSize: _fs,
-      color: '#D5CD9E',
+      color: cr,
     };
   },
-  respectGradeText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: '#D5CD9E',
-    marginTop: 5,
+  respectGradeText: ( isOn:boolean) => {
+    return {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 14,
+      color: isOn ? '#32F9E4' : '#E1DFD1',
+      marginTop: 5,
+    };
   },
   underline: {
-    borderWidth: 1,
-    borderColor: '#D5CD9E',
+    borderTopWidth: 1,
+    borderColor: '#E1DFD1',
+    opacity: 0.45,
   },
   respectContents: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 16,
   },
   respectBox: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#A8A7A2',
-    padding: 5,
+    borderColor: '#D5CD9E',
+    borderWidth: 1,
     width: '49%',
+    height: 38,
     borderRadius: 7,
     marginTop: 20,
   },
-  greenDot: {
-    position: 'absolute',
-    top: 0,
-    left: -5,
-    width: 7,
-    height: 7,
-    borderRadius: 50,
-    backgroundColor: '#32F9E4',
+  greenDot: ( isOn:boolean) => {
+    return {
+      position: 'absolute',
+      top: 0,
+      left: -5,
+      width: 7,
+      height: 7,
+      borderRadius: 50,
+      backgroundColor: '#32F9E4',
+      display: isOn ? 'flex' : 'none',
+    };
   },
   popularTitle: {
     fontFamily: 'Pretendard-SemiBold',
@@ -1082,4 +1121,31 @@ const _styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'Pretendard-Bold',
   },
+  etcBtnArea: {
+    position: 'absolute',
+    top: 15,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  etcBtnItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderColor: '#F3E270',
+    borderWidth: 1,
+    borderRadius: 7,
+    width: 70,
+    paddingHorizontal: 8,
+    paddingVertical: 1,
+  },
+  etcBtnText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
+    color: '#F3E270',
+  },
+
+
+
 });

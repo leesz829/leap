@@ -11,8 +11,6 @@ import { commonStyle, styles, modalStyle } from 'assets/styles/Styles';
 import { get_story_like_list } from 'api/models';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { usePopup } from 'Context';
-import AuthLevel from 'component/common/AuthLevel';
-import ProfileGrade from 'component/common/ProfileGrade';
 import { ScrollView } from 'react-native-gesture-handler';
 import { isEmptyData } from 'utils/functions';
 
