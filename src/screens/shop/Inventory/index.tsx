@@ -228,6 +228,22 @@ export default function Inventory() {
   function renderItem({ item, index }) {
     const isNew = (typeof item.connect_date == 'undefined' || item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
 
+    let itemImg;
+    let itemType;
+    if(item?.cate_common_code == 'PASS') {
+      itemImg = ICON.cubeCyan;
+      itemType = 'Cube';
+    }else if(item?.cate_common_code == 'ROYAL_PASS') {
+      itemImg = ICON.megaCubeCyan;
+      itemType = 'MegaCube';
+    }else if(item?.cate_group_code == 'SUBSCRIPTION') {
+      itemImg = ICON.drinkCyan;
+      itemType = 'Subs';
+    }else if(item?.cate_group_code == 'PROFILE_DRAWING') {
+      itemImg = ICON.cardCyan;
+      itemType = 'Prof';
+    }
+
     return (
       <View style={_styles.renderItem}>
         <View style={{ flexDirection: 'row' }}>
@@ -258,22 +274,19 @@ export default function Inventory() {
               <View style={{backgroundColor: '#000000', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, opacity: 0.7}} />
             </View>
 
-            {isNew &&
-              <View style={_styles.iconArea}>
-                <Text style={_styles.newText}>NEW</Text>
-              </View>
-            }
           </View> */}
 
           <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyBetween, {width: '100%'}]}>
             <SpaceView viewStyle={{width: '72%'}}>
               <Text style={_styles.title}>{item?.cate_name}</Text>
               <Text style={_styles.infoText}>{item?.cate_desc}</Text>
-              <SpaceView viewStyle={_styles.cyanDot} />
+              {isNew &&
+                <SpaceView viewStyle={_styles.cyanDot} />
+              }
             </SpaceView>
             <SpaceView viewStyle={_styles.buttonWrapper}>
               <SpaceView viewStyle={_styles.buttonImgArea}>
-                <Image source={findSourcePath(item?.file_path + item?.file_name)} style={styles.iconSize32} />
+                <Image source={itemImg} style={itemType == 'Cube' ? _styles.cubeListImg : _styles.itemListImg} />
               </SpaceView>
               <TouchableOpacity
                 style={_styles.button(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}
@@ -416,6 +429,15 @@ const _styles = StyleSheet.create({
       color: used ? '#3D4348' : '#b5b5b5',
     };
   },
+  cubeListImg: {
+    width: 40,
+    height: 40,
+  },
+  itemListImg: {
+    width: 50,
+    height: 50,
+    marginTop: 5,
+  },
   passAllBtnArea: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -507,7 +529,7 @@ const categories = [
   {
     label: '패스',
     value: 'PASS',
-    imgActive: ICON.cubeCyan,
+    imgActive: ICON.polygonGreen,
     imgUnactive: ICON.polygonGray,
   },
   {

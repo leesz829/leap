@@ -179,7 +179,7 @@ export default function MileageOrder() {
             showsHorizontalScrollIndicator={false}
             pagingEnabled={true}
             horizontal={false} */
-            style={{marginBottom: 350}}
+            style={{marginBottom: 180}}
             data={orderList}
             renderItem={(data) => <RenderItem data={data} />}
           />

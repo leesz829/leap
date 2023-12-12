@@ -181,39 +181,39 @@ export default function MileageShop() {
         </SpaceView>
       </SpaceView>
 
-        <LinearGradient
-          colors={['#3D4348', '#1A1E1C']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={_styles.root}>
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.root}>
 
-          <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
+        <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
 
-          <SectionGrid
-            itemDimension={tab.value == 'gifticon' ? (Dimensions.get('window').width -75) / 2 : Dimensions.get('window').width - 37}
-            sections={data}
-            fixed={true}
-            /* ListHeaderComponent={
-              
-            } */
-            stickySectionHeadersEnabled={false}
-            // 상시판매 프로세스 적용으로 인해 삭제
-            // renderSectionHeader={renderSectionHeader}
-            renderItem={(props) => {
-              //console.log('props : ', JSON.stringify(props));
-              const { item, index, rowIndex } = props;
-              return (
-                <>
-                  {!isLoading ? (
-                    <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} />
-                  ) : (
-                    <View></View>
-                  )}
-                </>
-              )
-            }}
-          />
-        </LinearGradient>
+        <SectionGrid
+          itemDimension={tab.value == 'gifticon' ? (Dimensions.get('window').width -75) / 2 : Dimensions.get('window').width - 37}
+          sections={data}
+          fixed={true}
+          /* ListHeaderComponent={
+            
+          } */
+          stickySectionHeadersEnabled={false}
+          // 상시판매 프로세스 적용으로 인해 삭제
+          // renderSectionHeader={renderSectionHeader}
+          renderItem={(props) => {
+            //console.log('props : ', JSON.stringify(props));
+            const { item, index, rowIndex } = props;
+            return (
+              <>
+                {!isLoading ? (
+                  <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} />
+                ) : (
+                  <View></View>
+                )}
+              </>
+            )
+          }}
+        />
+      </LinearGradient>
     </>
   );
 }
@@ -379,9 +379,9 @@ const RenderItem = ({ item, type, callFn }) => {
       {type == 'boutique' ? (
         <View style={_styles.renderItem02}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => 
-                                                                console.log('item ::: ' , item)
-                                                               // onPressItem(item)
-                                                              }>
+            console.log('item ::: ' , item)
+            // onPressItem(item)
+          }>
             <View style={{ flexDirection: 'row' }}>
               
               <SpaceView viewStyle={_styles.thumbArea}>

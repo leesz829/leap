@@ -334,19 +334,36 @@ function RenderItem({ item, openModal }) {
 
     if(isChk) {
       openModal(item);
+
     }
   };
+
+  let itemImg;
+  let itemType;
+  if(item?.item_type_code == 'PASS' && !item?.item_name.includes('로얄')) {
+    itemImg = ICON.cubeCyan;
+    itemType = 'Cube';
+  }else if(item?.money_type_code == 'ROYAL_PASS') {
+    itemImg = ICON.megaCubeCyan;
+    itemType = 'MegaCube';
+  }else if(item?.item_type_code == 'SUBSCRIPTION') {
+    itemImg = ICON.drinkCyan;
+    itemType = 'Subs';
+  }else if(item?.item_type_code == 'PACKAGE') {
+    itemImg = ICON.cardCyan;
+    itemType = 'Pack';
+  }
 
   return (
     <TouchableOpacity style={_styles.itemContainer} onPress={onPressItem}>
       <View style={_styles.itemWrap}>
         <View style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, {width: '60%'}]}>
           <SpaceView viewStyle={_styles.cubeCircleArea}>
-            <Image source={ICON.cubeCyan} style={[styles.iconSquareSize(25)]} />
+            <Image source={itemImg} style={itemType == 'Cube' ? _styles.cubeListImg : _styles.itemListImg} />
           </SpaceView>
           <SpaceView viewStyle={{width: '70%'}} ml={20}>
             <Text style={_styles.itemName}>{item?.item_name}</Text>
-            <Text style={_styles.itemDesc}>Lorem ipsum dolor sit amet, consectetur adipisicin</Text>
+            <Text style={_styles.itemDesc}>{item?.item_contents}</Text>
           </SpaceView>
           {/* {isNew &&
             <View style={_styles.iconArea}>
@@ -362,26 +379,25 @@ function RenderItem({ item, openModal }) {
         </View>
 
         <View style={_styles.priceArea}>
-          <View>
+          <View style={item.money_type_code !== 'INAPP' && _styles.priceCont}>
             <Text style={_styles.price}>
               {CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'INAPP' ? '원' : '')}
             </Text>
-
             {item.money_type_code == 'PASS' && (
-              <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.passCircle} resizeMode={'contain'} /></SpaceView>
+              <SpaceView pt={3}><Image style={styles.iconSquareSize(19)} source={ICON.cubeCyan} resizeMode={'contain'} /></SpaceView>
             )}
 
             {item.money_type_code == 'ROYAL_PASS' && (
-              <SpaceView pt={3}><Image style={styles.iconSquareSize(20)} source={ICON.royalPassCircle} resizeMode={'contain'} /></SpaceView>
+              <SpaceView pt={3}><Image style={styles.iconSquareSize(29)} source={ICON.megaCubeCyan} resizeMode={'contain'} /></SpaceView>
             )}
           </View>
 
-          {item?.discount_rate && item.discount_rate != 0 &&
+          {item.discount_rate != 0 &&
             <SpaceView mt={2} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
               <SpaceView viewStyle={_styles.discountArea}>
                 <Text style={_styles.discountRate}>{item.discount_rate + '%'}</Text>
               </SpaceView>
-              <Text style={_styles.originPriceText}>{CommaFormat(item.original_price)}원</Text>
+              <Text style={_styles.originPriceText}>{CommaFormat(item.original_price) + (item.money_type_code == 'INAPP' ? '원' : '')}</Text>
             </SpaceView>
           }
         </View>
@@ -461,6 +477,11 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
   },
+  priceCont: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   price: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 20,
@@ -528,6 +549,15 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  cubeListImg: {
+    width: 28,
+    height: 28,
+  },
+  itemListImg: {
+    width: 38,
+    height: 38,
+    marginTop: 5,
+  },
   tabBtnArea: {
     backgroundColor: '#292F33',
     borderRadius: 20, 
@@ -542,7 +572,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 30,
     borderRadius: 10,
-    marginHorizontal: 15,
+    marginHorizontal: 10,
   },
   itemDescText: {
     fontFamily: 'Pretendard-Medium',

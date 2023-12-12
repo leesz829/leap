@@ -22,7 +22,7 @@ import {
   requestPurchase,
   getAvailablePurchases,
 } from 'react-native-iap';
-import { get_banner_list, purchase_product, update_additional, get_shop_main, get_bm_product } from 'api/models';
+import { get_banner_list, purchase_product, update_additional, get_shop_main, get_bm_product, get_cashback_detail_info, cashback_item_receive } from 'api/models';
 import { useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Color } from 'assets/styles/Color';
 import { Slider } from '@miblanchard/react-native-slider';
@@ -83,7 +83,8 @@ export const Shop = () => {
   const [payInfo, setPayInfo] = useState({});
 
   const [newItemCnt, setNewItemCnt] = useState(0);
-
+  const [tmplList, setTmplList] = useState(TMPL_LIST);
+  
   // 회원 기본 데이터
   const memberBase = useUserInfo();
 
@@ -240,14 +241,12 @@ export const Shop = () => {
 
   // ######################################################### 카테고리 선택
   const onPressCategory = async(category:any) => {
-    console.log('cdsd:::::', category)
     setSelectedCategoryData(category);
     loadingFunc(true);
 
     const body = { item_type_code: category.value };
     const { success, data } = await get_bm_product(body);
     
-    console.log('data:::', data)
     if (success) {
       let _products = data?.item_list;
 
@@ -301,6 +300,34 @@ export const Shop = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
   };
 
+  const getCashBackPayInfo = async () => {
+    const { success, data } = await get_cashback_detail_info();
+
+    if (success) {
+      setIsVisible(true)
+      let lettmpltName = payInfo?.tmplt_name;
+      let mbrPrice = payInfo?.member_buy_price;
+      let trgtPrice = payInfo?.target_buy_price;
+      let level = payInfo?.tmplt_level;
+
+      let percent = (mbrPrice*100) / trgtPrice;
+      if(percent > 0) {
+        percent = percent / 100; 
+      }
+
+      setPayInfo({
+        member_buy_price: mbrPrice
+        , target_buy_price: trgtPrice
+        , price_persent: percent
+        , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
+        , tmplt_level: level
+      });
+
+      //setPayInfo(data.pay_info)
+      setTmplList(data.tmpl_list);
+    }
+  };
+
   // ############################################################################# 초기 실행 실행
   useFocusEffect(
     React.useCallback(() => {
@@ -340,7 +367,7 @@ export const Shop = () => {
       getShopMain(isPopupShow);
     }
   }, [isFocus]);
-
+console.log('iasdF:::', payInfo)
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -444,18 +471,18 @@ export const Shop = () => {
           {memberBase?.gender == 'M' ?
             <SpaceView viewStyle={_styles.shadowContainer}>
               <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
-                <Image source={ICON.circleA} style={styles.iconSquareSize(70)} />
+                <Image source={ICON[`circle${payInfo?.tmplt_name}`]} style={styles.iconSquareSize(70)} />
                 <SpaceView ml={10} mb={5}>
                   <Text style={_styles.rewardTitle}>
-                    <Text style={{color: '#F1D30E'}}>S등급</Text> 
-                    보상은 <Text style={{color: '#32F9E4'}}>&#123;아이템이름&#125;</Text> 입니다.
+                    <Text style={{color: '#F1D30E'}}>{payInfo?.tmplt_name}</Text> 
+                    보상은 <Text style={{color: '#32F9E4'}}>{payInfo?.item_name}</Text> 입니다.
                   </Text>
                   <Text style={_styles.rewardDesc}>10,000원 더 결제하면 S등급 달성!</Text>
                 </SpaceView>
                 <TouchableOpacity
                   style={_styles.rewardBtn}
-                  onPress={() => (setIsVisible(true))}
-                  >
+                  onPress={getCashBackPayInfo}
+                >
                   <Text style={_styles.rewardBtnText}>리워드 플랜</Text>
                 </TouchableOpacity>
               </SpaceView>
@@ -532,48 +559,15 @@ export const Shop = () => {
           </View>
 
           <SpaceView viewStyle={{paddingHorizontal: 15}}>
-            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
-              <Image source={ICON.circleS} style={styles.iconSquareSize(40)} />
-              <SpaceView>
-                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
-                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
+            {tmplList?.map((item) => (
+              <SpaceView key={item?.tmplt_level} mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+                <Image source={ICON[`circle${item.tmplt_name.trim()}`]} style={styles.iconSquareSize(40)} />
+                <SpaceView>
+                  <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>{item?.target_buy_price - item?.member_buy_price}P 충전하면</Text>
+                  <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>{item?.item_name}</Text>
+                </SpaceView>
               </SpaceView>
-            </SpaceView>
-            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
-              <Image source={ICON.circleA} style={styles.iconSquareSize(40)} />
-              <SpaceView>
-                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
-                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
-              </SpaceView>
-            </SpaceView>
-            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
-              <Image source={ICON.circleB} style={styles.iconSquareSize(40)} />
-              <SpaceView>
-                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
-                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
-              </SpaceView>
-            </SpaceView>
-            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
-              <Image source={ICON.circleC} style={styles.iconSquareSize(40)} />
-              <SpaceView>
-                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
-                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
-              </SpaceView>
-            </SpaceView>
-            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
-              <Image source={ICON.circleD} style={styles.iconSquareSize(40)} />
-              <SpaceView>
-                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
-                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
-              </SpaceView>
-            </SpaceView>
-            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
-              <Image source={ICON.circleE} style={styles.iconSquareSize(40)} />
-              <SpaceView>
-                <Text style={{fontFamily: 'Pretendard-Regular', color: '#D5CD9E'}}>300,000P 충전하면</Text>
-                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>&#123;아이템이름&#125;</Text>
-              </SpaceView>
-            </SpaceView>
+            ))}
           </SpaceView>
 
           <View style={_styles.bottomBox}>
@@ -590,15 +584,16 @@ export const Shop = () => {
   );
 };
 
+
 // 카테고리 목록
 const categoryList = [
-  {
-    label: '추천상품',
-    value: 'RECOMMENDER',
-    imgActive: ICON.starCyan,
-    imgUnactive: ICON.starGray,
-    desc: '리프의 추천 Pick!\n가성비 좋은 상품을 만나보세요.',
-  },
+  // {
+  //   label: '추천상품',
+  //   value: 'RECOMMENDER',
+  //   imgActive: ICON.starCyan,
+  //   imgUnactive: ICON.starGray,
+  //   desc: '리프의 추천 Pick!\n가성비 좋은 상품을 만나보세요.',
+  // },
   {
     label: '패스상품',
     value: 'PASS',
@@ -673,6 +668,18 @@ function ListFooterComponent() {
     </>
   );
 };
+
+// 이벤트 템플릿 목록
+const TMPL_LIST = [
+  {
+    tmplt_level: ''
+    , tmplt_name: ''
+    , item_name: ''
+    , target_buy_price: 0
+    , buy_price: 0
+    , receive_flag: 'N'
+  }
+];
 
 
 {/* ################################################################################################################
