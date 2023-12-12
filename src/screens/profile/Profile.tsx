@@ -454,9 +454,7 @@ export const Profile = (props: Props) => {
       </LinearGradient>
 
       <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0,}}>
-        <TouchableOpacity
-          style={_styles.logoutBtn}
-          onPress={logout}>
+        <TouchableOpacity style={_styles.logoutBtn} onPress={logout}>
           <Text style={_styles.logoutText}>로그아웃</Text>
         </TouchableOpacity>
       </SpaceView>

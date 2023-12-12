@@ -24,18 +24,6 @@ export default function ProfileAuth({ data, isEditBtn, memberData }) {
 
   const memberBase = useUserInfo();
 
-  const authRef = React.useRef();
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-
-  // 프로필 인증 변경 버튼 클릭 함수
-  const onPressSecondAuth = async () => {
-    navigation.navigate(STACK.COMMON, { screen: 'SecondAuth', });
-  };
-
-  const onPressAuthDot = (index) => {
-    authRef?.current?.snapToItem(index);
-  };
-
   return (
     <>
       {data.length > 0 && (

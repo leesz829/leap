@@ -562,14 +562,22 @@ export default function MatchDetail(props: Props) {
         <CommonHeader title={titleText} />
 
         {/* ############################################################################################### 버튼 영역 */}
-        {data.profile_img_list.length > 0 && isLoad && type != 'ME' && type != 'STORAGE' && (
+        {data.profile_img_list.length > 0 
+        && isLoad 
+        && type != 'ME' 
+        && (type != 'STORAGE' || (type == 'STORAGE' && (data?.match_base?.match_status == 'LIVE_HIGH' || data?.match_base?.match_status == 'ZZIM'))) && (
+
           <SpaceView viewStyle={_styles.btnWrap}>
-            <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-              <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
-            </TouchableOpacity>
+            {type != 'STORAGE' && (
+              <TouchableOpacity onPress={() => { popupActive('pass'); }}>
+                <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity onPress={() => { popupActive('interest'); }}>
               <Text style={_styles.btnText('REQ', '#43ABAE')}>호감 보내기</Text>
             </TouchableOpacity>
+
             {/* <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
               <Text style={_styles.btnText('ZZIM', '#43ABAE')}>찜하기</Text>
             </TouchableOpacity> */}
@@ -577,7 +585,7 @@ export default function MatchDetail(props: Props) {
         )}
 
         {/* ############################################################################################### 보관함 상세 하단 영역 */}
-        {type == 'STORAGE' &&
+        {(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') &&
           <SpaceView viewStyle={_styles.btnWrap}>
             <SpaceView viewStyle={_styles.matchArea}>
 
@@ -642,7 +650,7 @@ export default function MatchDetail(props: Props) {
 
                     {matchType == 'REQ' &&
                       <SpaceView viewStyle={_styles.matchReqArea}>
-                        <Text style={_styles.matchReqText}>상대방의 응답을 기다리고 있어요.</Text>
+                        <Text style={_styles.matchReqText}>{data?.match_base?.match_status == 'REFUSE' ? '보내주신 관심에 상대방이 정중히 거절했어요.' : '상대방의 응답을 기다리고 있어요.'}</Text>
                       </SpaceView>
                     }
                   </>

@@ -137,9 +137,10 @@ export const Profile1 = (props: Props) => {
         });
 
         dispatch(setPartialPrincipal({
-          mbr_base : data?.mbr_base,
-          mbr_img_list : data.mbr_img_list,
-          mbr_interview_list : data.mbr_interview_list,
+          mbr_base: data?.mbr_base,
+          mbr_img_list: data.mbr_img_list,
+          mbr_interview_list: data.mbr_interview_list,
+          mbr_second_auth_list: data.mbr_second_auth_list,
         }));
 
       } else {

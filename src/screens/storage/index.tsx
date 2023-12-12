@@ -477,21 +477,26 @@ export const Storage = (props: Props) => {
     const _imgList = item?.img_list;
 
     let isShow = true;  // 노출 여부
-    let profile_open_yn = 'N';
+    let profileOpenYn = item?.profile_open_yn; // 프로필 열람 여부
     let isBlur = false;
 
     let bgColor = '#F1D30E';
     let matchStatusKor = '라이크';
-    if((_matchStatus == 'PROGRESS' ||  _matchStatus == 'ACCEPT') && item?.special_interest_yn == 'Y') {
-      bgColor = '#E95B36';
-      matchStatusKor = '슈퍼 라이크';
-    }else if(_matchStatus == 'LIVE_HIGH') {
-      bgColor = '#D5CD9E';
-      matchStatusKor = '플러팅';
-    }else if(_matchStatus == 'ZZIM') {
-      bgColor = '#32F9E4';
-      matchStatusKor = '찜';
-    };
+
+    if(_matchStatus == 'REFUSE') {
+      bgColor = '#333B41';
+    } else {
+      if((_matchStatus == 'PROGRESS' ||  _matchStatus == 'ACCEPT') && item?.special_interest_yn == 'Y') {
+        bgColor = '#E95B36';
+        matchStatusKor = '슈퍼 라이크';
+      } else if(_matchStatus == 'LIVE_HIGH') {
+        bgColor = '#D5CD9E';
+        matchStatusKor = '플러팅';
+      } else if(_matchStatus == 'ZZIM') {
+        bgColor = '#32F9E4';
+        matchStatusKor = '찜';
+      };
+    }
 
     // 대상 회원 번호, 프로필 열람 여부 설정
     /* if(_type == 'RES' || matchType == 'LIVE_RES') {
@@ -533,7 +538,6 @@ export const Storage = (props: Props) => {
               <>
                 <TouchableOpacity
                   style={{marginBottom: 20}}
-                  disabled={_matchStatus == 'REFUSE'}
                   activeOpacity={0.7}
                   onPress={goDetailFn}
                 >
@@ -620,10 +624,17 @@ export const Storage = (props: Props) => {
                       <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
                         <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
                         <Text style={_styles.listHeaderText}>{_socialGrade}</Text>
+
+                        {isEmptyData(item?.live_face) && (
+                          <SpaceView ml={15}>
+                            <Text style={_styles.listHeaderLiveFaceText}><Text style={{fontFamily: 'Pretendard-Bold'}}>|</Text>  #{item?.live_face}</Text>
+                          </SpaceView>
+                        )}
                       </SpaceView>
                       <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
                         <Text style={_styles.listHeaderDdayText}>
                           {item.keep_end_day > 0 ? item.keep_end_day + '일 남음' : '오늘까지'}
+                          {_matchStatus == 'REFUSE' && '(매칭거절)'}
                         </Text>
                       </SpaceView>
                     </SpaceView>
@@ -631,11 +642,18 @@ export const Storage = (props: Props) => {
                     <SpaceView viewStyle={_styles.listBody}>
 
                       {/* 대표 이미지 */}
-                      <TouchableOpacity disabled={_matchStatus == 'REFUSE'} onPress={goDetailFn}>
+                      <TouchableOpacity onPress={goDetailFn}>
                         <Image source={_imgFilePath} style={_styles.renderItemContainer} />
+
+                        {/* 열람 여부 표시 */}
+                        {profileOpenYn == 'N' && (
+                          <SpaceView viewStyle={_styles.openYnMark}>
+                            <Image source={ICON.yBlue} style={styles.iconSquareSize(18)} />
+                          </SpaceView>
+                        )}
                       </TouchableOpacity>
                     
-                      <SpaceView>
+                      <SpaceView viewStyle={{flex :1, flexWrap: 'nowrap'}}>
 
                         {/* 인상, 인증 정보 노출 */}
                         {(isEmptyData(_bestFace) || _authList.length > 0) && (
@@ -664,10 +682,9 @@ export const Storage = (props: Props) => {
                         )}
 
                         {/* 닉네임, 나이, 소개 정보 */}
-                        <TouchableOpacity disabled={_matchStatus == 'REFUSE'} onPress={goDetailFn}>
+                        <TouchableOpacity onPress={goDetailFn}>
                           <SpaceView ml={10}><Text style={_styles.memberInfo}>{_nickname}, {_age}</Text></SpaceView>
                           <SpaceView ml={10}><Text style={_styles.comment} numberOfLines={2}>{_comment}</Text></SpaceView>
-                          {/* <Text style={_styles.comment}>{item?.introduce_comment}두줄소개</Text> */}
                         </TouchableOpacity>
                       </SpaceView>
                     </SpaceView>
@@ -858,7 +875,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#F1D30E',
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
   },
   listHeaderText: {
     fontFamily: 'MinSans-Bold',
@@ -866,6 +883,11 @@ const _styles = StyleSheet.create({
   },
   listHeaderDdayText: {
     fontFamily: 'Pretendard-Bold',
+    color: '#000000',
+  },
+  listHeaderLiveFaceText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 11,
     color: '#000000',
   },
   listBody: {
@@ -963,4 +985,11 @@ const _styles = StyleSheet.create({
     color: '#32F9E4',
     marginLeft: 3,
   },
+  openYnMark: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+
+
 });

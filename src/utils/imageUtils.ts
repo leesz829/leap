@@ -256,6 +256,9 @@ export const ICON = {
   cuLogo: require('assets/icon/icon-cu-logo.png'),
   gift: require('assets/icon/icon-gift.png'),
   icChip: require('assets/icon/icon-ic-chip.png'), 
+  yBlue: require('assets/icon/icon-y-blue.png'),
+  certificate: require('assets/icon/icon-certificate.png'),
+  penSquare: require('assets/icon/icon-pen-square.png'),
 };
 
 export const GIF_IMG = {

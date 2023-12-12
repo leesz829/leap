@@ -4,23 +4,19 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
 import {  request_reexamination, peek_member, update_setting, set_member_phone_book, update_additional } from 'api/models';
 import { commonStyle, layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
-import { CommonBtn } from 'component/CommonBtn';
-import { CommonSwich } from 'component/CommonSwich';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ToolTip } from 'component/Tooltip';
 import TopNavigation from 'component/TopNavigation';
 import { ROUTES, STACK } from 'constants/routes';
 import { useLikeList } from 'hooks/useLikeList';
 import { useMatches } from 'hooks/useMatches';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { useProfileImg } from 'hooks/useProfileImg';
+import { useSecondAth } from 'hooks/useSecondAth';
 import React, { useRef, useState, useEffect } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, Platform, PermissionsAndroid, Animated } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
-import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
@@ -31,6 +27,7 @@ import { CommonLoading } from 'component/CommonLoading';
 import { CommaFormat } from 'utils/functions';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import { NoticePopup } from 'screens/commonpopup/NoticePopup';
+import AuthInfoPopup from 'screens/commonpopup/AuthInfoPopup';
 import AsyncStorage from '@react-native-community/async-storage';
 import ProfileGrade from 'component/common/ProfileGrade';
 import Modal from 'react-native-modal';
@@ -63,6 +60,14 @@ export const Roby = (props: Props) => {
   // 클릭 여부
   const [isClickable, setIsClickable] = useState(true);
 
+  // 인증 정보 팝업
+  const [isAuthInfoVisible, setAuthInfoVisible] = useState(false);
+
+  // 인증 정보 팝업 닫기
+  const authInfoPopupClose = () => {
+    setAuthInfoVisible(false);
+  };
+
   // 공지사항 팝업
   const [noticePopupVisible, setNoticePopupVisible] = useState(false);
   const [noticeList, setNoticeList] = useState([]);
@@ -70,6 +75,7 @@ export const Roby = (props: Props) => {
   // 회원 기본 정보
   const memberBase = useUserInfo(); //hooksMember.getBase();
   const mbrProfileImgList = useProfileImg();
+  const mbrProfileAuthList = useSecondAth();
   const likes = useLikeList();
   const matches = useMatches();
   
@@ -128,10 +134,7 @@ export const Roby = (props: Props) => {
           }
 
         } else {
-          show({
-            content: '오류입니다. 관리자에게 문의해주세요.',
-            confirmCallback: function () {},
-          });
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
           return false;
         }
       }
@@ -317,26 +320,6 @@ export const Roby = (props: Props) => {
     ideal_modalizeRef.current?.close();
   };
 
-  // 이용약관 팝업
-  // const terms_modalizeRef = useRef<Modalize>(null);
-  // const terms_onOpen = () => {
-  //   setIsVisible(false);
-  //   terms_modalizeRef.current?.open();
-  // };
-  // const terms_onClose = () => {
-  //   terms_modalizeRef.current?.close();
-  // };
-
-  // 개인정보 취급방침 팝업
-  // const privacy_modalizeRef = useRef<Modalize>(null);
-  // const privacy_onOpen = () => {
-  //   setIsVisible(false)
-  //   privacy_modalizeRef.current?.open();
-  // };
-  // const privacy_onClose = () => {
-  //   privacy_modalizeRef.current?.close();
-  // };
-
   const onPressEditProfile = () => {
     navigation.navigate(STACK.COMMON, { screen: 'Introduce' });
   };
@@ -404,6 +387,12 @@ export const Roby = (props: Props) => {
     navigation.navigate(STACK.COMMON, { screen: 'Privacy' });
   };
 
+  // 프로필 인증 이동
+  const onProfileAuth = async () => {
+    setIsVisible(false);
+    navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_AUTH });
+  };
+
   // 가이드 팝업 활성화
   const popupProfileGuideOpen = async () => {
     show({
@@ -430,7 +419,7 @@ export const Roby = (props: Props) => {
     };
     const { success, data } = await update_additional(body);
     if(success) {
-      if(null != data.mbr_base && typeof data.mbr_base != 'undefined') {
+      if(isEmptyData(data.mbr_base)) {
         dispatch(setPartialPrincipal({
           mbr_base : data.mbr_base
         }));
@@ -454,7 +443,7 @@ export const Roby = (props: Props) => {
         setIsFriendMatch(memberBase?.friend_match_yn == 'N' ? false : true);
 
         // 튜토리얼 팝업 노출
-        if(!isEmptyData(memberBase?.tutorial_roby_yn) || memberBase?.tutorial_roby_yn == 'Y') {
+        /* if(!isEmptyData(memberBase?.tutorial_roby_yn) || memberBase?.tutorial_roby_yn == 'Y') {
           show({
             type: 'GUIDE',
             guideType: 'ROBY',
@@ -466,7 +455,7 @@ export const Roby = (props: Props) => {
               }
             }
           });
-        };
+        }; */
       }
     };
   }, [isFocus]);
@@ -548,10 +537,10 @@ export const Roby = (props: Props) => {
             </SpaceView>
 
             {/* ################################################################################ 멤버십 영역 */}
-            <SpaceView mt={60} mb={35}>
+            <SpaceView mt={75} mb={35}>
               <Text style={_styles.mmbrshipTitle}>멤버십 레벨</Text>
-              <View style={{flexDirection: 'row', alignItems: 'flex-end', marginTop: -25}}>
-                <View style={{width: '70%', marginBottom: 5}}>
+              <View style={{flexDirection: 'row', alignItems: 'flex-end', marginTop: -20}}>
+                <SpaceView mb={10} viewStyle={{width: '60%'}}>
                   <SpaceView viewStyle={{zIndex: 1}}>
                     <LinearGradient
                       colors={['#FFDD00', '#F3E270']}
@@ -568,26 +557,36 @@ export const Roby = (props: Props) => {
                     trackClickable={false}
                     disabled
                   />
-                </View>
-                <SpaceView> 
+                </SpaceView>
+                <SpaceView ml={10}> 
                   <Text style={_styles.mmbrshipCntText}><Text style={_styles.mmbrshipCnt}>{memberBase?.auth_acct_cnt}</Text>/45</Text>
                 </SpaceView>
               </View>
 
-              {/* <View style={{flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', marginVertical: 20}}>
-                <TouchableOpacity onPress={onPressRecent}>
-                  <View style={_styles.noticeContainer}>
-                    <Image source={ICON.radioYellow} style={styles.iconSize16} />
-                    <Text style={_styles.noticeText}>새소식</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onPressMail}>
-                  <View style={_styles.noticeContainer}>
-                    <Image source={ICON.bellYellow} style={styles.iconSize16} />
-                    <Text style={_styles.noticeText}>+{memberBase?.msg_cnt}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View> */}
+              <SpaceView mt={1}>
+                {memberBase?.auth_acct_cnt == 0 ? (
+                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <Text style={_styles.mmbrshipDesc}>직업, 학업, 자산, SNS 인증 신청을 하면 매칭에 유리합니다.</Text>
+                    <TouchableOpacity style={_styles.authRegiBtn} onPress={() => { onProfileAuth(); }}>
+                      <Image source={ICON.userPen} style={styles.iconSquareSize(15)} />
+                      <Text style={_styles.authRegiText}>인증 신청</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                ) : (
+                  <>
+                    <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+                      <TouchableOpacity style={_styles.authRegiBtn} onPress={() => { setAuthInfoVisible(true); }}>
+                        <Image source={ICON.certificate} style={styles.iconSquareSize(15)} />
+                        <Text style={_styles.authRegiText}>인증 정보</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[_styles.authRegiBtn, {marginLeft: 5}]} onPress={() => { onProfileAuth(); }}>
+                        <Image source={ICON.userPen} style={styles.iconSquareSize(15)} />
+                        <Text style={_styles.authRegiText}>인증 신청</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </>
+                )}                
+              </SpaceView>
             </SpaceView>
 
             {/* ################################################################################ 리스펙트 등급 영역 */}
@@ -775,7 +774,6 @@ export const Roby = (props: Props) => {
             </View>
           </Modal>
         </LinearGradient>
-
         
       </ScrollView>
 
@@ -788,89 +786,8 @@ export const Roby = (props: Props) => {
         </Animated.View>
       </TouchableOpacity>
 
-      {/* ###############################################
-                     이용약관 팝업
-      ############################################### */}
-      {/* <Modalize
-        ref={terms_modalizeRef}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer}
-        adjustToContentHeight={false}
-        modalHeight={height - 150}
-        FooterComponent={
-          <>
-            <SpaceView>
-              <CommonBtn
-                value={'확인'}
-                type={'primary'}
-                height={60}
-								borderRadius={1}
-                onPress={terms_onClose}
-              />
-            </SpaceView>
-          </>
-        }
-        HeaderComponent={
-          <>
-            <View style={modalStyle.modalHeaderContainer}>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                이용약관
-              </CommonText>
-              <TouchableOpacity onPress={terms_onClose}>
-                <Image source={ICON.xBtn2} style={styles.iconSize18} />
-              </TouchableOpacity>
-            </View>
-          </>
-        }
-      >
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          <SpaceView mb={24}>
-            <Terms />
-          </SpaceView>
-        </View>
-      </Modalize> */}
 
-      {/* ###############################################
-                개인정보 취급방침 팝업
-      ############################################### */}
-      {/* <Modalize
-        ref={privacy_modalizeRef}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={modalStyle.modalContainer}
-        adjustToContentHeight={false}
-        modalHeight={height - 150}
-        FooterComponent={
-          <>
-            <SpaceView>
-              <CommonBtn
-                value={'확인'}
-                type={'primary'}
-                height={60}
-								borderRadius={1}
-                onPress={privacy_onClose}
-              />
-            </SpaceView>
-          </>
-        }
-        HeaderComponent={
-          <>
-            <View style={modalStyle.modalHeaderContainer}>
-              <CommonText fontWeight={'700'} type={'h4'}>
-                개인정보 취급방침
-              </CommonText>
-              <TouchableOpacity onPress={privacy_onClose}>
-                <Image source={ICON.xBtn2} style={styles.iconSize18} />
-              </TouchableOpacity>
-            </View>
-          </>
-        }
-      >
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          <SpaceView mb={24}>
-            <Privacy />
-          </SpaceView>
-        </View>
-      </Modalize> */}
+      <AuthInfoPopup isVisible={isAuthInfoVisible} closeModal={authInfoPopupClose} authList={mbrProfileAuthList} />
     </>
   );
 };
@@ -935,6 +852,11 @@ const _styles = StyleSheet.create({
     fontSize: 42,
     fontFamily: 'Pretendard-Bold',
     color:'#FFDD00',
+  },
+  mmbrshipDesc: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 11,
+    color: '#E1DFD1',
   },
   gradient: (value:any) => {
     let percent = 0;
@@ -1133,17 +1055,31 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderColor: '#F3E270',
-    borderWidth: 1,
-    borderRadius: 7,
-    width: 70,
+    backgroundColor: '#000000',
+    borderRadius: 10,
+    width: 60,
     paddingHorizontal: 8,
-    paddingVertical: 1,
+    paddingVertical: 3,
   },
   etcBtnText: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     color: '#F3E270',
+  },
+  authRegiBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000000',
+    borderRadius: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+  },
+  authRegiText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 13,
+    color: '#D5CD9E',
+    marginLeft: 3,
   },
 
 
