@@ -15,7 +15,7 @@ import Modal from 'react-native-modal';
 import TopNavigation from 'component/TopNavigation';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
-import { ColorType, ScreenNavigationProp } from '@types';
+import { ColorType, MemberBaseData, ScreenNavigationProp } from '@types';
 import {
   initConnection,
   getProducts,
@@ -240,11 +240,14 @@ export const Shop = () => {
 
   // ######################################################### 카테고리 선택
   const onPressCategory = async(category:any) => {
+    console.log('cdsd:::::', category)
     setSelectedCategoryData(category);
     loadingFunc(true);
 
     const body = { item_type_code: category.value };
     const { success, data } = await get_bm_product(body);
+    
+    console.log('data:::', data)
     if (success) {
       let _products = data?.item_list;
 
@@ -254,19 +257,19 @@ export const Shop = () => {
         item.connect_date = connectDate;
       });
 
-      //setProductList(_products);
+      setProductList(_products);
 
-      let _tmpList = [
-        {item_name: '80', shop_buy_price: 4000, money_type_code: 'INAPP'},
-        {item_name: '150', shop_buy_price: 7500, money_type_code: 'INAPP'},
-        {item_name: '300', shop_buy_price: 14000, money_type_code: 'INAPP', original_price: 15000, discount_rate: 7 },
-        {item_name: '600', shop_buy_price: 26000, money_type_code: 'INAPP', original_price: 30000, discount_rate: 13},
-        {item_name: '1500', shop_buy_price: 59000, money_type_code: 'INAPP', original_price: 75000, discount_rate: 21},
-        {item_name: '3000', shop_buy_price: 105000, money_type_code: 'INAPP', original_price: 150000, discount_rate: 30},
-        {item_name: '6000', shop_buy_price: 179000, money_type_code: 'INAPP', original_price: 300000, discount_rate: 40},
-      ];
+      // let _tmpList = [
+      //   {item_name: '80', shop_buy_price: 4000, money_type_code: 'INAPP'},
+      //   {item_name: '150', shop_buy_price: 7500, money_type_code: 'INAPP'},
+      //   {item_name: '300', shop_buy_price: 14000, money_type_code: 'INAPP', original_price: 15000, discount_rate: 7 },
+      //   {item_name: '600', shop_buy_price: 26000, money_type_code: 'INAPP', original_price: 30000, discount_rate: 13},
+      //   {item_name: '1500', shop_buy_price: 59000, money_type_code: 'INAPP', original_price: 75000, discount_rate: 21},
+      //   {item_name: '3000', shop_buy_price: 105000, money_type_code: 'INAPP', original_price: 150000, discount_rate: 30},
+      //   {item_name: '6000', shop_buy_price: 179000, money_type_code: 'INAPP', original_price: 300000, discount_rate: 40},
+      // ];
       
-      setProductList(_tmpList);
+      // setProductList(_tmpList);
 
       loadingFunc(false);
     } else {
@@ -421,7 +424,8 @@ export const Shop = () => {
             </View>
           </TouchableOpacity> */}
 
-          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingHorizontal: 15,}]}>
+          
+          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingHorizontal: 15, backgroundColor: '#3D4348'}]}>
             <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter,{marginLeft: -5}]}>
               <Image source={ICON.cubeCyan} style={styles.iconSize40} />
               <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
@@ -429,7 +433,7 @@ export const Shop = () => {
               <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
             </SpaceView>
             <TouchableOpacity 
-              style={[layoutStyle.row, layoutStyle.alignCenter, _styles.inventoryBtn]}
+              style={[layoutStyle.row, layoutStyle.alignCenter, _styles.inventoryBtn(memberBase?.gender)]}
               onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}
             >
               <Image source={ICON.menuCyan} style={styles.iconSize20} />
@@ -437,31 +441,54 @@ export const Shop = () => {
             </TouchableOpacity>
           </SpaceView>
 
-          <SpaceView mt={20} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
-            <Image source={ICON.circleA} style={styles.iconSquareSize(70)} />
-            <SpaceView ml={10} mb={5}>
-              <Text style={_styles.rewardTitle}>
-                <Text style={{color: '#F1D30E'}}>S등급</Text> 
-                보상은 <Text style={{color: '#32F9E4'}}>&#123;아이템이름&#125;</Text> 입니다.
-              </Text>
-              <Text style={_styles.rewardDesc}>10,000원 더 결제하면 S등급 달성!</Text>
+          {memberBase?.gender == 'M' ?
+            <SpaceView viewStyle={_styles.shadowContainer}>
+              <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
+                <Image source={ICON.circleA} style={styles.iconSquareSize(70)} />
+                <SpaceView ml={10} mb={5}>
+                  <Text style={_styles.rewardTitle}>
+                    <Text style={{color: '#F1D30E'}}>S등급</Text> 
+                    보상은 <Text style={{color: '#32F9E4'}}>&#123;아이템이름&#125;</Text> 입니다.
+                  </Text>
+                  <Text style={_styles.rewardDesc}>10,000원 더 결제하면 S등급 달성!</Text>
+                </SpaceView>
+                <TouchableOpacity
+                  style={_styles.rewardBtn}
+                  onPress={() => (setIsVisible(true))}
+                  >
+                  <Text style={_styles.rewardBtnText}>리워드 플랜</Text>
+                </TouchableOpacity>
+              </SpaceView>
             </SpaceView>
-            <TouchableOpacity 
-              style={_styles.rewardBtn}
-              onPress={() => (setIsVisible(true))}
-              >
-              <Text style={_styles.rewardBtnText}>리워드 플랜</Text>
-            </TouchableOpacity>
-          </SpaceView>
+          :
+            <LinearGradient
+              colors={['#FF7B92', '#FFF7C1']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{paddingHorizontal: 15, paddingVertical: 20, marginTop: 20}}
+            >
+              <Text style={_styles.mileageTitle}>보유 RP</Text>
+              <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+                <Text style={_styles.mileageDesc}>{CommaFormat(memberBase?.mileage_point)}</Text>
+                {memberBase?.respect_grade == 'PLATINUM' || memberBase?.respect_grade == 'DIAMOND' ?
+                  <TouchableOpacity style={_styles.rpStoreBtn} onPress={onPressLimitShop}>
+                    <Image source={ICON.gift} style={styles.iconSquareSize(30)} />
+                    <Text style={_styles.rpStoreText}>RP 스토어 입장</Text>
+                  </TouchableOpacity>
+                :
+                  <TouchableOpacity style={_styles.rpStorePreBtn} onPress={onPressLimitShop}>
+                    <Text style={_styles.rpStorePreText}>RP 스토어{'\n'}미리보기</Text>
+                  </TouchableOpacity>
+                }
+              </SpaceView>
+              <Text style={_styles.rpStoreDesc}>RP 스토어에서 교환 가능한 쓸쓸한 기프티콘 보고 가세요.</Text>
+            </LinearGradient>
+          }
 
-          <SpaceView mt={10} mb={10} viewStyle={{borderWidth: 1, borderColor: '#EDEDED', width: width}}></SpaceView>
 
-          <TouchableOpacity style={{backgroundColor: '#FFF', width: 130, marginTop: 10}} onPress={onPressLimitShop}>
-            <Text>RP STORE 임시 버튼</Text>
-          </TouchableOpacity>
 
           {/* ############################################### 카테고리별 */}
-          <SpaceView mb={200} viewStyle={{marginHorizontal: 15}}>
+          <SpaceView mb={200}>
             <CategoryShop 
               loadingFunc={loadingFunc} 
               itemUpdateFunc={getShopMain}
@@ -566,22 +593,32 @@ export const Shop = () => {
 // 카테고리 목록
 const categoryList = [
   {
+    label: '추천상품',
+    value: 'RECOMMENDER',
+    imgActive: ICON.starCyan,
+    imgUnactive: ICON.starGray,
+    desc: '리프의 추천 Pick!\n가성비 좋은 상품을 만나보세요.',
+  },
+  {
     label: '패스상품',
     value: 'PASS',
     imgActive: ICON.polygonGreen,
     imgUnactive: ICON.polygonGray,
+    desc: '큐브는 리피에서 사용하는 재화입니다.\n쓰임새가 다른 큐브와 메가큐브 2가지로 구분합니다.',
   },
   {
     label: '부스팅상품',
     value: 'SUBSCRIPTION',
     imgActive: ICON.drinkCyan,
     imgUnactive: ICON.drinkGray,
+    desc: '큐브는 리피에서 사용하는 재화입니다.\n쓰임새가 다른 큐브와 메가큐브 2가지로 구분합니다.',
   },
   {
     label: '패키지상품',
     value: 'PACKAGE',
     imgActive: ICON.cardCyan,
     imgUnactive: ICON.cardGray,
+    desc: '큐브는 리피에서 사용하는 재화입니다.\n쓰임새가 다른 큐브와 메가큐브 2가지로 구분합니다.',
   },
 ];
 
@@ -648,10 +685,12 @@ const _styles = StyleSheet.create({
     paddingTop: 20,
     minHeight: height,
   },
-  inventoryBtn: {
-    backgroundColor: '#445561',
-    borderRadius: 20,
-    paddingHorizontal: 20,
+  inventoryBtn: (type: string) => {
+    return {
+      backgroundColor: type == 'W' ? '#FFF' : '#445561',
+      borderRadius: 20,
+      paddingHorizontal: 20,
+    };
   },
   inventoryText: {
     fontFamily: 'Pretendard-Medium',
@@ -671,6 +710,48 @@ const _styles = StyleSheet.create({
     width: `100%`,
     height: 250,
   },
+  mileageTitle: {
+    fontFamily: 'Pretendard-Regular',
+    color: '#FFF',
+  },
+  mileageDesc: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 48,
+    color: '#FFF',
+  },
+  rpStoreDesc: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    color: '#FFF6BE',
+  },
+  rpStoreBtn: {
+    backgroundColor: '#FFF',
+    borderRadius: 30,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rpStorePreBtn: {
+    backgroundColor: '#5A707F',
+    borderRadius: 30,
+    paddingVertical: 5,
+    paddingHorizontal: 30,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rpStorePreText: {
+    fontFamily: 'Pretendard-SemiBold',
+    textAlign: 'center',
+    color: '#D5CD9E',
+  },
+  rpStoreText: {
+    fontFamily: 'Pretendard-SemiBold',
+    color: '#F1D30E',
+    marginLeft: 5,
+  },
   rewardTitle: {
     fontFamily: 'Pretendard-Light',
     fontSize: 12,
@@ -683,7 +764,7 @@ const _styles = StyleSheet.create({
   },
   rewardBtn: {
     backgroundColor: '#000',
-    paddingVertical: 2,
+    paddingVertical: 4,
     paddingHorizontal: 7,
     borderRadius: 10,
     marginLeft: 50,
@@ -694,6 +775,14 @@ const _styles = StyleSheet.create({
     color: '#D5CD9E',
   },
 
+  shadowContainer: {
+    backgroundColor: '#3D4348',
+    elevation: 5,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
   container: {
     width: '100%',
     borderRadius: 20,

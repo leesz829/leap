@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ICON } from 'utils/imageUtils';
+import { ICON, IMAGE } from 'utils/imageUtils';
 import { Slider } from '@miblanchard/react-native-slider';
 import { useNavigation, useRoute, useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { ColorType, ScreenNavigationProp } from '@types';
@@ -10,7 +10,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { CommaFormat } from 'utils/functions';
 import { get_cashback_pay_info } from 'api/models';
 import SpaceView from 'component/SpaceView';
-import { commonStyle, layoutStyle } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle, styles } from 'assets/styles/Styles';
 import LinearGradient from 'react-native-linear-gradient';
 
 
@@ -43,32 +43,79 @@ function FemalePannel() {
 
   return (
     <>
-      <View style={female.floatWrapper(route.name)}>
+    {me?.respect_grade == 'PLATINUM' || me?.respect_grade == 'DIAMOND' ?
+      <SpaceView viewStyle={female.floatWrapper(route.name)}>
         <LinearGradient
-          colors={['#FE927C', '#FE7C92']}
-          start={{ x: 1, y: 0 }}
-          end={{ x: 0, y: 0 }}
-          style={{borderRadius: 10, paddingHorizontal: 20, paddingVertical: 10}}>
+          colors={['#7AAEDB', '#608B55']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={{borderRadius: 10, paddingVertical: 10}}>
 
-          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyBetween]}>
-            <SpaceView viewStyle={female.rpStoreBtn}>
-              <Text style={female.rpStoreText}>RP Store</Text>
+          <LinearGradient
+            colors={['#C9F0FF', me?.respect_grade == 'DIAMOND' ? '#FCF9E4' : '#C9F0FF']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={female.respectLine}>
+              <Image source={ICON.sparkler} style={styles.iconSquareSize(15)} />
+              <Text style={female.repectGrade}>{me?.respect_grade}</Text>
+          </LinearGradient>
+
+          <SpaceView mt={20} pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
+            <SpaceView mt={25} ml={15}>
+              <Image source={ICON.icChip} style={styles.iconSquareSize(40)} />
             </SpaceView>
-            <TouchableOpacity style={female.rpStoreBtn} onPress={() => (navigation.goBack())}>
-              <Text style={female.rpStoreBtnText}>나가기</Text>
-            </TouchableOpacity>
+
+            <SpaceView ml={20}>
+              <Text style={female.respectTitle}>닉네임</Text>
+              <Text style={female.respectNickname}>{me?.nickname}</Text>
+            </SpaceView>
+
+            <SpaceView>
+              <Text style={female.respectTitle}>보유RP</Text>
+              <Text style={female.rpAmtText}>
+                {CommaFormat(me?.mileage_point)}
+                <Text style={female.rpText}>RP</Text>
+              </Text>
+              <Text style={female.rpAvailable}>이달 사용 가능한 RP</Text>
+
+              {/* ################################################################################ 이달 사용 RP 영역 */}
+              <SpaceView mt={5}>
+                <SpaceView>
+                  <SpaceView viewStyle={{overflow: 'hidden', borderRadius: 50}}>
+                    <LinearGradient
+                      colors={['#32F9E4', '#32F9E4']}
+                      start={{ x: 1, y: 0 }}
+                      end={{ x: 0, y: 0 }}
+                      style={female.gradient(me?.mileage_point / 10000)}>
+                    </LinearGradient>
+                    <Slider
+                      animateTransitions={true}
+                      renderThumbComponent={() => null}
+                      containerStyle={female.sliderContainerStyle}
+                      trackStyle={female.sliderThumbStyle}
+                      trackClickable={false}
+                      disabled
+                    />
+                  </SpaceView>
+                  <Text style={female.gradeTitle}>5,500RP 남음</Text>
+                </SpaceView>
+              </SpaceView>
+
+            </SpaceView>
           </SpaceView>
 
-          <SpaceView mt={10}>
-            <Text style={female.bannerDesc}>보유한 RP로 원하는 상품을{'\n'}교환할 수 있는 혜택을 누려 보세요!</Text>
-          </SpaceView>
-
-          <SpaceView mt={20} viewStyle={[layoutStyle.justifyEnd, layoutStyle.row, layoutStyle.alignEnd]}>
-            <Text style={female.bannerRp}>{CommaFormat(me?.mileage_point)}</Text>
-            <Text style={female.bannerRpText}>RP</Text>
+          <SpaceView pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, layoutStyle.justifyBetween]}>
+            <Image source={IMAGE.logoLeapTit} style={{width: 60, height: 25}} />
+            <Text style={female.rpDescText}>RP는 획득 건 별로 60일 동안 보관됩니다.</Text>
           </SpaceView>
         </LinearGradient>
-      </View>
+      </SpaceView>
+    :
+      <SpaceView mt={-40} viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter]}>
+        <Text>문구 들어갈 자리</Text>
+      </SpaceView>
+    }
+      
     </>
   );
 }
@@ -170,9 +217,8 @@ const _styles = StyleSheet.create({
 
     return {
       position: 'absolute',
-      top: 6,
       width: percent + '%',
-      height: 7,
+      height: 12,
       zIndex: 1,
       borderRadius: 20,
     };
@@ -296,35 +342,85 @@ const female = StyleSheet.create({
       marginTop: type == 'Cashshop' ? -105 : -70,
     };
   },
-  rpStoreBtnText: {
-    fontFamily: 'Pretendard-Bold', 
-    color: '#F1D30E',
-  },
-  rpStoreText: {
-    fontFamily: 'MinSans-Bold', 
-    fontSize: 20,
-    color: '#F1D30E',
-  },
   rpStoreBtn: {
     backgroundColor: '#FFF',
     borderRadius: 50,
     paddingHorizontal: 12,
     paddingVertical: 2,
   },
-  bannerDesc: {
+  respectLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    height: 35,
+    marginTop: 15,
+  },
+  repectGrade: {
+    fontFamily: 'MinSans-Bold',
+    color: '#000000',
+    marginRight: 10,
+    marginLeft: 2,
+  },
+  respectTitle: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 10,
+    color: '#333B41',
+  },
+  respectNickname: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 16,
     color: '#FFF',
   },
-  bannerRpText: {
+  rpAvailable: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 10,
+    color: '#333B41',
+    marginTop: 15,
+  },
+  rpText: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 17,
     color: '#32F9E4',
-    marginLeft: 15,
   },
-  bannerRp: {
+  rpAmtText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 32,
     color: '#32F9E4',
+  },
+  gradeTitle: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    color: '#32F9E4',
+    textAlign: 'right',
+  },
+  gradient: (value:any) => {
+    let percent = 0;
+
+    if(value != null && typeof value != 'undefined') {
+      percent = value * 100;
+    };
+
+    return {
+      position: 'absolute',
+      width: percent + '%',
+      height: 12,
+      zIndex: 1,
+      borderRadius: 20,
+    };
+  },
+  sliderContainerStyle: {
+    height: 12,
+    borderRadius: 50,
+    backgroundColor: '#FFF',
+  },
+  sliderThumbStyle: {
+    height: 12,
+    borderRadius: 50,
+    backgroundColor: '#FFF',
+  },
+  rpDescText: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    color: '#D5CD9E',
   },
 });

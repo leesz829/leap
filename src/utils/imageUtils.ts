@@ -245,6 +245,17 @@ export const ICON = {
   circleC: require('assets/icon/icon-circle-c.png'),
   circleD: require('assets/icon/icon-circle-d.png'),
   circleE: require('assets/icon/icon-circle-e.png'),
+  starGray: require('assets/icon/icon-star-gray.png'),
+  starCyan: require('assets/icon/icon-star-cyan.png'),
+  paiksLogo: require('assets/icon/icon-paiks-logo.png'),
+  starbucksLogo: require('assets/icon/icon-starbucks-logo.png'),
+  baskinLogo: require('assets/icon/icon-baskin-logo.png'),
+  twosomeLogo: require('assets/icon/icon-twosome-logo.png'),
+  megaLogo: require('assets/icon/icon-mega-logo.png'),
+  daisoLogo: require('assets/icon/icon-daiso-logo.png'),
+  cuLogo: require('assets/icon/icon-cu-logo.png'),
+  gift: require('assets/icon/icon-gift.png'),
+  icChip: require('assets/icon/icon-ic-chip.png'), 
 };
 
 export const GIF_IMG = {

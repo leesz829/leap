@@ -62,7 +62,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
   const { show } = usePopup();  // 공통 팝업
   const dispatch = useDispatch();
   const isFocus = useIsFocused();
-
+  const selectData = selectedCategoryData;
   // 회원 기본 데이터
   const memberBase = useUserInfo();
 
@@ -238,19 +238,19 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
   };
 
   useEffect(() => {
-    if(selectedCategoryData?.value == 'SUBSCRIPTION' || selectedCategoryData?.value == 'PACKAGE' || selectedCategoryData?.value == 'PASS') {
+    if(selectData?.value == 'SUBSCRIPTION' || selectData?.value == 'PACKAGE' || selectData?.value == 'PASS') {
 
       // 튜토리얼 팝업 노출
-      if((selectedCategoryData?.value == 'SUBSCRIPTION' && (!isEmptyData(memberBase?.tutorial_subscription_item_yn) || memberBase?.tutorial_subscription_item_yn == 'Y')) ||
-        (selectedCategoryData?.value == 'PACKAGE' && (!isEmptyData(memberBase?.tutorial_package_item_yn) || memberBase?.tutorial_package_item_yn == 'Y')) ||
-        (selectedCategoryData?.value == 'PASS' && (!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y'))) {
+      if((selectData?.value == 'SUBSCRIPTION' && (!isEmptyData(memberBase?.tutorial_subscription_item_yn) || memberBase?.tutorial_subscription_item_yn == 'Y')) ||
+        (selectData?.value == 'PACKAGE' && (!isEmptyData(memberBase?.tutorial_package_item_yn) || memberBase?.tutorial_package_item_yn == 'Y')) ||
+        (selectData?.value == 'PASS' && (!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y'))) {
 
         let guideType = '';
-        if(selectedCategoryData?.value == 'SUBSCRIPTION') {
+        if(selectData?.value == 'SUBSCRIPTION') {
           guideType = 'SHOP_SUBSCRIPTION';
-        } else if(selectedCategoryData?.value == 'PACKAGE') {
+        } else if(selectData?.value == 'PACKAGE') {
           guideType = 'SHOP_PACKAGE';
-        } else if(selectedCategoryData?.value == 'PASS') {
+        } else if(selectData?.value == 'PASS') {
           guideType = 'SHOP_BASIC';
         }
 
@@ -261,13 +261,13 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
           guideNexBtnExpoYn: 'Y',
           confirmCallback: function(isNextChk) {
             if(isNextChk) {
-              saveMemberTutorialInfo(selectedCategoryData?.value);
+              saveMemberTutorialInfo(selectData?.value);
             }
           }
         });
       };
     }
-  }, [selectedCategoryData]);
+  }, [selectData]);
 
   return (
     <>
@@ -284,14 +284,19 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
               <TouchableOpacity
                 key={`category-${item.value}-${index}`}
                 onPress={() => onPressCategoryFunc(item)}>
-                <Image source={item.value === selectedCategoryData.value ? item.imgActive : item.imgUnactive} style={[styles.iconSize32, {marginTop: 4}]} />
+                <Image source={item.value === selectData.value ? item.imgActive : item.imgUnactive} style={[item.value == 'RECOMMENDER' ? _styles.starImg : _styles.itemImg]} />
               </TouchableOpacity>
             ))}
+            {/* <SpaceView viewStyle={{position: 'absolute', top: -20, left: 6}}>
+              <View style={_styles.balloonArea}>
+                <View style={_styles.balloon}>
+                  <Text style={_styles.balloonText}>N개의 추천 상품이 있어요.</Text>
+                </View>
+                <View style={_styles.tail} />
+              </View>
+            </SpaceView> */}
           </SpaceView>
-          <Image source={selectedCategoryData.value == 'PASS' ? ICON.polygonGreen
-            : selectedCategoryData.value == 'SUBSCRIPTION' ? ICON.drinkCyan
-            : ICON.cardCyan} style={[styles.iconSize60, {marginBottom: 10}]} />
-          <Text style={_styles.itemDescText}>큐브는 리프에서 사용하는 재화입니다.{'\n'}쓰임새가 다른 큐브와 메가큐브 2가지로 구분합니다.</Text>
+          <Text style={_styles.itemDescText}>{selectData.desc}</Text>
         </LinearGradient>
 
         {productList?.map((item, index) => (
@@ -301,6 +306,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
             openModal={openProductModalFunc}
           />
         ))}
+
       </ScrollView>
     </>
   );
@@ -336,7 +342,7 @@ function RenderItem({ item, openModal }) {
       <View style={_styles.itemWrap}>
         <View style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, {width: '60%'}]}>
           <SpaceView viewStyle={_styles.cubeCircleArea}>
-            <Image source={ICON.cubeCyan} style={[styles.iconSquareSize(38)]} />
+            <Image source={ICON.cubeCyan} style={[styles.iconSquareSize(25)]} />
           </SpaceView>
           <SpaceView viewStyle={{width: '70%'}} ml={20}>
             <Text style={_styles.itemName}>{item?.item_name}</Text>
@@ -404,6 +410,10 @@ const _styles = StyleSheet.create({
   itemContainer: {
     //paddingVertical: 15,
     marginTop: 15,
+    paddingTop: 15,
+    borderTopColor: '#445561',
+    borderTopWidth: 1,
+    paddingHorizontal: 15,
   },
   itemWrap: {
     flexDirection: 'row',
@@ -512,15 +522,16 @@ const _styles = StyleSheet.create({
     borderColor: '#32F9E4',
     backgroundColor: '#292F33',
     borderRadius: 50,
-    paddingTop: 3,
     width: 40,
     height: 40,
     overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   tabBtnArea: {
     backgroundColor: '#292F33',
     borderRadius: 20, 
-    width: '50%',
+    width: '75%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -529,14 +540,56 @@ const _styles = StyleSheet.create({
   itemDescArea: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 30,
     borderRadius: 10,
+    marginHorizontal: 15,
   },
   itemDescText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 12,
     color: '#E1DFD1',
     textAlign: 'center',
+    marginTop: 10,
+  },
+
+  itemImg: {
+    width: 50,
+    height: 50,
+    marginTop: 4,
+  },
+  starImg: {
+    width: 30,
+    height: 30,
+    marginTop: -5,
+    marginLeft: 5,
+  },
+  balloonArea: {
+    position: 'relative',
+    alignItems: 'flex-start',
+  },
+  balloon: {
+    backgroundColor: '#FFF',
+    padding: 4,
+    borderRadius: 5,
+  },
+  balloonText: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    color: '#F1D30E',
+  },
+  tail: {
+    position: 'absolute',
+    left: '50%',
+    bottom: -7,
+    marginLeft: -45,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 8,
+    borderLeftColor: 'transparent',
+    borderRightWidth: 8,
+    borderRightColor: 'transparent',
+    borderTopWidth: 8,
+    borderTopColor: '#FFF',
   },
 });
 

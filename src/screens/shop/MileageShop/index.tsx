@@ -16,7 +16,7 @@ import { myProfile } from 'redux/reducers/authReducer';
 import { CommonLoading } from 'component/CommonLoading';
 import SpaceView from 'component/SpaceView';
 import { ScrollView } from 'react-native-gesture-handler';
-import { styles } from 'assets/styles/Styles';
+import { layoutStyle, styles } from 'assets/styles/Styles';
 import LinearGradient from 'react-native-linear-gradient';
 
 
@@ -167,18 +167,25 @@ export default function MileageShop() {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title="리밋샵" />
+      <SpaceView viewStyle={ _styles.header}>
+        <SpaceView viewStyle={_styles.headerTitleArea}>
+          <Text style={_styles.headerTitle}>RP Store</Text>
+        </SpaceView>
+        <SpaceView viewStyle={[layoutStyle.row]}>
+          <TouchableOpacity style={_styles.orderHistBtn} onPress={onPressLimitShop}>
+            <Text style={_styles.orderHistText}>주문내역</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={_styles.exitBtn} onPress={() => (navigation.goBack())}>
+            <Text style={_styles.exitText}>나가기</Text>
+          </TouchableOpacity>
+        </SpaceView>
+      </SpaceView>
 
         <LinearGradient
           colors={['#3D4348', '#1A1E1C']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={_styles.root}>
-
-          <TouchableOpacity onPress={onPressLimitShop}>
-            <Text style={{color: '#FFF', backgroundColor: 'green', width: 120, textAlign: 'center'}}>주문내역 임시 버튼</Text>
-          </TouchableOpacity>
-
 
           <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
 
@@ -237,16 +244,16 @@ const RenderCategory = ({ onPressTab, tab }) => {
         <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
       </TouchableOpacity>
       <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+        <Image source={ICON.starbucksLogo} style={styles.iconSize60} resizeMode='cover' />
       </TouchableOpacity>
       <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+        <Image source={ICON.baskinLogo} style={styles.iconSize60} resizeMode='cover' />
       </TouchableOpacity>
       <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+        <Image source={ICON.daisoLogo} style={styles.iconSize60} resizeMode='cover' />
       </TouchableOpacity>
       <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+        <Image source={ICON.paiksLogo} style={styles.iconSize60} resizeMode='cover' />
       </TouchableOpacity>
     </ScrollView>
   );
@@ -256,8 +263,8 @@ const RenderCategory = ({ onPressTab, tab }) => {
 function ListHeaderComponent({ onPressTab, tab }) {
   return (
     <SpaceView>
-      <SpaceView viewStyle={{ flex: 1 }}>
-        <SpaceView viewStyle={{ marginTop: 90, paddingHorizontal: 20 }}>
+      <SpaceView>
+        <SpaceView viewStyle={{ marginTop: 90, paddingHorizontal: 20}}>
           <BannerPannel />
         </SpaceView>
       </SpaceView>
@@ -491,13 +498,53 @@ const renderSectionHeader = (props) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
+  header: {
+    height: 56,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    backgroundColor: '#3D4348',
+  },
+  headerTitleArea: {
+    backgroundColor: '#FFF',
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+    borderRadius: 30,
+  },
+  headerTitle: {
+    fontFamily: 'MinSans-Bold',
+    fontSize: 20,
+    color: '#F1D30E',
+  },
+  orderHistBtn: {
+    backgroundColor: '#FFF',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 30,
+  },
+  orderHistText: {
+    fontFamily: 'Pretendard-Bold',
+    color: '#F1D30E',
+  },
+  exitBtn: {
+    backgroundColor: '#FFF',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 30,
+    marginLeft: 10,
+  },
+  exitText: {
+    fontFamily: 'Pretendard-Bold',
+    color: '#F1D30E',
+  },
   root: { 
     flex: 1, 
     backgroundColor: 'white', 
     paddingHorizontal: 0,
   },
   categoriesContainer: {
-    marginTop: 200,
+    marginTop: 15,
     marginBottom: 10,
     //flexDirection: `row`,
     //alignItems: `center`,
