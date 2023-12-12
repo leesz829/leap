@@ -745,7 +745,7 @@ export default function MatchDetail(props: Props) {
                     <SpaceView pl={15} pr={15} mb={35}>
                       <InterviewRender 
                         title={data?.match_member_info?.nickname + '에 대한 필독서'} 
-                        isEditBtn={false}
+                        isEdit={false}
                         dataList={data?.interview_list} />
                     </SpaceView>
 

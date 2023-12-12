@@ -11,31 +11,29 @@ import { isEmptyData } from 'utils/functions';
 
 const { width, height } = Dimensions.get('window');
 
-export default function IntroduceRender({ memberData, isEditBtn, comment }) {
+export default function IntroduceRender({ memberData, isEdit, comment }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   return (
     <>
-      <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
+      <SpaceView mb={5} viewStyle={{flexDirection: 'row'}}>
         <View style={{zIndex:1}}>
           <Text style={_styles.commentTitText}>{memberData?.nickname}님 소개</Text>
         </View>
         <View style={_styles.commentUnderline} />
       </SpaceView>
 
-      {(isEmptyData(isEditBtn) && isEditBtn) && (
+      {(isEmptyData(isEdit) && isEdit) && (
         <SpaceView viewStyle={{width: '100%', alignItems: 'flex-end'}}>
-          <TouchableOpacity 
-            onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }} 
-            style={_styles.modBtn}>
+          <TouchableOpacity onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }} style={_styles.modBtn}>
             <Image source={ICON.squarePen} style={styles.iconSize16} />
             <Text style={_styles.modBtnText}>수정</Text>
           </TouchableOpacity>
         </SpaceView>
       )}
 
-      <SpaceView>
-        <Text style={_styles.commentText}>{comment}</Text>
+      <SpaceView mt={10}>
+        <Text style={_styles.commentText}>{(isEdit && !isEmptyData(comment)) ? '프로필 소개를 작성해 주세요.' : comment}</Text>
       </SpaceView>
     </>
   );

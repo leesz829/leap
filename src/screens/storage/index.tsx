@@ -171,6 +171,8 @@ export const Storage = (props: Props) => {
           let resListData = [];
           let reqListData = [];
           let successListData = [];
+          let zzimListData = [];
+          let zzimItemUseYn = data?.zzim_item_use_yn;
 
           /* resListData = dataUtils.getStorageListData(data?.res_list);
           reqListData = dataUtils.getStorageListData(data?.req_list);
@@ -179,6 +181,10 @@ export const Storage = (props: Props) => {
           resListData = data?.res_list;
           reqListData = data?.req_list;
           successListData = data?.success_list;
+
+          if(isEmptyData(data?.zzim_list)) {
+            zzimListData = data?.zzim_list;
+          }
 
           // tabs 데이터 구성
           tabsData = [
@@ -201,6 +207,15 @@ export const Storage = (props: Props) => {
               isNew: data?.succes_new_yn == 'Y' ? true : false,
             },
           ];
+
+          /* if(zzimItemUseYn == 'Y') { */
+            tabsData.push({
+              type: 'ZZIM',
+              title: '찜',
+              data: zzimListData,
+              isNew: false,
+            });
+          /* }; */
 
           setDataStorage({
             ...dataStorage,
@@ -600,11 +615,16 @@ export const Storage = (props: Props) => {
               <>
                 <SpaceView mb={20}>
                   <SpaceView viewStyle={_styles.listArea}>
+                    
                     <SpaceView viewStyle={[_styles.listHeader, {backgroundColor: bgColor}]}>
-                      <Text style={_styles.listHeaderText}>{matchStatusKor}</Text>
                       <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-                        <Image source={ICON.sparkler} style={styles.iconSize22} />
-                        <Text style={[_styles.listHeaderText, {color: '#000'}]}>{_socialGrade}</Text>
+                        <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
+                        <Text style={_styles.listHeaderText}>{_socialGrade}</Text>
+                      </SpaceView>
+                      <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+                        <Text style={_styles.listHeaderDdayText}>
+                          {item.keep_end_day > 0 ? item.keep_end_day + '일 남음' : '오늘까지'}
+                        </Text>
                       </SpaceView>
                     </SpaceView>
 
@@ -839,11 +859,14 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F1D30E',
     paddingHorizontal: 10,
-    paddingVertical: 5,
   },
   listHeaderText: {
     fontFamily: 'MinSans-Bold',
-    color: '#FFF6BE',
+    color: '#000000',
+  },
+  listHeaderDdayText: {
+    fontFamily: 'Pretendard-Bold',
+    color: '#000000',
   },
   listBody: {
     flexDirection: 'row',

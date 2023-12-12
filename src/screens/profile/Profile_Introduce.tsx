@@ -106,17 +106,16 @@ export const Profile_Introduce = (props: Props) => {
 
             let _interviewList = new Array();
             data?.interview_list.map((item, index) => {
-              if(item.use_yn == 'Y') {
-                _interviewList.push(item);
-              }
+              item.use_yn = 'Y';
+              _interviewList.push(item);
             });
 
             setInterviewList(_interviewList);
           
-          break;
-        default:
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-          break;
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
         }
       } else {
         show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -130,6 +129,10 @@ export const Profile_Introduce = (props: Props) => {
 
   // ############################################################ 내 소개하기 저장
   const saveFn = async () => {
+
+    console.log('interviewList :::::: ' , interviewList);
+
+    //return;
 
     // 중복 클릭 방지 설정
     if(isClickable) {
@@ -278,7 +281,7 @@ export const Profile_Introduce = (props: Props) => {
 					</SpaceView>
 				</ScrollView>
 
-        <SpaceView mb={250} viewStyle={_styles.btnArea}>
+        <SpaceView mb={20} viewStyle={_styles.btnArea}>
           <SpaceView mt={10}>
             <CommonBtn
               value={'저장하기'}

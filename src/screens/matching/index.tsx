@@ -679,7 +679,7 @@ export default function Matching(props: Props) {
 
             {/* ############################################################## 인터뷰 영역 */}
             <SpaceView mt={30}>
-              <InterviewRender title={matchData?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={matchData?.interview_list} />
+              <InterviewRender title={matchData?.match_member_info?.nickname + '님을\n알려주세요!'} dataList={matchData?.interview_list} isEdit={false} />
             </SpaceView>
 
             {/* ############################################################## 신고하기 영역 */}

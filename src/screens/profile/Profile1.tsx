@@ -469,14 +469,12 @@ export const Profile1 = (props: Props) => {
           </SpaceView>
 
           {/* ############################################################################################################# 자기 소개 영역 */}
-          {isEmptyData(profileData?.member_add.introduce_comment) && (
-            <SpaceView pl={15} pr={15} mb={45} viewStyle={_styles.commentWrap}>
-              <IntroduceRender 
-                memberData={profileData?.member_info} 
-                isEditBtn={true}
-                comment={profileData?.member_add.introduce_comment} />
-            </SpaceView>
-          )}
+          <SpaceView pl={15} pr={15} mb={45} viewStyle={_styles.commentWrap}>
+            <IntroduceRender 
+              memberData={profileData?.member_info} 
+              isEdit={true}
+              comment={profileData?.member_add.introduce_comment} />
+          </SpaceView>
 
           {/* ############################################################################################################# 프로필 인증 영역 */}
           <SpaceView pl={15} pr={15} mb={40}>
@@ -502,12 +500,14 @@ export const Profile1 = (props: Props) => {
           </SpaceView>
 
           {/* ############################################################################################################# 인터뷰 영역 */}
-          <SpaceView pl={15} pr={15} mb={35}>
-            <InterviewRender 
-              title={memberBase?.nickname + '에 대한 필독서'} 
-              isEditBtn={true}
-              dataList={profileData.interview_list} />
-          </SpaceView>
+          {profileData.interview_list.length > 0 && (
+            <SpaceView pl={15} pr={15} mb={35}>
+              <InterviewRender 
+                title={memberBase?.nickname + '에 대한 필독서'} 
+                isEdit={true}
+                dataList={profileData.interview_list} />
+            </SpaceView>
+          )}
 
           {/* ############################################################################################################# 관심사 영역 */}
           <SpaceView pl={15} pr={15} mb={40}>

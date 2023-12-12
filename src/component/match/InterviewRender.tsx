@@ -10,7 +10,7 @@ import { isEmptyData } from 'utils/functions';
 import { ICON } from 'utils/imageUtils';
 import { STACK, ROUTES } from 'constants/routes';
 
-export default function InterviewRender({ title, isEditBtn, dataList }) {
+export default function InterviewRender({ title, isEdit, dataList }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   return (
@@ -27,32 +27,52 @@ export default function InterviewRender({ title, isEditBtn, dataList }) {
           </SpaceView>
 
           <SpaceView viewStyle={{alignItems:'flex-start', justifyContent: 'flex-start'}}>
-            {dataList.map((e, index) => (
-              <>
-                {e.answer != "" && e.answer != null && 
-                  <>
-                    <SpaceView key={'interview_' + index} viewStyle={_styles.contentItemContainer}>
-                      <SpaceView>
-                        <SpaceView mb={10} viewStyle={_styles.questionRow}>
-                          <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
-                        </SpaceView>
-                        <SpaceView viewStyle={_styles.answerRow}>
-                          <Text style={_styles.answerText}>"{e?.answer}"</Text>
-                        </SpaceView>
-                      </SpaceView>
-                      {(isEmptyData(isEditBtn) && isEditBtn) && (
-                      <TouchableOpacity
-                        onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
-                        style={_styles.modBtn} key={index}>
-                        <Image source={ICON.squarePen} style={styles.iconSize16} />
-                        <Text style={_styles.modBtnText}>수정</Text>
-                      </TouchableOpacity>
-                    )}
+            {dataList.map((e, index) => {
+
+              let isExp = true;
+
+              if(!isEdit && !isEmptyData(e.answer)) {
+                isExp = false;
+              }
+
+              return isExp && (e.common_code == 'INTER_00' || e.common_code == 'INTER_02' || e.common_code == 'INTER_04' || e.common_code == 'INTER_12' || e.common_code == 'INTER_17') && (
+                <SpaceView key={'interview_' + index} mb={40} viewStyle={_styles.contentItemContainer}>
+                  <SpaceView>
+                    <SpaceView mb={10} viewStyle={_styles.questionRow}>
+                      <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
                     </SpaceView>
-                  </>
-                }
-              </>
-            ))}
+
+                    {(isEmptyData(isEdit) && isEdit) && (
+                      <SpaceView viewStyle={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+                        <TouchableOpacity
+                          onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
+                          style={_styles.modBtn} 
+                          key={index}
+                        >
+                          <Image source={ICON.squarePen} style={styles.iconSize16} />
+                          <Text style={_styles.modBtnText}>수정</Text>
+                        </TouchableOpacity>
+                      </SpaceView>
+                    )}
+
+                    <SpaceView viewStyle={_styles.answerRow}>
+                      <Text style={_styles.answerText}>"{isEmptyData(e?.answer) ? e?.answer : '답변을 등록해 주세요.'}"</Text>
+                    </SpaceView>
+                  </SpaceView>
+
+                  {/* {(isEmptyData(isEditBtn) && isEditBtn) && (
+                    <TouchableOpacity
+                      onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
+                      style={_styles.modBtn} 
+                      key={index}
+                    >
+                      <Image source={ICON.squarePen} style={styles.iconSize16} />
+                      <Text style={_styles.modBtnText}>수정</Text>
+                    </TouchableOpacity>
+                  )} */}
+                </SpaceView>
+              )
+            })}
           </SpaceView>
         </SpaceView>
       )}
@@ -100,11 +120,10 @@ const _styles = StyleSheet.create({
   },
   contentItemContainer: {
     width: '100%',
-    flexDirection: 'row',
+    //flexDirection: 'row',
     justifyContent: 'space-between',
     //minHeight: 60,
     borderRadius: 10,
-    marginBottom: 20,
   },
   itemActive: {
     backgroundColor: '#fff',
