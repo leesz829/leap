@@ -126,8 +126,8 @@ export const CommonImagePicker: FC<Props> = (props) => {
                 />
               ) : (
                 <Image 
-                  source={props.plusBtnType == '02' ? ICON.plus2 : ICON.plus_primary} 
-                  style={styles.iconSquareSize(isEmptyData(props.iconSize) ? props.iconSize : (width - 100) / 13)} />
+                  source={props.plusBtnType == '02' ? ICON.cloudUpload : ICON.cloudUpload} 
+                  style={styles.iconSquareSize(isEmptyData(props.iconSize) ? props.iconSize : (width) / 10)} />
               )}
             </>
           )}
@@ -221,7 +221,7 @@ const _styles = StyleSheet.create({
     return {
       width: isEmptyData(imgWidth) ? imgWidth : (width - 160) / 2,
       height: isEmptyData(imgHeight) ? imgHeight : (width - 160) / 2,
-      borderRadius: isEmptyData(borderRadius) ? borderRadius : 20,
+      borderRadius: isEmptyData(borderRadius) ? borderRadius : 0,
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',
@@ -233,7 +233,7 @@ const _styles = StyleSheet.create({
       backgroundColor: '#000',
       textAlign: 'center',
       paddingVertical: 3,
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-Medium',
       fontSize: 12,
       color: status == 'REFUSE' ? ColorType.redF20456 : '#fff',
     };

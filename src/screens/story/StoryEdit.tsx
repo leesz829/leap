@@ -154,7 +154,7 @@ export default function StoryEdit(props: Props) {
       if(memberBase?.pass_has_amt >= 6) {
         show({
           title: '블라인드 모드',
-          content: '블라인드 모드로 변경 하시겠습니까?\n회원님의 프로필은 로얄패스로만 열람 가능합니다.\n글 작성 취소 시 소모한 패스는 복구되지 않아요🥺',
+          content: '블라인드 모드로 변경 하시겠습니까?\n회원님의 프로필은 메가큐브로만 열람 가능합니다.\n글 작성 취소 시 소모한 큐브는 복구되지 않아요🥺',
           passAmt: 6,
           confirmBtnText: '변경하기',
           cancelCallback: function() {
@@ -474,6 +474,21 @@ export default function StoryEdit(props: Props) {
     }
   };
 
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  const tab = (type) => {
+    if(type == 'STORY') {
+      setCurrentIndex(0);
+      storyData.storyType = 'STORY';
+    }else if(type == 'VOTE') {
+      setCurrentIndex(1);
+      storyData.storyType = 'VOTE';
+    }else if(type == 'SECRET') {
+      setCurrentIndex(2);
+      storyData.storyType = 'SECRET';
+    }
+  };
+
   /* ##################################################################################################################################
   ################## 초기 실행 함수
   ################################################################################################################################## */
@@ -488,176 +503,203 @@ export default function StoryEdit(props: Props) {
   return (
     <>
       {isLoading && <CommonLoading />}
+      
+      <LinearGradient
+          colors={['#333B41', '#545454']}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 0, y: 0 }}
+          style={_styles.tabContainer}
+        >
+         
+        <CommonHeader 
+          type={'STORY_REGI'}
+          title={storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표 등록' : '시크릿 등록'}
+          callbackFunc={storyRegister} />
 
-      <CommonHeader 
-        type={'STORY_REGI'}
-        title={storyData.storyType == 'STORY' ? '스토리' : storyData.storyType == 'VOTE' ? '투표' : '시크릿'}
-        callbackFunc={storyRegister} />
+        <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, _styles.tabArea]}>
+          <TouchableOpacity onPress={() => (tab('STORY'))}>
+            <Text style={_styles.tabText, {color: currentIndex == 0 ? '#FFDD00' : '#445561'}}>스토리</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{marginHorizontal: 20}} onPress={() => (tab('VOTE'))}>
+            <Text style={_styles.tabText, {color: currentIndex == 1 ? '#FFDD00' : '#445561'}}>투표</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => (tab('SECRET'))}>
+            <Text style={_styles.tabText, {color: currentIndex == 2 ? '#FFDD00' : '#445561'}}>시크릿</Text>
+          </TouchableOpacity>     
+        </SpaceView>
+      </LinearGradient>
+      
 
       <KeyboardAvoidingView
         style={{flex: 1, backgroundColor: '#fff'}}
         behavior={Platform.OS === 'ios' ? 'padding' : null} // iOS에서는 'padding'을 사용합니다.
       >      
-        <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: '#fff'}}>
 
-          <SpaceView mt={20} pl={20} pr={20}>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={_styles.wrap}
+        >
+          <ScrollView showsVerticalScrollIndicator={false}>
 
-            {/* ##############################################################################################################
-            ##### 타이틀 영역
-            ############################################################################################################## */}
-            <SpaceView mb={25}>
-              <Text style={_styles.titleText}>
-                {storyData.storyType == 'SECRET' ? (
-                  <>이야기 앞에 "비밀"이 붙으면{'\n'}더 재밌어지는 법이죠!</>
-                ) : storyData.storyType == 'VOTE' ? (
-                  <>왼 VS 오 어떤것?{'\n'}선택 장애 해결! 밸런스 게임 즐기기!</>
-                ) : (
-                  <>소소한 일상부터 음식, 여행 등{'\n'}주제에 관계없이 자유롭게 소통해 보세요.</>
-                )}
-              </Text>
-              <View style={_styles.titleUnderline(storyData.storyType)} />
-            </SpaceView>
+            <SpaceView mt={20} pl={20} pr={20}>
 
-            {/* ##############################################################################################################
-            ##### 대표 이미지 설정 영역(스토리, 시크릿)
-            ############################################################################################################## */}
-            {(storyData.storyType == 'STORY' || storyData.storyType == 'SECRET') && (
-              <>
-                <SpaceView mb={25} viewStyle={_styles.imgArea}>
-                  {[0,1,2].map((i, index) => {
-                    return (
-                      <>
-                        {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1} storyType={storyData.storyType} /> }
-                        {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2} storyType={storyData.storyType} /> }
-                        {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3} storyType={storyData.storyType} /> }
-                      </>
-                    )
-                  })}
-                </SpaceView>
-              </>
-            )}
+              {/* ##############################################################################################################
+              ##### 타이틀 영역
+              ############################################################################################################## */}
+              <SpaceView mb={10}>
+                <Text style={_styles.titleText}>
+                  {storyData.storyType == 'SECRET' ? (
+                    <>이야기 앞에 "비밀"이 붙으면{'\n'}더 재밌어지는 법이죠!</>
+                  ) : storyData.storyType == 'VOTE' ? (
+                    <>오늘은 뭘 먹지?{'\n'}고민되는 메뉴 선택권도 다른 고민들도{'\n'}리프 피플들이 골라 드려요.</>
+                  ) : (
+                    <>소소한 일상부터 음식, 여행 등{'\n'}주제에 관계없이 자유롭게 소통해 보세요.</>
+                  )}
+                </Text>
+                <View style={_styles.titleUnderline(storyData.storyType)} />
+              </SpaceView>
 
-            {/* ##############################################################################################################
-            ##### 투표 설정 영역(투표형)
-            ############################################################################################################## */}
-            {storyData.storyType == 'VOTE' && (
-              <>
-                {/* ############### 선택지 입력 영역 */}
-                <SpaceView mb={20}>
-                  <SpaceView viewStyle={_styles.voteArea}>
-                      {[0,1].map((i, index) => {
-                        return (
-                          <>
-                            <SpaceView mb={7}>
-                              <TextInput
-                                value={voteData[`voteName0${i+1}`]}
-                                onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
-                                multiline={false}
-                                autoCapitalize="none"
-                                style={_styles.voteInput(isEmptyData(voteData[`voteName0${i+1}`]))}
-                                placeholder={'선택지 입력'}
-                                placeholderTextColor={'#c7c7c7'}
-                                editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
-                                secureTextEntry={false}
-                                maxLength={50}
-                                numberOfLines={1}
-                              />
-
-                              <SpaceView viewStyle={_styles.voteImgArea}>
-                                {index == 0 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack01} storyType={storyData.storyType} />}
-                                {index == 1 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack02} storyType={storyData.storyType} />}
-                              </SpaceView>
-                            </SpaceView>
-                          </>
-                        )
-                      })}
-
+              {/* ##############################################################################################################
+              ##### 대표 이미지 설정 영역(스토리, 시크릿)
+              ############################################################################################################## */}
+              {(storyData.storyType == 'STORY' || storyData.storyType == 'SECRET') && (
+                <>
+                  <SpaceView mb={25} viewStyle={_styles.imgArea}>
+                    {[0,1,2].map((i, index) => {
+                      return (
+                        <>
+                          {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1} storyType={storyData.storyType} /> }
+                          {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2} storyType={storyData.storyType} /> }
+                          {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3} storyType={storyData.storyType} /> }
+                        </>
+                      )
+                    })}
                   </SpaceView>
-                </SpaceView>
+                </>
+              )}
 
-                {/* ############### 투표 마감기한 입력 영역 */}
-                <SpaceView mb={25}>
+              {/* ##############################################################################################################
+              ##### 투표 설정 영역(투표형)
+              ############################################################################################################## */}
+              {storyData.storyType == 'VOTE' && (
+                <>
+                  {/* ############### 선택지 입력 영역 */}
                   <SpaceView mb={20}>
-                    <Text style={_styles.subTitleText}>투표 마감기한을 선택해 주세요.</Text>
-                  </SpaceView>
+                    <SpaceView viewStyle={_styles.voteArea}>
+                        {[0,1].map((i, index) => {
+                          return (
+                            <>
+                              <SpaceView mb={7}>
+                                <TextInput
+                                  value={voteData[`voteName0${i+1}`]}
+                                  onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
+                                  multiline={false}
+                                  autoCapitalize="none"
+                                  style={_styles.voteInput(isEmptyData(voteData[`voteName0${i+1}`]))}
+                                  editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
+                                  secureTextEntry={false}
+                                  maxLength={50}
+                                  numberOfLines={1}
+                                />
 
-                  <SpaceView>
-                    <VoteEndRadioBox
-                      value={storyData.voteEndType}
-                      items={voteEndTypeList}
-                      callBackFunction={voteEndTypeCallbackFn}
-                      isModfy={isEmptyData(storyBoardSeq) ? false : true}
-                    />
-                  </SpaceView>
-                </SpaceView>
-              </>
-            )}
+                                <SpaceView viewStyle={_styles.voteImgArea}>
+                                  {index == 0 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack01} storyType={storyData.storyType} />}
+                                  {index == 1 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack02} storyType={storyData.storyType} />}
+                                </SpaceView>
+                              </SpaceView>
+                            </>
+                          )
+                        })}
 
-            {/* ##############################################################################################################
-            ##### 블라인드 모드 설정 영역(스토리, 투표)
-            ############################################################################################################## */}
-            {(storyData.storyType == 'STORY' || storyData.storyType == 'VOTE') && (
-              <>
-                {!isEmptyData(storyBoardSeq) ? (
-                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                  <SpaceView>
-                    <SpaceView mb={-3} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={_styles.hideProfileTitle}>블라인드 모드</Text>
-                      <Image source={ICON.speechQuestion} style={styles.iconSize20} />
                     </SpaceView>
-                    <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
                   </SpaceView>
-                  <TouchableOpacity 
-                    disabled={isEmptyData(storyBoardSeq) ? true : false || isSecret}
-                    style={_styles.hideProfileArea(isSecret)} 
-                    onPress={() => { hideProfilePopupOpen(); }}
-                  >
-                    <Text style={_styles.hideProfileBtn(isSecret)}>{isSecret ? 'ON' : 'OFF'}</Text>
-                  </TouchableOpacity>
-                </SpaceView>
-                ) : (
-                  <>
-                    {/* <SpaceView mb={20}>
-                      <Text style={_styles.subTitleText}>투표 내용을 작성해 주세요.</Text>
-                    </SpaceView> */}
-                  </>
-                )}
-              </>
-            )}
 
-            {/* ##############################################################################################################
-            ##### 내용 입력 영역
-            ############################################################################################################## */}
-            {storyData.storyType == 'SECRET' && (
-              <>
-                <SpaceView>
-                  <Text style={_styles.hideProfileTitle}>누구에게도 내 정체를 밝히고 싶지 않다면?</Text>
-                  <Text style={_styles.hideProfileDesc}>내가 올린 시크릿은 다른 회원에 의한 프로필 열람이 불가능하니 안심하세요:)</Text>
-                </SpaceView>
-              </>
-            )}
+                  {/* ############### 투표 마감기한 입력 영역 */}
+                  <SpaceView mb={25}>
+                    <SpaceView mb={20}>
+                      <Text style={_styles.subTitleText}>투표 마감기한을 선택해 주세요.</Text>
+                    </SpaceView>
 
-            <SpaceView mt={15}>
-              <CommonTextarea
-                value={storyData.contents}
-                onChangeText={(text) => setStoryData({...storyData, contents: text})}
-                placeholder={'최소 10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'}
-                placeholderTextColor={'#999999'}
-                maxLength={1000}
-                exceedCharCountColor={'#990606'}
-                fontSize={13}
-                height={storyData.storyType == 'VOTE' ? 220 : 350}
-                backgroundColor={'#fff'}
-                fontColor={'#000'}
-                borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#DDDDDD'}
-                borderRadius={10}
-                padding={20}
-                paddingTop={20}
-              />
+                    <SpaceView>
+                      <VoteEndRadioBox
+                        value={storyData.voteEndType}
+                        items={voteEndTypeList}
+                        callBackFunction={voteEndTypeCallbackFn}
+                        isModfy={isEmptyData(storyBoardSeq) ? false : true}
+                      />
+                    </SpaceView>
+                  </SpaceView>
+                </>
+              )}
+
+              {/* ##############################################################################################################
+              ##### 블라인드 모드 설정 영역(스토리, 투표)
+              ############################################################################################################## */}
+              {(storyData.storyType == 'STORY' || storyData.storyType == 'VOTE') && (
+                <>
+                  {!isEmptyData(storyBoardSeq) ? (
+                    <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <SpaceView>
+                      <SpaceView mb={-3} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={_styles.hideProfileTitle}>블라인드 모드</Text>
+                      </SpaceView>
+                      <Text style={_styles.hideProfileDesc}>대표사진 대신 랜덤 닉네임으로 대체되어 게시글이 등록되요.</Text>
+                    </SpaceView>
+                    <TouchableOpacity 
+                      disabled={isEmptyData(storyBoardSeq) ? true : false || isSecret}
+                      style={_styles.hideProfileArea(isSecret)} 
+                      onPress={() => { hideProfilePopupOpen(); }}
+                    >
+                      <Text style={_styles.hideProfileBtn(isSecret)}>{isSecret ? 'ON' : 'OFF'}</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                  ) : (
+                    <>
+                      {/* <SpaceView mb={20}>
+                        <Text style={_styles.subTitleText}>투표 내용을 작성해 주세요.</Text>
+                      </SpaceView> */}
+                    </>
+                  )}
+                </>
+              )}
+
+              {/* ##############################################################################################################
+              ##### 내용 입력 영역
+              ############################################################################################################## */}
+              {storyData.storyType == 'SECRET' && (
+                <>
+                  <SpaceView>
+                    <Text style={_styles.hideProfileTitle}>누구에게도 내 정체를 밝히고 싶지 않다면?</Text>
+                    <Text style={_styles.hideProfileDesc}>내가 올린 시크릿은 프로필 열람이 불가능하니 안심하세요:)</Text>
+                  </SpaceView>
+                </>
+              )}
+
+              <SpaceView mt={15}>
+                <CommonTextarea
+                  value={storyData.contents}
+                  onChangeText={(text) => setStoryData({...storyData, contents: text})}
+                  placeholder={'최소 10글자 이상 입력해 주세요.\n\n이용 약관 또는 개인 정보 취급 방침 등 위배되는 게시글을 등록하는 경우 작성자의 동의없이 게시글이 삭제 될 수 있으며, 이용 제재 대상이 될 수 있습니다.\n\n상대를 배려하는 마음으로 이용해 주세요.'}
+                  placeholderTextColor={'#E1DFD1'}
+                  maxLength={1000}
+                  exceedCharCountColor={'#990606'}
+                  fontSize={13}
+                  height={storyData.storyType == 'VOTE' ? 220 : 350}
+                  backgroundColor={'#445561'}
+                  fontColor={'#E1DFD1'}
+                  //borderColor={isEmptyData(storyData.contents) ? '#7986EE' : '#DDDDDD'}
+                  borderColor={'#445561'}
+                  borderRadius={10}
+                  padding={20}
+                  paddingTop={20}
+                />
+              </SpaceView>
+
             </SpaceView>
-
-          </SpaceView>
-        </ScrollView>
+          </ScrollView>
+        </LinearGradient>
       </KeyboardAvoidingView>
 
       {/* ###############################################
@@ -706,20 +748,13 @@ function ImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyType })
     <View style={_styles.imgItem}>
       {((isEmptyData(imgUrl) && imgDelYn == 'Y') || !isEmptyData(imgUrl)) ? (
         <>
-          <LinearGradient
-            colors={['#F3F4FD', '#CACFFF']}
-            start={{ x: 0.2, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={{borderRadius: 10, overflow: 'hidden'}} >
-
-            <CommonImagePicker 
-              type={'STORY'} 
-              callbackFn={fileCallBackFn} 
-              uriParam={''}
-              imgWidth={(width - 70) / 3} 
-              imgHeight={(width - 70) / 3}
-            />
-          </LinearGradient>
+          <CommonImagePicker 
+            type={'STORY'}
+            callbackFn={fileCallBackFn} 
+            uriParam={''}
+            imgWidth={(width - 70) / 3} 
+            imgHeight={(width - 70) / 3}
+          />
         </>
       ) : (
         <>
@@ -748,22 +783,14 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
     <View style={_styles.imgItem}>
       {((isEmptyData(imgUrl) && imgDelYn == 'Y') || !isEmptyData(imgUrl)) ? (
         <>
-          <LinearGradient
-            colors={['#F3F4FD', '#CACFFF']}
-            start={{ x: 0.2, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={{borderRadius: 10, overflow: 'hidden'}} >
-
-            <CommonImagePicker 
-              type={'STORY'} 
-              callbackFn={fileCallBackFn} 
-              uriParam={''}
-              imgWidth={48}
-              imgHeight={48}
-              iconSize={15}
-              borderRadius={10}
-            />
-          </LinearGradient>
+          <CommonImagePicker 
+            type={'STORY'} 
+            callbackFn={fileCallBackFn} 
+            uriParam={''}
+            imgWidth={35}
+            imgHeight={35}
+            iconSize={15}
+          />
         </>
       ) : (
         <>
@@ -793,31 +820,51 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-
+  tabArea: {
+    backgroundColor: '#292F33',
+    width: '50%',
+    alignSelf: 'center',
+    borderRadius: 30,
+    paddingVertical: 8,
+  },
+  tabContainer: {
+    elevation: 5,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    height: 100,
+  },
+  tabText: {
+    fontFamily: 'MinSans-Bold',
+  },
+  wrap: {
+    minHeight: height,
+  },
   titleText: {
-    fontFamily: 'Pretendard-Bold',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 20,
-    color: '#333333',
+    color: '#FFF',
     lineHeight: 30,
   },
   subTitleText: {
     fontFamily: 'Pretendard-SemiBold',
-    fontSize: 19,
-    color: '#333333',
+    fontSize: 14,
+    color: '#D5CD9E',
   },
   titleUnderline: (storyType:string) => {
     let _top = 49;
-    let _left = -1;
-    let _width = 201;
+    let _left = 0;
+    let _width = 200;
 
     if(storyType == 'SECRET') {
       _top = 19;
       _left = 96;
       _width = 51;
     } else if(storyType == 'VOTE') {
-      _top = 19;
+      _top = 78;
       _left = 0;
-      _width = 140;
+      _width = 208;
     }
 
     return {
@@ -826,7 +873,7 @@ const _styles = StyleSheet.create({
       left: _left,
       width: _width,
       height: 8,
-      backgroundColor: '#7986EE',
+      backgroundColor: '#FFDD00',
       zIndex: -1,
     };
   },
@@ -835,14 +882,14 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   imgItem: {
-    backgroundColor: 'rgba(155, 165, 242, 0.12)',
-    marginHorizontal: 4,
-    marginVertical: 5,
-    borderRadius: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderStyle: 'dotted',
+    borderColor: '#E1DFD1',
     overflow: 'hidden',
     flexDirection: `row`,
     alignItems: `center`,
-    justifyContent: `center`,
+    justifyContent: 'space-between',
   },
   imageStyle: {
     width: (width - 70) / 3,
@@ -884,30 +931,31 @@ const _styles = StyleSheet.create({
   voteInput: (isOn:boolean) => {
     return {
       fontFamily: 'Pretendard-Regular',
-      backgroundColor: '#fff',
+      backgroundColor: '#445561',
       paddingHorizontal: 10,
       paddingVertical: 10,
-      borderColor: isOn ? '#7986EE' : '#DDDDDD',
+      //borderColor: isOn ? '#7986EE' : '#DDDDDD',
+      borderColor: '#445561',
       borderWidth: 1,
       borderRadius: 8,
-      width: '84%',
+      width: '100%',
       marginTop: 3,
-      height: 48,
+      height: 45,
       color: '#000',
-      elevation: isOn ? 10 : 0,
-      shadowColor: "#0047FF",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
+      // elevation: isOn ? 10 : 0,
+      // shadowColor: "#0047FF",
+      // shadowOffset: {
+      //   width: 0,
+      //   height: 2,
+      // },
+      // shadowOpacity: 0.25,
+      // shadowRadius: 3.84,
     };
   },
   voteImgArea: {
     position: 'absolute',
-    top: -2,
-    right: -4,
+    top: 7,
+    right: 3,
   },
   modalCloseText: {
     width: '100%',
@@ -931,22 +979,22 @@ const _styles = StyleSheet.create({
   },
   hideProfileTitle: {
     fontFamily: 'Pretendard-SemiBold',
-    color: '#747474',
-    fontSize: 16,
+    color: '#D5CD9E',
+    fontSize: 14,
   },
   hideProfileDesc: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#A9A9A9',
-    fontSize: 10,
+    fontFamily: 'Pretendard-Light',
+    color: '#ABA99A',
+    fontSize: 12,
     marginTop: 5,
   },
   hideProfileArea: (isOn:boolean) => {
     return {
       borderWidth: 1,
-      borderColor: '#7986EE',
-      backgroundColor: isOn ? '#7986EE' : 'transparent',
+      borderColor: '#D5CD9E',
+      backgroundColor: isOn ? '#D5CD9E' : 'transparent',
       borderRadius: 20,
-      paddingHorizontal: 11,
+      paddingHorizontal: isOn ? 14 : 11,
       paddingVertical: 5,
     };
   },
@@ -954,7 +1002,7 @@ const _styles = StyleSheet.create({
     return {
       fontFamily: 'Pretendard-Regular',
       fontSize: 11,
-      color: isOn ? '#ffffff' : '#7986EE',
+      color: isOn ? '#ffffff' : '#D5CD9E',
       overflow: 'hidden',
     };
   },

@@ -184,21 +184,21 @@ const _styles = StyleSheet.create({
     }
 
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-Medium',
       fontSize: 14,
       color: clr,
       marginTop: -3,
     };
   },
   scoreText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 14,
     color: '#333333',
   },
   regiText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 16,
-    color: '#D5CD9E',
+    color: '#FFDD00',
   },
   btnContainer: {
     position: 'absolute',

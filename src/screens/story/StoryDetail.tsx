@@ -47,7 +47,7 @@ export default function StoryDetail(props: Props) {
 
   // 본인 데이터
   const memberBase = useUserInfo();
-
+console.log('memberBase::', memberBase)
   // 이미지 인덱스
   const imgRef = React.useRef();
 
@@ -616,16 +616,16 @@ export default function StoryDetail(props: Props) {
                 <SpaceView pt={2} mt={10} viewStyle={{alignItems: 'flex-start'}}>
                   <SpaceView viewStyle={_styles.replyItemEtcWrap}>
 
-                    {/* 댓글달기 버튼 */}
+                    {/* 답글달기 버튼 */}
                     {depth == 1 && (
                       <>
-                      <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth, false); }}>
-                        <Text style={_styles.replyTextStyle}>댓글달기</Text>
-                      </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth, false); }}>
+                          <Text style={_styles.replyTextStyle}>답글달기</Text>
+                        </TouchableOpacity>
                       </>
                     )}
 
-                    {/* 좋아용 버튼 */}
+                    {/* 좋아요 버튼 */}
                     <SpaceView viewStyle={_styles.likeArea}>
                       <TouchableOpacity 
                         onPress={() => { likeFunc('REPLY', storyReplySeq); }}
@@ -633,9 +633,9 @@ export default function StoryDetail(props: Props) {
                         hitSlop={commonStyle.hipSlop20}>
 
                         {(item?.member_like_yn == 'N') ? (
-                          <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(15)} />
+                          <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
                         ) : (
-                          <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(15)} />
+                          <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(14)} />
                         )}
                       </TouchableOpacity>
 
@@ -694,362 +694,327 @@ export default function StoryDetail(props: Props) {
         storyType={storyData.board?.story_type}
       />
 
-      <ScrollView 
-        showsVerticalScrollIndicator={false}
-        style={{backgroundColor: '#fff'}}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={handleRefresh}
-            tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
-            //title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
-            titleColor="#ff0000" // 텍스트 색상 변경
-            colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
-            progressBackgroundColor="#ffffff" >
-          </RefreshControl>
-        }
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={{minHeight: height}}
       >
 
-        <SpaceView mb={20}>
+        <ScrollView
+          style={{marginBottom: 120}}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+              tintColor="#ff0000" // Pull to Refresh 아이콘 색상 변경
+              //title="Loading..." // Pull to Refresh 아이콘 아래에 표시될 텍스트
+              titleColor="#ff0000" // 텍스트 색상 변경
+              colors={['#ff0000', '#00ff00', '#0000ff']} // 로딩 아이콘 색상 변경
+              progressBackgroundColor="#ffffff" >
+            </RefreshControl>
+          }
+        >
 
-          {/* ###################################################################################### 이미지 영역 */}
-          <SpaceView>
-            <View style={_styles.pagingContainer}>
-              {storyData.board?.story_type == 'VOTE' ? (
-                <>
-                  {storyData.voteList?.map((item, index) => {
-                    return (
-                      <View style={_styles.dotContainerStyle} key={'dot' + index}>
-                        <LinearGradient
-                          colors={['#727FFF', '#B8BFFF']}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 1 }}
-                          style={[_styles.pagingDotStyle(index == currentIndex)]} />
-                      </View>
-                    )
-                  })}
-                </>
-              ) : (
-                <>
-                  {storyData.imageList?.map((item, index) => {
-                    return (
-                      <View style={_styles.dotContainerStyle} key={'dot' + index}>
-                        <LinearGradient
-                          colors={['#727FFF', '#B8BFFF']}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 1 }}
-                          style={[_styles.pagingDotStyle(index == currentIndex)]} />
-                      </View>
-                    )
-                  })}
-                </>
-              )}
-            </View>
+          <SpaceView mb={20}>
 
-            <FlatList
-              ref={imgRef}
-              data={storyData.board?.story_type == 'VOTE' ? storyData.voteList : storyData.imageList}
-              renderItem={ImageRender}
-              onScroll={handleScroll}
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              pagingEnabled
-            />
-          </SpaceView>
-
-          {/* ###################################################################################### 투표 선택 영역 */}
-          {storyData.board?.story_type == 'VOTE' && (
+            {/* ###################################################################################### 이미지 영역 */}
             <SpaceView>
-              <SpaceView viewStyle={_styles.voteSelectArea}>
+              <View style={_styles.pagingContainer}>
+                {storyData.board?.story_type == 'VOTE' ? (
+                  <>
+                    {storyData.voteList?.map((item, index) => {
+                      return (
+                        <View style={_styles.dotContainerStyle} key={'dot' + index}>
+                          <SpaceView viewStyle={_styles.pagingDotStyle(index == currentIndex)} />
+                        </View>
+                      )
+                    })}
+                  </>
+                ) : (
+                  <>
+                    {storyData.imageList?.map((item, index) => {
+                      return (
+                        <View style={_styles.dotContainerStyle} key={'dot' + index}>
+                          <SpaceView viewStyle={_styles.pagingDotStyle(index == currentIndex)} />
+                        </View>
+                      )
+                    })}
+                  </>
+                )}
+              </View>
 
-                <SpaceView viewStyle={{flexDirection:'row', zIndex:1}}>
-                  {storyData.voteList?.map((item, index) => {
-                    const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
-                    const isRegiMember = (memberBase?.member_seq == storyData.board?.member_seq) ? true : false;
-                    const isVoteEndYn = storyData.board?.vote_end_yn == 'Y' ? true : false;
+              <FlatList
+                ref={imgRef}
+                data={storyData.board?.story_type == 'VOTE' ? storyData.voteList : storyData.imageList}
+                renderItem={ImageRender}
+                onScroll={handleScroll}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                pagingEnabled
+              />
+            </SpaceView>
 
-                    const firVoteMmbrCntVal = storyData.voteList[0]['vote_member_cnt'];
-                    const secVoteMmbrCntVal = storyData.voteList[1]['vote_member_cnt'];
+            {/* ###################################################################################### 투표 선택 영역 */}
+            {storyData.board?.story_type == 'VOTE' && (
+              <SpaceView>
+                <SpaceView viewStyle={_styles.voteSelectArea}>
 
-                    let baseColor = '#3616CF';
-                    let textColor = '#333333';
-                    let bgColorArr = ['#8759D5', '#7984ED'];
-                    let _display = 'none';
-                    let iconName = ICON.pickWhite;
+                  <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
+                    {storyData.voteList?.map((item, index) => {
+                      const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
+                      const isRegiMember = (memberBase?.member_seq == storyData.board?.member_seq) ? true : false;
+                      const isVoteEndYn = storyData.board?.vote_end_yn == 'Y' ? true : false;
 
-                    // 작성자 여부 구분 처리
-                    if(memberBase?.member_seq == storyData.board?.member_seq) {
-                      if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal != secVoteMmbrCntVal)) {
-                        if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {                      
-                          baseColor = '#3616CF';
-                          bgColorArr = ['#FFF', '#FFF'];
-                          _display = isVote ? 'flex' : 'none';
-                          iconName = isVoteEndYn ? ICON.pickPurple : ICON.pickWhite;
+                      const firVoteMmbrCntVal = storyData.voteList[0]['vote_member_cnt'];
+                      const secVoteMmbrCntVal = storyData.voteList[1]['vote_member_cnt'];
+
+                      let baseColor = '#7A85EE';
+                      let textColor = '#333333';
+                      let _display = 'none';
+
+                      // 작성자 여부 구분 처리
+                      if(memberBase?.member_seq == storyData.board?.member_seq) {
+                        if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal != secVoteMmbrCntVal)) {
+                          if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {                      
+                            baseColor = '#3616CF';
+                            _display = isVote ? 'flex' : 'none';
+                          } else {
+                            textColor = '#FFF';
+                            _display = isVote ? 'flex' : 'none';
+                          };
                         } else {
-                          textColor = '#FFF';
-                          _display = isVote ? 'flex' : 'none';
-                        };
-                      } else {
-                        baseColor = '#999999';
-                        bgColorArr = ['#EEE', '#EEE'];
-                        textColor = '#999999';
-                        _display = isVote ? 'flex' : 'none';
-                        iconName = isVoteEndYn ? ICON.pickPurple : ICON.pickWhite;
-                      } 
-                    } else {
-                        if(storyData.board?.vote_end_yn == 'N'){
-                          if(isVote) {
-                            baseColor = '#3616CF';
-                            bgColorArr = ['#7984ED', '#7984ED'];
-                            textColor = '#FFF';
-                            _display ='flex';
-                          }else {
-                            bgColorArr = ['#FFF', '#FFF'];
-                          }
-                        }else {
-                          if(storyData.board?.selected_vote_seq == item?.story_vote_seq) {
-                            baseColor = '#3616CF';
-                            bgColorArr = ['#8759D5', '#7984ED'];
-                            textColor = '#FFF';
-                            _display = isVote ? 'flex' : 'none';
-                            iconName = isVote ? ICON.pickWhite : ICON.pickPurple;
-                          }else {
-                            bgColorArr = ['#FFF', '#FFF'];
-                            _display = isVote ? 'flex' : 'none';
-                            iconName = isVote ? ICON.pickPurple : ICON.pickWhite;
-                          }
-                        }
-                        
-                        if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal == secVoteMmbrCntVal)) {
-                          baseColor = '#999999';
-                          bgColorArr = ['#EEE', '#EEE'];
+                          baseColor = '#999999';;
                           textColor = '#999999';
                           _display = isVote ? 'flex' : 'none';
-                          iconName = ICON.pickPurple;
-                        }
-                    };
-                    
-                    return (
+                        } 
+                      } else {
+                          if(storyData.board?.vote_end_yn == 'N'){
+                            if(isVote) {
+                              baseColor = '#3616CF';
+                              textColor = '#FFF';
+                              _display ='flex';
+                            }
+                          }else {
+                            if(storyData.board?.selected_vote_seq == item?.story_vote_seq) {
+                              baseColor = '#3616CF';
+                              textColor = '#FFF';
+                              _display = isVote ? 'flex' : 'none';
+                            }else {
+                              _display = isVote ? 'flex' : 'none';
+                            }
+                          }
+                          
+                          
+                          if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal == secVoteMmbrCntVal)) {
+                            baseColor = '#999999';
+                            textColor = '#999999';
+                            _display = isVote ? 'flex' : 'none';
+                          }
+                      };
+                      
+                      return (
+                        <>
+                          <SpaceView viewStyle={_styles.voteVsArea}>
+                            <Text style={_styles.voteVsText}>{isVoteEndYn && (firVoteMmbrCntVal == secVoteMmbrCntVal) ? 'DRAW' : 'VS'}</Text>
+                          </SpaceView>
+                      
+                          <SpaceView key={index}>
+                            <TouchableOpacity
+                              disabled={isVote || isVoteEndYn}
+                              onPress={() => { voteProc(item?.story_vote_seq) }}
+                            >
+
+                              <SpaceView viewStyle={[layoutStyle.row]}>
+                                {/* 투표 이미지 */}
+                                <SpaceView viewStyle={[_styles.voteArea, {borderColor: item?.order_seq ==  1 ? '#FFF' : '#7A85EE'}]}>
+                                  <Image source={findSourcePath(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
+                                </SpaceView>
+                                {/* 투표 명 */}
+                                <SpaceView viewStyle={_styles.voteNameArea(item?.order_seq)}>
+                                  <Text numberOfLines={3} style={_styles.voteNameText(item?.order_seq)}>{item?.vote_name}</Text>
+                                </SpaceView>
+                              </SpaceView>
+                            </TouchableOpacity>
+
+                            {/* PICK 텍스트 및 이미지 */}
+                            {isVoteEndYn && (storyData.board?.selected_vote_seq == item?.story_vote_seq) && (firVoteMmbrCntVal != secVoteMmbrCntVal) ?
+                              <> 
+                                <View style={_styles.voteMmbrCntArea}>
+                                  <Text style={_styles.votePickText}>PICK</Text>
+                                </View>
+                              </>
+                              : 
+                              <>
+                                {(!isVoteEndYn) &&
+                                  <>
+                                    <View style={[_styles.voteMmbrCntArea]}>
+                                      <Text style={_styles.voteCntText}>{item?.vote_member_cnt}표</Text>
+                                    </View>
+                                  </>
+                                }
+                              </>
+                            }
+                          </SpaceView>
+                        </>
+                      )}
+                    )}
+
+                  </SpaceView>
+                </SpaceView>
+
+                {/* 투표 선택 알림글 */}
+                {isEmptyData(storyData.board?.vote_time_text) && (
+                  <>
+                    <SpaceView pl={20} mt={15} viewStyle={{width: '100%',}}>
+                      <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.&nbsp;
+                          <Text style={_styles.voteTimeText}>{storyData.board?.vote_time_text}</Text>
+                      </Text>
+                    </SpaceView>
+                  </>
+                )}
+                
+              </SpaceView>
+            )}
+
+            {/* ###################################################################################### 버튼 영역 */}
+            <SpaceView mt={20}>
+              <SpaceView pl={20} pr={20} pb={10} mb={8} viewStyle={_styles.replyEtcArea}>
+                <SpaceView viewStyle={{width: '100%', height: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+
+                  {/* ################################################################################################# 작성자 정보 영역 */}
+                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                    {(storyData.board?.secret_yn == 'Y' || storyData.board?.story_type == 'SECRET') ? (
+                      <TouchableOpacity
+                        disabled={memberBase.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
+                        //onPress={() => { secretPropfilePopupOpen(); }}
+                        onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, true); }} 
+                      >
+                        <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 14)}>
+                          {storyData.board?.nickname_modifier}{' '}{storyData.board?.nickname_noun}
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
                       <>
-                        <SpaceView viewStyle={_styles.voteVsArea}>
-                          <Text style={_styles.voteVsText}>{isVoteEndYn && (firVoteMmbrCntVal == secVoteMmbrCntVal) ? 'DRAW' : 'VS'}</Text>
-                        </SpaceView>
-                     
-                        <SpaceView key={index}>
-                          <TouchableOpacity
-                            disabled={isVote || isVoteEndYn}
-                            onPress={() => { voteProc(item?.story_vote_seq) }}
-                          >
-                    
-                            <LinearGradient
-                              colors={bgColorArr}
-                              start={{ x: 1, y: 1 }}
-                              end={{ x: 1, y: 0 }}
-                              style={_styles.voteArea(baseColor, bgColorArr)}>
-                              
+                        <TouchableOpacity
+                          disabled={memberBase?.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
+                          onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, false); }} >
+                          <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
+                        </TouchableOpacity>
 
-                              <Image source={iconName} style={[styles.iconSize20, {display: _display, position: 'absolute', top: 10, right: 10, zIndex: 15}]} />
-                              
-                              {/* 투표 이미지 */}
-                              <SpaceView mt={5}>
-                                <Image source={findSourcePath(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
-                              </SpaceView>
+                        <SpaceView viewStyle={{flexDirection: 'column'}}>
 
-                              {/* 투표 명 */}
-                              <SpaceView mt={15} mb={20} viewStyle={{zIndex:2}}>
-                                <Text numberOfLines={3} style={_styles.voteNameText(textColor)}>{item?.vote_name}</Text>
-                              </SpaceView>
-                              
-                              {/* PICK 텍스트 및 이미지 */}
-                              {isVoteEndYn && (storyData.board?.selected_vote_seq == item?.story_vote_seq) && (firVoteMmbrCntVal != secVoteMmbrCntVal) ?
-                                <> 
-                                  <View style={_styles.voteMmbrCntArea}>
-                                    <Text style={_styles.votePickText}>PICK</Text>
-                                  </View>
-                                  <Image source={ICON.confetti} style={_styles.votePickImg} />
-                                </>
-                                : 
+                          {memberBase?.member_seq != 905 && (
+                            <>
+                              {/* 프로필 평점, 인증 레벨 */}
+                              {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) || storyData.board?.profile_score >= 7.0) && (
                                 <>
-                                  {(!isVoteEndYn) &&
-                                    <>
-                                      <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 0.75 : 0, backgroundColor: '#664EDB'}]}></View>
-                                      <View style={[_styles.voteMmbrCntArea, {opacity: (isRegiMember) ? 1 : 0}]}>
-                                        <Text style={_styles.voteCntText}>{item?.vote_member_cnt}표</Text>
-                                      </View>
-                                    </>
-                                  }
+                                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <SpaceView viewStyle={{ backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
+                                      <Text style={_styles.scoreText}>LV {storyData.board?.auth_acct_cnt}</Text>
+                                    </SpaceView>
+                                    <SpaceView ml={5} viewStyle={{ backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
+                                      <Text style={_styles.scoreText}>#{memberBase?.best_face}</Text>
+                                    </SpaceView>
+                                  </SpaceView>
                                 </>
-                              }
-                            </LinearGradient>
-                          </TouchableOpacity>
+                              )}
+                            </>
+                          )}
 
-                          {/* <SpaceView viewStyle={_styles.votePickShadow(baseColor)} /> */}
+                          {/* 닉네임 */}
+                          <SpaceView mt={3}>
+                            <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
+                          </SpaceView>
                         </SpaceView>
                       </>
                     )}
-                  )}
+                  </SpaceView>
 
-                </SpaceView>
-              </SpaceView>
+                  {/* ################################################################################################# 버튼 영역 */}
+                  <SpaceView viewStyle={{flexDirection: 'row', position: 'absolute', top: 0, right: 0,}}>
 
-              {/* 투표 선택 알림글 */}
-              {isEmptyData(storyData.board?.vote_time_text) && (
-                <>
-                <SpaceView pl={20} mt={15} viewStyle={{width: '100%',}}>
-                  <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.&nbsp;
-                      <Text style={_styles.voteTimeText}>({storyData.board?.vote_time_text})</Text>
-                  </Text>
-                </SpaceView>
-                </>
-              )}
-              
-            </SpaceView>
-          )}
+                    {/* 좋아요 버튼 */}
+                    <TouchableOpacity 
+                      onPress={() => { storyLikeProc('BOARD', 0); }} 
+                      hitSlop={commonStyle.hipSlop20}>
 
-          {/* ###################################################################################### 버튼 영역 */}
-          <SpaceView mt={20}>
-            <SpaceView pl={20} pr={20} pb={10} mb={8} viewStyle={_styles.replyEtcArea}>
-              <SpaceView viewStyle={{width: '100%', height: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-
-                {/* ################################################################################################# 작성자 정보 영역 */}
-                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                  {(storyData.board?.secret_yn == 'Y' || storyData.board?.story_type == 'SECRET') ? (
-                    <TouchableOpacity
-                      disabled={memberBase.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
-                      //onPress={() => { secretPropfilePopupOpen(); }}
-                      onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, true); }} 
-                    >
-                      <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 14)}>
-                        {storyData.board?.nickname_modifier}{' '}{storyData.board?.nickname_noun}
-                      </Text>
+                      {storyData.board?.member_like_yn == 'N' ? (
+                        <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(20)} />
+                      ) : (
+                        <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
+                      )}
                     </TouchableOpacity>
-                  ) : (
-                    <>
-                      <TouchableOpacity
-                        disabled={memberBase?.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
-                        onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, false); }} >
 
-                        <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
+                    {/* 비밀 댓글 버튼 */}
+                    {(memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.story_type != 'SECRET') && (
+                      <TouchableOpacity style={{marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, true); }}>
+                        <Image source={ICON.speechDotline} style={styles.iconSquareSize(20)} />
                       </TouchableOpacity>
-
-                      <SpaceView viewStyle={{flexDirection: 'column'}}>
-
-                        {memberBase?.member_seq != 905 && (
-                          <>
-                            {/* 프로필 평점, 인증 레벨 */}
-                            {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) || storyData.board?.profile_score >= 7.0) && (
-                              <>
-                                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                  {storyData.board?.profile_score >= 7.0 && (
-                                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                      <Image source={ICON.starYellow} style={styles.iconSize16} />
-                                      <Text style={_styles.scoreText}>{storyData.board?.profile_score}</Text>
-                                    </SpaceView>
-                                  )}
-
-                                  {(isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) && (
-                                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                      <Image source={ICON.bookmarkPurple} style={[styles.iconSize16, {marginLeft: 5}]} />
-                                      <Text style={_styles.scoreText}>{storyData.board?.auth_acct_cnt}</Text>
-                                    </SpaceView>
-                                  )}
-                                </SpaceView>
-                              </>
-                            )}
-                          </>
-                        )}
-
-                        {/* 닉네임 */}
-                        <SpaceView ml={3}>
-                          <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
-                        </SpaceView>
-                      </SpaceView>
-                    </>
-                  )}
-                </SpaceView>
-
-                {/* ################################################################################################# 버튼 영역 */}
-                <SpaceView viewStyle={{flexDirection: 'row', position: 'absolute', top: 0, right: 0,}}>
-
-                  {/* 좋아요 버튼 */}
-                  <TouchableOpacity 
-                    onPress={() => { storyLikeProc('BOARD', 0); }} 
-                    hitSlop={commonStyle.hipSlop20}>
-
-                    {storyData.board?.member_like_yn == 'N' ? (
-                      <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(20)} />
-                    ) : (
-                      <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
                     )}
-                  </TouchableOpacity>
 
-                  {/* 비밀 댓글 버튼 */}
-                  {(memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.story_type != 'SECRET') && (
-                    <TouchableOpacity style={{marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, true); }}>
-                      <Image source={ICON.speechDotline} style={styles.iconSquareSize(20)} />
+                    {/* 일반 댓글 버튼 */}
+                    <TouchableOpacity style={{flexDirection: 'row', marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, false); }}>
+                      <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
                     </TouchableOpacity>
-                  )}
-
-                  {/* 일반 댓글 버튼 */}
-                  <TouchableOpacity style={{flexDirection: 'row', marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, false); }}>
-                    <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
-                  </TouchableOpacity>
-                  
-                  {/* 메뉴바 버튼 */}
-                  {(memberBase?.member_seq == storyData.board?.member_seq) && (
-                    <TouchableOpacity onPress={() => { storyMod_onOpen(); }} style={{flexDirection:'row', alignItems: 'center', marginLeft: 12}}>
-                      <View style={[_styles.blackDot, {marginRight: 3}]}></View>
-                      <View style={[_styles.blackDot, {marginRight: 3}]}></View>
-                      <View style={_styles.blackDot}></View>
-                    </TouchableOpacity>
-                  )}
+                    
+                    {/* 메뉴바 버튼 */}
+                    {(memberBase?.member_seq == storyData.board?.member_seq) && (
+                      <TouchableOpacity onPress={() => { storyMod_onOpen(); }} style={{flexDirection:'row', alignItems: 'center', marginLeft: 12}}>
+                        <View style={[_styles.ivoryDot, {marginRight: 3}]}></View>
+                        <View style={[_styles.ivoryDot, {marginRight: 3}]}></View>
+                        <View style={_styles.ivoryDot}></View>
+                      </TouchableOpacity>
+                    )}
+                  </SpaceView>
                 </SpaceView>
               </SpaceView>
-            </SpaceView>
 
-            {/* ###################################################################################### 내용 영역 */}
-            <SpaceView mt={8} pl={20} pr={20} pb={15} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#eee'}}>
-              <Text style={_styles.contentsText}>{storyData.board?.contents}</Text>
-              <Text style={_styles.timeText}>{storyData.board?.time_text}</Text>
-            </SpaceView>
-
-            {/* ###################################################################################### 댓글 영역 */}
-            <SpaceView ml={20} mr={20}>
-              {/* <TouchableOpacity style={{marginLeft: 15}} onPress={() => { replyModalOpen(0, 0); }}>
-                  <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
-                </TouchableOpacity> */}
-
-              <SpaceView mt={15} mb={10} viewStyle={{flexDirection:'row'}}>
-                  <Text style={_styles.replyLengthText}>댓글{storyData.replyList?.length + '개'}</Text>
-                  <TouchableOpacity 
-                    hitSlop={commonStyle.hipSlop10}
-                    style={{marginLeft: 15}}
-                    onPress={() => { popupStoryBoardActive(); }}>
-                    <Text style={_styles.likeCntText}>좋아요{isEmptyData(storyData.board?.like_cnt) ? storyData.board?.like_cnt + '개' : '0개'}</Text>
-                  </TouchableOpacity>  
+              {/* ###################################################################################### 내용 영역 */}
+              <SpaceView mt={8} pl={20} pr={20} pb={15} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#eee'}}>
+                <Text style={_styles.contentsText}>{storyData.board?.contents}</Text>
+                <Text style={_styles.timeText}>{storyData.board?.time_text}</Text>
               </SpaceView>
 
-              <FlatList
-                contentContainerStyle={_styles.replyListWrap}
-                data={storyData.replyList}
-                keyExtractor={(item) => item.story_reply_seq.toString()}
-                renderItem={({ item, index }) => {
-                  return (
-                    <View key={'reply_' + index}>
-                      <ReplyRender 
-                        item={item} 
-                        index={index} 
-                        likeFunc={storyLikeProc} 
-                        replyModalOpenFunc={replyModalOpen}
-                      />
-                    </View>
-                  )
-                }}
-              />
+              {/* ###################################################################################### 댓글 영역 */}
+              <SpaceView ml={20} mr={20}>
+                {/* <TouchableOpacity style={{marginLeft: 15}} onPress={() => { replyModalOpen(0, 0); }}>
+                    <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
+                  </TouchableOpacity> */}
+
+                <SpaceView mt={15} mb={10} viewStyle={{flexDirection:'row'}}>
+                    <Text style={_styles.replyLengthText}>댓글{storyData.replyList?.length + '개'}</Text>
+                    <TouchableOpacity 
+                      hitSlop={commonStyle.hipSlop10}
+                      style={{marginLeft: 15}}
+                      onPress={() => { popupStoryBoardActive(); }}>
+                      <Text style={_styles.likeCntText}>좋아요{isEmptyData(storyData.board?.like_cnt) ? storyData.board?.like_cnt + '개' : '0개'}</Text>
+                    </TouchableOpacity>  
+                </SpaceView>
+
+                <FlatList
+                  contentContainerStyle={_styles.replyListWrap}
+                  data={storyData.replyList}
+                  keyExtractor={(item) => item.story_reply_seq.toString()}
+                  renderItem={({ item, index }) => {
+                    return (
+                      <View key={'reply_' + index}>
+                        <ReplyRender 
+                          item={item} 
+                          index={index} 
+                          likeFunc={storyLikeProc} 
+                          replyModalOpenFunc={replyModalOpen}
+                        />
+                      </View>
+                    )
+                  }}
+                />
+              </SpaceView>
             </SpaceView>
           </SpaceView>
-        </SpaceView>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
 
       {/* ##################################################################################
                 댓글 입력 팝업
@@ -1160,42 +1125,17 @@ export default function StoryDetail(props: Props) {
 
     return (
       <>
-        <SpaceView>
+        <SpaceView pl={15} pr={15}>
           {storyData.board?.story_type == 'STORY' || storyData.board?.story_type == 'SECRET' ? (
             <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
           ) : (
             <>
               <SpaceView mb={15}>
-                <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
+                <Image source={url} style={[_styles.imageStyle]} resizeMode={'cover'} />
               </SpaceView>
             </>
           )}
         </SpaceView>
-
-        {/* <SpaceView viewStyle={_styles.voteArea(baseColor)}>
-              <SpaceView mb={10} viewStyle={_styles.voteViewArea(baseColor)}><Text style={_styles.voteOrderText(textColor)}>0{item?.order_seq}</Text></SpaceView>
-              <SpaceView mb={10}><Text style={_styles.voteNameText}>{item?.vote_name}</Text></SpaceView>
-              <SpaceView mb={20} viewStyle={_styles.voteDescArea}>
-                <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.</Text>
-
-                {isEmptyData(storyData.board?.vote_time_text) && (
-                  <Text style={_styles.voteTimeText}>({storyData.board?.vote_time_text})</Text>
-                )}
-              </SpaceView>
-              <TouchableOpacity
-                disabled={memberBase?.member_seq == storyData.board?.member_seq || isVote || storyData.board?.vote_end_yn == 'Y'}
-                style={{width: '100%'}}
-                onPress={() => { voteProc(item?.story_vote_seq) }}>
-
-                <LinearGradient
-                  colors={baseColorArr}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={_styles.voteBtn}>
-                  <Text style={_styles.voteBtnText(textColor)}>{btnText}</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </SpaceView> */}
       </>
     );
   };
@@ -1231,7 +1171,7 @@ const _styles = StyleSheet.create({
   },
   imageStyle: {
     flex: 1,
-    width: width,
+    width: width - 30,
     height: width * 1.3,
   },
   btnArea: {
@@ -1256,33 +1196,32 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    top: width * 1.3 - 20,
+    bottom: width * 1.3 - 30,
     left: 0,
     right: 0,
   },
   pagingDotStyle: (isOn:boolean) => {
     return {
-      width: isOn ? 20 : 4,
-      height: 4,
-      borderRadius: 10,
+      backgroundColor: isOn ? '#FFDD00' : '#34447A',
+      width: 25,
+      height: 3,
     };
   },
   dotContainerStyle: {
-    marginRight: 2,
-    marginLeft: 2,
+    backgroundColor: '#000',
   },
   activeDot: {
     backgroundColor: 'white',
   },
   contentsText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#333',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#E1DFD1',
   },
   timeText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#999',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#ABA99A',
     marginTop: 10,
   },
   replyEtcArea: {
@@ -1311,15 +1250,15 @@ const _styles = StyleSheet.create({
     marginRight: 5,
   },
   replyNickname: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    color: '#000',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 12,
+    color: '#D5CD9E',
     marginRight: 5,
   },
   replyContents: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#333',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#E1DFD1',
     marginTop: 6,
     //flex: 0.8,
   }, 
@@ -1328,24 +1267,24 @@ const _styles = StyleSheet.create({
     color: '#999',
   },
   replyNicknameText: (storyType:string, gender:string) => {
-    let clr = '#000';
+    let clr = '#D5CD9E';
 
-    if(storyType == 'SECRET') {
-      if(gender == 'M') {
-        clr = '#7986EE';
-      } else {
-        clr = '#FE0456';
-      }
-    }
+    // if(storyType == 'SECRET') {
+    //   if(gender == 'M') {
+    //     clr = '#7986EE';
+    //   } else {
+    //     clr = '#FE0456';
+    //   }
+    // }
 
     return {
       color: clr,
     };
   },
   replyTimeText: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#999',
-    fontSize: 14,
+    fontFamily: 'Pretendard-Light',
+    color: '#ABA99A',
+    fontSize: 12,
   },
   replyItemEtcWrap: {
     width: '97%',
@@ -1355,26 +1294,26 @@ const _styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   replyTextStyle: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#555',
-    fontSize: 14,
+    fontFamily: 'Pretendard-Light',
+    color: '#FFF6BE',
+    fontSize: 12,
   },
   replyLengthText: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#555',
-    fontSize: 14,
+    fontFamily: 'Pretendard-Light',
+    color: '#D5CD9E',
+    fontSize: 12,
     marginLeft: 1,
   },
   likeCntText: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#555',
-    fontSize: 14,
+    fontFamily: 'Pretendard-Light',
+    color: '#D5CD9E',
+    fontSize: 12,
   },
   replyLikeCntText: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#555',
-    fontSize: 14,
-    marginLeft: 6,
+    fontFamily: 'Pretendard-Light',
+    color: '#FFF6BE',
+    fontSize: 12,
+    marginLeft: 2,
   },
   likeArea: {
     flexDirection: 'row',
@@ -1385,14 +1324,14 @@ const _styles = StyleSheet.create({
     //width: 80,
   },
   nicknameText: (isSecret:boolean, gender:string, _frSize:number) => {
-    let clr = '#333333';
-    if(isSecret) {
-      if(gender == 'M') {
-        clr = '#7986EE';
-      } else {
-        clr = '#FE0456';
-      }
-    }
+    let clr = '#D5CD9E';
+    // if(isSecret) {
+    //   if(gender == 'M') {
+    //     clr = '#7986EE';
+    //   } else {
+    //     clr = '#FE0456';
+    //   }
+    // }
 
     return {
       fontFamily: 'Pretendard-Bold',
@@ -1401,21 +1340,19 @@ const _styles = StyleSheet.create({
     };
   },
   scoreText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 12,
-    color: '#333333',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 11,
+    color: '#FFF',
   },
   voteSelectArea: {
     flexWrap: 'wrap',
-    justifyContent: 'center',
     position: 'relative',
     flex:1,
-    flexDirection: 'row',
   },
   voteVsArea: {
     width: 55,
-    height: 28,
-    backgroundColor: '#000',
+    height: 26,
+    backgroundColor: '#333B41',
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -1427,27 +1364,19 @@ const _styles = StyleSheet.create({
   },
   voteVsText: {
     color: '#FFF',
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 12,
   },
-  voteArea: (bdColor: string, bgColor: string) => {
-    return {
-      alignItems: 'center',
-      borderWidth: 1,
-      borderColor: bdColor,
-      backgroundColor: bgColor,
-      borderRadius: 10,
-      paddingVertical: 15,
-      width: width - 215,
-      height: width - 210,
-      paddingHorizontal: 13,
-      marginHorizontal: 3,
-      overflow: 'hidden',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 8,
-      elevation: 10,
-    };
+  voteArea:  {
+    borderWidth: 4,
+    borderRadius: 70,
+    width: 110,
+    height: 110,
+    paddingHorizontal: 13,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 999,
   },
   voteViewArea: (bgColor: string) => {
     return {
@@ -1467,10 +1396,22 @@ const _styles = StyleSheet.create({
       paddingVertical: 3,
     };
   },
-  voteNameText: (textColor: string) => {
+  voteNameArea: (orderSeq) => {
     return {
+      zIndex: -1,
+      backgroundColor: orderSeq == 1 ? '#FFF' : '#7A85EE',
+      width: width - 100,
+      paddingVertical: 15,
+      position: 'absolute',
+      top: orderSeq == 1 ? 0.5 : 62,
+      left: orderSeq == 1 ? 30 : -width + 140,
+      transform: [{translateX: 25}, {translateY: 0}],
+    }
+  },
+  voteNameText: (orderSeq) => {
+    return {
+      color: orderSeq == 1 ? '#000000' : '#FFF',
       fontFamily: 'Pretendard-Regular',
-      color: textColor,
       fontSize: 14,
       textAlign: 'center',
     }
@@ -1481,14 +1422,14 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   voteDescText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#555555',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#ABA99A',
   },
   voteTimeText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#EE2E62',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#FF0060',
     marginLeft: 3,
   },
   voteBtn: {
@@ -1505,23 +1446,19 @@ const _styles = StyleSheet.create({
     };
   },
   mstImgStyle: {
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 40,
     borderRadius: 50,
     overflow: 'hidden',
     marginRight: 7,
   },
   voteImgStyle: {
-    borderRadius: 50,
-    overflow: 'hidden',
-    width: 75,
-    height: 75,
-    marginRight: 0,
+    width: 110,
+    height: 110,
   },
   voteMmbrCntArea: {
-    width: width - 216,
-    height: 180,
-    justifyContent: 'center',
+    width: width,
+    justifyContent: 'space-between',
     alignItems: 'center',
     position: 'absolute',
     top: 0,
@@ -1543,35 +1480,15 @@ const _styles = StyleSheet.create({
     left: 0,
     overflow: 'hidden',
   },
-  votePickShadow: (bdColor: string) => {
-    return {
-      position:'absolute',
-      top: 0,
-      left: 0,
-      width: width - 215,
-      height: 180,
-      alignItems: 'center',
-      marginLeft: 3,
-      marginRight: 3,
-      borderRadius: 10,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.3,
-      shadowRadius: 8,
-      elevation: 10,
-      backgroundColor: '#FFF',
-      zIndex: -1,
-      shadowColor: bdColor,
-    }
-  },
   voteCntText: {
     color: '#FFF',
     fontSize: 20,
     fontFamily: 'Pretendard-Medium',
   },
-  blackDot: {
+  ivoryDot: {
     width: 4,
     height: 4,
-    backgroundColor: '#000',
+    backgroundColor: '#FFF6BE',
     borderRadius: 50,
   },
   modalCloseText: {

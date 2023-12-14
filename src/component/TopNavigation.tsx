@@ -112,10 +112,10 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
         <Text style={_styles.storyTxt(navName == 'LIVE', theme != undefined)}>플러팅</Text>
       </TouchableOpacity>
 
-      {/* <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
+      <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
         <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>피드</Text>
         <View style={{borderBottomWidth: navName == 'Story' ? 2 : 0, borderBottomColor: '#7986EE', position: 'absolute', bottom: 1, left: 0, right: 17}} />
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </View>
   );
 }

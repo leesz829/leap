@@ -343,7 +343,7 @@ function RenderItem({ item, openModal }) {
   if(item?.item_type_code == 'PASS' && !item?.item_name.includes('로얄')) {
     itemImg = ICON.cubeCyan;
     itemType = 'Cube';
-  }else if(item?.money_type_code == 'ROYAL_PASS') {
+  }else if(item?.item_name.includes('로얄')) {
     itemImg = ICON.megaCubeCyan;
     itemType = 'MegaCube';
   }else if(item?.item_type_code == 'SUBSCRIPTION') {

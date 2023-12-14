@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import { SectionGrid } from 'react-native-super-grid';
-import BannerPannel from '../Component/BannerPannel';
+import RespectCard from '../Component/BannerPannel';
 import ProductModal from '../Component/ProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
@@ -220,6 +220,32 @@ export default function MileageShop() {
 
 // ######################################################################### 카테고리 렌더링
 const RenderCategory = ({ onPressTab, tab }) => {
+  const [prodData, setProdData] = useState();
+
+  async function fetch() {
+
+    try {
+      // 재고 상품 목록 조회
+      const { success, data } = await get_product_list();
+
+      if (success) {
+        setProdData(data.prod_list);
+      };
+
+
+    } catch {
+    
+    } finally {
+    
+    };
+  };
+
+  useEffect(() => { 
+    fetch();
+
+    // timer = setInterval(fnAuctTimeCount, 1000);
+    // return () => clearInterval(timer);
+  }, [tab]);
   // return categories?.map((item, index) => (
   //   <TouchableOpacity
   //     key={index}
@@ -232,30 +258,41 @@ const RenderCategory = ({ onPressTab, tab }) => {
   //     </Text>
   //   </TouchableOpacity>
   // ));
+
   return (
-    <ScrollView 
+    <ScrollView
       horizontal={true}
       showsVerticalScrollIndicator={false}
     >
-      <TouchableOpacity style={[_styles.brandLogoArea, {backgroundColor: '#D5CD9E'}]}>
-        <Text style={{fontFamily:'Pretendard-SemiBold', fontSize: 12, color: '#FFF'}}>ALL</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
-      </TouchableOpacity>
-      <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.starbucksLogo} style={styles.iconSize60} resizeMode='cover' />
-      </TouchableOpacity>
-      <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.baskinLogo} style={styles.iconSize60} resizeMode='cover' />
-      </TouchableOpacity>
-      <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.daisoLogo} style={styles.iconSize60} resizeMode='cover' />
-      </TouchableOpacity>
-      <TouchableOpacity style={_styles.brandLogoArea}>
-        <Image source={ICON.paiksLogo} style={styles.iconSize60} resizeMode='cover' />
-      </TouchableOpacity>
+      {/* {prodData?.map((item, index) => (
+        console.log('itemL:::::::', item.data)
+      ))} */}
     </ScrollView>
+
+  
+    // <ScrollView 
+    //   horizontal={true}
+    //   showsVerticalScrollIndicator={false}
+    // >
+    //   <TouchableOpacity style={[_styles.brandLogoArea, {backgroundColor: '#D5CD9E'}]}>
+    //     <Text style={{fontFamily:'Pretendard-SemiBold', fontSize: 12, color: '#FFF'}}>ALL</Text>
+    //   </TouchableOpacity>
+    //   <TouchableOpacity style={_styles.brandLogoArea}>
+    //     <Image source={ICON.naverLogo} style={styles.iconSize60} resizeMode='cover' />
+    //   </TouchableOpacity>
+    //   <TouchableOpacity style={_styles.brandLogoArea}>
+    //     <Image source={ICON.starbucksLogo} style={styles.iconSize60} resizeMode='cover' />
+    //   </TouchableOpacity>
+    //   <TouchableOpacity style={_styles.brandLogoArea}>
+    //     <Image source={ICON.baskinLogo} style={styles.iconSize60} resizeMode='cover' />
+    //   </TouchableOpacity>
+    //   <TouchableOpacity style={_styles.brandLogoArea}>
+    //     <Image source={ICON.daisoLogo} style={styles.iconSize60} resizeMode='cover' />
+    //   </TouchableOpacity>
+    //   <TouchableOpacity style={_styles.brandLogoArea}>
+    //     <Image source={ICON.paiksLogo} style={styles.iconSize60} resizeMode='cover' />
+    //   </TouchableOpacity>
+    // </ScrollView>
   );
 };
 
@@ -265,7 +302,7 @@ function ListHeaderComponent({ onPressTab, tab }) {
     <SpaceView>
       <SpaceView>
         <SpaceView viewStyle={{ marginTop: 90, paddingHorizontal: 20}}>
-          <BannerPannel />
+          <RespectCard />
         </SpaceView>
       </SpaceView>
       <SpaceView viewStyle={_styles.categoriesContainer}>

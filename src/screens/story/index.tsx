@@ -52,9 +52,19 @@ export const Story = () => {
   const [isListFinally, setIsListFinally] = useState(false); // 목록 마지막 여부
 
   // 스토리 등록 이동
-  const goStoryRegister = async () => {
-    navigation.navigate(STACK.COMMON, { screen: 'StoryRegi', });
-  };
+  // const goStoryRegister = async () => {
+  //   navigation.navigate(STACK.COMMON, { screen: 'StoryRegi', });
+  // };
+
+  // 스토리 유형 선택
+  const goStoryEdit = async (type:string) => {
+    navigation.navigate(STACK.COMMON, {
+    screen: 'StoryEdit',
+      params: {
+        storyType : 'STORY',
+      }
+    });
+  }
 
   // 스토리 알림 이동
   const goStoryActive = async () => {
@@ -695,7 +705,7 @@ export const Story = () => {
           <TouchableOpacity onPress={() => { goStoryActive(); }} style={_styles.btnItemArea}>
             <Image source={ICON.clockIcon} style={styles.iconSquareSize(18)} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { goStoryRegister(); }} style={_styles.btnItemArea}>
+          <TouchableOpacity onPress={() => { goStoryEdit(); }} style={_styles.btnItemArea}>
             <Image source={ICON.storyPlusIcon} style={styles.iconSquareSize(18)} />
           </TouchableOpacity>
         </SpaceView>

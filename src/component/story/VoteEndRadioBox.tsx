@@ -59,10 +59,9 @@ const _styles = StyleSheet.create({
   },
   checkWrap: (isOn:boolean) => {
     return {
-      backgroundColor: isOn ? '#7984ED' : '#F3F4FD',
+      backgroundColor: '#292F33',
       //paddingHorizontal: 22,
       paddingVertical: 13,
-      borderRadius: isOn ? 35 : 0,
       overflow: 'hidden',
       alignItems: 'center',
       justifyContent: 'center',
@@ -75,9 +74,9 @@ const _styles = StyleSheet.create({
 
   labelText: (isOn:boolean) => {
     return {
-      fontFamily: isOn ? 'Pretendard-Bold' : 'Pretendard-Regular',
+      fontFamily: 'Pretendard-Bold',
       fontSize: 14,
-      color: isOn ? '#fff' : '#7986EE',
+      color: isOn ? '#FFDD00' : '#445561',
       textAlign: 'center',
       width: (width / 5) - 8,
     };

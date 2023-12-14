@@ -162,13 +162,15 @@ export const Shop = () => {
 
       setBanner(data?.banner_list);
       setNewItemCnt(data?.mbr_base?.new_item_cnt);
-
+ 
       if(typeof data?.pay_info != 'undefined') {
         let payInfoData = data?.pay_info?.result;
         let lettmpltName = payInfoData?.tmplt_name;
         let mbrPrice = payInfoData?.member_buy_price;
         let trgtPrice = payInfoData?.target_buy_price;
         let level = payInfoData?.tmplt_level;
+        let itemName = payInfoData?.item_name;
+        let eventTmpltSeq = payInfoData?.event_tmplt_seq;
 
         let percent = (mbrPrice*100) / trgtPrice;
         if(percent > 0) {
@@ -181,6 +183,8 @@ export const Shop = () => {
           , price_persent: percent
           , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
           , tmplt_level: level
+          , item_name: itemName
+          , event_tmplt_seq: eventTmpltSeq
         });
       }
 
@@ -300,6 +304,7 @@ export const Shop = () => {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Shop });
   };
 
+  // ######################################################### 캐쉬백 정보 조회
   const getCashBackPayInfo = async () => {
     const { success, data } = await get_cashback_detail_info();
 
@@ -309,6 +314,8 @@ export const Shop = () => {
       let mbrPrice = payInfo?.member_buy_price;
       let trgtPrice = payInfo?.target_buy_price;
       let level = payInfo?.tmplt_level;
+      let itemName = payInfo?.item_name;
+      let eventTmpltSeq = payInfo?.event_tmplt_seq;
 
       let percent = (mbrPrice*100) / trgtPrice;
       if(percent > 0) {
@@ -321,11 +328,61 @@ export const Shop = () => {
         , price_persent: percent
         , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
         , tmplt_level: level
+        , item_name: itemName
+        , event_tmplt_seq: eventTmpltSeq
       });
 
       //setPayInfo(data.pay_info)
       setTmplList(data.tmpl_list);
     }
+  };
+
+  // ######################################################### 캐쉬백 보상 받기
+  const onPressGetReward = async (event_tmplt_seq: string, item_name: string) => {
+    setIsLoading(true);
+
+    const body = {
+      event_tmplt_seq: event_tmplt_seq
+    };
+    try {
+      const { success, data } = await cashback_item_receive(body);
+
+      if(success) {
+        switch (data.result_code) {
+          case '0000':
+            setIsLoading(false);
+
+            show({
+              title: '보상획득',
+              content: '리프 포인트' + item_name + '등급 보상을 획득하셨습니다.',
+              confirmCallback: function() {
+                getShopMain();
+              }
+            });
+
+            //setIsModalOpen(true);
+            //navigation.navigate(STACK.TAB, { screen: 'Shop' });
+            break;
+          default:
+            /* show({
+              content: '오류입니다. 관리자에게 문의해주세요.' ,
+              confirmCallback: function() {}
+            }); */
+            break;
+        }
+      } else {
+        setIsLoading(false);
+        /* show({
+          content: '오류입니다. 관리자에게 문의해주세요.' ,
+          confirmCallback: function() {}
+        }); */
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
+    }    
   };
 
   // ############################################################################# 초기 실행 실행
@@ -367,7 +424,7 @@ export const Shop = () => {
       getShopMain(isPopupShow);
     }
   }, [isFocus]);
-console.log('iasdF:::', payInfo)
+
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -454,7 +511,7 @@ console.log('iasdF:::', payInfo)
           
           <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingHorizontal: 15, backgroundColor: '#3D4348'}]}>
             <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter,{marginLeft: -5}]}>
-              <Image source={ICON.cubeCyan} style={styles.iconSize40} />
+              <Image source={ICON.cubeCyan} style={[styles.iconSquareSize(30), {marginBottom: 5}]} />
               <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
               <Image source={ICON.megaCubeCyan} style={[styles.iconSize40, {marginLeft: 10}]} />
               <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
@@ -471,14 +528,25 @@ console.log('iasdF:::', payInfo)
           {memberBase?.gender == 'M' ?
             <SpaceView viewStyle={_styles.shadowContainer}>
               <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
-                <Image source={ICON[`circle${payInfo?.tmplt_name}`]} style={styles.iconSquareSize(70)} />
+                {payInfo?.target_buy_price - payInfo?.member_buy_price == 0 ? 
+                  <TouchableOpacity onPress={() => {onPressGetReward(payInfo?.event_tmplt_seq, payInfo?.tmplt_name);}}>
+                    <Image source={ICON.circleReward} style={styles.iconSquareSize(70)} />
+                  </TouchableOpacity>
+                :
+                  <Image source={ICON[`circle${payInfo?.tmplt_name}`]} style={styles.iconSquareSize(70)} />
+                }
+                
                 <SpaceView ml={10} mb={5}>
                   <Text style={_styles.rewardTitle}>
-                    <Text style={{color: '#F1D30E'}}>{payInfo?.tmplt_name}</Text> 
+                    <Text style={{color: '#F1D30E'}}>{payInfo?.tmplt_name}</Text>
                     보상은 <Text style={{color: '#32F9E4'}}>{payInfo?.item_name}</Text> 입니다.
                   </Text>
-                  <Text style={_styles.rewardDesc}>10,000원 더 결제하면 S등급 달성!</Text>
-                </SpaceView>
+                  {payInfo?.target_buy_price - payInfo?.member_buy_price == 0 ?
+                    <Text style={_styles.rewardDesc}>{payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.</Text>
+                  :
+                    <Text style={_styles.rewardDesc}>{payInfo?.target_buy_price - payInfo?.member_buy_price}원 더 결제하면 {payInfo?.tmplt_name}등급 달성!</Text> 
+                  }
+                  </SpaceView>
                 <TouchableOpacity
                   style={_styles.rewardBtn}
                   onPress={getCashBackPayInfo}
@@ -497,7 +565,7 @@ console.log('iasdF:::', payInfo)
               <Text style={_styles.mileageTitle}>보유 RP</Text>
               <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
                 <Text style={_styles.mileageDesc}>{CommaFormat(memberBase?.mileage_point)}</Text>
-                {memberBase?.respect_grade == 'PLATINUM' || memberBase?.respect_grade == 'DIAMOND' ?
+                {memberBase?.respect_grade == 'VIP' || memberBase?.respect_grade == 'VVIP' ?
                   <TouchableOpacity style={_styles.rpStoreBtn} onPress={onPressLimitShop}>
                     <Image source={ICON.gift} style={styles.iconSquareSize(30)} />
                     <Text style={_styles.rpStoreText}>RP 스토어 입장</Text>
@@ -774,7 +842,7 @@ const _styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 7,
     borderRadius: 10,
-    marginLeft: 50,
+    marginLeft: 12,
   },
   rewardBtnText: {
     fontFamily: 'Pretendard-Regular',

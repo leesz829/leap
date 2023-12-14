@@ -259,6 +259,8 @@ export const ICON = {
   yBlue: require('assets/icon/icon-y-blue.png'),
   certificate: require('assets/icon/icon-certificate.png'),
   penSquare: require('assets/icon/icon-pen-square.png'),
+  circleReward: require('assets/icon/icon-circle-reward.png'),
+  chatRed: require('assets/icon/icon-chat-red.png'),
 };
 
 export const GIF_IMG = {

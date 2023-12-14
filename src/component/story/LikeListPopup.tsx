@@ -194,7 +194,7 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
                 disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
                 onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
 
-                {(replyInfo.story_type == 'SECRET' || selectedData.isSecret) ? (
+                {(replyInfo.story_type == 'SECRET' || selectedData?.isSecret) ? (
                   <Image source={replyInfo.gender == 'M' ? ICON.storyMale : ICON.storyFemale} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
                 ) : (
                   <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
@@ -202,13 +202,13 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
               </TouchableOpacity>
               <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
                 <Text style={[_styles.mainNicknameText]}>                  
-                  {(replyInfo.story_type == 'SECRET' || selectedData.isSecret) ? (
+                  {(replyInfo.story_type == 'SECRET' || selectedData?.isSecret) ? (
                     <>{replyInfo.story_type == 'SECRET' ? replyInfo.nickname_modifier + ' ' + replyInfo.nickname_noun : '비밀글'}</>
                   ) : replyInfo.nickname}
                   <Text style={_styles.timeText}> {replyInfo.time_text}</Text>
                 </Text>
                 <Text style={[_styles.replyText, {marginTop: 3}]}>
-                  {selectedData.isSecret ? '게시글 작성자에게만 보이는 글입니다.' : replyInfo.reply_contents}</Text>
+                  {selectedData?.isSecret ? '게시글 작성자에게만 보이는 글입니다.' : replyInfo.reply_contents}</Text>
               </SpaceView>
             </SpaceView>
           )}
