@@ -30,6 +30,7 @@ import { NoticePopup } from 'screens/commonpopup/NoticePopup';
 import AuthInfoPopup from 'screens/commonpopup/AuthInfoPopup';
 import AsyncStorage from '@react-native-community/async-storage';
 import ProfileGrade from 'component/common/ProfileGrade';
+import SocialGrade from 'component/common/SocialGrade';
 import Modal from 'react-native-modal';
 import { myProfile } from 'redux/reducers/authReducer';
 
@@ -508,9 +509,11 @@ export const Roby = (props: Props) => {
           </SpaceView>
 
           <View style={_styles.profileInfoContainer}>
-            <View style={_styles.bestFaceContainer}>
-              <Text style={_styles.bestFaceText}>#{memberBase?.best_face}</Text>
-            </View>
+            {isEmptyData(memberBase?.face_modifier) && ( 
+              <View style={_styles.bestFaceContainer}>
+                <Text style={_styles.bestFaceText}>#{memberBase?.face_modifier}</Text>
+              </View>
+            )}
             <Text style={_styles.profileName}>{memberBase?.nickname}</Text>
           </View>
         </SpaceView>
@@ -585,7 +588,7 @@ export const Roby = (props: Props) => {
                       </TouchableOpacity>
                     </SpaceView>
                   </>
-                )}                
+                )}
               </SpaceView>
             </SpaceView>
 
@@ -597,9 +600,9 @@ export const Roby = (props: Props) => {
               style={_styles.respectContainer}>
 
               <SpaceView>
-                <SpaceView pl={15} pr={15} pt={16} pb={16}  viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <SpaceView pl={15} pr={15} pt={3} pb={10}  viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                   <Text style={[_styles.respectText('#D5CD9E', 20), {marginRight: 20}]}>리스펙트 등급</Text>
-                  <ProfileGrade grade={memberBase?.respect_grade} type={'BIG'} />
+                  <SocialGrade grade={memberBase?.respect_grade} />
                 </SpaceView>
 
                 <View style={_styles.underline} />
@@ -613,45 +616,69 @@ export const Roby = (props: Props) => {
                     
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <View>
+                        <View style={_styles.greenDot(memberBase?.respect_grade == 'MEMBER')} />
+                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'MEMBER')}>MEMBER</Text>
+                      </View>
+
+                      <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
+
+                      <View>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'SILVER')} />
                         <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'SILVER')}>SILVER</Text>
                       </View>
 
-                      <SpaceView mt={7} viewStyle={[{marginHorizontal: 7, borderColor: '#E1DFD1', borderRightWidth: 2, height: 13 }]} />
+                      <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
                       <View>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'GOLD')} />
                         <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'GOLD')}>GOLD</Text>
                       </View>
 
-                      <SpaceView mt={7} viewStyle={[{marginHorizontal: 7, borderColor: '#E1DFD1', borderRightWidth: 2, height: 13 }]} />
+                      <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
                       <View>
-                      <View style={_styles.greenDot(memberBase?.respect_grade == 'VIP')} />
-                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'VIP')}>VIP</Text>
+                        <View style={_styles.greenDot(memberBase?.respect_grade == 'PLATINUM')} />
+                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'PLATINUM')}>PLATINUM</Text>
                       </View>
 
-                      <SpaceView mt={7} viewStyle={[{marginHorizontal: 7, borderColor: '#E1DFD1', borderRightWidth: 2, height: 13 }]} />
+                      <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
                       <View>
-                      <View style={_styles.greenDot(memberBase?.respect_grade == 'VVIP')} />
-                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'VVIP')}>VVIP</Text>
+                        <View style={_styles.greenDot(memberBase?.respect_grade == 'DIAMOND')} />
+                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'DIAMOND')}>DIAMOND</Text>
                       </View>
                     </View>
                   </SpaceView>
 
-                  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <View style={[_styles.respectBox]}>
-                      <Image source={ICON.cardGold} style={styles.iconSquareSize(14)} />
-                      <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>
-                        블라인드 카드 매일 2회 무료
+                  {memberBase?.respect_grade == 'MEMBER' ? (
+                    <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
+                      <Text style={_styles.respectDescText}>
+                        매일 리프에 방문하고 활동을 해보세요.{'\n'}
+                        매주 월요일 리스펙트 등급이 실버 이상이 되면 보상이 제공 됩니다.
                       </Text>
-                    </View>
-                    <View style={[_styles.respectBox]}>
-                      <Image source={ICON.moneyBill} style={styles.iconSquareSize(14)} />
-                      <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>월요일마다 보너스 코인 15개</Text>
-                    </View>
-                  </View>
+                    </SpaceView>
+                  ) : (
+                    <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                      <View style={[_styles.respectBox]}>
+                        <Image source={ICON.cardGold} style={styles.iconSquareSize(14)} />
+                        <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>
+                          {memberBase?.respect_grade == 'SLIVER' && '블라인드 카드 매일 1회 무료'}
+                          {memberBase?.respect_grade == 'GOLD' && '블라인드 카드 매일 2회 무료'}
+                          {memberBase?.respect_grade == 'PLATINUM' && '블라인드 카드 매일 3회 무료'}
+                          {memberBase?.respect_grade == 'DIAMOND' && '블라인드 카드 매일 4회 무료'}
+                        </Text>
+                      </View>
+                      <View style={[_styles.respectBox]}>
+                        <Image source={ICON.moneyBill} style={styles.iconSquareSize(14)} />
+                        <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>
+                          {memberBase?.respect_grade == 'SLIVER' && '월요일마다 보너스 코인 10개'}
+                          {memberBase?.respect_grade == 'GOLD' && '월요일마다 보너스 코인 20개'}
+                          {memberBase?.respect_grade == 'PLATINUM' && '월요일마다 보너스 코인 30개'}
+                          {memberBase?.respect_grade == 'DIAMOND' && '월요일마다 보너스 코인 50개'}
+                        </Text>
+                      </View>
+                    </SpaceView>
+                  )}
                 </View>
               </SpaceView>
             </LinearGradient>
@@ -830,10 +857,11 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: '#1A1E1C',
     borderRadius: 20,
-    marginBottom: 5,
+    marginBottom: 3,
   },
   bestFaceText: {
     fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
     color: '#D5CD9E',
   },
   mmbrshipTitle: {
@@ -913,10 +941,16 @@ const _styles = StyleSheet.create({
   respectGradeText: ( isOn:boolean) => {
     return {
       fontFamily: 'Pretendard-SemiBold',
-      fontSize: 14,
+      fontSize: 12,
       color: isOn ? '#32F9E4' : '#E1DFD1',
       marginTop: 5,
     };
+  },
+  respectGradeUnderLine: {
+    marginHorizontal: 7,
+    borderColor: '#E1DFD1',
+    borderRightWidth: 1,
+    height: 10,
   },
   underline: {
     borderTopWidth: 1,
@@ -937,6 +971,13 @@ const _styles = StyleSheet.create({
     height: 38,
     borderRadius: 7,
     marginTop: 20,
+  },
+  respectDescText: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#D5CD9E',
+    textAlign: 'center',
+    lineHeight: 20,
   },
   greenDot: ( isOn:boolean) => {
     return {
@@ -959,7 +1000,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Light',
     color: '#E1DFD1',
     marginBottom: 5,
-    marginLeft: 5,
+    //marginLeft: 5,
   },
   popularContents: {
     marginTop: 70,

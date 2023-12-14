@@ -208,14 +208,14 @@ export const Storage = (props: Props) => {
             },
           ];
 
-          /* if(zzimItemUseYn == 'Y') { */
+          if(zzimItemUseYn == 'Y') {
             tabsData.push({
               type: 'ZZIM',
               title: '찜',
               data: zzimListData,
               isNew: false,
             });
-          /* }; */
+          };
 
           setDataStorage({
             ...dataStorage,
@@ -469,7 +469,7 @@ export const Storage = (props: Props) => {
     const _comment = item?.comment;
     const _nickname = item?.nickname;
     const _age = item?.age;
-    const _bestFace = item?.best_face;
+    const _faceModifier = item?.face_modifier; // 인상 수식어
     const _socialGrade = item?.social_grade;
     const _profileOpenYn = item?.profile_open_yn;
 
@@ -544,10 +544,16 @@ export const Storage = (props: Props) => {
                   <SpaceView>
                     <SpaceView viewStyle={_styles.listArea}>
                       <SpaceView viewStyle={[_styles.listHeader, {backgroundColor: bgColor}]}>
-                        <Text style={_styles.listHeaderText}>{matchStatusKor}</Text>
                         <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-                          <Image source={ICON.sparkler} style={styles.iconSize22} />
-                          <Text style={[_styles.listHeaderText, {color: '#000'}]}>{_socialGrade}</Text>
+                          <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
+                          <Text style={_styles.listHeaderText}>{_socialGrade}</Text>
+                        </SpaceView>
+
+                        <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+                          <Text style={_styles.listHeaderDdayText}>
+                            {item.keep_end_day > 0 ? item.keep_end_day + '일 남음' : '오늘까지'}
+                            {_matchStatus == 'REFUSE' && '(매칭거절)'}
+                          </Text>
                         </SpaceView>
                       </SpaceView>
 
@@ -565,9 +571,9 @@ export const Storage = (props: Props) => {
                             end={{ x: 0, y: 0 }}
                             style={{position: 'absolute', top: 0, right: 0, height: '100%', width: '67%', paddingRight: 5}}
                           >
-                            {isEmptyData(_bestFace) && (
-                              <SpaceView mb={10} viewStyle={[_styles.faceArea, {marginLeft: 'auto'}]}>
-                                <Text style={[_styles.faceText, {textAlign: 'center'}]}>#{_bestFace}</Text>
+                            {isEmptyData(_faceModifier) && (
+                              <SpaceView viewStyle={[_styles.faceArea, {marginLeft: 'auto'}]}>
+                                <Text style={[_styles.faceText, {textAlign: 'center'}]}>#{_faceModifier}</Text>
                               </SpaceView>
                             )}
                             <SpaceView mt={5} ml={10}><Text style={[_styles.memberInfo, {textAlign: 'right'}]}>{_nickname}, {_age}</Text></SpaceView>
@@ -656,7 +662,7 @@ export const Storage = (props: Props) => {
                       <SpaceView viewStyle={{flex :1, flexWrap: 'nowrap'}}>
 
                         {/* 인상, 인증 정보 노출 */}
-                        {(isEmptyData(_bestFace) || _authList.length > 0) && (
+                        {(isEmptyData(_faceModifier) || _authList.length > 0) && (
                           <ScrollView
                             style={{marginLeft: 10, marginTop: 5,}}
                             showsHorizontalScrollIndicator={false}
@@ -664,8 +670,8 @@ export const Storage = (props: Props) => {
                           >
                             <SpaceView viewStyle={[layoutStyle.row]}>
 
-                              {isEmptyData(_bestFace) && (
-                                <SpaceView mr={5} viewStyle={_styles.faceArea}><Text style={_styles.faceText}>#{_bestFace}</Text></SpaceView>
+                              {isEmptyData(_faceModifier) && (
+                                <SpaceView mr={5} viewStyle={_styles.faceArea}><Text style={_styles.faceText}>#{_faceModifier}</Text></SpaceView>
                               )}
 
                               {_authList.map((i, n) => {

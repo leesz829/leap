@@ -53,24 +53,26 @@ export const BasePopup = (props: Props) => {
         <View style={modalStyle.modalBackground}>
           <View style={[modalStyle.modalStyle1, {overflow: 'hidden'}]}>
             <LinearGradient
-            colors={['#1A1E1C', '#333B41']}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 0, y: 0 }} >
+              colors={['#3D4348', '#1A1E1C']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+            >
+
+              {/* ######################## 타이틀 영역 */}
               {props.type != 'AUCTION' ? 
-                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
-                  <CommonText fontWeight={'600'} type={'h5'} color={'#D5CD9E'}>
-                    {typeof props.title != 'undefined' && props.title != '' ? props.title : '알림'}
-                  </CommonText>
+                <SpaceView pt={15} pb={15} pl={15} viewStyle={[layoutStyle.alignStart]}>
+                  <Text style={_styles.titleText}>{isEmptyData(props.title) ? props.title : '알림'}</Text>
                 </SpaceView>
                 :
-                <TouchableOpacity>
+                <TouchableOpacity onPress={onPressCancel}>
                   <SpaceView pr={20} mt={20} viewStyle={[layoutStyle.alignEnd]}>
                     <Image source={ICON.closeBlack} style={styles.iconSize18} />
                   </SpaceView>
                 </TouchableOpacity>
               }
 
-              <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
+              {/* ######################## 내용 영역 */}
+              <SpaceView mt={10} mb={10} viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
                 {props.type == 'REPORT' &&
                   <Image source={ICON.sirenMark} style={[styles.iconSize60, {marginBottom: 15}]} />
                 }
@@ -79,11 +81,9 @@ export const BasePopup = (props: Props) => {
                   <Image source={ICON.hifive} style={[styles.iconSize60, {marginBottom: 15}]} />
                 }
 
-                <CommonText type={'h6'} fontWeight='500' textStyle={layoutStyle.textCenter} color={'#D5CD9E'}>
-                  {typeof props.text != 'undefined' && props.text != '' ? props.text : ''}
-                </CommonText>
+                <Text style={_styles.msgText}>{isEmptyData(props.text) ? props.text : ''}</Text>
 
-                {typeof props.subText != 'undefined' && props.subText != '' &&
+                {isEmptyData(props.subText) &&
                   <CommonText type={'h6'} textStyle={layoutStyle.textCenter} color={'#9c89e5'} fontWeight={'700'}>
                     {props.subText}
                   </CommonText>
@@ -91,7 +91,7 @@ export const BasePopup = (props: Props) => {
 
                 {isEmptyData(props.passAmt) && (
                   <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <Image style={styles.iconSquareSize(25)} source={isEmptyData(props.passType) && props.passType == 'ROYAL' ? ICON.royalPassCircle : ICON.passCircle} resizeMode={'contain'} />
+                    <Image style={styles.iconSquareSize(25)} source={isEmptyData(props.passType) && props.passType == 'ROYAL' ? ICON.megaCubeCyan : ICON.cubeCyan} resizeMode={'contain'} />
                     <Text style={_styles.openPopupDescIcon(props.passType)}>{!props.passAmt ? 'X 15' : 'X ' + props.passAmt}</Text>
                   </SpaceView>
                 )}
@@ -99,49 +99,26 @@ export const BasePopup = (props: Props) => {
                 {/* <CommonText type={'h5'} color={ColorType.red}>패스 x{props.passAmt}</CommonText> */}
               </SpaceView>
 
+              {/* ######################## 버튼 영역 */}
               {(!isEmptyData(props.btnExpYn) || props.btnExpYn == 'Y') &&
-              <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-                <View style={props.type != 'AUCTION' ? modalStyle.modalBtnContainer : modalStyle.modalBtnAuctContainer}>
+                <SpaceView viewStyle={_styles.btnContainer}>
                   {props.isConfirm ? (
                     <>
-                      <TouchableOpacity
-                        style={[props.type != 'AUCTION' ? modalStyle.modalBtn : modalStyle.modalAuctBtn, {backgroundColor: '#FFF'}]}
-                        onPress={onPressCancel}>
-                        <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
-                          {typeof props.cancelBtnText != 'undefined' ? props.cancelBtnText : '닫기'}
-                        </CommonText>
+                      <TouchableOpacity onPress={onPressCancel}>
+                        <Text style={_styles.btnStyle('#ffffff')}>{isEmptyData(props.cancelBtnText) ? props.cancelBtnText : '닫기'}</Text>
                       </TouchableOpacity>
 
-                      {/* <View style={modalStyle.modalBtnline} /> */}
-
-                      <TouchableOpacity
-                        style={[props.type != 'AUCTION' ? modalStyle.modalBtn : modalStyle.modalAuctBtn, {backgroundColor: '#FFDD00'}]}
-                        onPress={onPressConfirm}>
-                        <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
-                          {typeof props.confirmBtnText != 'undefined' ? props.confirmBtnText : '확인하기'}
-                        </CommonText>
+                      <TouchableOpacity onPress={onPressConfirm}>
+                        <Text style={_styles.btnStyle('#FFDD00')}>{isEmptyData(props.confirmBtnText) ? props.confirmBtnText : '확인하기'}</Text>
                       </TouchableOpacity>
                     </>
                   ) : (
                     <>
-                      {/* <TouchableOpacity
-                        style={[modalStyle.modalBtn, {backgroundColor: Color.blue02, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}]}
-                        onPress={onPressConfirm}>
-                        <CommonText type={'h5'} fontWeight={'500'} color={Color.white}>
-                          {typeof props.confirmBtnText != 'undefined' ? props.confirmBtnText : '확인'}
-                        </CommonText>
-                      </TouchableOpacity> */}
-                      {/* 리뉴얼 */}
-                      <TouchableOpacity
-                        style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}]}
-                        onPress={onPressConfirm}>
-                        <CommonText fontWeight={'600'} textStyle={{fontSize: 16, color: '#3D4348'}}>
-                          {typeof props.confirmBtnText != 'undefined' ? props.confirmBtnText : '확인'}
-                        </CommonText>
+                      <TouchableOpacity onPress={onPressConfirm}>
+                        <Text style={_styles.btnStyle('#ffffff')}>{isEmptyData(props.confirmBtnText) ? props.confirmBtnText : '확인'}</Text>
                       </TouchableOpacity>
                     </>
                   )}
-                </View>
                 </SpaceView>
               }
             </LinearGradient>
@@ -163,11 +140,29 @@ export const BasePopup = (props: Props) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
+  titleText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 18,
+    color: '#FFDD00',
+  },
+  msgText: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 13,
+    color: '#D5CD9E',
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginVertical: 15,
+    marginHorizontal: 10,
+  },
+
   openPopupDescIcon: (passType: string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-ExtraBold',
       fontSize: 16,
-      color: passType == 'ROYAL' ? '#FE0456' : '#697AE6',
+      color: '#32F9E4',
       marginLeft: 3,
     };
   },
@@ -177,5 +172,18 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 50,
     borderRadius: 50,
     marginBottom: 40,
+  },
+  btnStyle: (bgcr: string) => {
+    return {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 16,
+      color: '#3D4348',
+      backgroundColor: isEmptyData(bgcr) ? bgcr : '#FFFFFF',
+      borderRadius: 50,
+      paddingVertical: 6,
+      width: 110,
+      textAlign: 'center',
+      marginHorizontal: 3,
+    };
   },
 });

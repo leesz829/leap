@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { Color } from './Color';
+import { isEmptyData } from 'utils/functions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -541,6 +542,30 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: Color.grayF8F8,
   },
+  fontStyle: (type:string, size:number, color:string) => {
+    let f_type = 'Pretendard-Regular';
+
+    if(type == 'L') {
+      f_type = 'Pretendard-Light';
+    } else if(type == 'M') {
+      f_type = 'Pretendard-Medium';
+    } else if(type == 'R') {
+      f_type = 'Pretendard-Regular';
+    } else if(type == 'B') {
+      f_type = 'Pretendard-Bold';
+    } else if(type == 'SB') {
+      f_type = 'Pretendard-SemiBold';
+    } else if(type == 'EB') {
+      f_type = 'Pretendard-ExtraBold';
+    }
+
+    return {
+      fontFamily: f_type,
+      fontSize: isEmptyData(size) ? size : 14,
+      color: isEmptyData(color) ? color : '#000',
+    };
+  },
+
 });
 
 export const layoutStyle = StyleSheet.create({

@@ -336,7 +336,7 @@ function ProfileImageItem({ index, imgData, delFn, fileCallBackFn }) {
 
 const _styles = StyleSheet.create({
   saveText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 16,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -389,7 +389,7 @@ const _styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     textAlign: 'center',
     paddingVertical: 3,
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 13,
     color: '#fff',
   },
@@ -399,7 +399,7 @@ const _styles = StyleSheet.create({
       backgroundColor: '#000',
       textAlign: 'center',
       paddingVertical: 3,
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-ExtraBold',
       fontSize: 12,
       color: status == 'REFUSE' ? ColorType.redF20456 : '#fff',
     };

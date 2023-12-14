@@ -404,6 +404,11 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                   <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                     <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
                     <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+
+                    {/* 인상 수식어 표시 */}
+                    {isEmptyData(item?.face_modifier) && (
+                      <SpaceView ml={8}><Text style={_styles.faceModifierText}>#{item?.face_modifier}</Text></SpaceView>
+                    )}
                   </SpaceView>
                   <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     {item?.face_list.length > 0 && (
@@ -673,6 +678,14 @@ const _styles = StyleSheet.create({
   },
   activeDot: {
     backgroundColor: '#A29552',
+  },
+  faceModifierText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#4A4846',
+    backgroundColor: '#FFF8CC',
+    borderRadius: 50,
+    paddingHorizontal: 10,
   },
 
 });

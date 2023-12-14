@@ -11,26 +11,24 @@ import { isEmptyData } from 'utils/functions';
 
 /* ######################################################################
 #########################################################################
-#### 라이브 평점 노출 Component
+#### 소셜 등급 노출 Component
 #########################################################################
 ###################################################################### */
-export default function ProfileGrade({ grade, type }) {
+export default function SocialGrade({ grade }) {
   
   return (
     <>
       {isEmptyData(grade) && (
         <>
           <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-            <Image source={ICON.sparkler} style={styles.iconSquareSize(40)} />
+            <Image source={ICON.sparkler} style={styles.iconSquareSize(36)} />
             <Text style={_styles.gradeText}>{grade}</Text>
           </SpaceView>
         </>
       )}
     </>
   );
-
 }
-
 
 
 {/* #######################################################################################################
@@ -42,7 +40,7 @@ export default function ProfileGrade({ grade, type }) {
 const _styles = StyleSheet.create({
   gradeText: {
     fontFamily: 'MinSans-Bold',
-    fontSize: 32,
+    fontSize: 29,
     fontWeight: '800',
     color: '#000000',
     marginLeft: 10,

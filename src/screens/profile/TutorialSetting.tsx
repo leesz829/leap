@@ -253,7 +253,7 @@ const _styles = StyleSheet.create({
     right: 0,
   },
   allChkText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 15,
     color: '#333333',
     marginRight: 7,
@@ -272,10 +272,8 @@ const _styles = StyleSheet.create({
     marginBottom: 15,
   },
   profileText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 16,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
     color: '#646467',

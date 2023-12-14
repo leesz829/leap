@@ -394,9 +394,6 @@ export const Profile1 = (props: Props) => {
                 key={imgUrl}
                 source={imgUrl}
               />
-              {/* <View style={_styles.imageDisabled(false)}>
-                <Text style={[_styles.profileImageDimText(imgStatus)]}>{imgStatus == 'PROGRESS' ? '심사중' : imgStatus == 'ACCEPT' ? '승인' : '반려'}</Text>
-              </View> */}
             </SpaceView>
           </>
         ) : (
@@ -479,24 +476,11 @@ export const Profile1 = (props: Props) => {
 
           {/* ############################################################################################################# 프로필 인증 영역 */}
           <SpaceView pl={15} pr={15} mb={40}>
-            {profileData.second_auth_list.length > 0 ? (
+            {profileData.second_auth_list.length > 0 && (
               <ProfileAuth 
                 data={profileData.second_auth_list} 
                 isEditBtn={true} 
                 memberData={profileData?.member_info} />
-            ) : (
-              <>
-                {/* <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
-                  <TouchableOpacity 
-                    onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_AUTH }); }} 
-                    style={[_styles.modBtn, {bottom: 80, right: 0}]}>
-                    <Image source={ICON.squarePen} style={styles.iconSize16} />
-                    <Text style={_styles.modBtnText}>수정</Text>
-                  </TouchableOpacity>
-                  <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
-                  <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
-                </SpaceView> */}
-              </>
             )}
           </SpaceView>
 
@@ -678,26 +662,6 @@ const _styles = StyleSheet.create({
     height: 62,
     borderRadius: 5,
   },
-  regiBtn: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
-    color: '#3D4348',
-    textAlign: 'center',
-    backgroundColor: '#FFDD00',
-    borderRadius: 5,
-    paddingVertical: 12,
-    marginBottom: 15
-  },
-  initBtn: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 14,
-    color: '#D5CD9E',
-    textAlign: 'center',
-    borderWidth: 1,
-    borderColor: '#BBB18B',
-    borderRadius: 5,
-    paddingVertical: 12,
-  },
   imgEmptyArea: {
     width: width - 120,
     height: 500,
@@ -714,56 +678,8 @@ const _styles = StyleSheet.create({
     color: '#D5CD9E',
     textAlign: 'center',
   },
-  imageDisabled: (isMaster: boolean) => {
-    return {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: -1,
-      borderBottomLeftRadius: 5,
-      borderBottomRightRadius: 5,
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      overflow: 'hidden',
-      backgroundColor: !isMaster ? 'rgba(0, 0, 0, 0.5)' : 'transparent',
-    };
-  },
-  profileImageDimText: (status: string) => {
-    return {
-      width: '100%',
-      backgroundColor: '#000',
-      textAlign: 'center',
-      paddingVertical: 3,
-      fontFamily: 'Pretendard-SemiBold',
-      fontSize: 12,
-      color: status == 'REFUSE' ? ColorType.redF20456 : '#fff',
-    };
-  },
   commentWrap: {
     alignItems: 'center',
-  },
-  authNoDataArea: {
-    width: '100%',
-    backgroundColor: '#ffffff', 
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderWidth: 1, 
-    borderRadius: 10, 
-    borderColor: '#8E9AEB', 
-    borderStyle: 'dotted',
-  },
-  authNoDataTit: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 14,
-    color: '#7986EE',
-    textAlign: 'center',
-  },
-  authNoDataSubTit: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 10,
-    color: '#C3C3C8',
-    textAlign: 'center',
   },
   imgMngModalWrap: {
     backgroundColor: '#333B41',
@@ -791,7 +707,6 @@ const _styles = StyleSheet.create({
       borderColor: isEmptyData(_bdcr) ? _bdcr : _bg,
     };
   },
-
 
 
 });

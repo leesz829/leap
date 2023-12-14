@@ -94,15 +94,17 @@ export const Live = () => {
 
   // 인상 선택 팝업 열기
   const openImpressPop = async (pick:string, code:string, profileScore:string) => {
-    setPickFaceCode(code);
-    setPickFace(pick);
-    setPickProfileScore(profileScore);
+    if(isLoad) {
+      setPickFaceCode(code);
+      setPickFace(pick);
+      setPickProfileScore(profileScore);
 
-    if(pick == 'SKIP') {
-      insertLiveMatch(pick, code, profileScore);
-    }else {
-      setLiveModalVisible(false);
-      setIsPopVisible(true);
+      if(pick == 'SKIP') {
+        insertLiveMatch(pick, code, profileScore);
+      } else {
+        setLiveModalVisible(false);
+        setIsPopVisible(true);
+      }
     }
   };
 
@@ -260,184 +262,181 @@ export const Live = () => {
       <TopNavigation currentPath={'LIVE'} />
 
       <SpaceView pb={50} viewStyle={{backgroundColor: '#3D4348', minHeight: height}}> 
-      {isLoad ? (
-        <SpaceView>
-          {/* 라이브 회원 이미지 */}
-          {/* <FlatList
-            contentContainerStyle={{ overflow: 'visible', paddingHorizontal: 20 }} // overflow를 visible로 설정
-            data={data?.live_profile_img}
-            horizontal={true}
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            decelerationRate="fast"
-            snapToInterval={width * 0.85 + 25}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={RenderItem}
-            onScroll={handleScroll}
-          /> */}
+        {!isEmpty ? (
+          <SpaceView>
+            <SpaceView mb={20} viewStyle={_styles.imgItemWrap}>
+              {/* <View style={_styles.mmbrStatusView}>
+                <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
+              </View> */}
 
-          <View style={_styles.imgItemWrap}>
-            {/* <View style={_styles.mmbrStatusView}>
-              <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
-            </View> */}
+              <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
 
-            <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
-              {imgList.length > 0 && (
-                <Image
-                  source={{uri: imgList[currentImgIdx]?.url?.uri}}
-                  style={{
-                    width: width,
-                    height: height * 0.64, 
-                  }}
-                  resizeMode={'cover'}
-                />
-              )}
+                {isLoad ? (
+                  <>
+                    {imgList.length > 0 && (
+                      <Image
+                        source={{uri: imgList[currentImgIdx]?.url?.uri}}
+                        style={{
+                          width: width - 40,
+                          height: height * 0.68, 
+                        }}
+                        resizeMode={'cover'}
+                      />
+                    )}
 
-              <TouchableOpacity 
-                onPress={() => { prevImage(); }}
-                style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2, zIndex: 1}} />
+                    <TouchableOpacity 
+                      onPress={() => { prevImage(); }}
+                      style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2, zIndex: 1}} />
 
-              <TouchableOpacity 
-                onPress={() => { nextImage(); }}
-                style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2, zIndex: 1}} />
+                    <TouchableOpacity 
+                      onPress={() => { nextImage(); }}
+                      style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2, zIndex: 1}} />
 
-              {/* 인디케이터 */}
-              <SpaceView viewStyle={_styles.pagingContainer}>
-                {imgList?.map((i, n) => {
-                  return n <= 5 && (
-                    <View style={_styles.dotContainerStyle} key={'dot' + n}>
-                      <View style={[_styles.pagingDotStyle, n == currentImgIdx && _styles.activeDot]} />
-                    </View>
-                  )
-                })}
-              </SpaceView>
+                    {/* 인디케이터 */}
+                    <SpaceView viewStyle={_styles.pagingContainer}>
+                      {imgList?.map((i, n) => {
+                        return n <= 5 && (
+                          <View style={_styles.dotContainerStyle} key={'dot' + n}>
+                            <View style={[_styles.pagingDotStyle, n == currentImgIdx && _styles.activeDot]} />
+                          </View>
+                        )
+                      })}
+                    </SpaceView>
 
-              <SpaceView viewStyle={_styles.infoArea}>
-                <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-                  {data.live_member_info.distance && data.live_member_info.distance > 0 && (
-                    <Text style={_styles.distanceText}>{data.live_member_info.distance}Km</Text>
-                  )}
-                  <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
-                  <Text style={_styles.introText}>{data.live_member_info.comment}</Text>
-                </SpaceView>
-              </SpaceView>
+                    <SpaceView viewStyle={_styles.infoArea}>
+                      <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
+                        {data.live_member_info.distance && data.live_member_info.distance > 0 && (
+                            <Text style={_styles.distanceText}>{data.live_member_info.distance}Km</Text>
+                        )}
+                        <Text style={_styles.nicknameText}>{data.live_member_info.nickname}, {data.live_member_info.age}</Text>
+                        <Text style={_styles.introText}>{data.live_member_info.comment}</Text>
+                      </SpaceView>
+                    </SpaceView>
 
-              <LinearGradient
-                colors={['transparent', '#000000']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={_styles.thumnailDimArea} />
+                    <Watermark value={memberBase?.phone_number}/>
+                  </>
+                ) : (
+                  <>
+                    <SpaceView viewStyle={{width: width - 40, height: height * 0.68, borderRadius: 20, backgroundColor: '#707070', opacity: 0.2 }} />
+                  </>
+                )}
 
-              <Watermark value={memberBase?.phone_number}/>
-            </SpaceView>
-          </View>
-
-          {/* 최하단 스킵, 인상 선택 버튼 */}
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <TouchableOpacity 
-              style={[_styles.bottomBtn,{width: width * 0.36, marginRight: 10}]}
-              onPress={() => openImpressPop('SKIP', 'FACE_TYPE_SKIP', '6')}
-            >
-              <Text style={[_styles.bottomTxt, {color: '#656565'}]}>스킵</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[_styles.bottomBtn,{width: width * 0.47, backgroundColor: '#FCBB15'}]}
-              onPress={() => { 
-                setLiveModalVisible(true);
-              }} >
-              <Text style={[_styles.bottomTxt, {color: '#FFF'}]}>인상 선택하기</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* #########################################################################################################################
-          ##### 인상 리스트 팝업
-          ######################################################################################################################### */}
-          <Modal visible={liveModalVisible} style={{margin: 0}} transparent={true}>
-            <LinearGradient
-              colors={['rgba(9, 32, 50, 0.85)', 'rgba(52, 71, 86, 0.85)']}
-              start={{ x: 0, y: 1 }}
-              end={{ x: 0, y: 0 }} 
-              style={_styles.liveModalBackground}
-            >
-              <ScrollView>
-                  {data?.face_type_list.map((item, index) => {
-                    return item.common_code != 'FACE_TYPE_SKIP' && (
-                      <TouchableOpacity 
-                        key={'face'+index} 
-                        onPress={() => openImpressPop('#' + item.code_name, item.common_code, item.code_memo)}>
-                        <Text style={_styles.faceModalText}>#{item.code_name}</Text>
-                      </TouchableOpacity>
-                    )
-                  })}
-              </ScrollView>
-              
-              <SpaceView viewStyle={_styles.liveModalXBtn}>
-                <TouchableOpacity hitSlop={commonStyle.hipSlop20} onPress={() => { setLiveModalVisible(false); }}>
-                  <Image source={ICON.circleX} style={styles.iconSize40} />
-                </TouchableOpacity>
-              </SpaceView>
-            </LinearGradient>
-          </Modal>
-
-          {/* #########################################################################################################################
-          ##### 인상 선택 팝업
-          ######################################################################################################################### */}
-          <Modal visible={isPopVisible} style={{margin: 0}} transparent={true}>
-            <View style={modalStyle.modalBackground}>
-              <View style={[modalStyle.modalStyle1, {overflow: 'hidden'}]}>
                 <LinearGradient
-                  colors={['#1A1E1C', '#333B41']}
-                  start={{ x: 0, y: 1 }}
-                  end={{ x: 0, y: 0 }} >
-                  <SpaceView viewStyle={{padding: 20}}>
-                    <Text style={_styles.impressPopTitle}>인상 투표</Text>
-                  </SpaceView>
-                  <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
-                    <SpaceView viewStyle={_styles.impressImgBox}>
-                      <Image source={findSourcePath(data.live_profile_img[0].url.uri)} style={styles.iconSize80} />
-                    </SpaceView>
-                    <SpaceView mt={30}>
-                      <Text style={_styles.pickImpressText}>{pickFace}</Text>
-                    </SpaceView>
-                  </SpaceView>
+                  colors={['transparent', '#000000']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={_styles.thumnailDimArea} />
 
-                  <SpaceView mb={-20} mt={20}>
-                    <View style={_styles.impressBtnContaniner}>
-                      <TouchableOpacity
-                        style={[_styles.impressBtn, {backgroundColor: '#FFF', borderTopLeftRadius: 10, borderBottomLeftRadius: 10}]}
-                        onPress={cancelImpressPop}
-                      >
-                        <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
-                          취소하기
-                        </CommonText>
-                      </TouchableOpacity>
+              </SpaceView>
+            </SpaceView>
 
-                      <TouchableOpacity
-                        style={[_styles.impressBtn, {backgroundColor: '#FFDD00', borderTopRightRadius: 10, borderBottomRightRadius: 10}]}
-                        onPress={insertLiveMatch}
-                      >
-                        <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
-                          확인하기
-                        </CommonText>
-                      </TouchableOpacity>
-                    </View>
-                  </SpaceView>
-                </LinearGradient>
+            {/* 최하단 스킵, 인상 선택 버튼 */}
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <TouchableOpacity 
+                style={[_styles.bottomBtn,{width: width * 0.36, marginRight: 10}]}
+                onPress={() => openImpressPop('SKIP', 'FACE_TYPE_SKIP', '6')}
+              >
+                <Text style={[_styles.bottomTxt, {color: '#656565'}]}>스킵</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[_styles.bottomBtn,{width: width * 0.47, backgroundColor: '#FCBB15'}]}
+                onPress={() => { 
+                  if(isLoad) {
+                    setLiveModalVisible(true);
+                  }
+                }} >
+                <Text style={[_styles.bottomTxt, {color: '#FFF'}]}>인상 선택하기</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* #########################################################################################################################
+            ##### 인상 리스트 팝업
+            ######################################################################################################################### */}
+            <Modal visible={liveModalVisible} style={{margin: 0}} transparent={true}>
+              <LinearGradient
+                colors={['rgba(9, 32, 50, 0.85)', 'rgba(52, 71, 86, 0.85)']}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }} 
+                style={_styles.liveModalBackground}
+              >
+                <ScrollView>
+                    {data?.face_type_list.map((item, index) => {
+                      return item.common_code != 'FACE_TYPE_SKIP' && (
+                        <TouchableOpacity 
+                          key={'face'+index} 
+                          onPress={() => openImpressPop('#' + item.code_name, item.common_code, item.code_memo)}>
+                          <Text style={_styles.faceModalText}>#{item.code_name}</Text>
+                        </TouchableOpacity>
+                      )
+                    })}
+                </ScrollView>
+                
+                <SpaceView viewStyle={_styles.liveModalXBtn}>
+                  <TouchableOpacity hitSlop={commonStyle.hipSlop20} onPress={() => { setLiveModalVisible(false); }}>
+                    <Image source={ICON.circleX} style={styles.iconSize40} />
+                  </TouchableOpacity>
+                </SpaceView>
+              </LinearGradient>
+            </Modal>
+
+            {/* #########################################################################################################################
+            ##### 인상 선택 팝업
+            ######################################################################################################################### */}
+            <Modal visible={isPopVisible} style={{margin: 0}} transparent={true}>
+              <View style={modalStyle.modalBackground}>
+                <View style={[modalStyle.modalStyle1, {overflow: 'hidden'}]}>
+                  <LinearGradient
+                    colors={['#1A1E1C', '#333B41']}
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0 }} >
+                    <SpaceView viewStyle={{padding: 20}}>
+                      <Text style={_styles.impressPopTitle}>인상 투표</Text>
+                    </SpaceView>
+                    <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
+                      <SpaceView viewStyle={_styles.impressImgBox}>
+                        <Image source={findSourcePath(data.live_profile_img[0].url.uri)} style={styles.iconSize80} />
+                      </SpaceView>
+                      <SpaceView mt={30}>
+                        <Text style={_styles.pickImpressText}>{pickFace}</Text>
+                      </SpaceView>
+                    </SpaceView>
+
+                    <SpaceView mb={-20} mt={20}>
+                      <View style={_styles.impressBtnContaniner}>
+                        <TouchableOpacity
+                          style={[_styles.impressBtn, {backgroundColor: '#FFF', borderTopLeftRadius: 10, borderBottomLeftRadius: 10}]}
+                          onPress={cancelImpressPop}
+                        >
+                          <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
+                            취소하기
+                          </CommonText>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          style={[_styles.impressBtn, {backgroundColor: '#FFDD00', borderTopRightRadius: 10, borderBottomRightRadius: 10}]}
+                          onPress={insertLiveMatch}
+                        >
+                          <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
+                            확인하기
+                          </CommonText>
+                        </TouchableOpacity>
+                      </View>
+                    </SpaceView>
+                  </LinearGradient>
+                </View>
               </View>
-            </View>
-          </Modal>
-        </SpaceView>
-      ) : (
-        <>
-          <SpaceView viewStyle={{width: width, height: height}}>
-            <View style={{height:height / 2, alignItems: 'center', justifyContent:'center', flexDirection: 'row'}}>
-              <Text style={{fontSize: 25, fontFamily: 'Pretendard-Regular', color: '#646467'}}><Text style={{fontSize: 30, color: '#BAFAFC', fontFamily:'Pretendard-Bold'}}>{memberBase?.nickname}님</Text>을 위한{'\n'}새로운 이성을 찾는 중입니다.</Text>
-              <Image source={ICON.digitalClock} style={[styles.iconSize40, {marginTop: 25, marginLeft: 5}]} />
-            </View>
+            </Modal>
           </SpaceView>
-        </>
-      )}
+        ) : (
+          <>
+            <SpaceView viewStyle={{width: width, height: height}}>
+              <View style={{height:height / 2, alignItems: 'center', justifyContent:'center', flexDirection: 'row'}}>
+                <Text style={{fontSize: 25, fontFamily: 'Pretendard-Regular', color: '#646467'}}><Text style={{fontSize: 30, color: '#BAFAFC', fontFamily:'Pretendard-Bold'}}>{memberBase?.nickname}님</Text>을 위한{'\n'}새로운 이성을 찾는 중입니다.</Text>
+                <Image source={ICON.digitalClock} style={[styles.iconSize40, {marginTop: 25, marginLeft: 5}]} />
+              </View>
+            </SpaceView>
+          </>
+        )}
       </SpaceView>
     </>
   );
@@ -452,8 +451,7 @@ export const Live = () => {
 
 const _styles = StyleSheet.create({
   imgItemWrap: {
-    padding: 20,
-    marginHorizontal: 5,
+    paddingHorizontal: 20,
     overflow: 'hidden',
   },
   infoArea: {
@@ -480,15 +478,6 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Regular',
     fontSize: 16,
     color: '#FFF',
-  },
-  indocatorContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    marginBottom: 5,
-  },
-  indicator: {
-    width: 22,
-    height: 2,
   },
   thumnailDimArea: {
     position: 'absolute',
