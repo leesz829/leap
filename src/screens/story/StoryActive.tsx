@@ -309,7 +309,7 @@ export default function StoryActive(props: Props) {
 
   // ############################################################################# 알림 렌더링
   const AlarmRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
-
+console.log('item:::', item)
     return (
       <>
         {item?.dataList?.length > 0 && (
@@ -356,8 +356,9 @@ export default function StoryActive(props: Props) {
                       style={_styles.alarmItemMember}
                       disabled={memberBase?.gender === _item?.gender || memberBase?.member_seq === _item?.reg_seq}
                       onPress={() => { profileCardOpenPopup(_item?.reg_seq, _item?.open_cnt); }} >
-
-                      <Image source={expMstImg} style={_styles.alarmItemMemberThum} resizeMode={'cover'} />
+                      <SpaceView viewStyle={_styles.circleImg}>
+                        <Image source={expMstImg} style={_styles.alarmItemMemberThum} resizeMode={'cover'} />
+                      </SpaceView>
                     </TouchableOpacity>
 
                     <SpaceView viewStyle={{flex:2.5}}>
@@ -373,7 +374,7 @@ export default function StoryActive(props: Props) {
                             {storyAlarmType == 'REPLY' ? (
                               <>
                                 님이 {depth == 1 ? '게시글에 댓글' : '답글'}을 남겼습니다 : <Text>{replyContents}</Text>
-                                <Text style={_styles.timeText}> {_item.time_text}</Text>
+                                {/* <Text style={_styles.timeText}> {_item.time_text}</Text> */}
                               </>
                             ) : (
                               <>
@@ -382,9 +383,9 @@ export default function StoryActive(props: Props) {
                             )}
                           </Text>
 
-                          {storyAlarmType == 'LIKE' && (
-                            <SpaceView mt={3}><Text style={_styles.timeText}>{_item.time_text}</Text></SpaceView>
-                          )}
+                        {/* {storyAlarmType == 'LIKE' && (
+                          <SpaceView mt={3}><Text style={_styles.timeText}>{_item.time_text}</Text></SpaceView>
+                        )} */}
                         </SpaceView>
 
                         {/* 게시글 썸네일 */}
@@ -543,22 +544,28 @@ export default function StoryActive(props: Props) {
 
       <CommonHeader title={'스토리 활동 이력'} />
 
-      <View style={{backgroundColor: '#fff'}}>
+      <LinearGradient
+					colors={['#3D4348', '#1A1E1C']}
+					start={{ x: 0, y: 0 }}
+					end={{ x: 0, y: 1 }}
+					style={_styles.wrap}
+				>
 
         {/* ###################################################################################### 탭 영역 */}
-        <SpaceView mb={15} viewStyle={_styles.tabWrap}>
-          <TouchableOpacity style={_styles.tabItem(currentIndex == 0 ? true : false)} onPress={() => {handleTabPress(0)}}>
-            <Text style={_styles.tabItemText(currentIndex == 0 ? true : false)}>새소식</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={_styles.tabItem(currentIndex == 1 ? true : false)} onPress={() => {handleTabPress(1)}}>
-            <Text style={_styles.tabItemText(currentIndex == 1 ? true : false)}>내가쓴글</Text>
-          </TouchableOpacity>
+        <SpaceView viewStyle={[layoutStyle.alignCenter, layoutStyle.justifyCenter]}>
+          <SpaceView viewStyle={_styles.tabWrap}>
+            <TouchableOpacity style={_styles.tabItem(currentIndex == 0 ? true : false)} onPress={() => {handleTabPress(0)}}>
+              <Text style={_styles.tabItemText(currentIndex == 0 ? true : false)}>새소식</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={_styles.tabItem(currentIndex == 1 ? true : false)} onPress={() => {handleTabPress(1)}}>
+              <Text style={_styles.tabItemText(currentIndex == 1 ? true : false)}>내가쓴글</Text>
+            </TouchableOpacity>
+          </SpaceView>
         </SpaceView>
 
         {/* ###################################################################################### 컨텐츠 영역 */}
         <SpaceView>
           <FlatList
-            style={{backgroundColor: '#fff'}}
             ref={baseRef}
             data={['새소식','내가쓴글']}
             onScroll={handleScroll}
@@ -643,7 +650,7 @@ export default function StoryActive(props: Props) {
           />
 
         </SpaceView>
-      </View>
+      </LinearGradient>
 
       {/* ##################################################################################
                 댓글 입력 팝업
@@ -682,20 +689,33 @@ export default function StoryActive(props: Props) {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-
+	wrap: {
+		minHeight: height,
+	},
   alarmWrap: {
     paddingVertical: 20,
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   },
   alarmTitle: {
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ABA99A',
     marginBottom: 20,
+    paddingBottom: 10,
   },
   alarmTitleText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 15,
-    color: '#333',
+    color: '#F3E270',
+  },
+  circleImg: {
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: '#FFDD00',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 45,
+    height: 45,
+    overflow: 'hidden',
   },
   alarmItemWrap: (type:string) => {
     return {
@@ -706,6 +726,7 @@ const _styles = StyleSheet.create({
     }
   },
   alarmItemMember: {
+    paddingHorizontal: 15,
     //width: 50,
     flex: 0.5,
   },
@@ -713,23 +734,20 @@ const _styles = StyleSheet.create({
     width: width - 150,
   },
   alarmNickname: {
-    fontFamily: 'Pretendard-Bold',
-    color: '#000',
-    fontSize: 14,
+    fontFamily: 'Pretendard-Light',
+    color: '#E1DFD1',
+    fontSize: 12,
   },
   alarmContentText: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#333',
-    fontSize: 14,
+    fontFamily: 'Pretendard-Light',
+    color: '#E1DFD1',
+    fontSize: 12,
   },
-  timeText: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#999',
-    fontSize: 14,
-  },
-  alarmItemBoard: {
-
-  },
+  // timeText: {
+  //   fontFamily: 'Pretendard-Regular',
+  //   color: '#999',
+  //   fontSize: 14,
+  // },
   alarmItemMemberThum: {
     width: 50,
     height: 50,
@@ -747,27 +765,28 @@ const _styles = StyleSheet.create({
     fontSize: 13,
   },
   replyTextStyle: {
-    fontFamily: 'Pretendard-Medium',
-    color: '#555',
+    fontFamily: 'Pretendard-Light',
+    color: '#FFF6BE',
     fontSize: 12,
   },
   tabWrap: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#292F33',
+    borderRadius: 30,
   },
   tabItem: (isOn:boolean) => {
     return {
-      width: '50%',
       paddingVertical: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: isOn ? '#7A85EE' : '#eee',
+      paddingHorizontal: 20,
     }
   },
   tabItemText: (isOn:boolean) => {
     return {
       fontFamily: 'Pretendard-Bold',
       fontSize: 14,
-      color: isOn ? '#000' : '#ACACAC',
+      color: isOn ? '#FFDD00' : '#445561',
       textAlign: 'center',
     };
   },
@@ -796,15 +815,16 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   storyCntText: {
-    fontFamily: 'Pretendard-Medium',
-    color: '#555555',
+    fontFamily: 'Pretendard-Light',
+    color: '#FFF6BE',
     fontSize: 14,
     marginLeft: 6,
   },
   likeCntText: {
-    fontFamily: 'Pretendard-Medium',
-    color: '#555555',
+    fontFamily: 'Pretendard-Light',
+    color: '#FFF6BE',
     fontSize: 12,
+    paddingRight: 15,
   },
   noData: {
     paddingHorizontal: 20,

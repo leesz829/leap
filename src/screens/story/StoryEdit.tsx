@@ -941,7 +941,7 @@ const _styles = StyleSheet.create({
       width: '100%',
       marginTop: 3,
       height: 45,
-      color: '#000',
+      color: '#E1DFD1',
       // elevation: isOn ? 10 : 0,
       // shadowColor: "#0047FF",
       // shadowOffset: {

@@ -7,12 +7,13 @@ import { findSourcePath, IMAGE, GIF_IMG, ICON } from 'utils/imageUtils';
 import Carousel from 'react-native-snap-carousel';
 import { useUserInfo } from 'hooks/useUserInfo';
 import SpaceView from 'component/SpaceView';
-import { commonStyle, styles, modalStyle } from 'assets/styles/Styles';
+import { commonStyle, styles, modalStyle, layoutStyle } from 'assets/styles/Styles';
 import { get_story_like_list } from 'api/models';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { usePopup } from 'Context';
 import { ScrollView } from 'react-native-gesture-handler';
 import { isEmptyData } from 'utils/functions';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const { width, height } = Dimensions.get('window');
@@ -110,35 +111,35 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
           <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
 
             {/* 대표 이미지 */}
-            <TouchableOpacity
-              disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
-              onPress={() => { profileOpen(item?.member_seq, item?.open_cnt); }} >
-              <Image source={expMstImg} style={_styles.imageStyle(40)} resizeMode={'cover'} />
-            </TouchableOpacity>
+            <SpaceView viewStyle={_styles.circleImg}>
+              <TouchableOpacity
+                disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
+                onPress={() => { profileOpen(item?.member_seq, item?.open_cnt); }}
+              >
+                <Image source={expMstImg} style={[_styles.imageStyle(45)]}/>
+              </TouchableOpacity>
+            </SpaceView>
 
             <SpaceView ml={3}>
               <SpaceView viewStyle={{flexDirection: 'row'}}>
 
                 {memberBase?.member_seq != 905 && (
                   <>
-                    {/* 프로필 평점, 인증 레벨 */}
-                    {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                    {/* 프로필 평점 */}
+                    {storyType != 'SECRET' && (
                       <>
-                        {item?.profile_score >= 7.0 && (
-                          <SpaceView mr={1} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Image source={ICON.starYellow} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
-                            <Text style={_styles.profileText}>{item?.profile_score}</Text>
-                          </SpaceView>
-                        )}
-                          
-                        {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
-                          <>
-                            <SpaceView mr={1} pl={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                              <Image source={ICON.bookmarkPurple} style={styles.iconSquareSize(15)} resizeMode={'cover'} />
-                              <Text style={_styles.profileText}>{item?.auth_acct_cnt}</Text>
+                        <SpaceView mr={1} pl={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                          {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) &&
+                            <SpaceView viewStyle={_styles.yellowBox}>
+                              <Text style={_styles.profileText}>LV{item?.auth_acct_cnt}</Text>
                             </SpaceView>
-                          </>
-                        )}
+                          }
+                          {item?.best_face && 
+                            <SpaceView viewStyle={[_styles.yellowBox, {marginLeft: 5}]}>
+                              <Text style={_styles.profileText}>{item?.best_face}</Text>
+                            </SpaceView>
+                          }
+                        </SpaceView>
                       </>
                     )}
                   </>
@@ -151,16 +152,6 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
               </SpaceView>
             </SpaceView>
           </SpaceView>
-          
-          {/* 프로필 카드 열기 버튼 */}
-          {(storyType != 'SECRET' && memberBase?.gender != item?.gender && memberBase?.member_seq != item?.member_seq) && (
-            <TouchableOpacity
-              disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
-              onPress={() => { profileOpen(item?.member_seq, item?.open_cnt); }}>
-
-              <Text style={_styles.openBtn}>프로필 카드 열기</Text>
-            </TouchableOpacity>
-          )}
         </SpaceView>
       </>
     );
@@ -179,62 +170,85 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
         {/* 배경 영역 */}
         <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}} onPress={()=> { closeModal(); }} />
 
-        <SafeAreaView style={_styles.container}>
-          <View style={_styles.titleBox}>
-            <Text style={_styles.titleText}>좋아요 목록</Text>
-            <TouchableOpacity onPress={() => closeModal()} hitSlop={commonStyle.hipSlop25}>
-              <Image source={ICON.closeLight} style={_styles.iconSize} />
-            </TouchableOpacity>
-          </View>
+        <LinearGradient
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={_styles.container}
+			  >
 
-          {/* 댓글인 경우 표시 */}
-          {type == 'REPLY' && (
-            <SpaceView viewStyle={_styles.replyArea}>
-              <TouchableOpacity
-                disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
-                onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
+          <SafeAreaView>
+            <View style={_styles.titleBox}>
+              <Text style={_styles.titleText}>좋아요 목록</Text>
+            </View>
 
-                {(replyInfo.story_type == 'SECRET' || selectedData?.isSecret) ? (
-                  <Image source={replyInfo.gender == 'M' ? ICON.storyMale : ICON.storyFemale} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
-                ) : (
-                  <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(40), {marginTop: 15}]} resizeMode={'cover'} />
-                )}
-              </TouchableOpacity>
-              <SpaceView mt={10} ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
-                <Text style={[_styles.mainNicknameText]}>                  
-                  {(replyInfo.story_type == 'SECRET' || selectedData?.isSecret) ? (
-                    <>{replyInfo.story_type == 'SECRET' ? replyInfo.nickname_modifier + ' ' + replyInfo.nickname_noun : '비밀글'}</>
-                  ) : replyInfo.nickname}
-                  <Text style={_styles.timeText}> {replyInfo.time_text}</Text>
-                </Text>
-                <Text style={[_styles.replyText, {marginTop: 3}]}>
-                  {selectedData?.isSecret ? '게시글 작성자에게만 보이는 글입니다.' : replyInfo.reply_contents}</Text>
+            {/* 댓글인 경우 표시 */}
+            {type == 'REPLY' && (
+              <SpaceView viewStyle={_styles.replyArea} mt={15}>
+                <SpaceView viewStyle={_styles.circleImg}>
+                  <TouchableOpacity
+                    disabled={memberBase?.gender === replyInfo?.gender || memberBase?.member_seq === replyInfo?.reg_seq}
+                    onPress={() => { profileOpen(replyInfo?.reg_seq, replyInfo?.open_cnt); }} >
+
+                    {(replyInfo.story_type == 'SECRET' || selectedData?.isSecret) ? (
+                      <Image source={replyInfo.gender == 'M' ? ICON.storyMale : ICON.storyFemale} style={[_styles.imageStyle(45)]} resizeMode={'cover'} />
+                    ) : (
+                      <Image source={findSourcePath(replyInfo.mst_img_path)} style={[_styles.imageStyle(45)]} resizeMode={'cover'} />
+                    )}
+                  </TouchableOpacity>
+                </SpaceView>
+                <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', flex: 1}}>
+                  <Text style={[_styles.mainNicknameText]}>                  
+                    {(replyInfo.story_type == 'SECRET' || selectedData?.isSecret) ? (
+                      <>{replyInfo.story_type == 'SECRET' ? replyInfo.nickname_modifier + ' ' + replyInfo.nickname_noun : '비밀글'}</>
+                    ) : replyInfo.nickname}
+                    <Text style={_styles.timeText}> {replyInfo.time_text}</Text>
+                  </Text>
+                  <Text style={[_styles.replyText, {marginTop: 3}]}>
+                    {selectedData?.isSecret ? '게시글 작성자에게만 보이는 글입니다.' : replyInfo.reply_contents}</Text>
+                </SpaceView>
               </SpaceView>
-            </SpaceView>
-          )}
+            )}
 
-          <SpaceView viewStyle={{maxHeight: height - 350}}>
-            <SpaceView viewStyle={_styles.likeCntArea}>
-              <Text style={_styles.likeListText}>{likeListCnt}개의 좋아요</Text>
+            <SpaceView>
+              <SpaceView viewStyle={_styles.likeCntArea}>
+                <Text style={_styles.likeListText}>{likeListCnt}개의 좋아요</Text>
+              </SpaceView>
+
+              <SpaceView viewStyle={_styles.line} />  
+              
+              <FlatList
+                style={{minHeight: 50, maxHeight: 500, marginBottom: 80}}
+                data={likeListData.likeList}
+                renderItem={({ item, index }) => {
+                  return (
+                    <View>
+                      <LikeListRender 
+                        item={item}
+                        index={index} 
+                      />
+                    </View>
+                  )
+                }}
+              />
             </SpaceView>
-            
-            <FlatList
-              style={{marginBottom: 30}}
-              data={likeListData.likeList}
-              renderItem={({ item, index }) => {
-                return (
-                  <View>
-                    <LikeListRender 
-                      item={item}
-                      index={index} 
-                    />
-                  </View>
-                )
-              }}
+          </SafeAreaView>  
+                        
+          <SpaceView viewStyle={{position: 'absolute', bottom: 5, width: '100%'}}>
+            <LinearGradient 
+              colors={['rgba(255, 255, 255, 0.5)','rgba(59, 62, 61, 0.1)']}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 0, y: 0 }}
+              style={_styles.shadowArea} 
             />
+
+            <SpaceView pl={18} pr={18} mb={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyEnd]}>
+              <TouchableOpacity style={_styles.closeBtn} onPress={() => closeModal()} hitSlop={commonStyle.hipSlop25}>
+                <Text style={_styles.closeBtnText}>확인</Text>
+              </TouchableOpacity>
+            </SpaceView>
           </SpaceView>
-          
-        </SafeAreaView>
+        </LinearGradient>
       </View>
     </Modal>
   );
@@ -244,20 +258,19 @@ const _styles = StyleSheet.create({
   container: {
     width: width - 40,
     borderRadius: 20,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 18,
   },
   titleBox: {
+    paddingHorizontal: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 20,
+    paddingTop: 30,
   },
   titleText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 18,
     textAlign: 'left',
-    color: '#333',
+    color: '#FFDD00',
   },
   contentBody: {
     flexDirection: 'column',
@@ -266,19 +279,22 @@ const _styles = StyleSheet.create({
     marginBottom: 50,
   },
   likeListArea: {
+    paddingHorizontal: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 0,
-    paddingHorizontal: 0,
   },
   likeCntArea: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal: 18,
     paddingVertical: 15,
-    borderTopWidth: 0.5,
-    borderTopColor: '#ddd',
+  },
+  line: {
+    borderWidth: 1,
+    borderColor: '#D1D1D1',
   },
   likeListText: {
     fontFamily: 'Pretendard-Regular',
@@ -287,29 +303,34 @@ const _styles = StyleSheet.create({
     letterSpacing: 0,
     fontWeight: '300',
     textAlign: 'left',
-    color: '#333',
+    color: '#D5CD9E',
+  },
+  yellowBox: {
+    backgroundColor: '#FFDD00',
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderTopRightRadius: 8,
+    marginTop: 5,
   },
   profileText: {
-    fontFamily: 'Pretendard-SemiBold',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 13,
-    color: '#333333',
-    marginLeft: 2,
+    color: '#FFF',
   },
   mainNicknameText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    color: '#333333',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 16,
+    color: '#D5CD9E',
   },
   nicknameText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 13,
-    marginTop: 1,
-    color: '#333333',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 16,
+    marginTop: 5,
+    color: '#D5CD9E',
   },
   replyArea: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 20,
+    paddingHorizontal: 18,
   },
   timeText: {
     fontFamily: 'Pretendard-Medium',
@@ -330,7 +351,6 @@ const _styles = StyleSheet.create({
       height: size,
       borderRadius: 50,
       overflow: 'hidden',
-      marginRight: 5,
     };
   },
   iconSize: {
@@ -356,6 +376,31 @@ const _styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
-
-
+  circleImg: {
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: '#FFDD00',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 45,
+    height: 45,
+    overflow: 'hidden',
+  },
+  shadowArea: {
+    width: '100%',
+    height: 30,
+    opacity: 0.2,
+    marginBottom: 15,
+  },
+  closeBtn: {
+    backgroundColor: '#FFDD00',
+    paddingVertical: 5,
+    paddingHorizontal: 30,
+    borderRadius: 30,
+  },
+  closeBtnText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    color: '#3D4348',
+  },
 });

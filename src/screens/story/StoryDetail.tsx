@@ -47,7 +47,7 @@ export default function StoryDetail(props: Props) {
 
   // 본인 데이터
   const memberBase = useUserInfo();
-console.log('memberBase::', memberBase)
+
   // 이미지 인덱스
   const imgRef = React.useRef();
 
@@ -572,19 +572,21 @@ console.log('memberBase::', memberBase)
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-start'}}>
 
               {/* 썸네일 */}
-              <TouchableOpacity 
-                disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyData.board?.story_type == 'SECRET' || isApplySecret}
-                onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); }}>
-
-                <Image source={applyMsgImg} style={_styles.replyImageStyle} resizeMode={'cover'} />
-
+              <SpaceView>
+                <TouchableOpacity 
+                  style={_styles.imgCircle}
+                  disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyData.board?.story_type == 'SECRET' || isApplySecret}
+                  onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); }}
+                >
+                  <Image source={applyMsgImg} style={_styles.replyImageStyle} resizeMode={'cover'} />
+                </TouchableOpacity>
                 {memberBase?.member_seq === item?.member_seq && (
                   <SpaceView viewStyle={_styles.myReplyChk}>
                     <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
                   </SpaceView>
                 )}
-              </TouchableOpacity>
-              
+              </SpaceView>
+
               <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
 
                 {/* 닉네임, 타임 텍스트 */}
@@ -599,17 +601,21 @@ console.log('memberBase::', memberBase)
                 </SpaceView>
 
                 {/* 댓글 내용 */}
-                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <SpaceView mt={6} viewStyle={{ width: width - 90, backgroundColor: 'pink'}}>
+                  
                   <Text style={_styles.replyContents}>
                     {
                       (isApplySecret) ? '게시글 작성자에게만 보이는 글입니다.' : (item.del_yn == 'Y') ? '삭제된 댓글입니다.' : item.reply_contents
                     }
-                  </Text>
-                  {(memberBase?.member_seq === item?.member_seq) && (item.del_yn == 'N') && (
-                    <TouchableOpacity style={{marginTop: 6, marginLeft: 4}} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
+
+{(memberBase?.member_seq === item?.member_seq) && (item.del_yn == 'N') && (
+                    <TouchableOpacity style={{ paddingLeft: 5 }} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
                       <Text style={_styles.replyTextDel}>삭제</Text>
                     </TouchableOpacity>
                   )}
+                  </Text>
+
+
                 </SpaceView>
 
                 {/* 버튼 영역 */}
@@ -763,99 +769,58 @@ console.log('memberBase::', memberBase)
 
                   <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
                     {storyData.voteList?.map((item, index) => {
+                      console.log('item:::', item)
                       const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
-                      const isRegiMember = (memberBase?.member_seq == storyData.board?.member_seq) ? true : false;
-                      const isVoteEndYn = storyData.board?.vote_end_yn == 'Y' ? true : false;
+                      const isVoteEnd = storyData.board?.vote_end_yn == 'Y' ? true : false;
 
-                      const firVoteMmbrCntVal = storyData.voteList[0]['vote_member_cnt'];
-                      const secVoteMmbrCntVal = storyData.voteList[1]['vote_member_cnt'];
+                      const firVoteMbrCnt = storyData.voteList[0]['vote_member_cnt'];
+                      const secVoteMbrCnt = storyData.voteList[1]['vote_member_cnt'];
 
-                      let baseColor = '#7A85EE';
-                      let textColor = '#333333';
-                      let _display = 'none';
+                      let bgColor = '#FFDD00';
+                    
+                      if(isVoteEnd && (firVoteMbrCnt != secVoteMbrCnt)) {
+                          bgColor = '#32F9E4';
+                      }
 
-                      // 작성자 여부 구분 처리
-                      if(memberBase?.member_seq == storyData.board?.member_seq) {
-                        if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal != secVoteMmbrCntVal)) {
-                          if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {                      
-                            baseColor = '#3616CF';
-                            _display = isVote ? 'flex' : 'none';
-                          } else {
-                            textColor = '#FFF';
-                            _display = isVote ? 'flex' : 'none';
-                          };
-                        } else {
-                          baseColor = '#999999';;
-                          textColor = '#999999';
-                          _display = isVote ? 'flex' : 'none';
-                        } 
-                      } else {
-                          if(storyData.board?.vote_end_yn == 'N'){
-                            if(isVote) {
-                              baseColor = '#3616CF';
-                              textColor = '#FFF';
-                              _display ='flex';
-                            }
-                          }else {
-                            if(storyData.board?.selected_vote_seq == item?.story_vote_seq) {
-                              baseColor = '#3616CF';
-                              textColor = '#FFF';
-                              _display = isVote ? 'flex' : 'none';
-                            }else {
-                              _display = isVote ? 'flex' : 'none';
-                            }
-                          }
-                          
-                          
-                          if(storyData.board?.vote_end_yn == 'Y' && (firVoteMmbrCntVal == secVoteMmbrCntVal)) {
-                            baseColor = '#999999';
-                            textColor = '#999999';
-                            _display = isVote ? 'flex' : 'none';
-                          }
-                      };
+
+                     
+
                       
                       return (
                         <>
                           <SpaceView viewStyle={_styles.voteVsArea}>
-                            <Text style={_styles.voteVsText}>{isVoteEndYn && (firVoteMmbrCntVal == secVoteMmbrCntVal) ? 'DRAW' : 'VS'}</Text>
+                            <Text style={_styles.voteVsText}>{isVoteEnd && (firVoteMbrCnt == secVoteMbrCnt) ? 'END' : 'VS'}</Text>
                           </SpaceView>
                       
                           <SpaceView key={index}>
+                            {/* 선택한 투표 표시 아이콘 */}
+                            {(storyData.board?.selected_vote_seq == item?.story_vote_seq) &&
+                              <Image source={ICON.chatRed} style={[styles.iconSquareSize(25), {position: 'absolute', top: 0, right: 15, zIndex: 10}]} />
+                            }
                             <TouchableOpacity
-                              disabled={isVote || isVoteEndYn}
+                              disabled={isVote || isVoteEnd}
                               onPress={() => { voteProc(item?.story_vote_seq) }}
                             >
 
-                              <SpaceView viewStyle={[layoutStyle.row]}>
+                              <SpaceView viewStyle={[layoutStyle.alignCenter, layoutStyle.justifyBetween, {marginHorizontal: 15}]}>
                                 {/* 투표 이미지 */}
                                 <SpaceView viewStyle={[_styles.voteArea, {borderColor: item?.order_seq ==  1 ? '#FFF' : '#7A85EE'}]}>
                                   <Image source={findSourcePath(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
                                 </SpaceView>
+
+                                {/* PICK 텍스트 */}
+                                <SpaceView viewStyle={_styles.voteMmbrCntArea(bgColor)}>
+                                  <Text style={_styles.votePickText}>
+                                    {item?.vote_member_cnt}
+                                  </Text>
+                                </SpaceView>
+
                                 {/* 투표 명 */}
                                 <SpaceView viewStyle={_styles.voteNameArea(item?.order_seq)}>
-                                  <Text numberOfLines={3} style={_styles.voteNameText(item?.order_seq)}>{item?.vote_name}</Text>
+                                  <Text style={_styles.voteNameText(item?.order_seq)}>{item?.vote_name}</Text>
                                 </SpaceView>
                               </SpaceView>
                             </TouchableOpacity>
-
-                            {/* PICK 텍스트 및 이미지 */}
-                            {isVoteEndYn && (storyData.board?.selected_vote_seq == item?.story_vote_seq) && (firVoteMmbrCntVal != secVoteMmbrCntVal) ?
-                              <> 
-                                <View style={_styles.voteMmbrCntArea}>
-                                  <Text style={_styles.votePickText}>PICK</Text>
-                                </View>
-                              </>
-                              : 
-                              <>
-                                {(!isVoteEndYn) &&
-                                  <>
-                                    <View style={[_styles.voteMmbrCntArea]}>
-                                      <Text style={_styles.voteCntText}>{item?.vote_member_cnt}표</Text>
-                                    </View>
-                                  </>
-                                }
-                              </>
-                            }
                           </SpaceView>
                         </>
                       )}
@@ -898,6 +863,7 @@ console.log('memberBase::', memberBase)
                     ) : (
                       <>
                         <TouchableOpacity
+                          style={_styles.imgCircle}
                           disabled={memberBase?.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
                           onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, false); }} >
                           <Image source={findSourcePath(storyData.board?.mst_img_path)} style={_styles.mstImgStyle} />
@@ -907,19 +873,22 @@ console.log('memberBase::', memberBase)
 
                           {memberBase?.member_seq != 905 && (
                             <>
-                              {/* 프로필 평점, 인증 레벨 */}
-                              {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5) || storyData.board?.profile_score >= 7.0) && (
+                              {/* 베스트 인상, 인증 레벨 */}
                                 <>
                                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <SpaceView viewStyle={{ backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
-                                      <Text style={_styles.scoreText}>LV {storyData.board?.auth_acct_cnt}</Text>
-                                    </SpaceView>
-                                    <SpaceView ml={5} viewStyle={{ backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
-                                      <Text style={_styles.scoreText}>#{memberBase?.best_face}</Text>
-                                    </SpaceView>
+                                    {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5)) && (
+                                      <SpaceView mr={5} viewStyle={{ borderTopRightRadius: 7, backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
+                                        <Text style={_styles.scoreText}>LV {storyData.board?.auth_acct_cnt}</Text>
+                                      </SpaceView>
+                                    )}
+                                    {memberBase?.best_face &&
+                                      <SpaceView viewStyle={{ borderTopRightRadius: 7, backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
+                                        <Text style={_styles.scoreText}>#{memberBase?.best_face}</Text>
+                                      </SpaceView>
+                                    }
                                   </SpaceView>
                                 </>
-                              )}
+                              
                             </>
                           )}
 
@@ -1079,49 +1048,13 @@ console.log('memberBase::', memberBase)
 
   /* ################################################################################################## 이미지 렌더링 */
   function ImageRender({ item }) {
-    //const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
-
-    //const url = findSourcePath(item?.img_file_path);  운영 반영시 적용
     let url = '';
-    // let baseColor = '#7A85EE';
-    // let baseColorArr = ['#7984ED', '#8759D5'];
-    // let textColor = '#ffffff';
-    // let btnText = '투표하기';
-
+    
     if(isEmptyData(item?.img_file_path)) {
       url = findSourcePath(item?.img_file_path);
     } else {
       url = findSourcePath(item?.file_path);
     };
-
-    // 작성자 여부 구분 처리
-    // if(memberBase?.member_seq == storyData.board?.member_seq) {
-    //   if(storyData.board?.vote_end_yn == 'Y') {
-    //     if(storyData.board?.selected_vote_seq != item?.story_vote_seq) {
-    //       baseColorArr = ['#FE0456', '#FE0456'];
-    //       baseColor = '#FE0456';
-    //       btnText = item?.vote_member_cnt + '표';
-    //     } else {
-    //       btnText = item?.vote_member_cnt + '표(PICK)';
-    //     }
-    //   } else {
-    //     baseColorArr = ['#7984ED', '#7984ED'];
-    //     btnText = item?.vote_member_cnt + '표';
-    //   }
-    // } else {
-    //   if(isVote) {
-    //     baseColorArr = ['#FE0456', '#FE0456'];
-    //     baseColor = '#FE0456';
-    //     btnText = '투표완료';
-    //   } else {
-    //     if(storyData.board?.vote_end_yn == 'Y') {
-    //       baseColorArr = ['#EEEEEE', '#EEEEEE'];
-    //       baseColor = '#DDDDDD';
-    //       textColor = '#555555';
-    //       btnText = '투표마감';
-    //     }
-    //   }
-    // };
 
     return (
       <>
@@ -1243,11 +1176,8 @@ const _styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   replyImageStyle: {
-    width: 25,
-    height: 25,
-    borderRadius: 20,
-    overflow: 'hidden',
-    marginRight: 5,
+    width: 40,
+    height: 40,
   },
   replyNickname: {
     fontFamily: 'Pretendard-Regular',
@@ -1259,12 +1189,13 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Light',
     fontSize: 12,
     color: '#E1DFD1',
-    marginTop: 6,
-    //flex: 0.8,
+    backgroundColor: 'green'
   }, 
   replyTextDel: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#999',
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#FFF6BE',
+    backgroundColor: 'red'
   },
   replyNicknameText: (storyType:string, gender:string) => {
     let clr = '#D5CD9E';
@@ -1287,11 +1218,10 @@ const _styles = StyleSheet.create({
     fontSize: 12,
   },
   replyItemEtcWrap: {
-    width: '97%',
-    height: 17,
+    width: '93%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
   },
   replyTextStyle: {
     fontFamily: 'Pretendard-Light',
@@ -1317,11 +1247,6 @@ const _styles = StyleSheet.create({
   },
   likeArea: {
     flexDirection: 'row',
-    //alignItems: 'flex-start',
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    //width: 80,
   },
   nicknameText: (isSecret:boolean, gender:string, _frSize:number) => {
     let clr = '#D5CD9E';
@@ -1339,6 +1264,17 @@ const _styles = StyleSheet.create({
       color: clr,
     };
   },
+  imgCircle: {
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#FFDD00',
+    width: 40,
+    height: 40,
+    overflow: 'hidden',
+    borderRadius: 50,
+    marginRight: 5,
+  },
   scoreText: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 11,
@@ -1351,7 +1287,7 @@ const _styles = StyleSheet.create({
   },
   voteVsArea: {
     width: 55,
-    height: 26,
+    paddingVertical: 3,
     backgroundColor: '#333B41',
     position: 'absolute',
     top: '50%',
@@ -1372,11 +1308,10 @@ const _styles = StyleSheet.create({
     borderRadius: 70,
     width: 110,
     height: 110,
-    paddingHorizontal: 13,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 999,
+    zIndex: -1,
   },
   voteViewArea: (bgColor: string) => {
     return {
@@ -1398,15 +1333,14 @@ const _styles = StyleSheet.create({
   },
   voteNameArea: (orderSeq) => {
     return {
-      zIndex: -1,
+      zIndex: -2,
       backgroundColor: orderSeq == 1 ? '#FFF' : '#7A85EE',
-      width: width - 100,
-      paddingVertical: 15,
+      width: width - 130,
+      height: 50,
       position: 'absolute',
-      top: orderSeq == 1 ? 0.5 : 62,
-      left: orderSeq == 1 ? 30 : -width + 140,
-      transform: [{translateX: 25}, {translateY: 0}],
-    }
+      top: orderSeq == 1 ? 0.5 : 60,
+      left: orderSeq == 1 ? 50 : -width + 190,
+    };
   },
   voteNameText: (orderSeq) => {
     return {
@@ -1414,7 +1348,7 @@ const _styles = StyleSheet.create({
       fontFamily: 'Pretendard-Regular',
       fontSize: 14,
       textAlign: 'center',
-    }
+    };
   },
   voteDescArea: {
     flexDirection: 'row',
@@ -1448,28 +1382,27 @@ const _styles = StyleSheet.create({
   mstImgStyle: {
     width: 40,
     height: 40,
-    borderRadius: 50,
-    overflow: 'hidden',
-    marginRight: 7,
   },
   voteImgStyle: {
     width: 110,
     height: 110,
   },
-  voteMmbrCntArea: {
-    width: width,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    zIndex: 10,
+  voteMmbrCntArea: (bgColor:string) => {
+    return {
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 3,
+      backgroundColor: bgColor,
+      paddingVertical: 2,
+      paddingHorizontal: 10,
+      borderRadius: 30,
+      marginTop: -10,
+    };
   },
   votePickText: {
     color: '#FFF',
-    fontSize: 18,
-    fontFamily: 'Pretendard-Bold',
-    marginTop: -60,
+    fontSize: 10,
+    fontFamily: 'Pretendard-Regular',
   },
   votePickImg: {
     zIndex: 1,
@@ -1482,8 +1415,8 @@ const _styles = StyleSheet.create({
   },
   voteCntText: {
     color: '#FFF',
-    fontSize: 20,
-    fontFamily: 'Pretendard-Medium',
+    fontSize: 10,
+    fontFamily: 'Pretendard-Regular',
   },
   ivoryDot: {
     width: 4,
@@ -1500,7 +1433,7 @@ const _styles = StyleSheet.create({
   },
   myReplyChk: {
     position: 'absolute',
-    bottom: -5,
+    bottom: -2,
     left: 0,
     zIndex: 1,
     backgroundColor: '#fff',
