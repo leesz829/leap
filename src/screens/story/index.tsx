@@ -81,6 +81,43 @@ export const Story = () => {
     });
   };
 
+  // ##################################################################################### 탭 관련
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const dataRef = useRef(null);
+
+  // 탭 목록
+  const [tabs, setTabs] = React.useState([
+    {
+      type: 'STORY',
+      title: '스토리',
+      data: [],
+      isNew: false,
+    },
+    {
+      type: 'ALARM',
+      title: '알림',
+      data: [],
+      isNew: false,
+    },
+    {
+      type: 'BOARD',
+      title: '내가쓴글',
+      data: [],
+      isNew: false,
+    },
+  ]);
+
+  const onPressDot = async (index:any, type:any) => {
+    console.log('index ::::: ' , index);
+    if(isEmptyData(dataRef?.current)) {
+      setCurrentIndex(index);
+      //dataRef?.current?.snapToItem(index);
+      //dataRef?.current?.scrollToIndex({index:2});
+    };
+  };
+
+
+
   // ##################################################################################### 목록 새로고침
   const handleRefresh = () => {
     console.log('refresh!!!!!!!!!!!!!!');
@@ -276,9 +313,9 @@ export const Story = () => {
   const RenderListItem = React.memo(({ item, type }) => {
     const storyBoardSeq = item.story_board_seq; // 스토리 게시글 번호
     const storyType = item?.story_type; // 스토리 유형
-    const imgPath = findSourcePath(item?.story_img_path);
-    const voteImgPath01 = findSourcePath(item?.vote_img_path_01);
-    const voteImgPath02 = findSourcePath(item?.vote_img_path_02);
+    const imgPath = findSourcePathLocal(item?.story_img_path);
+    const voteImgPath01 = findSourcePathLocal(item?.vote_img_path_01);
+    const voteImgPath02 = findSourcePathLocal(item?.vote_img_path_02);
     const secretYn = item?.secret_yn;
 
     let _width = 0; // 가로길이
@@ -547,8 +584,34 @@ export const Story = () => {
 
       <TopNavigation currentPath={'Story'} />
 
-      <SpaceView>
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
 
+        {/* ############################################################################################################
+        ###### 탭 영역
+        ############################################################################################################ */}
+        <SpaceView mt={10}>
+          <SpaceView viewStyle={layoutStyle.alignCenter}>
+            <SpaceView viewStyle={_styles.tabArea}>
+              {tabs.map((item, index) => (
+                <>
+                  <SpaceView key={index}>
+                    <TouchableOpacity onPress={() => { onPressDot(index); }}>
+                        <Text style={_styles.tabText(currentIndex == index)}>{item.title}</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </>
+              ))}
+            </SpaceView>
+          </SpaceView>
+        </SpaceView>
+
+        {/* ############################################################################################################
+        ###### 컨텐츠 영역
+        ############################################################################################################ */}
         {storyList.length > 0 ? (
           <>
             <FlatList
@@ -697,7 +760,7 @@ export const Story = () => {
           </>
         )}
 
-      </SpaceView>
+      </LinearGradient>
 
       {/* ###################################################################################################### 하단 버튼 */}
       <SpaceView viewStyle={_styles.btnArea}>
@@ -740,13 +803,29 @@ const _styles = StyleSheet.create({
   wrap: {
     backgroundColor: '#fff',
   },
+  tabArea: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#292F33',
+    borderRadius: Platform.OS == 'ios' ? 20 : 50,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    width: '50%',
+  },
+  tabText: (isOn: boolean) => {
+		return {
+			fontFamily: 'MinSans-Bold',
+			color: isOn ? '#FFDD00' : '#445561',
+		};
+	},
   contentWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     paddingTop: 5,
     paddingBottom: 50,
     paddingHorizontal: 5,
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
     width: width,
     height: height-120,
   },
@@ -803,7 +882,7 @@ const _styles = StyleSheet.create({
     };
   },
   dummyText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     color: '#fff',
   },
   btnArea: {
@@ -828,7 +907,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     color: '#fff',
   },
   profileArea: {
@@ -943,7 +1022,7 @@ const _styles = StyleSheet.create({
     backgroundColor: 'rgba(38,38,38,0.9)',
     width: 100,
     paddingVertical: 2,
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 13,
     color: '#fff',
     borderRadius: 10,
@@ -966,7 +1045,7 @@ const _styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   noDataText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: '#555555',
     fontSize: 15,
   },

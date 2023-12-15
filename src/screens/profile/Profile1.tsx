@@ -424,6 +424,7 @@ export const Profile1 = (props: Props) => {
         bounces={false}
         showsVerticalScrollIndicator={false}
         style={{flexGrow: 1}}>
+          
         <LinearGradient
           colors={['#3D4348', '#1A1E1C']}
           start={{ x: 0, y: 0 }}

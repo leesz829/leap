@@ -106,9 +106,11 @@ export default function AuthInfoPopup({ isVisible, setIsVisible, closeModal, con
                                 <Image source={authIcon} style={styles.iconSquareSize(20)} />
                               </SpaceView>
 
-                              <SpaceView pt={3} viewStyle={{justifyContent: 'center'}}>
-                                <Text style={_styles.sloganText}>중견기업 대표</Text>
-                              </SpaceView>
+                              {isEmptyData(item?.auth_slogan) && (
+                                <SpaceView pt={3} viewStyle={{justifyContent: 'center'}}>
+                                  <Text style={_styles.sloganText}>{item?.auth_slogan}</Text>
+                                </SpaceView>
+                              )}
                             </SpaceView>
 
                             <SpaceView>

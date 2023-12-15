@@ -737,7 +737,7 @@ export const Storage = (props: Props) => {
         {/* ############################################################################################################
         ###### 탭 영역
         ############################################################################################################ */}
-        <SpaceView mt={10}>
+        <SpaceView mb={10}>
           <SpaceView viewStyle={layoutStyle.alignCenter}>
             <SpaceView viewStyle={_styles.tabArea}>
               {tabs.map((item, index) => (
@@ -756,7 +756,7 @@ export const Storage = (props: Props) => {
         {/* ############################################################################################################
         ###### 컨텐츠 영역
         ############################################################################################################ */}
-        <SpaceView viewStyle={{flex: 1, height: height}} mb={160} mt={40}>
+        <SpaceView viewStyle={{flex: 1}} mb={160} mt={40}>
           {!tabs[currentIndex].data.length ?
               <SpaceView viewStyle={_styles.noData}>
                 <Text ref={dataRef} style={_styles.noDataText}>

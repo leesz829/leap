@@ -45,6 +45,14 @@ export default function MileageShop() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
 
+  const [brandList, setBrandList] = useState([
+    {brand_seq: 0, brand_name: 'ALL', logoPath: null, data: [],},
+    {brand_seq: 7, brand_name: '네이버', logoPath: ICON.naverLogo, data: [],},
+    {brand_seq: 15, brand_name: '스타벅스', logoPath: ICON.starbucksLogo, data: [],},
+  ]);
+
+  const [currentTab, setCurrentTab] = useState(brandList[0]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -131,6 +139,7 @@ export default function MileageShop() {
         const { success: sp, data: pd } = await get_product_list();
         if (sp) {
           setData(pd?.prod_list);
+
         };
       };
 
@@ -154,8 +163,10 @@ export default function MileageShop() {
   }, [tab]);
 
   const onPressTab = (value) => {
-    setIsLoading(true);
-    setTab(value);
+    //setIsLoading(true);
+    //setTab(value);
+    console.log('value ::::: ' , value);
+    setCurrentTab(value);
   };
 
   // ######################################################### 주문내역 이동
@@ -187,27 +198,23 @@ export default function MileageShop() {
         end={{ x: 0, y: 1 }}
         style={_styles.root}>
 
-        <ListHeaderComponent onPressTab={onPressTab} tab={tab} />
+        <ListHeaderComponent onPressTab={onPressTab} tab={brandList} />
 
         <SectionGrid
           itemDimension={tab.value == 'gifticon' ? (Dimensions.get('window').width -75) / 2 : Dimensions.get('window').width - 37}
           sections={data}
           fixed={true}
-          /* ListHeaderComponent={
-            
-          } */
           stickySectionHeadersEnabled={false}
           // 상시판매 프로세스 적용으로 인해 삭제
           // renderSectionHeader={renderSectionHeader}
           renderItem={(props) => {
             //console.log('props : ', JSON.stringify(props));
             const { item, index, rowIndex } = props;
+            //console.log('item ::::: ' , item);
             return (
               <>
-                {!isLoading ? (
+                {(!isLoading && (currentTab.brand_seq == 0 || currentTab.brand_seq == item?.brand_seq)) && (
                   <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} />
-                ) : (
-                  <View></View>
                 )}
               </>
             )
@@ -241,7 +248,7 @@ const RenderCategory = ({ onPressTab, tab }) => {
   };
 
   useEffect(() => { 
-    fetch();
+    //fetch();
 
     // timer = setInterval(fnAuctTimeCount, 1000);
     // return () => clearInterval(timer);
@@ -267,6 +274,25 @@ const RenderCategory = ({ onPressTab, tab }) => {
       {/* {prodData?.map((item, index) => (
         console.log('itemL:::::::', item.data)
       ))} */}
+
+
+      {tab?.map((item, index) => {
+        return (
+          <SpaceView key={'brand_'+index} mr={10}>
+            <TouchableOpacity onPress={() => onPressTab(item)}>
+              {/* <Text>{item?.brand_name}</Text> */}
+
+              {item?.brand_seq == 0 ? (
+                <Text style={_styles.brandAllLogo}>ALL</Text>
+              ) : (
+                <Image source={item?.logoPath} style={styles.iconSquareSize(75)} />
+              )}
+            </TouchableOpacity>
+          </SpaceView>
+        );
+      })}
+
+
     </ScrollView>
 
   
@@ -409,6 +435,8 @@ const RenderItem = ({ item, type, callFn }) => {
       //setErrMsg(JSON.stringify(err));
     }
   }
+
+  console.log('item?.prod_name :::::::: ' , item?.prod_name);
 
   return (
     <>
@@ -605,7 +633,7 @@ const _styles = StyleSheet.create({
   },
   categoryText: (isSelected: boolean) => {
     return {
-      fontFamily: 'AppleSDGothicNeoM00',
+      fontFamily: 'Pretendard-Medium',
       fontSize: 14,
       color: isSelected ? Color.primary : '#A5A5A5',
       textAlign: 'center',
@@ -614,6 +642,7 @@ const _styles = StyleSheet.create({
   renderItem: {
     width: (Dimensions.get('window').width - 75) / 2,
     flex: 1,
+    flexWrap: 'wrap',
   },
   renderItem02: {
     position: 'relative',
@@ -756,7 +785,7 @@ const _styles = StyleSheet.create({
    let fontColor = (type=='SCND'?'#FFC100':'#fff');
    
    return {
-     fontFamily: 'AppleSDGothicNeoM00',
+     fontFamily: 'Pretendard-Medium',
      fontSize: 10,
      color: fontColor,
      //backgroundColor: backgroundColor,
@@ -770,18 +799,29 @@ const _styles = StyleSheet.create({
   },
   bidText: (color:string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoM00',
+      fontFamily: 'Pretendard-Medium',
       fontSize: 10,
       color: color,
     };
   },
   bidSubText: (color:string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoM00',
+      fontFamily: 'Pretendard-Medium',
       fontSize: 8,
       color: color,
     };
-  },  
+  },
+  brandAllLogo: {
+    width: 75,
+    height: 75,
+    backgroundColor: '#D5CD9E',
+    borderRadius: 50,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
+    color: '#fff',
+  },
 
 });
 
