@@ -1,50 +1,26 @@
-import { useIsFocused, useNavigation, useFocusEffect, RouteProp  } from '@react-navigation/native';
-import { CommonCode, FileInfo, LabelObj, ProfileImg, LiveMemberInfo, LiveProfileImg, StackParamList, ScreenNavigationProp, ColorType } from '@types';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
-import { CommonText } from 'component/CommonText';
-import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback } from 'react-native';
-import { get_story_active, save_story_like, profile_open } from 'api/models';
-import { findSourcePath, IMAGE, findSourcePathLocal } from 'utils/imageUtils';
-import { usePopup } from 'Context';
-import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
-import { useDispatch } from 'react-redux';
-import Image from 'react-native-fast-image';
-import { ICON } from 'utils/imageUtils';
-import { useUserInfo } from 'hooks/useUserInfo';
+import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
+import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
+import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
+import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 import { isEmptyData } from 'utils/functions';
-import CommonHeader from 'component/CommonHeader';
-import { STACK } from 'constants/routes';
-import { CommonImagePicker } from 'component/CommonImagePicker';
-import { Modalize } from 'react-native-modalize';
-import { CommonTextarea } from 'component/CommonTextarea';
-import { CommonLoading } from 'component/CommonLoading';
-import Modal from 'react-native-modal';
-import ReplyRegiPopup from 'component/story/ReplyRegiPopup';
-import LikeListPopup from 'component/story/LikeListPopup';
+import { useUserInfo } from 'hooks/useUserInfo';
+import { usePopup } from 'Context';
+import { STACK, ROUTES } from 'constants/routes';
+import { get_story_active, save_story_like, profile_open } from 'api/models';
+import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 
 
-
-/* ################################################################################################################
-###### Story 활동 정보
-################################################################################################################ */
 
 const { width, height } = Dimensions.get('window');
 
-interface Props {
-  navigation: StackNavigationProp<StackParamList, 'StoryActive'>;
-  route: RouteProp<StackParamList, 'StoryActive'>;
-}
-
-export default function StoryActive(props: Props) {
+export default function ActiveRender({ dataList, type, selectCallbackFn }) {
   const navigation = useNavigation<ScreenNavigationProp>();
-  const isFocus = useIsFocused();
 
-  const baseRef = React.useRef(); // 기본 인덱스
-  const memberBase = useUserInfo(); // 본인 데이터
+  const memberBase = useUserInfo();
 
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = React.useState(false); // 로딩 상태 체크
@@ -75,20 +51,6 @@ export default function StoryActive(props: Props) {
     setCurrentIndex(index);
   };
 
-  const handleTabPress = (index) => {
-    baseRef.current.scrollToIndex({ animated: true, index: index });
-  };
-
-  // ############################################################################# 수정하기 이동
-  const goStoryModfy = async () => {
-    navigation.navigate(STACK.COMMON, {
-      screen: 'StoryEdit',
-      params: {
-        storyBoardSeq: storyBoardSeq,
-      }
-    });
-  };
-
   // ############################################################################# 스토리 상세 이동
   const goStoryDetail = async (storyBoardSeq:number) => {
     navigation.navigate(STACK.COMMON, {
@@ -97,39 +59,6 @@ export default function StoryActive(props: Props) {
         storyBoardSeq: storyBoardSeq,
       }
     });
-  };
-
-  // ############################################################################# 스토리 활동 정보 조회
-  const getStoryActive = async () => {
-    try {
-      setIsLoading(true);
-
-      const body = {
-        
-      };
-
-      const { success, data } = await get_story_active(body);
-      if(success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            setActiveData({
-              alarmData: data?.alarm_data,
-              storyData: data?.story_data,
-            });
-          
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            break;
-        }
-      } else {
-        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   // ############################################################################# 게시글 좋아요 저장
@@ -151,7 +80,7 @@ export default function StoryActive(props: Props) {
         if(success) {
           switch (data.result_code) {
             case SUCCESS:
-              getStoryActive();
+              selectCallbackFn();
               break;
             default:
               show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -268,7 +197,7 @@ export default function StoryActive(props: Props) {
   // 댓글 등록 콜백 함수
   const replyRegiCallback = async (_isRegi:boolean) => {
     if(_isRegi) {
-      getStoryActive();
+      selectCallbackFn();
     };
 
     setIsReplyVisible(false);
@@ -302,9 +231,7 @@ export default function StoryActive(props: Props) {
     setIsLikeListPopup(false);
   };
 
-  /* ##################################################################################################################################
-  ################## 렌더링 함수
-  ################################################################################################################################## */
+
 
   // ############################################################################# 알림 렌더링
   const AlarmRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
@@ -529,157 +456,79 @@ export default function StoryActive(props: Props) {
     );
   };
 
-  /* ##################################################################################################################################
-  ################## 초기 실행 함수
-  ################################################################################################################################## */
-  React.useEffect(() => {
-    if(isFocus) {
-      getStoryActive();
-    };
-  }, [isFocus]);
-
   return (
     <>
-      {isLoading && <CommonLoading />}
-
-      <CommonHeader title={'스토리 활동 이력'} />
-
-      <LinearGradient
-					colors={['#3D4348', '#1A1E1C']}
-					start={{ x: 0, y: 0 }}
-					end={{ x: 0, y: 1 }}
-					style={_styles.wrap}
-				>
-
-        {/* ###################################################################################### 탭 영역 */}
-        <SpaceView viewStyle={[layoutStyle.alignCenter, layoutStyle.justifyCenter]}>
-          <SpaceView viewStyle={_styles.tabWrap}>
-            <TouchableOpacity style={_styles.tabItem(currentIndex == 0 ? true : false)} onPress={() => {handleTabPress(0)}}>
-              <Text style={_styles.tabItemText(currentIndex == 0 ? true : false)}>스토리</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={_styles.tabItem(currentIndex == 1 ? true : false)} onPress={() => {handleTabPress(1)}}>
-              <Text style={_styles.tabItemText(currentIndex == 1 ? true : false)}>내가쓴글</Text>
-            </TouchableOpacity>
-          </SpaceView>
-        </SpaceView>
-
-        {/* ###################################################################################### 컨텐츠 영역 */}
-        <SpaceView>
-          <FlatList
-            ref={baseRef}
-            data={['새소식', '내가쓴글']}
-            onScroll={handleScroll}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            pagingEnabled
-            renderItem={({ item, index }) => {
-              return (
-                <View key={'active_' + index} style={{width: width}}>
-                  {index == 0 ? (
-                    <>
-                      {/* ###################################################################### 새소식 */}
-
-                      {activeData.alarmData.length > 0 ? (
-                        <FlatList
-                          style={{height: height-135}}
-                          contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
-                          contentInset={{ bottom: 50 }}
-                          data={activeData.alarmData}
-                          keyExtractor={(item, index) => index.toString()}
-                          showsVerticalScrollIndicator={false}
-                          removeClippedSubviews={true}
-                          /* getItemLayout={(data, index) => (
-                            {
-                                length: (width - 54) / 2,
-                                offset: ((width - 54) / 2) * index,
-                                index
-                            }
-                          )} */
-                          renderItem={({ item: innerItem, index: innerIndex }) => {
-                            return (
-                              <View key={'alarm_' + index}>
-                                <AlarmRender item={innerItem} index={innerIndex} likeFunc={storyLikeProc} replyModalOpenFunc={replyModalOpen} />
-                              </View>
-                            )
-                          }}
-                        />
-                      ) : (
-                        <SpaceView viewStyle={_styles.noData}>
-                          <Text style={_styles.noDataText}>새소식이 없습니다.</Text>
-                        </SpaceView>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {/* ###################################################################### 내가쓴글 */}
-
-                      {activeData.storyData.length > 0 ? (
-                        <FlatList
-                          style={{height: height-135}}
-                          contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
-                          contentInset={{ bottom: 50 }}
-                          data={activeData.storyData}
-                          keyExtractor={(item, index) => index.toString()}
-                          showsVerticalScrollIndicator={false}
-                          removeClippedSubviews={true}
-                          /* getItemLayout={(data, index) => (
-                            {
-                                length: (width - 54) / 2,
-                                offset: ((width - 54) / 2) * index,
-                                index
-                            }
-                          )} */
-                          renderItem={({ item: innerItem, index: innerIndex }) => {
-                            return (
-                              <View key={'alarm_' + index}>
-                                <MyStoryRender item={innerItem} index={innerIndex} />
-                              </View>
-                            )
-                          }}
-                        />
-                      ) : (
-                        <SpaceView viewStyle={_styles.noData}>
-                          <Text style={_styles.noDataText}>내가쓴글이 없습니다.</Text>
-                        </SpaceView>
-                      )}                                       
-                    </>
-                  )}
-                </View>
-              )
-            }}
-          />
-
-        </SpaceView>
-      </LinearGradient>
-
-      {/* ##################################################################################
-                댓글 입력 팝업
-      ################################################################################## */}
-      <ReplyRegiPopup 
-        isVisible={isReplyVisible} 
-        storyBoardSeq={selectedReplyData.storyBoardSeq}
-        storyReplySeq={selectedReplyData.storyReplySeq}
-        depth={selectedReplyData.depth}
-        callbackFunc={replyRegiCallback} 
-      />
-
-      {/* ##################################################################################
-                좋아요 목록 팝업
-      ################################################################################## */}
-      <LikeListPopup
-        isVisible={isLikeListPopup}
-        closeModal={likeListCloseModal}
-        type={likeListTypePopup}
-        _storyBoardSeq={selectedReplyData.storyBoardSeq}
-        storyReplyData={selectedReplyData}
-        replyInfo={replyInfo}
-        profileOpenFn={profileCardOpenPopup}
-      />
-
+      {type == 'ALARM' ? (
+        <>
+          {dataList.length > 0 ? (
+            <FlatList
+              style={{height: height-200}}
+              contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
+              contentInset={{ bottom: 50 }}
+              data={dataList}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              removeClippedSubviews={true}
+              /* getItemLayout={(data, index) => (
+                {
+                    length: (width - 54) / 2,
+                    offset: ((width - 54) / 2) * index,
+                    index
+                }
+              )} */
+              renderItem={({ item: innerItem, index: innerIndex }) => {
+                return (
+                  <View key={'alarm_' + innerIndex}>
+                    <AlarmRender item={innerItem} index={innerIndex} likeFunc={storyLikeProc} replyModalOpenFunc={replyModalOpen} />
+                  </View>
+                )
+              }}
+            />
+          ) : (
+            <SpaceView viewStyle={_styles.noData}>
+              <Text style={_styles.noDataText}>새소식이 없습니다.</Text>
+            </SpaceView>
+          )}
+        </>
+      ) : (
+        <>
+          {dataList.length > 0 ? (
+            <FlatList
+              style={{height: height-200}}
+              contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가
+              contentInset={{ bottom: 50 }}
+              data={dataList}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              removeClippedSubviews={true}
+              /* getItemLayout={(data, index) => (
+                {
+                    length: (width - 54) / 2,
+                    offset: ((width - 54) / 2) * index,
+                    index
+                }
+              )} */
+              renderItem={({ item: innerItem, index: innerIndex }) => {
+                return (
+                  <View key={'alarm_' + innerIndex}>
+                    <MyStoryRender item={innerItem} index={innerIndex} />
+                  </View>
+                )
+              }}
+            />
+          ) : (
+            <SpaceView viewStyle={_styles.noData}>
+              <Text style={_styles.noDataText}>내가쓴글이 없습니다.</Text>
+            </SpaceView>
+          )}     
+        </>
+      )}
     </>
   );
 
-};
+}
+
+
 
 
 {/* #######################################################################################################
@@ -687,13 +536,13 @@ export default function StoryActive(props: Props) {
 ##################### Style 영역
 ###########################################################################################################
 ####################################################################################################### */}
-
 const _styles = StyleSheet.create({
-	wrap: {
+  
+  wrap: {
 		minHeight: height,
 	},
   alarmWrap: {
-    paddingVertical: 20,
+    //paddingVertical: 20,
   },
   alarmTitle: {
     paddingHorizontal: 15,
@@ -840,5 +689,5 @@ const _styles = StyleSheet.create({
     color: '#555555',
     fontSize: 15,
   },
-  
+
 });

@@ -72,6 +72,7 @@ export default function StoryDetail(props: Props) {
     imageList: [],
     voteList: [],
     replyList: [],
+    voteInfo: {},
   });
 
   // 이미지 인덱스
@@ -242,11 +243,27 @@ export default function StoryDetail(props: Props) {
           case SUCCESS:
 
             if(isEmptyData(data.story?.story_board_seq)) {
+
+              // 투표 정보 구성
+              let _voteInfo = {};
+              if(data?.story?.story_type == 'VOTE' && data?.story_vote_list?.length > 1) {
+                let isVoteEnd = data?.story?.vote_end_yn == 'Y' ? true : false; // 투표 종료 여부
+                let isVoteDraw = data?.story_vote_list[0].vote_member_cnt == data?.story_vote_list[1].vote_member_cnt ? true : false;
+                let voteWinIdx = data?.story_vote_list[0].vote_member_cnt > data?.story_vote_list[1].vote_member_cnt ? 1 : 2;
+
+                _voteInfo = {
+                  isVoteEnd: isVoteEnd,
+                  isVoteDraw: isVoteDraw,
+                  voteWinIdx: voteWinIdx,
+                }
+              }
+
               setStoryData({
                 board: data.story,
                 imageList: data.story_img_list,
                 replyList: data.story_reply_list,
                 voteList: data.story_vote_list,
+                voteInfo: _voteInfo,
               });
             } else {
               show({
@@ -760,84 +777,105 @@ export default function StoryDetail(props: Props) {
                 horizontal
                 pagingEnabled
               />
-            </SpaceView>
 
-            {/* ###################################################################################### 투표 선택 영역 */}
-            {storyData.board?.story_type == 'VOTE' && (
-              <SpaceView>
-                <SpaceView viewStyle={_styles.voteSelectArea}>
+              {/* ###################################################################################### 투표 선택 영역 */}
+              {storyData.board?.story_type == 'VOTE' && (
+                <>
+                  <SpaceView viewStyle={{position: 'absolute', bottom: 20, left: 0, right: 0, zIndex: 1,}}>
 
-                  <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
-                    {storyData.voteList?.map((item, index) => {
-                      console.log('item:::', item)
-                      const isVote = item?.vote_yn == 'Y' ? true : false; // 투표 여부
-                      const isVoteEnd = storyData.board?.vote_end_yn == 'Y' ? true : false;
-
-                      const firVoteMbrCnt = storyData.voteList[0]['vote_member_cnt'];
-                      const secVoteMbrCnt = storyData.voteList[1]['vote_member_cnt'];
-
-                      let bgColor = '#FFDD00';
-                    
-                      if(isVoteEnd && (firVoteMbrCnt != secVoteMbrCnt)) {
-                          bgColor = '#32F9E4';
-                      }
-                      
-                      return (
-                        <>
-                          <SpaceView viewStyle={_styles.voteVsArea}>
-                            <Text style={_styles.voteVsText}>{isVoteEnd && (firVoteMbrCnt == secVoteMbrCnt) ? 'END' : 'VS'}</Text>
-                          </SpaceView>
-                      
-                          <SpaceView key={index}>
-                            {/* 선택한 투표 표시 아이콘 */}
-                            {(storyData.board?.selected_vote_seq == item?.story_vote_seq) &&
-                              <Image source={ICON.chatRed} style={[styles.iconSquareSize(25), {position: 'absolute', top: 0, right: 15, zIndex: 10}]} />
-                            }
-                            <TouchableOpacity
-                              disabled={isVote || isVoteEnd}
-                              onPress={() => { voteProc(item?.story_vote_seq) }}
-                            >
-
-                              <SpaceView viewStyle={[layoutStyle.alignCenter, layoutStyle.justifyBetween, {marginHorizontal: 15}]}>
-                                {/* 투표 이미지 */}
-                                <SpaceView viewStyle={[_styles.voteArea, {borderColor: item?.order_seq ==  1 ? '#FFF' : '#7A85EE'}]}>
-                                  <Image source={findSourcePath(item?.file_path)} style={_styles.voteImgStyle} resizeMode={'cover'} />
-                                </SpaceView>
-
-                                {/* PICK 텍스트 */}
-                                <SpaceView viewStyle={_styles.voteMmbrCntArea(bgColor)}>
-                                  <Text style={_styles.votePickText}>
-                                    {item?.vote_member_cnt}
-                                  </Text>
-                                </SpaceView>
-
-                                {/* 투표 명 */}
-                                <SpaceView viewStyle={_styles.voteNameArea(index)}>
-                                  <Text style={_styles.voteNameText(item?.order_seq)}>{item?.vote_name}</Text>
-                                </SpaceView>
-                              </SpaceView>
-                            </TouchableOpacity>
-                          </SpaceView>
-                        </>
-                      )}
+                    {/* 투표 선택 알림글 */}
+                    {isEmptyData(storyData.board?.vote_time_text) && (
+                      <>
+                        <SpaceView pl={20} mb={5} viewStyle={{width: '100%',}}>
+                          <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.&nbsp;
+                              <Text style={_styles.voteTimeText}>{storyData.board?.vote_time_text}</Text>
+                          </Text>
+                        </SpaceView>
+                      </>
                     )}
 
-                  </SpaceView>
-                </SpaceView>
+                    <SpaceView viewStyle={_styles.voteSelectArea}>
+                      {storyData.voteList?.length > 1 && (
+                        <SpaceView mb={20} viewStyle={_styles.voteArea}>
 
-                {/* 투표 선택 알림글 */}
-                {isEmptyData(storyData.board?.vote_time_text) && (
-                  <>
-                    <SpaceView pl={20} mt={15} viewStyle={{width: '100%',}}>
-                      <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.&nbsp;
-                          <Text style={_styles.voteTimeText}>{storyData.board?.vote_time_text}</Text>
-                      </Text>
+                          {/* ########################## 투표 이미지 영역 1 */}
+                          <TouchableOpacity 
+                            disabled={storyData.voteList[0]?.vote_yn == 'Y' || storyData?.voteInfo?.isVoteEnd}
+                            onPress={() => { voteProc(storyData.voteList[0]?.story_vote_seq) }}
+                            style={_styles.voteImgArea(0)}
+                          >
+                            <SpaceView viewStyle={_styles.voteImgStyle('#FFFFFF')}>
+                              <Image source={findSourcePathLocal(storyData.voteList[0]?.file_path)} style={styles.iconSquareSize(85)} resizeMode={'cover'} />
+                            </SpaceView>
+
+                            {/* 선택한 투표 표시 */}
+                            {storyData.voteList[0]?.vote_yn == 'Y' &&
+                              <Image source={ICON.chatRed} style={[styles.iconSquareSize(25), {position: 'absolute', top: 0, right: -3, zIndex: 1}]} />
+                            }
+
+                            {/* 투표 갯수 */}
+                            <SpaceView viewStyle={_styles.voteMmbrCntArea(storyData?.voteInfo?.isVoteEnd, storyData?.voteInfo?.isVoteDraw, storyData?.voteInfo?.voteWinIdx == 1)}>
+                              <Text style={_styles.votePickText}>
+                                {storyData?.voteInfo?.isVoteEnd && !storyData?.voteInfo?.isVoteDraw && storyData?.voteInfo?.voteWinIdx == 1 ? 'PICK' : storyData.voteList[0]?.vote_member_cnt + '표'}
+                              </Text>
+                            </SpaceView>
+                          </TouchableOpacity>
+
+                          {/* ########################## 투표 이미지 영역 2 */}
+                          <TouchableOpacity
+                            disabled={storyData.voteList[1]?.vote_yn == 'Y' || storyData?.voteInfo?.isVoteEnd}
+                            onPress={() => { voteProc(storyData.voteList[1]?.story_vote_seq) }}
+                            style={_styles.voteImgArea(1)}
+                          >
+                            <SpaceView viewStyle={_styles.voteImgStyle('#5A707F')}>
+                              <Image source={findSourcePathLocal(storyData.voteList[1]?.file_path)} style={styles.iconSquareSize(85)} resizeMode={'cover'} />
+                            </SpaceView>
+
+                            {/* 선택한 투표 표시 */}
+                            {storyData.voteList[1]?.vote_yn == 'Y' &&
+                              <Image source={ICON.chatRed} style={[styles.iconSquareSize(25), {position: 'absolute', top: 0, right: -3, zIndex: 1}]} />
+                            }
+
+                            {/* 투표 갯수 */}
+                            <SpaceView viewStyle={_styles.voteMmbrCntArea(storyData?.voteInfo?.isVoteEnd, storyData?.voteInfo?.isVoteDraw, storyData?.voteInfo?.voteWinIdx == 2)}>
+                              <Text style={_styles.votePickText}>
+                                {storyData?.voteInfo?.isVoteEnd && !storyData?.voteInfo?.isVoteDraw && storyData?.voteInfo?.voteWinIdx == 2 ? 'PICK' : storyData.voteList[1]?.vote_member_cnt + '표'}
+                              </Text>
+                            </SpaceView>
+                          </TouchableOpacity>
+
+                          {/* ########################## 투표 명 */}
+                          <SpaceView>
+                            <SpaceView mb={13} viewStyle={_styles.voteNameArea(0)}>
+                              <Text style={_styles.voteNameText('#000000')}>{storyData.voteList[0]?.vote_name}</Text>
+                            </SpaceView>
+
+                            <SpaceView viewStyle={_styles.voteNameArea(1)}>
+                              <Text style={_styles.voteNameText('#FFFFFF')}>{storyData.voteList[1]?.vote_name}</Text>
+                            </SpaceView>
+                          </SpaceView>
+
+                          {/* ########################## VS OR END 표기 */}
+                          <SpaceView viewStyle={_styles.voteVsArea}>
+                            <Text style={_styles.voteVsText}>{storyData?.voteInfo?.isVoteEnd ? 'END' : 'VS'}</Text>
+                          </SpaceView>
+
+                        </SpaceView>
+                      )}
                     </SpaceView>
-                  </>
-                )}
-                
-              </SpaceView>
-            )}
+                  </SpaceView>
+
+                  {/* 투표 dim 처리 */}
+                  <LinearGradient
+                    colors={['rgba(255,255,255,0.1)', '#ffffff']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={_styles.voteDimArea} />                  
+                </>
+              )}
+            </SpaceView>
+
+            
 
             {/* ###################################################################################### 버튼 영역 */}
             <SpaceView mt={20}>
@@ -1047,11 +1085,11 @@ export default function StoryDetail(props: Props) {
     let url = '';
     
     if(isEmptyData(item?.img_file_path)) {
-      url = findSourcePath(item?.img_file_path);
-      //url = findSourcePathLocal(item?.img_file_path);
+      //url = findSourcePath(item?.img_file_path);
+      url = findSourcePathLocal(item?.img_file_path);
     } else {
-      url = findSourcePath(item?.file_path);
-      //url = findSourcePathLocal(item?.file_path);
+      //url = findSourcePath(item?.file_path);
+      url = findSourcePathLocal(item?.file_path);
     };
 
     console.log('item:::', item)
@@ -1278,6 +1316,11 @@ const _styles = StyleSheet.create({
     fontSize: 11,
     color: '#FFF',
   },
+  voteArea:  {
+    width: width,
+    height: 95,
+    alignItems: 'center',
+  },
   voteSelectArea: {
     flexWrap: 'wrap',
     position: 'relative',
@@ -1290,7 +1333,7 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    transform: [{translateX: -27.5}, {translateY: -14}],
+    transform: [{translateX: -27.5}, {translateY: -12}],
     zIndex: 2,
     borderRadius: 20,
     alignItems: 'center',
@@ -1301,50 +1344,40 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 12,
   },
-  voteArea:  {
-    borderWidth: 4,
-    borderRadius: 70,
-    width: 90,
-    height: 90,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: -1,
-  },
-  voteViewArea: (bgColor: string) => {
+  voteImgStyle: (bdcr:string) => {
     return {
-      backgroundColor: bgColor,
-      borderRadius: 13,
-      borderWidth: 1,
-      borderColor: '#DDD',
+      borderWidth: 4,
+      borderRadius: 70,
+      borderColor: bdcr,
+      overflow: 'hidden',
     };
   },
-  voteOrderText: (textColor: string) => {
+  voteImgArea: (idx:number) => {
     return {
-      fontFamily: 'Pretendard-Bold',
-      fontSize: 14,
-      borderRadius: 13,
-      color: textColor,
-      paddingHorizontal: 15,
-      paddingVertical: 3,
+      position: 'absolute',
+      zIndex: 5,
+      left: idx == 0 ? 15 : undefined,
+      right: idx == 1 ? 15 : undefined,
+      flexDirection: 'column',
+      alignItems: 'center',
     };
   },
-  voteNameArea: (orderSeq) => {
+  voteNameArea: (orderSeq:number) => {
     return {
-      zIndex: -2,
       backgroundColor: orderSeq == 0 ? '#FFF' : '#7A85EE',
       width: width - 130,
       height: 40,
-      position: 'absolute',
+      /* position: 'absolute',
       top: orderSeq == 0 ? 0.5 : 50,
-      left: orderSeq == 0 ? 50 : -width + 170,
+      left: orderSeq == 0 ? 10 : -width + 100, */
       alignItems: 'center',
       justifyContent: 'center',
+      zIndex: 1,
     };
   },
-  voteNameText: (orderSeq) => {
+  voteNameText: (cr:string) => {
     return {
-      color: orderSeq == 1 ? '#000000' : '#FFF',
+      color: cr,
       fontFamily: 'Pretendard-Light',
       fontSize: 11,
       paddingHorizontal: 40,
@@ -1356,12 +1389,13 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   voteDescText: {
-    fontFamily: 'Pretendard-Light',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 12,
-    color: '#ABA99A',
+    color: '#333B41',
+    textAlign: 'center',
   },
   voteTimeText: {
-    fontFamily: 'Pretendard-Light',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 12,
     color: '#FF0060',
     marginLeft: 3,
@@ -1371,30 +1405,29 @@ const _styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 15,
   },
-  voteBtnText: (textColor: string) => {
-    return {
-      fontFamily: 'Pretendard-Medium',
-      color: textColor,
-      fontSize: 16,
-      textAlign: 'center',
-    };
-  },
   mstImgStyle: {
     width: 40,
     height: 40,
   },
-  voteImgStyle: {
-    width: 90,
-    height: 90,
-  },
-  voteMmbrCntArea: (bgColor:string) => {
+  voteMmbrCntArea: (isVoteEnd:boolean, isVoteDraw:boolean, isWin:boolean) => {
+
+    let bgColor = '#FFDD00';
+    if(isVoteEnd && !isVoteDraw) {
+      if(isWin) {
+        bgColor = '#32F9E4';
+      } else {
+        bgColor = '#333B41';
+      }
+    };
+
     return {
+      width: 40,
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 3,
       backgroundColor: bgColor,
       paddingVertical: 2,
-      paddingHorizontal: 10,
+      paddingHorizontal: 5,
       borderRadius: 30,
       marginTop: -10,
     };
@@ -1417,6 +1450,14 @@ const _styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 10,
     fontFamily: 'Pretendard-Regular',
+  },
+  voteDimArea: {
+    position: 'absolute',
+    bottom: 15,
+    left: 0,
+    right: 0,
+    height: 250,
+    marginHorizontal: 15,
   },
   ivoryDot: {
     width: 4,
