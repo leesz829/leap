@@ -130,12 +130,12 @@ export default function LikeListPopup({ isVisible, closeModal, type, _storyBoard
                       <>
                         <SpaceView mr={1} pl={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                           {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) &&
-                            <SpaceView viewStyle={_styles.yellowBox}>
+                            <SpaceView viewStyle={_styles.yellowBox, {marginRight: 5}}>
                               <Text style={_styles.profileText}>LV{item?.auth_acct_cnt}</Text>
                             </SpaceView>
                           }
                           {item?.best_face && 
-                            <SpaceView viewStyle={[_styles.yellowBox, {marginLeft: 5}]}>
+                            <SpaceView viewStyle={[_styles.yellowBox]}>
                               <Text style={_styles.profileText}>{item?.best_face}</Text>
                             </SpaceView>
                           }

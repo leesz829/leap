@@ -601,18 +601,18 @@ export default function StoryDetail(props: Props) {
                 </SpaceView>
 
                 {/* 댓글 내용 */}
-                <SpaceView mt={6} viewStyle={{ width: width - 90, backgroundColor: 'pink'}}>
+                <SpaceView mt={6} viewStyle={{ width: width - 90}}>
                   
                   <Text style={_styles.replyContents}>
                     {
                       (isApplySecret) ? '게시글 작성자에게만 보이는 글입니다.' : (item.del_yn == 'Y') ? '삭제된 댓글입니다.' : item.reply_contents
                     }
 
-{(memberBase?.member_seq === item?.member_seq) && (item.del_yn == 'N') && (
-                    <TouchableOpacity style={{ paddingLeft: 5 }} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
-                      <Text style={_styles.replyTextDel}>삭제</Text>
-                    </TouchableOpacity>
-                  )}
+                    {(memberBase?.member_seq === item?.member_seq) && (item.del_yn == 'N') && (
+                      <TouchableOpacity style={{ paddingLeft: 5 }} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
+                        <Text style={_styles.replyTextDel}>삭제</Text>
+                      </TouchableOpacity>
+                    )}
                   </Text>
 
 
@@ -781,10 +781,6 @@ export default function StoryDetail(props: Props) {
                       if(isVoteEnd && (firVoteMbrCnt != secVoteMbrCnt)) {
                           bgColor = '#32F9E4';
                       }
-
-
-                     
-
                       
                       return (
                         <>
@@ -816,7 +812,7 @@ export default function StoryDetail(props: Props) {
                                 </SpaceView>
 
                                 {/* 투표 명 */}
-                                <SpaceView viewStyle={_styles.voteNameArea(item?.order_seq)}>
+                                <SpaceView viewStyle={_styles.voteNameArea(index)}>
                                   <Text style={_styles.voteNameText(item?.order_seq)}>{item?.vote_name}</Text>
                                 </SpaceView>
                               </SpaceView>
@@ -1052,9 +1048,13 @@ export default function StoryDetail(props: Props) {
     
     if(isEmptyData(item?.img_file_path)) {
       url = findSourcePath(item?.img_file_path);
+      //url = findSourcePathLocal(item?.img_file_path);
     } else {
       url = findSourcePath(item?.file_path);
+      //url = findSourcePathLocal(item?.file_path);
     };
+
+    console.log('item:::', item)
 
     return (
       <>
@@ -1189,13 +1189,11 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Light',
     fontSize: 12,
     color: '#E1DFD1',
-    backgroundColor: 'green'
   }, 
   replyTextDel: {
     fontFamily: 'Pretendard-Light',
     fontSize: 12,
     color: '#FFF6BE',
-    backgroundColor: 'red'
   },
   replyNicknameText: (storyType:string, gender:string) => {
     let clr = '#D5CD9E';
@@ -1306,8 +1304,8 @@ const _styles = StyleSheet.create({
   voteArea:  {
     borderWidth: 4,
     borderRadius: 70,
-    width: 110,
-    height: 110,
+    width: 90,
+    height: 90,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
@@ -1334,20 +1332,22 @@ const _styles = StyleSheet.create({
   voteNameArea: (orderSeq) => {
     return {
       zIndex: -2,
-      backgroundColor: orderSeq == 1 ? '#FFF' : '#7A85EE',
+      backgroundColor: orderSeq == 0 ? '#FFF' : '#7A85EE',
       width: width - 130,
-      height: 50,
+      height: 40,
       position: 'absolute',
-      top: orderSeq == 1 ? 0.5 : 60,
-      left: orderSeq == 1 ? 50 : -width + 190,
+      top: orderSeq == 0 ? 0.5 : 50,
+      left: orderSeq == 0 ? 50 : -width + 170,
+      alignItems: 'center',
+      justifyContent: 'center',
     };
   },
   voteNameText: (orderSeq) => {
     return {
       color: orderSeq == 1 ? '#000000' : '#FFF',
-      fontFamily: 'Pretendard-Regular',
-      fontSize: 14,
-      textAlign: 'center',
+      fontFamily: 'Pretendard-Light',
+      fontSize: 11,
+      paddingHorizontal: 40,
     };
   },
   voteDescArea: {
@@ -1384,8 +1384,8 @@ const _styles = StyleSheet.create({
     height: 40,
   },
   voteImgStyle: {
-    width: 110,
-    height: 110,
+    width: 90,
+    height: 90,
   },
   voteMmbrCntArea: (bgColor:string) => {
     return {

@@ -591,7 +591,7 @@ export default function StoryEdit(props: Props) {
                         {[0,1].map((i, index) => {
                           return (
                             <>
-                              <SpaceView mb={7}>
+                              <SpaceView mb={7} viewStyle={{borderRadius: 10, backgroundColor: '#445561', height: 45}}>
                                 <TextInput
                                   value={voteData[`voteName0${i+1}`]}
                                   onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
@@ -931,15 +931,10 @@ const _styles = StyleSheet.create({
   voteInput: (isOn:boolean) => {
     return {
       fontFamily: 'Pretendard-Regular',
-      backgroundColor: '#445561',
       paddingHorizontal: 10,
       paddingVertical: 10,
       //borderColor: isOn ? '#7986EE' : '#DDDDDD',
-      borderColor: '#445561',
-      borderWidth: 1,
-      borderRadius: 8,
-      width: '100%',
-      marginTop: 3,
+      width: '90%',
       height: 45,
       color: '#E1DFD1',
       // elevation: isOn ? 10 : 0,
@@ -954,7 +949,7 @@ const _styles = StyleSheet.create({
   },
   voteImgArea: {
     position: 'absolute',
-    top: 7,
+    top: 4,
     right: 3,
   },
   modalCloseText: {

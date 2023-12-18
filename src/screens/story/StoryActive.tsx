@@ -309,7 +309,7 @@ export default function StoryActive(props: Props) {
 
   // ############################################################################# 알림 렌더링
   const AlarmRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
-console.log('item:::', item)
+
     return (
       <>
         {item?.dataList?.length > 0 && (
@@ -339,6 +339,7 @@ console.log('item:::', item)
 
                 const expNickname = storyType == 'SECRET' ? _item?.nickname_modifier + " " + _item?.nickname_noun : _item?.nickname; // 노출 닉네임
                 let expMstImg = findSourcePath(_item?.mst_img_path); // 노출 대표 이미지
+                //let expMstImg = findSourcePathLocal(_item?.story_img_path);
 
                 if(storyType == 'SECRET') {
                   if(_item?.gender == 'M') {
@@ -414,16 +415,16 @@ console.log('item:::', item)
                                 hitSlop={commonStyle.hipSlop30}>
 
                                 {(memberLikeYn == 'N') ? (
-                                  <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
+                                  <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(17)} />
                                 ) : (
-                                  <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(14)} />
+                                  <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(17)} />
                                 )}
                               </TouchableOpacity>
 
                               <TouchableOpacity
                                 onPress={() => { popupStoryReplyActive(storyBoardSeq, storyReplySeq, depth, _item) }}
                                 hitSlop={commonStyle.hipSlop10}>
-                                <Text style={_styles.likeCntText}>좋아요{_item?.like_cnt > 0 && _item?.like_cnt + '개'}</Text>
+                                <Text style={_styles.likeCntText}>좋아요 {_item?.like_cnt > 0 && _item?.like_cnt + '개'}</Text>
                               </TouchableOpacity>
                               
                             </SpaceView>
@@ -496,18 +497,18 @@ console.log('item:::', item)
                             {/* <Image source={ICON.storyHeart} style={styles.iconSquareSize(20)} /> */}
 
                             {(memberLikeYn == 'N') ? (
-                              <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(20)} />
+                              <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(17)} />
                             ) : (
-                              <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
+                              <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(17)} />
                             )}
 
-                            <Text style={_styles.storyCntText}>{likeCnt}</Text>
+                            <Text style={_styles.storyCntText}>좋아요 {_item?.like_cnt > 0 && _item?.like_cnt + '개'}</Text>
                           </SpaceView>
 
                           {_type == 'BOARD' && (
                             <SpaceView viewStyle={{flexDirection: 'row'}}>
-                              <Image source={ICON.reply} style={styles.iconSquareSize(20)} />
-                              <Text style={_styles.storyCntText}>{replyCnt}</Text>
+                              <Image source={ICON.reply} style={styles.iconSquareSize(17)} />
+                              <Text style={_styles.storyCntText}>댓글 {replyCnt}개</Text>
                             </SpaceView>
                           )}
                         </SpaceView>
@@ -555,7 +556,7 @@ console.log('item:::', item)
         <SpaceView viewStyle={[layoutStyle.alignCenter, layoutStyle.justifyCenter]}>
           <SpaceView viewStyle={_styles.tabWrap}>
             <TouchableOpacity style={_styles.tabItem(currentIndex == 0 ? true : false)} onPress={() => {handleTabPress(0)}}>
-              <Text style={_styles.tabItemText(currentIndex == 0 ? true : false)}>새소식</Text>
+              <Text style={_styles.tabItemText(currentIndex == 0 ? true : false)}>스토리</Text>
             </TouchableOpacity>
             <TouchableOpacity style={_styles.tabItem(currentIndex == 1 ? true : false)} onPress={() => {handleTabPress(1)}}>
               <Text style={_styles.tabItemText(currentIndex == 1 ? true : false)}>내가쓴글</Text>
@@ -567,7 +568,7 @@ console.log('item:::', item)
         <SpaceView>
           <FlatList
             ref={baseRef}
-            data={['새소식','내가쓴글']}
+            data={['새소식', '내가쓴글']}
             onScroll={handleScroll}
             showsHorizontalScrollIndicator={false}
             horizontal
@@ -723,10 +724,10 @@ const _styles = StyleSheet.create({
       justifyContent: 'space-between',
       alignItems: 'flex-start',
       marginBottom: type == 'ALARM' ? 23 : 20,
+      paddingHorizontal: 15,
     }
   },
   alarmItemMember: {
-    paddingHorizontal: 15,
     //width: 50,
     flex: 0.5,
   },
@@ -754,10 +755,12 @@ const _styles = StyleSheet.create({
     borderRadius: 50,
     overflow: 'hidden',
   },
+  alarmItemBoard: {
+
+  },
   alarmItemStoryThum: {
     width: 50,
     height: 50,
-    overflow: 'hidden',
   },
   replyLikeCntText: {
     fontFamily: 'Pretendard-Medium',
@@ -799,15 +802,15 @@ const _styles = StyleSheet.create({
     width: width - 100,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    alignContent: 'space-between',
+    alignSelf: 'center',
   },
   alarmContentArea: {
-    height: 40,
+    marginBottom: 10,
   },
   storyDateText: {
-    fontFamily: 'Pretendard-Medium',
-    color: '#999',
-    fontSize: 14,
+    fontFamily: 'Pretendard-Light',
+    color: '#ABA99A',
+    fontSize: 12,
   },
   storyItemThum: {
     width: 60,
@@ -817,7 +820,7 @@ const _styles = StyleSheet.create({
   storyCntText: {
     fontFamily: 'Pretendard-Light',
     color: '#FFF6BE',
-    fontSize: 14,
+    fontSize: 12,
     marginLeft: 6,
   },
   likeCntText: {
