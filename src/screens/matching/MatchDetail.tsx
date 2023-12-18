@@ -188,7 +188,9 @@ export default function MatchDetail(props: Props) {
           if(type == 'STORAGE') {
             if(data?.match_base.match_status == 'ACCEPT') {
               _titleText = '매칭 성공';
-            } else {
+            } else if(data?.match_base.match_status == 'LIVE_HIGH') {
+              _titleText = '플러팅 고평점';
+            } else {
               if(matchType == 'RES') {
                 _titleText = '받은관심';
               } else {
@@ -565,8 +567,7 @@ export default function MatchDetail(props: Props) {
         {data.profile_img_list.length > 0 
         && isLoad 
         && type != 'ME' 
-        && (type != 'STORAGE' || (type == 'STORAGE' && (data?.match_base?.match_status == 'LIVE_HIGH' || data?.match_base?.match_status == 'ZZIM'))) && (
-
+        && (type != 'STORAGE' || (type == 'STORAGE' && ((data?.match_base?.match_status == 'LIVE_HIGH' && matchType == 'RES' ) || data?.match_base?.match_status == 'ZZIM') )) && (
           <SpaceView viewStyle={_styles.btnWrap}>
             {type != 'STORAGE' && (
               <TouchableOpacity onPress={() => { popupActive('pass'); }}>
@@ -574,6 +575,7 @@ export default function MatchDetail(props: Props) {
               </TouchableOpacity>
             )}
 
+              
             <TouchableOpacity onPress={() => { popupActive('interest'); }}>
               <Text style={_styles.btnText('REQ', '#43ABAE')}>호감 보내기</Text>
             </TouchableOpacity>
@@ -670,7 +672,7 @@ export default function MatchDetail(props: Props) {
           <ScrollView style={{ flex: 1 }}>
               {data.profile_img_list.length > 0 && isLoad ? (
                 <>
-                  <SpaceView mb={140}>
+                  <SpaceView mb={data?.match_base?.match_status != 'LIVE_HIGH' ? 200 : 40}>
                     
                     {/* ####################################################################################
                     ####################### 상단 영역

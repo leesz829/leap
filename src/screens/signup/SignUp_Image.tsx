@@ -92,6 +92,7 @@ export const SignUp_Image = (props: Props) => {
   const imgSelected = (idx:number, isNew:boolean) => {
     if(isNew) {
       imagePickerOpen(function(path:any, data:any) {
+        console.log('apth :::: ', path);
         let _data = {
           member_img_seq: 0,
           img_file_path: path,
@@ -436,6 +437,7 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
           <TouchableOpacity
             onPress={() => {
               imagePickerOpen(function(path:any, data:any) {
+                console.log('apth :::: ', path);
                 let _data = {
                   member_img_seq: 0,
                   img_file_path: path,
@@ -782,6 +784,9 @@ const _styles = StyleSheet.create({
     top: 15,
     right: 15,
     zIndex: 1,
+    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
   },
   imgStatusText: (status: string) => {
     let cr = '#D5CD9E';
@@ -794,8 +799,6 @@ const _styles = StyleSheet.create({
       fontFamily: 'Pretendard-Regular',
       fontSize: 14,
       color: cr,
-      backgroundColor: '#FFFFFF',
-      borderRadius: 10,
       paddingVertical: 2,
       paddingHorizontal: 10,
     };

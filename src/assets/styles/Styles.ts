@@ -629,7 +629,7 @@ export const modalStyle = StyleSheet.create({
     justifyContent: 'center',
   },
   modalStyle1: {
-    width: width - 32,
+    width: width - 62,
     backgroundColor: 'white',
     borderRadius: 20,
     paddingHorizontal: 0,
@@ -648,7 +648,7 @@ export const modalStyle = StyleSheet.create({
     borderColor: '#445561',
   },
   modalBtnContainer: {
-    width: width - 32,
+    width: width - 62,
     //borderTopWidth: 1,
     //borderTopColor: Color.grayEEEE,
     flexDirection: 'row',

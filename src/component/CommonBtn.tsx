@@ -139,9 +139,9 @@ const styles = (props: Props) => {
       textColor = 'white';
       break;
     case 'primary2':
-      backgroundColor = Color.white;
-      borderColor = Color.primary;
-      textColor = Color.primary;
+      backgroundColor = Color.yellow;
+      borderColor = Color.yellow;
+      textColor = Color.black;
       break;
     case 'purple':
       backgroundColor = Color.purple;

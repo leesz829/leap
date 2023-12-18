@@ -26,4 +26,5 @@ export const Color = {
   blue02: '#697AE6',
   //tabColor: 'rgb(38,38,38)',
   tabColor: '#1A1E1C',
+  yellow: '#FFDD00',
 };

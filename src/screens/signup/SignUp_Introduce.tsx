@@ -199,7 +199,7 @@ export const SignUp_Introduce = (props : Props) => {
 
 						<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 
-							<ScrollView showsVerticalScrollIndicator={false} style={{height: height-250}}>
+							<ScrollView showsVerticalScrollIndicator={false} style={{height: height - 290}}>
 								<SpaceView mt={20}>
 									<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}프로필 소개 작성하기(선택)</Text>
 								</SpaceView>

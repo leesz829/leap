@@ -548,7 +548,7 @@ const _styles = StyleSheet.create({
     color: '#D5CD9E',
   },
   impressBtnContaniner: {
-    width: width - 32,
+    width: width - 62,
     //borderTopWidth: 1,
     //borderTopColor: Color.grayEEEE,
     flexDirection: 'row',

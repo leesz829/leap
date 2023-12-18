@@ -16,7 +16,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, Platform, PermissionsAndroid, Animated } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
-import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
@@ -94,6 +94,8 @@ export const Roby = (props: Props) => {
   const [isFriendMatch, setIsFriendMatch] = useState(true); // 아는사람 노출 여부
 
   const [modalAnimated, setModalAnimated] = useState(false);
+
+  const [respectType, setRespectType] = React.useState(memberBase?.respect_grade); // repsect 등급 타입
 
   // Modal
   const [isVisible, setIsVisible] = useState(false);
@@ -198,28 +200,39 @@ export const Roby = (props: Props) => {
     }
     // 02 : 아는 사람 제외
     else {
-      let tmp_phone_book_arr: string[] = [];
+      if(isClickable) {
+        let tmp_phone_book_arr: string[] = [];
 
-      if (await grantedCheck()) {
-        Contacts.getAll().then(contacts => {
-          contacts.forEach(contact => {
-            if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
-              console.log(contact.phoneNumbers[0].number); // 첫 번째 전화번호 가져오기
-              tmp_phone_book_arr.push(contact.phoneNumbers[0].number);
-            }
+        if (await grantedCheck()) {
+          setIsClickable(false);
+
+          Contacts.getAll().then(contacts => {
+            contacts.forEach(contact => {
+              if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
+                console.log(contact.phoneNumbers[0].number); // 첫 번째 전화번호 가져오기
+                tmp_phone_book_arr.push(contact.phoneNumbers[0].number);
+              }
+            });
+
+            
+            insertMemberPhoneBook(tmp_phone_book_arr.toString(), value);
+          }).catch(error => {
+            // 연락처 가져오기 실패
+            console.log(error);
+            setIsFriendMatch(true);
+            insertMemberPhoneBook("", "Y");
+          }).finally(item => {
+            setIsClickable(true);
+            show({
+              type: 'RESPONSIVE',
+              content: isFriendMatch ? '소개 제외 대상이 업데이트 되었습니다.' : '소개 제외 대상과 상호 미노출을 해제하였습니다.',
+            });
           });
-
-          insertMemberPhoneBook(tmp_phone_book_arr.toString(), value);
-        }).catch(error => {
-          // 연락처 가져오기 실패
-          console.log(error);
+        } else {
           setIsFriendMatch(true);
+          show({ title: '아는 사람 제외', content: '기기에서 연락처 접근이 거부된 상태입니다. \n기기의 앱 설정에서 연락처 접근 가능한 상태로 변경해주세요.'});
           insertMemberPhoneBook("", "Y");
-        });
-      } else {
-        setIsFriendMatch(true);
-        show({ title: '아는 사람 제외', content: '기기에서 연락처 접근이 거부된 상태입니다. \n기기의 앱 설정에서 연락처 접근 가능한 상태로 변경해주세요.'});
-        insertMemberPhoneBook("", "Y");
+        }
       }
     }
   };
@@ -442,7 +455,7 @@ export const Roby = (props: Props) => {
       } else {
         getPeekMemberInfo();
         setIsFriendMatch(memberBase?.friend_match_yn == 'N' ? false : true);
-
+        setRespectType(memberBase?.respect_grade);
         // 튜토리얼 팝업 노출
         /* if(!isEmptyData(memberBase?.tutorial_roby_yn) || memberBase?.tutorial_roby_yn == 'Y') {
           show({
@@ -529,13 +542,13 @@ export const Roby = (props: Props) => {
             {/* ################################################################################ 최근소식, 우편함 버튼 영역 */}
             <SpaceView viewStyle={_styles.etcBtnArea}>
               <TouchableOpacity onPress={onPressRecent} style={[_styles.etcBtnItem, {marginRight: 10}]}>
-                <Image source={ICON.mailGold} style={styles.iconSquareSize(14)} />
-                <Text style={_styles.etcBtnText}>+{memberBase?.new_board_cnt}</Text>
+                <Image source={ICON.mailGold} style={styles.iconSquareSize(15)} />
+                <Text style={_styles.etcBtnText}>{memberBase?.new_board_cnt}{memberBase?.new_board_cnt > 99 && '+'}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={onPressMail} style={_styles.etcBtnItem}>
-                <Image source={ICON.bellYellow} style={styles.iconSquareSize(12)} />
-                <Text style={_styles.etcBtnText}>+{memberBase?.msg_cnt}</Text>
+                <Image source={ICON.bellYellow} style={styles.iconSquareSize(13)} />
+                <Text style={_styles.etcBtnText}>{memberBase?.msg_cnt}{memberBase?.msg_cnt > 99 && '+'}</Text>
               </TouchableOpacity>
             </SpaceView>
 
@@ -615,42 +628,42 @@ export const Roby = (props: Props) => {
                     </SpaceView>
                     
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <View>
+                      <TouchableOpacity onPress={() => (setRespectType('MEMBER'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'MEMBER')} />
-                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'MEMBER')}>MEMBER</Text>
-                      </View>
+                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'MEMBER'), {color: respectType == 'MEMBER' ? '#32F9E4' : '#E1DFD1'}]}>MEMBER</Text>
+                      </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
-                      <View>
+                      <TouchableOpacity onPress={() => (setRespectType('SILVER'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'SILVER')} />
-                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'SILVER')}>SILVER</Text>
-                      </View>
+                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'SILVER'), {color: respectType == 'SILVER' ? '#32F9E4' : '#E1DFD1'}]}>SILVER</Text>
+                      </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
-                      <View>
+                      <TouchableOpacity onPress={() => (setRespectType('GOLD'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'GOLD')} />
-                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'GOLD')}>GOLD</Text>
-                      </View>
+                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'GOLD'), {color: respectType == 'GOLD' ? '#32F9E4' : '#E1DFD1'}]}>GOLD</Text>
+                      </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
-                      <View>
+                      <TouchableOpacity onPress={() => (setRespectType('PLATINUM'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'PLATINUM')} />
-                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'PLATINUM')}>PLATINUM</Text>
-                      </View>
+                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'PLATINUM'), {color: respectType == 'PLATINUM' ? '#32F9E4' : '#E1DFD1'}]}>PLATINUM</Text>
+                      </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
-                      <View>
+                      <TouchableOpacity onPress={() => (setRespectType('DIAMOND'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'DIAMOND')} />
-                        <Text style={_styles.respectGradeText(memberBase?.respect_grade == 'DIAMOND')}>DIAMOND</Text>
-                      </View>
+                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'DIAMOND'), {color: respectType == 'DIAMOND' ? '#32F9E4' : '#E1DFD1'}]}>DIAMOND</Text>
+                      </TouchableOpacity>
                     </View>
                   </SpaceView>
 
-                  {memberBase?.respect_grade == 'MEMBER' ? (
+                  {respectType == 'MEMBER' ? (
                     <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
                       <Text style={_styles.respectDescText}>
                         매일 리프에 방문하고 활동을 해보세요.{'\n'}
@@ -662,19 +675,19 @@ export const Roby = (props: Props) => {
                       <View style={[_styles.respectBox]}>
                         <Image source={ICON.cardGold} style={styles.iconSquareSize(14)} />
                         <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>
-                          {memberBase?.respect_grade == 'SLIVER' && '블라인드 카드 매일 1회 무료'}
-                          {memberBase?.respect_grade == 'GOLD' && '블라인드 카드 매일 2회 무료'}
-                          {memberBase?.respect_grade == 'PLATINUM' && '블라인드 카드 매일 3회 무료'}
-                          {memberBase?.respect_grade == 'DIAMOND' && '블라인드 카드 매일 4회 무료'}
+                          {respectType == 'SILVER' && '블라인드 카드 매일 1회 무료'}
+                          {respectType == 'GOLD' && '블라인드 카드 매일 2회 무료'}
+                          {respectType == 'PLATINUM' && '블라인드 카드 매일 3회 무료'}
+                          {respectType == 'DIAMOND' && '블라인드 카드 매일 4회 무료'}
                         </Text>
                       </View>
                       <View style={[_styles.respectBox]}>
                         <Image source={ICON.moneyBill} style={styles.iconSquareSize(14)} />
                         <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>
-                          {memberBase?.respect_grade == 'SLIVER' && '월요일마다 보너스 코인 10개'}
-                          {memberBase?.respect_grade == 'GOLD' && '월요일마다 보너스 코인 20개'}
-                          {memberBase?.respect_grade == 'PLATINUM' && '월요일마다 보너스 코인 30개'}
-                          {memberBase?.respect_grade == 'DIAMOND' && '월요일마다 보너스 코인 50개'}
+                          {respectType == 'SILVER' && '월요일마다 보너스 코인 10개'}
+                          {respectType == 'GOLD' && '월요일마다 보너스 코인 20개'}
+                          {respectType == 'PLATINUM' && '월요일마다 보너스 코인 30개'}
+                          {respectType == 'DIAMOND' && '월요일마다 보너스 코인 50개'}
                         </Text>
                       </View>
                     </SpaceView>
@@ -682,6 +695,17 @@ export const Roby = (props: Props) => {
                 </View>
               </SpaceView>
             </LinearGradient>
+
+            <TouchableOpacity style={_styles.bannerArea}>
+              <SpaceView>
+                <Text style={_styles.bannerTitle}>데일리뷰에 원하는 친구가 안 나왔을 때는?{'\n'}프로필 카드를 열어보세요!</Text>
+                <Text style={_styles.bannerDesc}>#인증레벨#MBTI#인상</Text>
+                <View style={_styles.bannerTextLine} />
+              </SpaceView>
+              <SpaceView pt={10}>
+                <Image source={ICON.cardBlack} style={styles.iconSquareSize(70)} />
+              </SpaceView> 
+            </TouchableOpacity>
 
             {/* ################################################################################ 인기 측정 영역 */}
             <SpaceView mt={20}>
@@ -725,6 +749,13 @@ export const Roby = (props: Props) => {
                             )
                           })}
                         </SpaceView>
+                        
+                        <SpaceView viewStyle={_styles.flutingArea}>
+                          <TouchableOpacity onPress={() => ( navigation.navigate('Live') )}>
+                            <Text style={_styles.flutingTitle}>플러팅 참여하기</Text>
+                            <Text style={_styles.flutingDesc}>내 프로필이 이성들에게 노출됩니다.</Text>
+                          </TouchableOpacity>
+                        </SpaceView>
                       </SpaceView>
                     </SpaceView>
                   </View>
@@ -734,6 +765,7 @@ export const Roby = (props: Props) => {
               {/* ################################################################################ 내 프로필 공개, 아는 사람 제외 영역 */}
               <View style={_styles.manageContainer}>
                 <TouchableOpacity
+                  activeOpacity={1}
                   style={_styles.openProfileBox}
                   onPress={() => {
                       updateMemberInfo('01', memberBase?.match_yn == 'Y' ? 'N' : 'Y');
@@ -743,10 +775,11 @@ export const Roby = (props: Props) => {
                     <Image source={memberBase?.match_yn == 'Y' ? ICON.checkYellow : ICON.checkGold} style={[styles.iconSize16, {marginRight: 5}]} />
                     <Text style={_styles.manageTitle}>내 프로필 공개</Text>
                   </View>
-                  <Text style={_styles.manageDesc}>이성들에게 내 프로필이 소개되고 있어요.</Text>
+                  <Text style={_styles.manageDesc}>{memberBase?.match_yn == 'Y' ? '이성들에게 내 프로필이 소개되고 있어요.' : '내 프로필이 비공개 상태에요.'}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
+                  activeOpacity={1}
                   style={_styles.openPhoneBox}
                   onPress={() => {
                     updateMemberInfo('02', isFriendMatch ? 'N' : 'Y');
@@ -756,11 +789,12 @@ export const Roby = (props: Props) => {
                     <SpaceView mr={5}><Image source={isFriendMatch ? ICON.checkGold : ICON.checkYellow} style={styles.iconSquareSize(16)} /></SpaceView>
                     <Text style={_styles.manageTitle}>아는 사람 제외</Text>
                   </View>
-                  <Text style={_styles.manageDesc}>내 연락처에 저장된 사람이 소개되고 있어요.</Text>
+                  <Text style={_styles.manageDesc}>{isFriendMatch ? '내 연락처에 저장된 사람이 소개되고 있어요.' : '내 연락처에 저장 된 사람들과 서로 비공개 상태에요.'}</Text>
                 </TouchableOpacity>
               </View>
             </SpaceView>
           </SpaceView>
+  
 
           {/************************************************************************** 햄버거 메뉴 모달 */}
           <Modal 
@@ -938,7 +972,7 @@ const _styles = StyleSheet.create({
       color: cr,
     };
   },
-  respectGradeText: ( isOn:boolean) => {
+  respectGradeText: ( isOn:boolean ) => {
     return {
       fontFamily: 'Pretendard-SemiBold',
       fontSize: 12,
@@ -991,6 +1025,35 @@ const _styles = StyleSheet.create({
       display: isOn ? 'flex' : 'none',
     };
   },
+  bannerArea: {
+    backgroundColor: '#E1DFD1',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  bannerTitle: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#262626',
+  },
+  bannerDesc: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
+    color: '#8E8E8E',
+    marginTop: 5,
+  },
+  bannerTextLine: {
+    position: 'absolute',
+    top: 25,
+    height: 10,
+    backgroundColor: '#FFDD00',
+    width: width - 245,
+    zIndex: -1,
+  },
   popularTitle: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 20,
@@ -1031,11 +1094,31 @@ const _styles = StyleSheet.create({
     fontSize: 24,
     color: '#FFDD00',
   },
+  flutingArea: {
+    marginTop: 20,
+    marginBottom: -10,
+    backgroundColor: '#FFDD00',
+    borderRadius: 10,
+    paddingVertical: 10,
+  },
+  flutingTitle: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+    color: '#3D4348',
+    textAlign: 'center',
+  },
+  flutingDesc: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 10,
+    color: '#5A707F',
+    textAlign: 'center',
+  },
   manageContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 30,
+    marginBottom: 100,
   },
   manageTitle: {
     fontFamily: 'Pretendard-SemiBold',
@@ -1112,17 +1195,14 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#000000',
-    borderRadius: 10,
-    paddingVertical: 2,
-    paddingHorizontal: 5,
+    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
   },
   authRegiText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 13,
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
     color: '#D5CD9E',
     marginLeft: 3,
   },
-
-
-
 });
