@@ -348,7 +348,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
   return (
     <>
       <SpaceView mb={30}>
-        <SpaceView viewStyle={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <SpaceView viewStyle={_styles.blindCardShadow}>
 
           <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
 
@@ -356,7 +356,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
             {imgList.length > 0 && (
               <Image
                 source={findSourcePath(imgList[currentImgIdx].img_file_path)}
-                style={{ flex: 1, width: width, height: height * 0.73 }}
+                style={{ flex: 1, width: width - 40, height: height * 0.73 }}
                 resizeMode={'cover'}
               />
             )}
@@ -655,6 +655,21 @@ const _styles = StyleSheet.create({
     lineHeight: 23,
     minHeight: 50,
     textAlignVertical: 'center',
+  },
+  blindCardShadow: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+
+    shadowColor: '#000000',   
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 5,
   },
   pagingContainer: {
     position: 'absolute',

@@ -179,11 +179,12 @@ const _styles = StyleSheet.create({
       fontSize: 16,
       color: '#3D4348',
       backgroundColor: isEmptyData(bgcr) ? bgcr : '#FFFFFF',
-      borderRadius: 50,
+      borderRadius: 15,
       paddingVertical: 6,
       width: 110,
       textAlign: 'center',
       marginHorizontal: 3,
+      overflow: 'hidden',
     };
   },
 });

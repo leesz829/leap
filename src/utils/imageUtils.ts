@@ -261,6 +261,7 @@ export const ICON = {
   penSquare: require('assets/icon/icon-pen-square.png'),
   circleReward: require('assets/icon/icon-circle-reward.png'),
   chatRed: require('assets/icon/icon-chat-red.png'),
+  cardBlack: require('assets/icon/icon-card-black.png'),
 };
 
 export const GIF_IMG = {

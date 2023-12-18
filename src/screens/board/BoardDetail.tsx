@@ -32,11 +32,12 @@ interface Props {
 const { width, height } = Dimensions.get('window');
 
 export const BoardDetail = (props: Props) => {
-  const boardData = props?.route?.params;
+  	const boardData = props?.route?.params;
 	const navigation = useNavigation<ScreenNavigationProp>();
 
 	const [isLoading, setIsLoading] = useState(false);
 	const isFocus = useIsFocused();
+	const [noticeList, setnoticeList] = React.useState([]);
 
 	// ############################################# 바로가기 이동 함수
 	const goLink = async (type:any) => {
@@ -49,10 +50,43 @@ export const BoardDetail = (props: Props) => {
 			});
 		};
 	};
+	
+
+	// 게시글 상세 조회
+	const boardDetailView = async (board_seq:any) => {
+		try {
+		const body = {
+			board_seq: board_seq
+		};
+		const { success, data } = await board_detail_view(body);
+		if (success) {
+			if (data.result_code == '0000') {
+				
+				const newList = noticeList.map((item:any, index) => {
+					if(item.board_seq == board_seq) {
+					item.view_yn = 'Y';
+					};
+
+					return item;
+				});
+
+				setnoticeList(newList);
+			};
+		} else {
+			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+		}
+		} catch (error) {
+		show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+		console.log(error);
+		} finally {
+
+		}
+	};
+
 	// ######################################################################################## 초기 실행 함수
 	React.useEffect(() => {
 		if(isFocus) {
-			
+			boardDetailView(boardData.board_seq);
 		};
 	  }, [isFocus]);
 
