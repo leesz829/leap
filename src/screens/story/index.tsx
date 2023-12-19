@@ -779,13 +779,13 @@ export const Story = () => {
 
       {/* ###################################################################################################### 맨위 이동 버튼 */}
 
-      {/* {(storyList.length > 0 && isTopBtn) && (
+      {(storyList.length > 0 && isTopBtn) && (
         <SpaceView viewStyle={_styles.topBtnArea}>
           <TouchableOpacity onPress={() => { scrollToTop(); }}>
-            <Text style={_styles.topBtnText}>TOP</Text>
+            <Text style={_styles.topBtnText}>맨위로</Text>
           </TouchableOpacity>
         </SpaceView>
-      )} */}
+      )}
     </>
   );
 };
@@ -1031,20 +1031,19 @@ const _styles = StyleSheet.create({
   },
   topBtnArea: {
     position: 'absolute',
-    top: 70,
+    top: 125,
     left: 0,
     right: 0,
     alignItems: 'center',
   },
   topBtnText: {
     textAlign: 'center',
-    //backgroundColor: '#222222',
-    backgroundColor: 'rgba(38,38,38,0.9)',
-    width: 100,
+    backgroundColor: '#1A1E1C',
+    width: 85,
     paddingVertical: 2,
-    fontFamily: 'Pretendard-ExtraBold',
-    fontSize: 13,
-    color: '#fff',
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14,
+    color: '#D5CD9E',
     borderRadius: 10,
     overflow: 'hidden',
   },

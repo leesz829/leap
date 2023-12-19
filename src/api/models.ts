@@ -306,6 +306,9 @@ export async function join_save_profile_add(body: {
   religion: string;
   drinking: string;
   smoking: string;
+  mbti_type: string;
+  prefer_local1: string;
+  prefer_local2: string;
   join_status: string;
 }) {
   const push_token = await AsyncStorage.getItem(FCM_TOKEN);
@@ -557,6 +560,9 @@ export async function save_member_introduce(body: {
   interest_list: any;
   interview_list: any;
   introduce_comment: string;
+  mbti_type: string;
+  prefer_local1: string;
+  prefer_local2: string;
 }) {
   return send(SAVE_MEMBER_INTRODUCE, 'POST', body, true, false);
 }

@@ -62,9 +62,22 @@ export const Profile_AddInfo = (props: Props) => {
 		drinking: '', // 음주
 		smoking: '', // 흡연
 		introduceComment: '', // 자기소개
+		mbti_type: '', // MBTI
+		prefer_local1: '', // 선호 활동 지역1
+		prefer_local2: '', // 선호 활동 지역2
 	});
 
-	const [local, setLocal] = React.useState<any>('');
+	// 공통 코드 목록 데이터
+	const [codeData, setCodeData] = React.useState({
+		busiCdList: [],
+		localCdList: [],
+		manBodyCdList: [],
+		womanBodyCdList: [],
+		religionCdList: [],
+		drinkCdList: [],
+		smokeCdList: [],
+		mbtiCdList: [],
+	});
 
 	// ############################################################ 업종 그룹 코드 목록
   	const busiGrpCdList = [
@@ -93,81 +106,13 @@ export const Profile_AddInfo = (props: Props) => {
   	// 직업 그룹 코드 목록
   	const [jobCdList, setJobCdList] = React.useState([{ label: '', value: '' }]);
 
-  	// 출신지 지역 코드 목록
-  	const bLocalGrpCdList = [
-		{ label: '서울', value: 'LOCA_00' },
-		{ label: '경기', value: 'LOCA_01' },
-		{ label: '충북', value: 'LOCA_02' },
-		{ label: '충남', value: 'LOCA_03' },
-		{ label: '강원', value: 'LOCA_04' },
-		{ label: '경북', value: 'LOCA_05' },
-		{ label: '경남', value: 'LOCA_06' },
-		{ label: '전북', value: 'LOCA_07' },
-		{ label: '전남', value: 'LOCA_08' },
-		{ label: '제주', value: 'LOCA_09' },
-	];
-
-  	// 지역 코드 목록
-	const [bLocalCdList, setBLocalCdList] = React.useState([{ label: '', value: '' }]);
-
-	// 남자 체형 항목 목록
-	const manBodyItemList = [
-		{ label: '보통', value: 'NORMAL' },
-		{ label: '마른 체형', value: 'SKINNY' },
-		{ label: '근육질', value: 'FIT' },
-		{ label: '건장한', value: 'GIANT' },
-		{ label: '슬림 근육', value: 'SLIM' },
-		{ label: '통통한', value: 'CHUBBY' },
-	];
-
-	// 여자 체형 항목 목록
-	const womanBodyItemList = [
-		{ label: '보통', value: 'NORMAL' },
-		{ label: '마른 체형', value: 'SKINNY' },
-		{ label: '섹시한', value: 'SEXY' },
-		{ label: '글래머', value: 'GLAMOUR' },
-		{ label: '아담한', value: 'COMPACT' },
-		{ label: '모델핏', value: 'MODEL' },
-		{ label: '통통한', value: 'CHUBBY' },
-	];
-
-	// 종교 항목 목록
-	const religionItemList = [
-		{ label: '무교(무신론자)', value: 'NONE' },
-		{ label: '무교(유신론자)', value: 'THEIST' },
-		{ label: '기독교', value: 'JEJUS' },
-		{ label: '불교', value: 'BUDDHA' },
-		{ label: '이슬람', value: 'ALLAH' },
-		{ label: '천주교', value: 'MARIA' },
-	];
-
-	// 음주 항목 목록
-	const drinkItemList = [
-		{ label: '안마심', value: 'NONE' },
-		{ label: '가볍게 마심', value: 'LIGHT' },
-		{ label: '자주 즐김', value: 'HARD' },
-	];
-
-	// 흡연 항목 목록
-	const smokItemList = [
-		{ label: '비흡연', value: 'NONE' },
-		{ label: '가끔 흡연', value: 'LIGHT' },
-		{ label: '자주 흡연', value: 'HARD' },
-	];
-
   	// 직업 코드 콜백 함수
 	const busiCdCallbackFn = (value: string) => {
-    if(addData.business != value) {
-      setAddData({...addData, business: value});
-      getCommonCodeList(value);
-    }
-	};
-
-	// 셀렉트 박스 콜백 함수
-	/* const localCdCallbackFn = (value: string) => {
-		setLocal(value);
+		if(addData.business != value) {
+		setAddData({...addData, business: value});
 		getCommonCodeList(value);
-	}; */
+		}
+	};
 
   	// ############################################################ 직업, 지역 코드 목록 조회 함수
 	const getCommonCodeList = async (value: string) => {
@@ -190,7 +135,7 @@ export const Profile_AddInfo = (props: Props) => {
 						if(isType) {
 							setJobCdList(dataList);
 						} else {
-							setBLocalCdList(dataList);
+							//setBLocalCdList(dataList);
 						}
 					
 						break;
@@ -230,6 +175,9 @@ export const Profile_AddInfo = (props: Props) => {
 							drinking: data?.member_add?.drinking,
 							smoking: data?.member_add?.smoking,
 							introduceComment: data?.member_add?.introduce_comment,
+							mbti_type: data?.member_add?.mbti_type,
+							prefer_local1: data?.member_add?.prefer_local1,
+							prefer_local2: data?.member_add?.prefer_local2,
 						});
 
             			let dataList = new Array();
@@ -238,6 +186,21 @@ export const Profile_AddInfo = (props: Props) => {
                 			dataList.push(dataMap);
 	            		});
             			setJobCdList(dataList); // 직업 코드 목록
+
+
+						setCodeData({
+							busiCdList: [],
+							localCdList: data?.local_code_list,
+							manBodyCdList: data?.man_body_code_list,
+							womanBodyCdList: data?.woman_body_code_list,
+							religionCdList: data?.religion_code_list,
+							drinkCdList: data?.drink_code_list,
+							smokeCdList: data?.smoke_code_list,
+							mbtiCdList: data?.mbti_code_list,
+						});
+
+						console.log('data?.mbti_code_list :::: ' , data?.mbti_code_list);
+
           
           			break;
         			default:
@@ -272,6 +235,9 @@ export const Profile_AddInfo = (props: Props) => {
 					drinking: addData.drinking,
 					smoking: addData.smoking,
 					introduce_comment: addData.introduceComment,
+					mbti_type: addData.mbti_type,
+					prefer_local1: addData.prefer_local1,
+					prefer_local2: addData.prefer_local2,
         		};
 
         		const { success, data } = await save_member_introduce(body);
@@ -410,7 +376,7 @@ export const Profile_AddInfo = (props: Props) => {
 									useNativeAndroidPickerStyle={false}
 									onValueChange={(value) => setAddData({...addData, form_body: value})}
 									value={addData.form_body}
-									items={memberBase.gender == 'M' ? manBodyItemList : womanBodyItemList}
+									items={memberBase.gender == 'M' ? codeData.manBodyCdList : codeData.womanBodyCdList}
 								/>
 							</View>
 						</View>
@@ -425,25 +391,60 @@ export const Profile_AddInfo = (props: Props) => {
 						</View>
 						<View style={_styles.underline}></View>
 						<View>
-							{/* <View style={_styles.option}>
+
+							{/* ############################################################################# MBTI */}
+							<View style={_styles.option}>
+								<Text style={_styles.optionTitle}>MBTI</Text>
+								<RNPickerSelect
+									placeholder={{label: '선택', value: ''}}
+									style={pickerSelectStyles}
+									useNativeAndroidPickerStyle={false}
+									onValueChange={(value) => setAddData({...addData, mbti_type: value})}
+									value={addData.mbti_type}
+									items={codeData.mbtiCdList}
+								/>
+							</View>
+
+							{/* ############################################################################# 선호지역 */}
+							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>선호지역</Text>
-								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '62%'}}>
+								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
 									<RNPickerSelect
 										placeholder={{label: '선택', value: ''}}
-										style={pickerSelectStyles}
+										style={{
+											inputIOS: {
+												...pickerSelectStyles.inputIOS,
+												width: 120,
+											},
+											inputAndroid: {
+												...pickerSelectStyles.inputAndroid,
+												width: 120,
+											},
+										}}
 										useNativeAndroidPickerStyle={false}
-										onValueChange={localCdCallbackFn}
-										items={bLocalGrpCdList}
+										onValueChange={(value) => setAddData({...addData, prefer_local1: value})}
+										value={addData.prefer_local1}
+										items={codeData.localCdList}
 									/>
 									<RNPickerSelect
 										placeholder={{label: '선택', value: ''}}
-										style={pickerSelectStyles}
+										style={{
+											inputIOS: {
+												...pickerSelectStyles.inputIOS,
+												width: 120,
+											},
+											inputAndroid: {
+												...pickerSelectStyles.inputAndroid,
+												width: 120,
+											},
+										}}
 										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setValue(value)}
-										items={bLocalCdList}
+										onValueChange={(value) => setAddData({...addData, prefer_local2: value})}
+										value={addData.prefer_local2}
+										items={codeData.localCdList}
 									/>
 								</View>
-							</View> */}
+							</View>
 
 							{/* ############################################################################# 종교 */}
 							<View style={_styles.option}>
@@ -454,7 +455,7 @@ export const Profile_AddInfo = (props: Props) => {
 									useNativeAndroidPickerStyle={false}
 									onValueChange={(value) => setAddData({...addData, religion: value})}
 									value={addData.religion}
-									items={religionItemList}
+									items={codeData.religionCdList}
 								/>
 							</View>
 
@@ -467,7 +468,7 @@ export const Profile_AddInfo = (props: Props) => {
 									useNativeAndroidPickerStyle={false}
 									onValueChange={(value) => setAddData({...addData, drinking: value})}
 									value={addData.drinking}
-									items={drinkItemList}
+									items={codeData.drinkCdList}
 								/>
 							</View>
 							<View style={_styles.option}>
@@ -478,7 +479,7 @@ export const Profile_AddInfo = (props: Props) => {
 									useNativeAndroidPickerStyle={false}
 									onValueChange={(value) => setAddData({...addData, smoking: value})}
 									value={addData.smoking}
-									items={smokItemList}
+									items={codeData.smokeCdList}
 								/>
 							</View>
 						</View>
