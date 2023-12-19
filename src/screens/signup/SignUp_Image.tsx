@@ -92,7 +92,7 @@ export const SignUp_Image = (props: Props) => {
   const imgSelected = (idx:number, isNew:boolean) => {
     if(isNew) {
       imagePickerOpen(function(path:any, data:any) {
-        console.log('apth :::: ', path);
+        console.log('apth ???:::: ', path);
         let _data = {
           member_img_seq: 0,
           img_file_path: path,
@@ -437,7 +437,7 @@ function MasterImageArea({ index, imgData, mngModalFn }) {
           <TouchableOpacity
             onPress={() => {
               imagePickerOpen(function(path:any, data:any) {
-                console.log('apth :::: ', path);
+                console.log('path ??? ', path);
                 let _data = {
                   member_img_seq: 0,
                   img_file_path: path,

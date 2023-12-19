@@ -424,7 +424,7 @@ export const Shop = () => {
       getShopMain(isPopupShow);
     }
   }, [isFocus]);
-
+  console.log('payInfo::::', payInfo)
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -509,18 +509,18 @@ export const Shop = () => {
           </TouchableOpacity> */}
 
           
-          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingHorizontal: 15, backgroundColor: '#3D4348'}]}>
+          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingLeft: 15, backgroundColor: '#3D4348'}]}>
             <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter,{marginLeft: -5}]}>
               <Image source={ICON.cubeCyan} style={[styles.iconSquareSize(30), {marginBottom: 5}]} />
               <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
               <Image source={ICON.megaCubeCyan} style={[styles.iconSize40, {marginLeft: 10}]} />
               <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
             </SpaceView>
-            <TouchableOpacity 
-              style={[layoutStyle.row, layoutStyle.alignCenter, _styles.inventoryBtn(memberBase?.gender)]}
+            <TouchableOpacity
+              style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, _styles.inventoryBtn]}
               onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}
             >
-              <Image source={ICON.menuCyan} style={styles.iconSize20} />
+              <Image source={ICON.menuCyan} style={[styles.iconSize20, {marginLeft: 8}]} />
               <Text style={_styles.inventoryText}>보유 아이템</Text>
             </TouchableOpacity>
           </SpaceView>
@@ -533,7 +533,16 @@ export const Shop = () => {
                     <Image source={ICON.circleReward} style={styles.iconSquareSize(70)} />
                   </TouchableOpacity>
                 :
-                  <Image source={ICON[`circle${payInfo?.tmplt_name}`]} style={styles.iconSquareSize(70)} />
+                  // <Image source={ICON[`circle${payInfo?.tmplt_name}`]} style={styles.iconSquareSize(70)} />
+                  <Image source={
+                    payInfo?.tmplt_name == 'E' ? ICON.circleE
+                    : payInfo?.tmplt_name == 'D' ? ICON.circleE
+                    : payInfo?.tmplt_name == 'C' ? ICON.circleD
+                    : payInfo?.tmplt_name == 'B' ? ICON.circleC
+                    : payInfo?.tmplt_name == 'A' ? ICON.circleB
+                    : payInfo?.tmplt_name == 'S' ? ICON.circleA
+                    : ''
+                  } style={styles.iconSquareSize(70)} />
                 }
                 
                 <SpaceView ml={10} mb={5}>
@@ -542,7 +551,9 @@ export const Shop = () => {
                     보상은 <Text style={{color: '#32F9E4'}}>{payInfo?.item_name}</Text> 입니다.
                   </Text>
                   {payInfo?.target_buy_price - payInfo?.member_buy_price == 0 ?
-                    <Text style={_styles.rewardDesc}>{payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.</Text>
+                    <Text style={_styles.rewardDesc}>
+                      {payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.
+                    </Text>
                   :
                     <Text style={_styles.rewardDesc}>{payInfo?.target_buy_price - payInfo?.member_buy_price}원 더 결제하면 {payInfo?.tmplt_name}등급 달성!</Text> 
                   }
@@ -631,7 +642,7 @@ export const Shop = () => {
               <SpaceView key={item?.tmplt_level} mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
                 <Image source={ICON[`circle${item.tmplt_name.trim()}`]} style={styles.iconSquareSize(40)} />
                 <SpaceView>
-                  <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>{item?.target_buy_price - item?.member_buy_price}P 충전하면</Text>
+                  <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>{item?.target_buy_price}P 충전하면</Text>
                   <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>{item?.item_name}</Text>
                 </SpaceView>
               </SpaceView>
@@ -757,21 +768,21 @@ const TMPL_LIST = [
 const _styles = StyleSheet.create({
   wrap: {
     //paddingHorizontal: 15,
-    paddingTop: 20,
+    //paddingTop: 20,
     minHeight: height,
   },
-  inventoryBtn: (type: string) => {
-    return {
-      backgroundColor: type == 'W' ? '#FFF' : '#445561',
-      borderRadius: 20,
-      paddingHorizontal: 20,
-    };
+  inventoryBtn: {
+    backgroundColor: '#445561',
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    paddingHorizontal: 20,
   },
   inventoryText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 17,
     color: '#32F9E4',
     marginLeft: 5,
+    textAlign: 'center',
   },
   myCubeDesc: {
     fontFamily: 'Pretendard-Medium',
@@ -842,7 +853,7 @@ const _styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 7,
     borderRadius: 10,
-    marginLeft: 12,
+    marginLeft: 'auto',
   },
   rewardBtnText: {
     fontFamily: 'Pretendard-Regular',

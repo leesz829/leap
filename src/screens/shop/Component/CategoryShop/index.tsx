@@ -340,42 +340,45 @@ function RenderItem({ item, openModal }) {
 
   let itemImg;
   let itemType;
+  let _w;
   if(item?.item_type_code == 'PASS' && !item?.item_name.includes('로얄')) {
     itemImg = ICON.cubeCyan;
     itemType = 'Cube';
+    _w = '70%';
   }else if(item?.item_name.includes('로얄')) {
     itemImg = ICON.megaCubeCyan;
     itemType = 'MegaCube';
+    _w = '70%'
   }else if(item?.item_type_code == 'SUBSCRIPTION') {
-    itemImg = ICON.drinkCyan;
-    itemType = 'Subs';
+    _w = '100%';
   }else if(item?.item_type_code == 'PACKAGE') {
-    itemImg = ICON.cardCyan;
-    itemType = 'Pack';
+    _w = '100%';
   }
 
   return (
     <TouchableOpacity style={_styles.itemContainer} onPress={onPressItem}>
       <View style={_styles.itemWrap}>
         <View style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, {width: '60%'}]}>
-          <SpaceView viewStyle={_styles.cubeCircleArea}>
-            <Image source={itemImg} style={itemType == 'Cube' ? _styles.cubeListImg : _styles.itemListImg} />
-          </SpaceView>
-          <SpaceView viewStyle={{width: '70%'}} ml={20}>
+          {item?.item_type_code == 'PASS' &&
+            <SpaceView viewStyle={_styles.cubeCircleArea}>
+              <Image source={itemImg} style={itemType == 'Cube' ? _styles.cubeListImg : _styles.itemListImg} />
+            </SpaceView>
+          }
+
+          <SpaceView viewStyle={{width: _w}} ml={20}>
             <Text style={_styles.itemName}>{item?.item_name}</Text>
             <Text style={_styles.itemDesc}>{item?.item_contents}</Text>
+            {buyCountMax < 999999 && (
+              <View style={_styles.imgBottomArea}>
+                <Text style={_styles.imgBottomText}>{buyCount}/{buyCountMax}구매</Text>
+              </View>
+            )}
           </SpaceView>
           {/* {isNew &&
             <View style={_styles.iconArea}>
               <Text style={_styles.newText}>NEW</Text>
             </View>
           } */}
-
-          {buyCountMax < 999999 && (
-            <View style={_styles.imgBottomArea}>
-              <Text style={_styles.imgBottomText}>{buyCount}/{buyCountMax}구매</Text>
-            </View>
-          )}
         </View>
 
         <View style={_styles.priceArea}>
@@ -384,16 +387,20 @@ function RenderItem({ item, openModal }) {
               {CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'INAPP' ? '원' : '')}
             </Text>
             {item.money_type_code == 'PASS' && (
-              <SpaceView pt={3}><Image style={styles.iconSquareSize(19)} source={ICON.cubeCyan} resizeMode={'contain'} /></SpaceView>
+              <SpaceView ml={2}>
+                <Image style={styles.iconSquareSize(19)} source={ICON.cubeCyan} resizeMode={'contain'} />
+              </SpaceView>
             )}
 
             {item.money_type_code == 'ROYAL_PASS' && (
-              <SpaceView pt={3}><Image style={styles.iconSquareSize(29)} source={ICON.megaCubeCyan} resizeMode={'contain'} /></SpaceView>
+              <SpaceView pt={5}>
+                <Image style={styles.iconSquareSize(29)} source={ICON.megaCubeCyan} resizeMode={'contain'} />
+              </SpaceView>
             )}
           </View>
 
           {item.discount_rate != 0 &&
-            <SpaceView mt={2} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
+            <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
               <SpaceView viewStyle={_styles.discountArea}>
                 <Text style={_styles.discountRate}>{item.discount_rate + '%'}</Text>
               </SpaceView>
@@ -464,8 +471,8 @@ const _styles = StyleSheet.create({
     textAlign: 'center',
   },
   originPriceText: {
-    fontSize: 12,
-    fontFamily: 'Pretendard-Light',
+    fontSize: 10,
+    fontFamily: 'Pretendard-Regular',
     textDecorationLine: 'line-through',
     color:'#E1DFD1',
     marginLeft: 5,
@@ -474,18 +481,21 @@ const _styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F1D30E',
     borderRadius: 25,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    width: 110,
+    height: 60,
+    justifyContent: 'center',
   },
   priceCont: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    height: 20,
   },
   price: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 20,
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
     color: '#F1D30E',
+    textAlign: 'center',
   },
   boxWrapper: {
     flexDirection: `row`,
@@ -501,7 +511,7 @@ const _styles = StyleSheet.create({
     marginRight: 3,
   },
   boxText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 9,
     color: '#8854D2',
   },
@@ -512,7 +522,7 @@ const _styles = StyleSheet.create({
   },
   newText: {
     backgroundColor: '#FF7E8C',
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 11,
     color: ColorType.white,
     borderRadius: 8,
@@ -521,22 +531,18 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   imgBottomArea: {
-    position: 'absolute',
-    top: -10,
-    left: 35,
-    borderRadius: 7,
+    borderRadius: 15,
     overflow: 'hidden',
-    backgroundColor: '#000000',
-    opacity: 0.7,
+    backgroundColor: '#1A1E1C',
+    width: 62,
+    paddingVertical: 4,
+    marginTop: 5,
   },
   imgBottomText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 12,
-    textAlign: 'left',
-    color: '#fff',
-    paddingHorizontal: 6,
-    paddingVertical: 1,
-    zIndex: 1,
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 10,
+    textAlign: 'center',
+    color: '#D5CD9E',
   },
   cubeCircleArea: {
     borderWidth: 1,

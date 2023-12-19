@@ -290,7 +290,7 @@ const _styles = StyleSheet.create({
     //justifyContent: 'flex-end',
   },
   modalWrap: {
-    backgroundColor: '#fff',
+    backgroundColor: '#333B41',
     height: 80,
     alignItems: 'center',
     justifyContent: 'center',
@@ -310,13 +310,11 @@ const _styles = StyleSheet.create({
   replyTextStyle: {
     width: width - 100,
     height: 60,
-    borderWidth: 1,
-    borderColor: '#EBE9EF',
     paddingRight: 30,
-    backgroundColor: '#F6F7FE',
+    backgroundColor: '#5A707F',
     paddingHorizontal: 10,
     paddingVertical: 5,
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 13,
     color: '#000',
   },
@@ -326,8 +324,8 @@ const _styles = StyleSheet.create({
     right: 13,
   },
   regiText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
-    color: '#8E9AEB',
+    fontFamily: 'Pretendard-Bold',
+    color: '#FFDD00',
   },
 
 });

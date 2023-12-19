@@ -264,7 +264,7 @@ export const Live = () => {
       <SpaceView pb={50} viewStyle={{backgroundColor: '#3D4348', minHeight: height}}> 
         {!isEmpty ? (
           <SpaceView>
-            <SpaceView mb={20} viewStyle={_styles.imgItemWrap}>
+            <SpaceView mb={15} viewStyle={_styles.imgItemWrap}>
               {/* <View style={_styles.mmbrStatusView}>
                 <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
               </View> */}

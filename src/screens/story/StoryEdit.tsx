@@ -798,7 +798,7 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
             <Image
               resizeMode="cover"
               resizeMethod="scale"
-              style={{width: 48, height: 48, borderRadius: 10, overflow: 'hidden'}}
+              style={{width: 35, height: 35, borderRadius: 10, overflow: 'hidden'}}
               key={imgUrl}
               source={imgUrl}
             />

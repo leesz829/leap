@@ -1052,29 +1052,29 @@ export default function StoryDetail(props: Props) {
         ref={storyMod_modalizeRef}
         adjustToContentHeight={true}
         handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={[modalStyle.modalContainer]} >
+        modalStyle={[modalStyle.modalContainer, {backgroundColor: '#333B41'}]} >
 
-        <View style={modalStyle.modalHeaderContainer}>
-          <CommonText fontWeight={'700'} type={'h3'}>
-            스토리 관리
-          </CommonText>
-          <TouchableOpacity onPress={storyMod_onClose} hitSlop={commonStyle.hipSlop20}>
-            <Image source={ICON.xBtn2} style={styles.iconSize20} />
+        <SpaceView viewStyle={[modalStyle.modalHeaderContainer, {marginBottom: 0, marginTop: 10}]}>
+          <Text style={_styles.modTitle}>
+            게시글 관리
+          </Text>
+        </SpaceView>
+
+        <SpaceView pl={40} pr={40} mb={10}>
+          <Text style={_styles.modDesc}>게시글 내용을 수정하거나 삭제할 수 있어요.</Text>
+        </SpaceView>
+
+        <SpaceView viewStyle={[modalStyle.modalBody, layoutStyle.flex1]}>
+          <TouchableOpacity style={[_styles.modBtn, {backgroundColor: '#FFDD00'}]} onPress={ goStoryModify }>
+            <Text style={[_styles.closeBtnText, {color: '#3D4348'}]}>수정</Text>
           </TouchableOpacity>
-        </View>
-
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          <SpaceView mt={10}>
-            <CommonBtn value={'스토리 수정하기'} type={'primary2'} borderRadius={12} onPress={ goStoryModify } />
-          </SpaceView>
-          <SpaceView mt={10}>
-            <CommonBtn value={'스토리 삭제하기'} type={'primary2'} borderRadius={12} onPress={ deleteStoryBoard } />
-          </SpaceView>
-        </View>
-
-        <TouchableOpacity style={_styles.modalCloseText} onPress={storyMod_onClose} hitSlop={commonStyle.hipSlop20}>
-          <Text style={{color: '#fff', fontFamily: 'Pretendard-Bold', fontSize: 16}}>확인</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={[_styles.modBtn, {backgroundColor: '#FFF'}]} onPress={ deleteStoryBoard }>
+            <Text style={[_styles.closeBtnText, {color: '#FF4D29'}]}>삭제</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[_styles.modBtn]} onPress={storyMod_onClose} hitSlop={commonStyle.hipSlop20}>
+            <Text style={[_styles.closeBtnText, {color: '#D5CD9E'}]}>취소</Text>
+          </TouchableOpacity>
+        </SpaceView>
       </Modalize>
     </>
   );
@@ -1465,13 +1465,6 @@ const _styles = StyleSheet.create({
     backgroundColor: '#FFF6BE',
     borderRadius: 50,
   },
-  modalCloseText: {
-    width: '100%',
-    backgroundColor: '#7984ED',
-    paddingVertical: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   myReplyChk: {
     position: 'absolute',
     bottom: -2,
@@ -1480,5 +1473,24 @@ const _styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 50,
   },
-
+  modTitle: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 20,
+    color: '#F3E270',
+  },
+  modDesc: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 12,
+    color: '#D5CD9E',
+  },
+  modBtn: {
+    paddingVertical: 15,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  closeBtnText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    textAlign: 'center',
+  },
 });
