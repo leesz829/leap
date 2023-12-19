@@ -162,7 +162,7 @@ export const Shop = () => {
 
       setBanner(data?.banner_list);
       setNewItemCnt(data?.mbr_base?.new_item_cnt);
- 
+
       if(typeof data?.pay_info != 'undefined') {
         let payInfoData = data?.pay_info?.result;
         let lettmpltName = payInfoData?.tmplt_name;
@@ -171,6 +171,7 @@ export const Shop = () => {
         let level = payInfoData?.tmplt_level;
         let itemName = payInfoData?.item_name;
         let eventTmpltSeq = payInfoData?.event_tmplt_seq;
+        let receiveFlag = payInfoData?.receive_flag;
 
         let percent = (mbrPrice*100) / trgtPrice;
         if(percent > 0) {
@@ -185,6 +186,7 @@ export const Shop = () => {
           , tmplt_level: level
           , item_name: itemName
           , event_tmplt_seq: eventTmpltSeq
+          , receive_flag: receiveFlag
         });
       }
 
@@ -305,17 +307,18 @@ export const Shop = () => {
   };
 
   // ######################################################### 캐쉬백 정보 조회
-  const getCashBackPayInfo = async () => {
+  const getCashBackPayInfo = async (type:string) => {
     const { success, data } = await get_cashback_detail_info();
 
     if (success) {
-      setIsVisible(true)
+      type == 'FOCUS' ? setIsVisible(false) : setIsVisible(true);
       let lettmpltName = payInfo?.tmplt_name;
       let mbrPrice = payInfo?.member_buy_price;
       let trgtPrice = payInfo?.target_buy_price;
       let level = payInfo?.tmplt_level;
       let itemName = payInfo?.item_name;
       let eventTmpltSeq = payInfo?.event_tmplt_seq;
+      let receiveFlag = payInfo?.receive_flag;
 
       let percent = (mbrPrice*100) / trgtPrice;
       if(percent > 0) {
@@ -330,6 +333,7 @@ export const Shop = () => {
         , tmplt_level: level
         , item_name: itemName
         , event_tmplt_seq: eventTmpltSeq
+        , receive_flag: receiveFlag
       });
 
       //setPayInfo(data.pay_info)
@@ -420,11 +424,11 @@ export const Shop = () => {
           }
         });
       };
-
+      getCashBackPayInfo('FOCUS');
       getShopMain(isPopupShow);
     }
   }, [isFocus]);
-  console.log('payInfo::::', payInfo)
+// console.log('payInfo::::', payInfo)
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -528,34 +532,50 @@ export const Shop = () => {
           {memberBase?.gender == 'M' ?
             <SpaceView viewStyle={_styles.shadowContainer}>
               <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
-                {payInfo?.target_buy_price - payInfo?.member_buy_price == 0 ? 
+                {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? 
                   <TouchableOpacity onPress={() => {onPressGetReward(payInfo?.event_tmplt_seq, payInfo?.tmplt_name);}}>
                     <Image source={ICON.circleReward} style={styles.iconSquareSize(70)} />
                   </TouchableOpacity>
                 :
-                  // <Image source={ICON[`circle${payInfo?.tmplt_name}`]} style={styles.iconSquareSize(70)} />
                   <Image source={
-                    payInfo?.tmplt_name == 'E' ? ICON.circleE
-                    : payInfo?.tmplt_name == 'D' ? ICON.circleE
-                    : payInfo?.tmplt_name == 'C' ? ICON.circleD
-                    : payInfo?.tmplt_name == 'B' ? ICON.circleC
-                    : payInfo?.tmplt_name == 'A' ? ICON.circleB
-                    : payInfo?.tmplt_name == 'S' ? ICON.circleA
-                    : ''
+                      payInfo?.receive_flag == 'N' ?
+                        payInfo?.tmplt_name == 'E' ? ICON.circleE
+                        : payInfo?.tmplt_name == 'D' ? ICON.circleE
+                        : payInfo?.tmplt_name == 'C' ? ICON.circleD
+                        : payInfo?.tmplt_name == 'B' ? ICON.circleC
+                        : payInfo?.tmplt_name == 'A' ? ICON.circleB
+                        : payInfo?.tmplt_name == 'S' ? ICON.circleA
+                        : payInfo?.tmplt_name == 'S' && ICON.circleS
+                      : ICON[`circle${payInfo?.tmplt_name}`]
                   } style={styles.iconSquareSize(70)} />
                 }
                 
                 <SpaceView ml={10} mb={5}>
                   <Text style={_styles.rewardTitle}>
-                    <Text style={{color: '#F1D30E'}}>{payInfo?.tmplt_name}</Text>
-                    보상은 <Text style={{color: '#32F9E4'}}>{payInfo?.item_name}</Text> 입니다.
+                    <Text style={{color: '#F1D30E'}}>
+                      {payInfo?.receive_flag == 'Y'
+                        ? payInfo?.tmplt_name == 'S' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
+                        : payInfo?.tmplt_name
+                      }
+                    </Text>
+                    보상은
+                    {/* <Text style={{color: '#32F9E4'}}>{tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1].item_name}</Text> 입니다. */}
                   </Text>
-                  {payInfo?.target_buy_price - payInfo?.member_buy_price == 0 ?
+
+                  {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ?
                     <Text style={_styles.rewardDesc}>
                       {payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.
                     </Text>
                   :
-                    <Text style={_styles.rewardDesc}>{payInfo?.target_buy_price - payInfo?.member_buy_price}원 더 결제하면 {payInfo?.tmplt_name}등급 달성!</Text> 
+                    <Text style={_styles.rewardDesc}>
+                      {payInfo?.receive_flag == 'N' ? payInfo?.target_buy_price - payInfo?.member_buy_price : payInfo?.target_buy_price}
+                      원 더 결제하면
+                      {payInfo?.receive_flag == 'Y'
+                        ? payInfo?.tmplt_name == 'S' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
+                        : payInfo?.tmplt_name
+                      }
+                      등급 달성!
+                    </Text> 
                   }
                   </SpaceView>
                 <TouchableOpacity
