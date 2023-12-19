@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
-import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, findSourcePathLocal } from 'utils/imageUtils';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
@@ -12,6 +12,8 @@ import { usePopup } from 'Context';
 import { STACK, ROUTES } from 'constants/routes';
 import { get_story_active, save_story_like, profile_open } from 'api/models';
 import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
+import ReplyRegiPopup from 'component/story/ReplyRegiPopup';
+import LikeListPopup from 'component/story/LikeListPopup';
 
 
 
@@ -260,8 +262,8 @@ export default function ActiveRender({ dataList, type, selectCallbackFn }) {
                 const memberLikeYn = _item?.member_like_yn; // 회원 좋아요 여부
                 const replyContents = _item?.reply_contents; // 댓글 내용
 
-                const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
-                //const boardImgPath = findSourcePathLocal(_item?.story_img_path);
+                //const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
+                const boardImgPath = findSourcePathLocal(_item?.story_img_path);
 
                 const expNickname = storyType == 'SECRET' ? _item?.nickname_modifier + " " + _item?.nickname_noun : _item?.nickname; // 노출 닉네임
                 let expMstImg = findSourcePath(_item?.mst_img_path); // 노출 대표 이미지
@@ -395,8 +397,8 @@ export default function ActiveRender({ dataList, type, selectCallbackFn }) {
                 const replyCnt = _item?.reply_cnt; // 댓글 수
                 const memberLikeYn = _item?.member_like_yn; // 좋아요 여부
 
-                const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
-                //const boardImgPath = findSourcePathLocal(_item?.story_img_path);
+                //const boardImgPath = findSourcePath(_item?.story_img_path); // 운영 오픈시 반영
+                const boardImgPath = findSourcePathLocal(_item?.story_img_path);
 
                 return (
                   <TouchableOpacity 
@@ -520,9 +522,33 @@ export default function ActiveRender({ dataList, type, selectCallbackFn }) {
             <SpaceView viewStyle={_styles.noData}>
               <Text style={_styles.noDataText}>내가쓴글이 없습니다.</Text>
             </SpaceView>
-          )}     
+          )}
         </>
       )}
+
+      {/* ##################################################################################
+                댓글 입력 팝업
+      ################################################################################## */}
+      <ReplyRegiPopup 
+        isVisible={isReplyVisible} 
+        storyBoardSeq={selectedReplyData.storyBoardSeq}
+        storyReplySeq={selectedReplyData.storyReplySeq}
+        depth={selectedReplyData.depth}
+        callbackFunc={replyRegiCallback} 
+      />
+
+      {/* ##################################################################################
+                좋아요 목록 팝업
+      ################################################################################## */}
+      <LikeListPopup
+        isVisible={isLikeListPopup}
+        closeModal={likeListCloseModal}
+        type={likeListTypePopup}
+        _storyBoardSeq={selectedReplyData.storyBoardSeq}
+        storyReplyData={selectedReplyData}
+        replyInfo={replyInfo}
+        profileOpenFn={profileCardOpenPopup}
+      />
     </>
   );
 

@@ -357,16 +357,23 @@ export const Story = () => {
     let _height = 0; // 세로길이
 
     if(type == 'LARGE') {
+      /* _width = width - 16;
+      _height = width - 43; */
+
       _width = width - 16;
-      _height = width - 43;
-      /* _width = (width - 43) / 2;
-      _height = (width - 43) /1; */
+      _height = width + 30;
     } else if(type == 'MEDIUM') {
+      /* _width = (width - 40) / 1.91;
+      _height = width - 40; */
+
       _width = (width - 40) / 1.91;
-      _height = width - 40;
+      _height = width + 50;
     } else {
+      /* _width = (width - 40) / 1.91;
+      _height = (width - 45) / 2; */
+
       _width = (width - 40) / 1.91;
-      _height = (width - 45) / 2;
+      _height = (width + 44) / 2;
     }
 
     let isNoImageLayout = (storyType == 'SECRET' || storyType == 'STORY') && !isEmptyData(imgPath) ? true : false; // 노이미지 레이아웃 여부
@@ -382,195 +389,111 @@ export const Story = () => {
     }
 
     if(storyType == 'SECRET' || secretYn == 'Y') {
-      applyMstImg = ICON.storyNoIcon;
+      if(item?.gender == 'M') {
+        applyMstImg = ICON.storyMale;
+      } else {
+        applyMstImg = ICON.storyFemale;
+      }      
     }
 
     return (
       <>
         <SpaceView mb={type == 'SMALL' ? 0 : 5} viewStyle={_styles.itemArea02(_width, _height)}>
           <TouchableOpacity activeOpacity={0.7} onPress={() => { goStoryDetail(storyBoardSeq); }}>
-            {isNoImageLayout ? (
-              <>
-                <LinearGradient
-                  colors={bgColor}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={_styles.noImageArea(item?.gender, storyType)} >
 
-                  {storyType == 'SECRET' ? (
-                    <>
-                      {/* 시크릿 아이콘 */}
-                      <SpaceView viewStyle={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center'}}>
-                        <Image source={ICON.storySecretIcon} style={_styles.secretIconStyle(type)} resizeMode={'cover'} />
-                      </SpaceView>
+            {/* ########################################## 스토리 유형 */}
+            <SpaceView viewStyle={_styles.typeArea(storyType)}>
+              <Text style={_styles.typeText}>{item?.story_type_name}</Text>
+            </SpaceView>
 
-                      {/* 스토리 유형 */}
-                      <SpaceView viewStyle={_styles.typeArea(storyType)}>
-                        <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-                      </SpaceView>
+            {/* ########################################## 이미지 영역 */}
+            <SpaceView>
+              {storyType != 'SECRET' && isNoImageLayout ? (
+                <>
+                  <LinearGradient
+                    colors={['#5A707F', '#3D4348']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={_styles.noImageArea(item?.gender, storyType, _height-55)} >
 
-                      <SpaceView pr={10} pl={10} viewStyle={{position: 'absolute', bottom: 10, left: 0, right: 0}}>
-                        <SpaceView>
-                          <Text style={_styles.contentsText('#D4CBEE')} numberOfLines={type == 'SMALL' ? 4 : 10}>{item?.contents}</Text>
-                        </SpaceView>
-
-                        <SpaceView mt={15}>
-                          {/* <Text style={_styles.nicknameText(storyType == 'SECRET' ? '#ffffff' : '#333333', type == 'SMALL' ? 12 : 13, type)}>{item?.nickname}</Text> */}
-                          <Text style={_styles.nicknameText('#ffffff', 12, type)}>{item?.nickname_modifier}</Text>
-                          <Text style={_styles.nicknameText('#ffffff', 12, type)}>{item?.nickname_noun}</Text>
-                        </SpaceView>
-                      </SpaceView>
-                    </>
-                  ) : (
-                    <>
-                      {/* 썸네일 이미지 */}
-                      {/* <TouchableOpacity 
-                        disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || secretYn === 'Y'}
-                        onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }} >
-
-                        <Image source={applyMstImg} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
-                      </TouchableOpacity> */}
-
-                      <Image source={applyMstImg} style={_styles.mstImgStyle(type == 'SMALL' ? 50 : 80, 40)} resizeMode={'cover'} />
-
-                      {/* 스토리 유형 */}
-                      <SpaceView viewStyle={_styles.typeArea(storyType)}>
-                        <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-                      </SpaceView>
-
-                      <SpaceView mt={10} viewStyle={{flexDirection: 'column', alignItems: 'center'}}>
-
-                        {memberBase?.member_seq != 905 && (
-                          <>
-                            {/* 프로필 평점, 인증 레벨 */}
-                            {(storyType != 'SECRET' && ((isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) || item?.profile_score >= 7.0)) && (
-                              <>
-                                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                  {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
-                                    <>
-                                      {item?.profile_score >= 7.0 && (
-                                        <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                          <Image source={ICON.starWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                          <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.profile_score}</Text></SpaceView>
-                                        </SpaceView>
-                                      )}
-                                      {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
-                                        <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                          <Image source={ICON.bookmarkWhite} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                          <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.auth_acct_cnt}</Text></SpaceView>
-                                        </SpaceView>
-                                      )}
-                                    </>
-                                  )}
-                                </SpaceView>
-                              </>
-                            )}
-                          </>
-                        )}
-
-                        {/* 닉네임 */}
-                        <SpaceView mt={3}>
-                          <Text style={[_styles.nicknameText('#ffffff', 12, type), {textAlign: 'center'}]}>
-                            {secretYn == 'Y' ? (
-                              <>{item?.nickname_modifier}{'\n'}{item?.nickname_noun}</>
-                            ) : (
-                              <>{item?.nickname}</>
-                            )}
-                          </Text>
-                        </SpaceView>
-                      </SpaceView>
-
-                      {/* 내용 */}
-                      <SpaceView mt={type == 'SMALL' ? 10 : 20} pl={10} pr={10}>
-                        <Text style={_styles.contentsText('#333333')} numberOfLines={type == 'SMALL' ? 1 : 6}>{item?.contents}</Text>
-                      </SpaceView>
-                    </>
+                    {/* 내용 */}
+                    <SpaceView mt={type == 'SMALL' ? 10 : 20} pl={10} pr={10}>
+                      <Text style={_styles.contentsText('#FFF6BE')} numberOfLines={type == 'SMALL' ? 1 : 6}>{item?.contents}</Text>
+                    </SpaceView>
+                  </LinearGradient>
+                </>
+              ) : (
+                <>
+                  {/* 이미지가 2개 이상인 경우 표시 */}
+                  {item.img_cnt > 1 && (
+                    <SpaceView viewStyle={_styles.multiImageArea}>
+                      <Image source={ICON.murtipleImage} style={styles.iconSquareSize(18)} resizeMode={'cover'} />
+                    </SpaceView>
                   )}
-                </LinearGradient>
-              </>
-            ) : (
-              <>
-                {/* 이미지가 2개 이상인 경우 표시 */}
-                {item.img_cnt > 1 && (
-                  <SpaceView viewStyle={_styles.multiImageArea}>
-                    <Image source={ICON.murtipleImage} style={styles.iconSquareSize(18)} resizeMode={'cover'} />
-                  </SpaceView>
-                )}
 
-                {/* 썸네일 이미지 */}
-                <SpaceView>
-                  {item?.story_type == 'VOTE' ? (
-                    <Image source={voteImgPath01} style={{width: _width, height: _height}} resizeMode={'cover'} />
-                  ) : (
-                    <Image source={imgPath} style={{width: _width, height: _height}} resizeMode={'cover'} />
-                  )}
-                </SpaceView>
-
-                {/* 스토리 유형 */}
-                <SpaceView viewStyle={_styles.typeArea(storyType)}>
-                  <Text style={_styles.typeText}>{item?.story_type_name}</Text>
-                </SpaceView>
-
-                {/* 프로필 영역 */}
-                <SpaceView viewStyle={_styles.profileArea}>
-                  <SpaceView mr={5}>
-                    {/* <TouchableOpacity 
-                      disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq}
-                      onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt); }}>
-                      <Image source={applyMstImg} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
-                    </TouchableOpacity> */}
-                    <Image source={applyMstImg} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
-                  </SpaceView>
-
+                  {/* 썸네일 이미지 */}
                   <SpaceView>
-                    {memberBase?.member_seq != 905 && (
-                      <>
-                        {/* 프로필 평점, 인증 레벨 */}
-                        <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                          {(storyType != 'SECRET' && (item?.profile_score >= 7.0 || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
-                            <>
-                              {item?.profile_score >= 7.0 && (
-                                <SpaceView mr={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                  <Image source={ICON.starYellow} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                  <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.profile_score}</Text></SpaceView>
-                                </SpaceView>
-                              )}
-                              {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
-                                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                  <Image source={ICON.bookmarkPurple} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                                  <SpaceView ml={2}><Text style={_styles.activeText('#ffffff')}>{item?.auth_acct_cnt}</Text></SpaceView>
-                                </SpaceView>
-                              )}
-                            </>
-                          )}
-                        </SpaceView>
-                      </>
-                    )}
-
-                    {(storyType == 'SECRET' || secretYn == 'Y') ? (
-                      <>
-                        <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname_modifier}</Text>
-                        <Text style={_styles.nicknameText('#ffffff', 13, type)}>{item?.nickname_noun}</Text>
-                      </>                    
+                    {storyType == 'VOTE' ? (
+                      <Image source={voteImgPath01} style={{width: _width, height: _height-55}} resizeMode={'cover'} />
+                    ) : storyType == 'SECRET' ? (
+                      <Image source={item?.gender == 'M' ? IMAGE.storySecretMale : IMAGE.storySecretFemale} style={{width: _width, height: _height-55}} resizeMode={'cover'} />
                     ) : (
-                      <Text style={_styles.nicknameText('#ffffff', 12, type)}>{item?.nickname}</Text>
+                      <Image source={imgPath} style={{width: _width, height: _height-55}} resizeMode={'cover'} />
                     )}
                   </SpaceView>
+
+                  {/* 내용 */}
+                  <SpaceView pr={10} pl={10} viewStyle={{position: 'absolute', bottom: 10, left: 0, right: 0, zIndex: 1,}}>
+                    <SpaceView>
+                      <Text style={_styles.contentsText('#FFF6BE')} numberOfLines={type == 'SMALL' ? 4 : 10}>{item?.contents}</Text>
+                    </SpaceView>
+                  </SpaceView>
+
+                  {/* 딤 처리 영역 */}
+                  <LinearGradient
+                    colors={['transparent', '#000000']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={_styles.dimsArea} />
+                </>
+              )}
+            </SpaceView>
+
+            {/* ########################################## 프로필 영역 */}
+            <SpaceView viewStyle={_styles.profileArea}>
+
+              {/* 대표 사진 노출 */}
+              <SpaceView mr={5}>
+                <Image source={applyMstImg} style={_styles.mstImgStyle(30, 20)} resizeMode={'cover'} />
+              </SpaceView>
+
+              <SpaceView>
+                
+                {/* 인증 레벨, 인상 수식어 노출 */}
+                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  {(storyType != 'SECRET' && secretYn != 'Y' && (isEmptyData(item?.face_modifier) || (isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5))) && (
+                    <>
+                      {(isEmptyData(item?.auth_acct_cnt) && item?.auth_acct_cnt >= 5) && (
+                        <SpaceView mr={2}><Text style={_styles.profileText}>LV {item?.auth_acct_cnt}</Text></SpaceView>
+                      )}
+
+                      {isEmptyData(item?.face_modifier) && (
+                        <SpaceView>
+                          <SpaceView><Text style={_styles.profileText}>#{item?.face_modifier}</Text></SpaceView>
+                        </SpaceView>
+                      )}
+                    </>
+                  )}
                 </SpaceView>
 
-                <SpaceView viewStyle={_styles.bottomArea}>
-                  {/* <SpaceView><Text style={_styles.contentsText('#fff')}>{item?.contents}</Text></SpaceView> */}
-                  {/* <SpaceView mt={8}><Text style={_styles.contentsText}>{item?.time_text}</Text></SpaceView> */}
-                </SpaceView>              
-
-                {/* 딤 처리 영역 */}
-                <LinearGradient
-                  colors={['transparent', '#000000']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 0, y: 1 }}
-                  style={_styles.dimsArea} />
-              </>
-            )}
+                {/* 닉네임 노출 */}
+                {(storyType == 'SECRET' || secretYn == 'Y') ? (
+                  <Text style={_styles.nicknameText('#D5CD9E', 12, type)} numberOfLines={2}>{item?.nickname_modifier}{'\n'}{item?.nickname_noun}</Text>
+                ) : (
+                  <Text style={_styles.nicknameText('#D5CD9E', 12, type)} numberOfLines={1}>{item?.nickname}</Text>
+                )}
+              </SpaceView>
+            </SpaceView>
 
           </TouchableOpacity>
         </SpaceView>
@@ -658,7 +581,6 @@ export const Story = () => {
         ############################################################################################################ */}
         <SpaceView viewStyle={{height: height-200}}>
 
-
           {/* ############################################################################################################
           ###### 스토리
           ############################################################################################################ */}
@@ -721,8 +643,9 @@ export const Story = () => {
                                   })}
 
                                   {innerItem.medium_list.length < 2 && (
-                                    <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('M')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
-                                      <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                                    <LinearGradient colors={['#5A707F', '#3D4348']} style={_styles.dummyArea('M')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                                      {/* <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} /> */}
+                                      <Text style={_styles.dummyText}>LEAP</Text>
                                     </LinearGradient>
                                   )}
                                 </SpaceView>
@@ -737,8 +660,9 @@ export const Story = () => {
                                   })}
 
                                   {innerItem.small_list.length < 2 && (
-                                    <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
-                                      <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                                    <LinearGradient colors={['#5A707F', '#3D4348']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                                      {/* <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} /> */}
+                                      <Text style={_styles.dummyText}>LEAP</Text>
                                     </LinearGradient>
                                   )}
                                 </SpaceView>
@@ -761,8 +685,9 @@ export const Story = () => {
                                     })}
 
                                     {innerItem.small_list.length < 2 && (
-                                      <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
-                                        <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                                      <LinearGradient colors={['#5A707F', '#3D4348']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                                        {/* <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} /> */}
+                                        <Text style={_styles.dummyText}>LEAP</Text>
                                       </LinearGradient>
                                     )}
                                   </SpaceView>
@@ -780,8 +705,9 @@ export const Story = () => {
                                       )
                                     })}
                                     {innerItem.small_list.length < 2 && (
-                                        <LinearGradient colors={['#7984ED', '#8759D5']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
-                                          <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} />
+                                        <LinearGradient colors={['#5A707F', '#3D4348']} style={_styles.dummyArea('S')} start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }} >
+                                          {/* <Image source={IMAGE.logoStoryTmp} style={{width: 150, height: 45}} resizeMode={'cover'} /> */}
+                                          <Text style={_styles.dummyText}>LEAP</Text>
                                         </LinearGradient>
                                     )}
                                   </SpaceView>
@@ -893,7 +819,7 @@ const _styles = StyleSheet.create({
 			color: isOn ? '#FFDD00' : '#445561',
       width: 60,
       textAlign: 'center',
-      paddingVertical: 5,
+      paddingVertical: 3,
 		};
 	},
   contentWrap: {
@@ -939,11 +865,11 @@ const _styles = StyleSheet.create({
   },
   dummyArea: (type:string) => {
     let _w = (width - 40) / 1.91;
-    let _h = width - 40;
+    let _h = width + 40;
 
     if(type == 'S') {
       _w = (width - 40) / 1.91;
-      _h = (width - 45) / 2;
+      _h = (width + 40) / 2;
     }
 
     return {
@@ -959,7 +885,8 @@ const _styles = StyleSheet.create({
   },
   dummyText: {
     fontFamily: 'Pretendard-ExtraBold',
-    color: '#fff',
+    fontSize: 22,
+    color: '#FFF6BE',
   },
   btnArea: {
     position: 'absolute',
@@ -993,14 +920,15 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   profileArea: {
-    position: 'absolute',
-    bottom: 10,
-    left: 0,
-    right: 0,
     paddingHorizontal: 10,
+    paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 1,
+    backgroundColor: '#fff',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    overflow: 'hidden',
   },
   bottomArea: {
     position: 'absolute',
@@ -1023,10 +951,11 @@ const _styles = StyleSheet.create({
       top: 10,
       left: 10,
       //backgroundColor: 'rgba(0,0,0,0.5)',
-      backgroundColor: bgColor,
+      backgroundColor: '#FFDD00',
       borderRadius: 15,
-      paddingVertical: 4,
+      paddingVertical: 2,
       width: 45,
+      zIndex: 1,
     };
   },
   typeText: {
@@ -1042,7 +971,7 @@ const _styles = StyleSheet.create({
       borderRadius: bdRadius,
       overflow: 'hidden',
       borderWidth: 1,
-      borderColor: '#fff',
+      borderColor: '#FFDD00',
     };
   },
   secretIconStyle: (sizeType:string) => {
@@ -1062,8 +991,8 @@ const _styles = StyleSheet.create({
   },
   contentsText: (_color:string) => {
     return {
-      fontFamily: 'Pretendard-Regular',
-      fontSize: 13,
+      fontFamily: 'Pretendard-Light',
+      fontSize: 12,
       color: _color,
     };
   },
@@ -1072,7 +1001,16 @@ const _styles = StyleSheet.create({
       fontFamily: 'Pretendard-SemiBold',
       fontSize: 12,
       color: _color,
+      backgroundColor: '#FFDD00',
     };
+  },
+  profileText: {
+    backgroundColor: '#FFDD00',
+    borderTopRightRadius: 5,
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 11,
+    color: '#fff',
+    paddingHorizontal: 3,
   },
   nicknameText: (_color:string, _fontSize:number, _sizeType:string) => {
     return {
@@ -1082,10 +1020,10 @@ const _styles = StyleSheet.create({
       width: _sizeType == 'LARGE' ? '100%' : width - 260,
     };
   },
-  noImageArea: (gender:string, storyType:string) => {
+  noImageArea: (gender:string, storyType:string, _height:number) => {
     return {
       width: '100%',
-      height: '100%',
+      height: _height,
       //backgroundColor: gender == 'M' ? '#D5DAFC' : '#FEEFF2',
       alignItems: storyType == 'SECRET' ? 'flex-start' : 'center',
       justifyContent: storyType == 'SECRET' ? 'flex-end' : 'center',
@@ -1124,7 +1062,6 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 180,
-    backgroundColor: '#fff',
   },
   noDataText: {
     fontFamily: 'Pretendard-Medium',
