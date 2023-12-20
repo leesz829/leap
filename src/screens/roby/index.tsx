@@ -184,19 +184,29 @@ export const Roby = (props: Props) => {
 
     // 01 : 내 프로필 공개, 03 : 푸시 알림 받기
     if (type == '01' || type == '03') {
-      if(type == '01') {
-        body = { match_yn: value, };
-      } else if(type == '03') {
-        body = { push_alarm_yn: value, };
-      }
+      if(isClickable) {
+        setIsClickable(false);
 
-      const { success, data } = await update_setting(body);
-      if (success) {
-        dispatch(setPartialPrincipal({
-          mbr_base : data.mbr_base
-        }));
-      }
+        try {
+          if(type == '01') {
+            body = { match_yn: value, };
+          } else if(type == '03') {
+            body = { push_alarm_yn: value, };
+          }
+    
+          const { success, data } = await update_setting(body);
+          if (success) {
+            dispatch(setPartialPrincipal({
+              mbr_base : data.mbr_base
+            }));
+          }
 
+        } catch {
+
+        } finally {
+          setIsClickable(true);
+        }
+      }
     }
     // 02 : 아는 사람 제외
     else {
@@ -278,7 +288,8 @@ export const Roby = (props: Props) => {
     } else {
       show({
         title: '프로필 재심사',
-        content: '프로필 재심사 대기열에 등록하시겠습니까?\n패스 x30',
+        content: '큐브 30개로 프로필 재심사 대기열에 등록하시겠습니까?',
+        passAmt: 30,
         cancelCallback: function() {
   
         },
@@ -696,7 +707,7 @@ export const Roby = (props: Props) => {
               </SpaceView>
             </LinearGradient>
 
-            <TouchableOpacity style={_styles.bannerArea}>
+            <TouchableOpacity disabled={true} style={_styles.bannerArea}>
               <SpaceView>
                 <Text style={_styles.bannerTitle}>데일리뷰에 원하는 친구가 안 나왔을 때는?{'\n'}프로필 카드를 열어보세요!</Text>
                 <Text style={_styles.bannerDesc}>#인증레벨#MBTI#인상</Text>
@@ -751,9 +762,19 @@ export const Roby = (props: Props) => {
                         </SpaceView>
                         
                         <SpaceView viewStyle={_styles.flutingArea}>
-                          <TouchableOpacity onPress={() => ( navigation.navigate('Live') )}>
-                            <Text style={_styles.flutingTitle}>플러팅 참여하기</Text>
-                            <Text style={_styles.flutingDesc}>내 프로필이 이성들에게 노출됩니다.</Text>
+                          <TouchableOpacity 
+                            disabled={memberBase?.reex_yn == 'Y'} 
+                            onPress={() => profileReexPopupOpen()}
+                            activeOpacity={0.8}
+                          >
+                            {memberBase?.reex_yn == 'Y' ? (
+                              <Text style={_styles.flutingTitle}>플러팅 참여중!</Text>
+                            ) : (
+                              <>
+                                <Text style={_styles.flutingTitle}>플러팅 참여하기</Text>
+                                <Text style={_styles.flutingDesc}>내 프로필이 이성들에게 노출됩니다.</Text>
+                              </>
+                            )}
                           </TouchableOpacity>
                         </SpaceView>
                       </SpaceView>

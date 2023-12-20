@@ -173,7 +173,7 @@ export const SignUp_Introduce = (props : Props) => {
 
 	// ############################################################ 최초 실행
 	React.useEffect(() => {
-		getMemberIntro();		
+		getMemberIntro();
 	}, [isFocus]);
 
 	return (

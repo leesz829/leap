@@ -2,7 +2,7 @@ import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styl
 import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text, TextInput } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect, useRef } from 'react';
 import { CommonSelect } from 'component/CommonSelect';
@@ -26,6 +26,8 @@ import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 
 
 /* ################################################################################################################
@@ -204,84 +206,100 @@ export const Profile_Introduce = (props: Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-250}}>
-					<SpaceView mt={20} mb={30}>
-						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>님의{'\n'}프로필 정보 수정하기</Text>
-					</SpaceView>
 
-          <SpaceView>
-            <SpaceView>
-              <Text style={_styles.introduceText}>한줄 소개</Text>
-            </SpaceView>
-            <SpaceView>
-              <TextInput
-                value={comment}
-                onChangeText={(text) => setComment(text)}
-                autoCapitalize={'none'}
-                multiline={true}
-                style={_styles.textInputBox(70)}
-                placeholder={'프로필 카드 상단에 공개되는 내 상세 소개 입력'}
-                placeholderTextColor={'#FFFDEC'}
-                maxLength={50}
-                caretHidden={true}
-              />
-              <SpaceView mt={5}>
-                <Text style={_styles.countText}>({isEmptyData(comment) ? comment.length : 0}/50)</Text>
+        <KeyboardAwareScrollView
+          keyboardShouldPersistTaps="always"
+          keyboardOpeningTime={0}
+          alwaysBounceHorizontal={false}
+          alwaysBounceVertical={false}
+          contentInsetAdjustmentBehavior="automatic"
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
+          extraScrollHeight={100}
+          enableOnAndroid>
+
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{height: height-190}}>
+              <SpaceView mt={20} mb={30}>
+                <Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>님의{'\n'}프로필 정보 수정하기</Text>
               </SpaceView>
-            </SpaceView>
-          </SpaceView>
 
-					<SpaceView>
-            <SpaceView>
-              <Text style={_styles.introduceText}>프로필 소개</Text>
-            </SpaceView>
-            <SpaceView>
-              <TextInput
-                value={addData?.introduceComment}
-                onChangeText={(text) => setAddData({...addData, introduceComment: text})}
-                autoCapitalize={'none'}
-                multiline={true}
-                style={_styles.textInputBox(110)}
-                placeholder={'프로필 카드 상단에 공개되는 내 상세 소개 입력'}
-                placeholderTextColor={'#FFFDEC'}
-                maxLength={3000}
-                caretHidden={true}
-              />
-              <SpaceView mt={5}>
-                <Text style={_styles.countText}>({isEmptyData(addData?.introduceComment) ? addData?.introduceComment.length : 0}/3000)</Text>
+              <SpaceView>
+                <SpaceView>
+                  <Text style={_styles.introduceText}>한줄 소개</Text>
+                </SpaceView>
+                <SpaceView>
+                  <TextInput
+                    value={comment}
+                    onChangeText={(text) => setComment(text)}
+                    autoCapitalize={'none'}
+                    multiline={true}
+                    style={_styles.textInputBox(70)}
+                    placeholder={'프로필 카드 상단에 공개되는 내 상세 소개 입력'}
+                    placeholderTextColor={'#FFFDEC'}
+                    maxLength={50}
+                    caretHidden={true}
+                  />
+                  <SpaceView mt={5}>
+                    <Text style={_styles.countText}>({isEmptyData(comment) ? comment.length : 0}/50)</Text>
+                  </SpaceView>
+                </SpaceView>
               </SpaceView>
-            </SpaceView>
-          </SpaceView>
 
-					<SpaceView mt={10}>
-						{interviewList.map((item, index) => {
+              <SpaceView>
+                <SpaceView>
+                  <Text style={_styles.introduceText}>프로필 소개</Text>
+                </SpaceView>
+                <SpaceView>
+                  <TextInput
+                    value={addData?.introduceComment}
+                    onChangeText={(text) => setAddData({...addData, introduceComment: text})}
+                    autoCapitalize={'none'}
+                    multiline={true}
+                    style={_styles.textInputBox(110)}
+                    placeholder={'프로필 카드 상단에 공개되는 내 상세 소개 입력'}
+                    placeholderTextColor={'#FFFDEC'}
+                    maxLength={3000}
+                    caretHidden={true}
+                  />
+                  <SpaceView mt={5}>
+                    <Text style={_styles.countText}>({isEmptyData(addData?.introduceComment) ? addData?.introduceComment.length : 0}/3000)</Text>
+                  </SpaceView>
+                </SpaceView>
+              </SpaceView>
 
-							return (isEmptyData(item?.common_code)) && (
-								<>
-									<SpaceView mb={15}>
-										<Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
-										<TextInput
-											defaultValue={item?.answer}
-											onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
-											autoCapitalize={'none'}
-											multiline={true}
-											style={_styles.textInputBox(70)}
-											placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
-											placeholderTextColor={'#FFFDEC'}
-											maxLength={200}
-											caretHidden={true}
-										/>
-                    <SpaceView mt={5}>
-                      <Text style={_styles.countText}>({isEmptyData(item?.answer) ? item?.answer.length : 0}/200)</Text>
-                    </SpaceView>
-									</SpaceView>
-								</>
-							)
-						})}
-					</SpaceView>
-				</ScrollView>
+              <SpaceView mt={10}>
+                {interviewList.map((item, index) => {
 
-        <SpaceView mb={20} viewStyle={_styles.btnArea}>
+                  return (isEmptyData(item?.common_code)) && (
+                    <>
+                      <SpaceView mb={15}>
+                        <Text style={_styles.introduceText}>Q. {item?.code_name}</Text>
+                        <TextInput
+                          defaultValue={item?.answer}
+                          onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+                          autoCapitalize={'none'}
+                          multiline={true}
+                          style={_styles.textInputBox(70)}
+                          placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
+                          placeholderTextColor={'#FFFDEC'}
+                          maxLength={200}
+                          caretHidden={true}
+                        />
+                        <SpaceView mt={5}>
+                          <Text style={_styles.countText}>({isEmptyData(item?.answer) ? item?.answer.length : 0}/200)</Text>
+                        </SpaceView>
+                      </SpaceView>
+                    </>
+                  )
+                })}
+              </SpaceView>
+            </ScrollView>
+          </TouchableWithoutFeedback>
+        </KeyboardAwareScrollView>
+
+        <SpaceView mb={250} viewStyle={_styles.btnArea}>
           <SpaceView mt={10}>
             <CommonBtn
               value={'저장하기'}

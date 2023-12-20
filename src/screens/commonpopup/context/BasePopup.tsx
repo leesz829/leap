@@ -5,7 +5,6 @@ import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { Modal, TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
-import { color } from 'react-native-reanimated';
 import { isEmptyData } from 'utils/functions';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
@@ -58,28 +57,38 @@ export const BasePopup = (props: Props) => {
               end={{ x: 0, y: 1 }}
             >
 
-              {/* ######################## 타이틀 영역 */}
-              {props.type != 'AUCTION' ? 
+              {/* ########################################################### 타이틀 영역 */}
+              {props.type != 'AUCTION' ? (
                 <SpaceView pt={15} pb={15} pl={15} viewStyle={[layoutStyle.alignStart]}>
                   <Text style={_styles.titleText}>{isEmptyData(props.title) ? props.title : '알림'}</Text>
                 </SpaceView>
-                :
+              ) : (
                 <TouchableOpacity onPress={onPressCancel}>
                   <SpaceView pr={20} mt={20} viewStyle={[layoutStyle.alignEnd]}>
                     <Image source={ICON.closeBlack} style={styles.iconSize18} />
                   </SpaceView>
                 </TouchableOpacity>
-              }
+              )}
 
-              {/* ######################## 내용 영역 */}
-              <SpaceView mt={10} mb={10} viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
+              {/* ########################################################### 내용 영역 */}
+              <SpaceView viewStyle={_styles.contentArea}>
                 {props.type == 'REPORT' &&
-                  <Image source={ICON.sirenMark} style={[styles.iconSize60, {marginBottom: 15}]} />
+                  <SpaceView mb={15}>
+                    <Image source={ICON.sirenMark} style={styles.iconSquareSize(60)} />
+                  </SpaceView>
                 }
 
                 {props.type == 'AUCTION' &&
-                  <Image source={ICON.hifive} style={[styles.iconSize60, {marginBottom: 15}]} />
+                  <SpaceView mb={15}>
+                    <Image source={ICON.hifive} style={styles.iconSquareSize(60)} />
+                  </SpaceView>
                 }
+
+                {isEmptyData(props.passAmt) && (
+                  <SpaceView mb={10}>
+                    <Image style={styles.iconSquareSize(46)} source={isEmptyData(props.passType) && props.passType == 'ROYAL' ? ICON.megaCubeCyan : ICON.cubeCyan} resizeMode={'contain'} />
+                  </SpaceView>
+                )}
 
                 <Text style={_styles.msgText}>{isEmptyData(props.text) ? props.text : ''}</Text>
 
@@ -89,17 +98,15 @@ export const BasePopup = (props: Props) => {
                   </CommonText>
                 }
 
-                {isEmptyData(props.passAmt) && (
+                {/* {isEmptyData(props.passAmt) && (
                   <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                     <Image style={styles.iconSquareSize(25)} source={isEmptyData(props.passType) && props.passType == 'ROYAL' ? ICON.megaCubeCyan : ICON.cubeCyan} resizeMode={'contain'} />
                     <Text style={_styles.openPopupDescIcon(props.passType)}>{!props.passAmt ? 'X 15' : 'X ' + props.passAmt}</Text>
                   </SpaceView>
-                )}
-
-                {/* <CommonText type={'h5'} color={ColorType.red}>패스 x{props.passAmt}</CommonText> */}
+                )} */}
               </SpaceView>
 
-              {/* ######################## 버튼 영역 */}
+              {/* ########################################################### 버튼 영역 */}
               {(!isEmptyData(props.btnExpYn) || props.btnExpYn == 'Y') &&
                 <SpaceView viewStyle={_styles.btnContainer}>
                   {props.isConfirm ? (
@@ -147,7 +154,7 @@ const _styles = StyleSheet.create({
   },
   msgText: {
     fontFamily: 'Pretendard-Regular',
-    fontSize: 13,
+    fontSize: 11,
     color: '#D5CD9E',
   },
   btnContainer: {
@@ -176,15 +183,23 @@ const _styles = StyleSheet.create({
   btnStyle: (bgcr: string) => {
     return {
       fontFamily: 'Pretendard-Bold',
-      fontSize: 16,
+      fontSize: 15,
       color: '#3D4348',
       backgroundColor: isEmptyData(bgcr) ? bgcr : '#FFFFFF',
       borderRadius: 15,
-      paddingVertical: 6,
+      paddingVertical: 4,
       width: 110,
       textAlign: 'center',
       marginHorizontal: 3,
       overflow: 'hidden',
     };
+  },
+  contentArea: {
+    paddingHorizontal: 35,
+    marginVertical: 10,
+    zIndex: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 70,
   },
 });

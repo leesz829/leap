@@ -259,8 +259,8 @@ export default function MatchDetail(props: Props) {
   };
 
   // ############################################################ 연락처 열기 팝업 활성화
-  const hpOpenPopup = async () => {    
-    let tmpContent = '현재 보고 계신 프로필의 연락처를 확인하시겠어요?\n패스 x' + (data.match_base.special_interest_yn == 'Y' ? '50' : '100');
+  const hpOpenPopup = async () => {
+    let tmpContent = '큐브 150개를 사용하여 현재 보고 계신 프로필의 연락처를 확인하시겠어요?';
     let subContent = '';
 
     if('Y' == freeContactYN){
@@ -268,10 +268,11 @@ export default function MatchDetail(props: Props) {
       subContent = '연락처 프리오퍼 사용중';
     }
 
-    show({ 
+    show({
       title: '연락처 공개',
       content: tmpContent,
       subContent: subContent,
+      passAmt: 50,
       cancelCallback: function() {},
       confirmCallback: function() {
         goHpOpen();

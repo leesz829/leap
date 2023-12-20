@@ -609,6 +609,7 @@ const _styles = StyleSheet.create({
       borderRadius: 10,
       paddingVertical: 2,
       paddingHorizontal: 10,
+      overflow: 'hidden',
     };
   },
   modBtn: {

@@ -95,17 +95,7 @@ export const Storage = (props: Props) => {
   const [isLiveResVisible, setIsLiveResVisible] = React.useState(true);
   const [isLiveReqVisible, setIsLiveReqVisible] = React.useState(true);
 
-  const [isProfileOpenVisible, setIsProfileOpenVisible] = React.useState(false);
   const [profileOpenMessage, setProfileOpenMessage] = React.useState('');
-
-  // 프로필 열기 데이터
-  const [profileOpenData, setProfileOpenData] = React.useState({
-    match_seq: 0,
-    nickname: '',
-    message: '',
-    trgt_member_seq: 0,
-    match_type: '',
-  });
 
 
   /* ################################################
@@ -293,15 +283,15 @@ export const Storage = (props: Props) => {
     // 찐심인 경우 열람통과
     if (special_interest_yn == 'N' && profile_open_yn == 'N') {
       setProfileOpenMessage(message);
-      setIsProfileOpenVisible(true);
 
-      setProfileOpenData({
-        ...profileOpenData,
-        match_seq: match_seq,
-        nickname: nickname,
-        message: message,
-        trgt_member_seq: trgt_member_seq,
-        match_type: match_type,
+      show({
+        title: '블라인드 카드 열람',
+        content: '큐브 15개로 블라인드 카드를 열람하시겠습니까?' ,
+        passAmt: 15,
+        cancelCallback: function() {},
+        confirmCallback: function() {
+          goProfileOpen(match_seq, trgt_member_seq, match_type, message);
+        }
       });
 
     } else {
@@ -349,7 +339,6 @@ export const Storage = (props: Props) => {
           if (data.result_code == '0000') {
             
             dispatch(myProfile());
-            setIsProfileOpenVisible(false);
             navigation.navigate(STACK.COMMON, { 
               screen: 'MatchDetail', 
               params: {
@@ -364,7 +353,6 @@ export const Storage = (props: Props) => {
             navigation.setParams({ loadPage: type });
 
           } else if (data.result_code == '6010') {
-            setIsProfileOpenVisible(false);
             show({ content: '보유 큐브가 부족합니다.', isCross: true });
           } else {
             show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true });
@@ -785,61 +773,6 @@ export const Storage = (props: Props) => {
 
         </SpaceView>
       </LinearGradient>
-
-
-      {/* ####################################################################################################
-      ##################################### 프로필 열람 팝업
-      #################################################################################################### */}
-      <Modal visible={isProfileOpenVisible} transparent={true}>
-        <SpaceView viewStyle={modalStyle.modalBackground}>
-          <LinearGradient 
-            colors={['#3D4348', '#1A1E1C']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={modalStyle.modalStyle1}>
-              <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader, {borderColor: '#EDEDED'}]}>
-                <CommonText fontWeight={'700'} type={'h5'} color={'#D5CD9E'}>프로필 열람</CommonText>
-              </SpaceView>
-
-              <SpaceView viewStyle={[modalStyle.modalBody]}>
-                {isEmptyData(profileOpenData.message) && (
-                  <SpaceView mt={-5} mb={10} viewStyle={_styles.openPopupMessageArea}>
-                    <Text style={_styles.openPopupMessageTit}>{profileOpenData.nickname}님의 메시지</Text>
-
-                    <ScrollView style={{maxHeight: 100}} showsVerticalScrollIndicator={false}>
-                      <Text style={_styles.openPopupMessageText}>"{profileOpenData.message}"</Text>
-                    </ScrollView>
-                  </SpaceView>
-                )}
-
-                <SpaceView mt={7} viewStyle={_styles.openPopupDescArea}>
-                  <Text style={_styles.openPopupDescText}>상대방의 프로필을 열람 하시겠습니까?</Text>
-
-                </SpaceView>
-              </SpaceView>
-
-              <View style={modalStyle.modalBtnContainer}>
-                <TouchableOpacity
-                  style={[modalStyle.modalBtn, {backgroundColor: '#FFF', borderBottomLeftRadius: 20}]}
-                  onPress={() => { setIsProfileOpenVisible(false); }}>
-                  <CommonText textStyle={{fontSize: 16}} fontWeight={'600'} color={'#445561'}>취소하기</CommonText>
-                </TouchableOpacity>
-
-                <View style={modalStyle.modalBtnline} />
-
-                <TouchableOpacity
-                  style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomRightRadius: 20}]}
-                  onPress={() => { goProfileOpen(profileOpenData.match_seq, profileOpenData.trgt_member_seq, profileOpenData.match_type, profileOpenData.message); }}>
-                  <CommonText textStyle={{fontSize: 16}} fontWeight={'600'} color={'#445561'}>확인하기</CommonText>
-                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <Image style={styles.iconSquareSize(25)} source={ICON.polygonGreen} resizeMode={'contain'} />
-                    <Text style={_styles.openPopupDescIcon}>15</Text>
-                  </SpaceView>
-                </TouchableOpacity>
-              </View>
-          </LinearGradient>
-        </SpaceView>
-      </Modal>
     </>
   );
 };
