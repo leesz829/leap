@@ -96,31 +96,9 @@ export const Shop = () => {
   let popupList = [];
   let isPopup = true;
 
-  /* const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef<FlatList>(null);
-  const snapToOffsets = useMemo(() => Array.from(Array(banner.length)).map((_, index) => index * width),
-  [banner],
-  );
-
-  useEffect(() => {
-    console.log('currentIndex ::::::::: ', currentIndex);
-    if (currentIndex !== snapToOffsets.length) {
-      flatListRef.current?.scrollToOffset({
-        animated: true,
-        offset: snapToOffsets[currentIndex],
-      });
-    }
-  }, [currentIndex, snapToOffsets]);
-
-  useInterval(() => {
-    setCurrentIndex(prev => (prev === snapToOffsets.length - 1 ? 0 : prev + 1));
-  }, isFocus ? 5000 : null); */
-
   // ############################################################################# 배너 목록 조회
   const getShopMain = async (isPopupShow:boolean) => {
-    
-    //const invenConnectDate = await AsyncStorage.getItem('INVENTORY_CONNECT_DT') || '20230524000000';
-    //const { success, data } = await get_banner_list({ banner_type: 'PROD' });
+
     const { success, data } = await get_shop_main({ banner_type: 'PROD' });
 
     if (success) {
@@ -264,18 +242,6 @@ export const Shop = () => {
 
       setProductList(_products);
 
-      // let _tmpList = [
-      //   {item_name: '80', shop_buy_price: 4000, money_type_code: 'INAPP'},
-      //   {item_name: '150', shop_buy_price: 7500, money_type_code: 'INAPP'},
-      //   {item_name: '300', shop_buy_price: 14000, money_type_code: 'INAPP', original_price: 15000, discount_rate: 7 },
-      //   {item_name: '600', shop_buy_price: 26000, money_type_code: 'INAPP', original_price: 30000, discount_rate: 13},
-      //   {item_name: '1500', shop_buy_price: 59000, money_type_code: 'INAPP', original_price: 75000, discount_rate: 21},
-      //   {item_name: '3000', shop_buy_price: 105000, money_type_code: 'INAPP', original_price: 150000, discount_rate: 30},
-      //   {item_name: '6000', shop_buy_price: 179000, money_type_code: 'INAPP', original_price: 300000, discount_rate: 40},
-      // ];
-      
-      // setProductList(_tmpList);
-
       loadingFunc(false);
     } else {
       loadingFunc(false);
@@ -325,18 +291,6 @@ export const Shop = () => {
         percent = percent / 100; 
       }
 
-      setPayInfo({
-        member_buy_price: mbrPrice
-        , target_buy_price: trgtPrice
-        , price_persent: percent
-        , tmplt_name: lettmpltName.replace(/(\s*)/g, "")
-        , tmplt_level: level
-        , item_name: itemName
-        , event_tmplt_seq: eventTmpltSeq
-        , receive_flag: receiveFlag
-      });
-
-      //setPayInfo(data.pay_info)
       setTmplList(data.tmpl_list);
     }
   };
@@ -364,8 +318,6 @@ export const Shop = () => {
               }
             });
 
-            //setIsModalOpen(true);
-            //navigation.navigate(STACK.TAB, { screen: 'Shop' });
             break;
           default:
             /* show({
@@ -424,18 +376,16 @@ export const Shop = () => {
           }
         });
       };
+      
       getCashBackPayInfo('FOCUS');
-      getShopMain(isPopupShow);
+      getShopMain(isPopupShow); 
     }
   }, [isFocus]);
-// console.log('payInfo::::', payInfo)
+console.log('payInfo::::', payInfo)
+console.log('tmpltList::::', tmplList);
   return (
     <>
       <TopNavigation currentPath={''} />
-      {/* <FlatList
-        ListHeaderComponent={ListHeaderComponent}
-        ListFooterComponent={ListFooterComponent}
-      /> */}
 
       {isLoading && <CommonLoading />}
 
@@ -446,73 +396,6 @@ export const Shop = () => {
         style={_styles.wrap}
       >
         <ScrollView style={{marginBottom: 10}} showsVerticalScrollIndicator={false}>
-          {/* <View style={{minHeight: memberBase.gender == 'M' ? 300 : 330, zIndex: 1, backgroundColor: '#ffffff'}}> */}
-
-            {/* ############################################### 상단 배너 */}
-            {/* <Carousel
-              data={banner}
-              //layout={'default'}
-              sliderWidth={Math.round(width)} 
-              itemWidth={Math.round(width)}
-              horizontal={true}
-              useScrollView={true}
-              inactiveSlideScale={1}
-              inactiveSlideOpacity={0.5}
-              inactiveSlideShift={15}
-              firstItem={banner?.length}
-              loop={true}
-              loopClonesPerSide={banner?.length}
-              autoplay={true}
-              autoplayDelay={2000}
-              autoplayInterval={5000}
-              pagingEnabled
-              renderItem={({ item, index }) => {
-                const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
-                //return  <Image style={_styles.topBanner} source={urlPath} />;
-                return (
-                  <View style={{width: Dimensions.get('window').width, justifyContent: 'center', alignItems: 'center'}}>
-                    <Image style={_styles.topBanner} source={urlPath} />
-                  </View>
-                )
-              }}
-            /> */}
-
-            {/* <FlatList
-              ref={flatListRef}
-              data={banner}
-              horizontal
-              style={_styles.bannerWrapper}
-              pagingEnabled
-              snapToOffsets={snapToOffsets}
-              keyExtractor={(_, index) => String(index)}
-              renderItem={({ item, index }) => {
-                const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
-                return <Image style={_styles.topBanner} source={urlPath} />;
-              }}
-            /> */}
-
-            {/* <View style={{ height: 55, paddingHorizontal: 16 }}>
-              <BannerPannel payInfo={payInfo} />
-            </View>
-          </View> */}
-
-          {/* ############################################### 인벤토리 영역 */}
-          {/* <TouchableOpacity onPress={onPressInventory}>
-            <View style={_styles.inventoryArea}>
-              <View>
-                <Image source={ICON.inventoryIcon} style={_styles.inventoryIcon} />
-              </View>
-              <View style={_styles.inventoryText}>
-                <Text style={_styles.inventoryTextTit}>인벤토리</Text>
-                <Text style={_styles.inventoryTextSubTit}>구매한 상품 또는 보상은 인벤토리에 저장되요.</Text>
-              </View>
-              <View>
-                <Image source={ICON.arrow_right} style={_styles.arrowIcon} />
-              </View>
-            </View>
-          </TouchableOpacity> */}
-
-          
           <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingLeft: 15, backgroundColor: '#3D4348'}]}>
             <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter,{marginLeft: -5}]}>
               <Image source={ICON.cubeCyan} style={[styles.iconSquareSize(30), {marginBottom: 5}]} />
@@ -554,12 +437,19 @@ export const Shop = () => {
                   <Text style={_styles.rewardTitle}>
                     <Text style={{color: '#F1D30E'}}>
                       {payInfo?.receive_flag == 'Y'
-                        ? payInfo?.tmplt_name == 'S' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
+                        ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
                         : payInfo?.tmplt_name
                       }
                     </Text>
-                    보상은
-                    {/* <Text style={{color: '#32F9E4'}}>{tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1].item_name}</Text> 입니다. */}
+                    {'보상은 '}
+                    {isEmptyData(payInfo?.tmplt_level) && isEmptyData(tmplList) &&
+                      <Text style={{color: '#32F9E4'}}>
+                        {payInfo?.tmplt_name == 'S' && payInfo?.receive_flag == 'Y' ? '이미 보상은 끝'
+                          : tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1].item_name
+                        }
+                      </Text>
+                    }
+                    입니다.
                   </Text>
 
                   {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ?
@@ -567,15 +457,18 @@ export const Shop = () => {
                       {payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.
                     </Text>
                   :
-                    <Text style={_styles.rewardDesc}>
-                      {payInfo?.receive_flag == 'N' ? payInfo?.target_buy_price - payInfo?.member_buy_price : payInfo?.target_buy_price}
-                      원 더 결제하면
-                      {payInfo?.receive_flag == 'Y'
-                        ? payInfo?.tmplt_name == 'S' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
-                        : payInfo?.tmplt_name
-                      }
-                      등급 달성!
-                    </Text> 
+                    payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' ?
+                      <Text style={_styles.rewardDesc}>이미 보상은 끝</Text>
+                    :
+                      <Text style={_styles.rewardDesc}>
+                        {payInfo?.receive_flag == 'N' ? payInfo?.target_buy_price - payInfo?.member_buy_price : payInfo?.target_buy_price}
+                        {' 원 더 결제하면 '}
+                        {payInfo?.receive_flag == 'Y'
+                          ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
+                          : payInfo?.tmplt_name
+                        }
+                        등급 달성!
+                      </Text> 
                   }
                   </SpaceView>
                 <TouchableOpacity
@@ -611,8 +504,6 @@ export const Shop = () => {
             </LinearGradient>
           }
 
-
-
           {/* ############################################### 카테고리별 */}
           <SpaceView mb={200}>
             <CategoryShop 
@@ -627,9 +518,6 @@ export const Shop = () => {
           </SpaceView>
         </ScrollView>
       </LinearGradient>
-
-      {/* 인벤토리 버튼 */}
-      {/* <InventoryButton newItemCnt={newItemCnt} /> */}
 
       {/* 상품 상세 팝업 */}
       <ProductModal
@@ -715,58 +603,6 @@ const categoryList = [
     desc: '큐브는 리피에서 사용하는 재화입니다.\n쓰임새가 다른 큐브와 메가큐브 2가지로 구분합니다.',
   },
 ];
-
-
-
-
-/* ###########################################################################################
-##### Header Component
-########################################################################################### */
-function ListHeaderComponent() {
-  const [banner, setBanner] = useState([]);
-  useEffect(() => {
-    const getBanner = async () => {
-      const { success, data } = await get_banner_list({ banner_type: 'PROD' });
-      if (success) {
-        setBanner(data?.banner_list);
-      }
-    };
-    getBanner();
-  }, []);
-  return (
-    <View>
-      {/* ############################################### 상단 배너 */}
-      <FlatList
-        data={banner}
-        horizontal
-        style={_styles.bannerWrapper}
-        pagingEnabled
-        renderItem={({ item, index }) => {
-          const urlPath =  findSourcePath(item?.s_file_path + item?.s_file_name);
-          return <Image style={_styles.topBanner} source={urlPath} />;
-        }}
-      />
-
-      <View style={{ height: 50, paddingHorizontal: 16 }}>
-        <BannerPannel />
-      </View>
-    </View>
-  );
-};
-
-/* ###########################################################################################
-##### Footer Component
-########################################################################################### */
-function ListFooterComponent() {
-  return (
-    <>
-      {/* ############################################### 추천상품 */}
-      {/* <RecommandProduct data={['', '', '', '']} /> */}
-      {/* ############################################### 카테고리별 */}
-      <CategoryShop />
-    </>
-  );
-};
 
 // 이벤트 템플릿 목록
 const TMPL_LIST = [
@@ -949,41 +785,4 @@ const _styles = StyleSheet.create({
     color: '#ABA99A',
     marginBottom: 15,
   },
-
-    // inventoryArea: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   borderWidth: 1,
-  //   borderColor: '#DAD7DE',
-  //   borderRadius: 10,
-  //   marginHorizontal: 15,
-  //   marginTop: 30,
-  //   paddingLeft: 2,
-  //   paddingRight: 20,
-  // },
-  // inventoryIcon: {
-  //   width: 65,
-  //   height: 65,
-  //   marginTop: 0,
-  // },
-  // arrowIcon: {
-  //   width: 10,
-  //   height: 19,
-  // },
-  // inventoryText : {
-  //   marginRight: 30,
-  //   justifyContent: 'center',
-  //   marginTop: -5,
-  // },
-  // inventoryTextTit : {
-  //   fontFamily: 'Pretendard-SeminBold',
-  //   fontSize: 15,
-  //   color: '#646467',
-  // },
-  // inventoryTextSubTit : {
-  //   fontFamily: 'Pretendard-Medium',
-  //   fontSize: 12,
-  //   color: '#939393',
-  //   letterSpacing: 0,
-  // },
 });
