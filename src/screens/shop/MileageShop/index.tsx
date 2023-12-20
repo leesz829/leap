@@ -277,13 +277,17 @@ const RenderCategory = ({ onPressTab, tab }) => {
 
 
       {tab?.map((item, index) => {
+
         return (
           <SpaceView key={'brand_'+index} mr={10}>
             <TouchableOpacity onPress={() => onPressTab(item)}>
               {/* <Text>{item?.brand_name}</Text> */}
 
               {item?.brand_seq == 0 ? (
-                <Text style={_styles.brandAllLogo}>ALL</Text>
+                <SpaceView viewStyle={_styles.brandAllLogo}>
+                  <Text style={_styles.brandAllLogoText}>ALL</Text>
+                </SpaceView>
+
               ) : (
                 <Image source={item?.logoPath} style={styles.iconSquareSize(75)} />
               )}
@@ -816,13 +820,15 @@ const _styles = StyleSheet.create({
     height: 75,
     backgroundColor: '#D5CD9E',
     borderRadius: 50,
-    textAlign: 'center',
-    textAlignVertical: 'center',
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  brandAllLogoText: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     color: '#fff',
   },
-
 });
 
 const categories = [

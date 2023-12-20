@@ -154,6 +154,7 @@ export const SignUp_AddInfo = (props : Props) => {
 		};
 		try {
 			const { success, data } = await get_member_introduce_guide(body);
+
 			if(success) {
 				switch (data.result_code) {
 					case SUCCESS:
@@ -213,6 +214,11 @@ export const SignUp_AddInfo = (props : Props) => {
 
 		if(!isEmptyData(addData.form_body) || !addData.form_body.trim()) {
 			show({ content: '체형을 선택해 주세요.' });
+			return;
+		}
+
+		if(addData.prefer_local1 == addData.prefer_local2) {
+			show({ content: '같은 선호지역은 고를 수 없습니다.' });
 			return;
 		}
 
@@ -277,7 +283,7 @@ export const SignUp_AddInfo = (props : Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsHorizontalScrollIndicator={false}>
+				<ScrollView showsHorizontalScrollIndicator={false} style={{marginBottom: 80}}>
 					<SpaceView viewStyle={_styles.titleContainer}>
 						<Image source={findSourcePath(mstImgPath)} style={_styles.addInfoImg} />
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>

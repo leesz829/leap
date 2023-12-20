@@ -779,7 +779,7 @@ export const Story = () => {
 
       {/* ###################################################################################################### 맨위 이동 버튼 */}
 
-      {(storyList.length > 0 && isTopBtn) && (
+      {(storyList.length > 0 && isTopBtn) && (currentIndex == 0) && (
         <SpaceView viewStyle={_styles.topBtnArea}>
           <TouchableOpacity onPress={() => { scrollToTop(); }}>
             <Text style={_styles.topBtnText}>맨위로</Text>
@@ -890,7 +890,7 @@ const _styles = StyleSheet.create({
   },
   btnArea: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 65,
     right: 10,
     alignItems: 'center',
     zIndex: 1,
@@ -916,7 +916,7 @@ const _styles = StyleSheet.create({
     backgroundColor: '#FFDD00',
     paddingVertical: 10,
     paddingHorizontal: 15,
-    borderRadius: 50,
+    borderRadius: Platform.OS == 'android' ? 50 : 20,
     overflow: 'hidden',
   },
   profileArea: {

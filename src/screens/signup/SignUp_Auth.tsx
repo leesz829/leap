@@ -490,9 +490,9 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 				<SpaceView pl={30} pr={30} mb={30} viewStyle={_styles.imgMngModalWrap}>
 					<SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
 						{isEmptyData(imgMngData.img_file_path) && (
-						<SpaceView mr={10}>
-							<Image source={findSourcePath(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
-						</SpaceView>
+							<SpaceView mr={10}>
+								<Image source={findSourcePath(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
+							</SpaceView>
 						)}
 						<SpaceView>
 							<Text style={_styles.imgMngModalTit}>인증 자료 수정</Text>
@@ -521,7 +521,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 ##### 인증 사진 렌더링
 ########################################################################################## */
 function AuthImageRender({ index, imgData, imgSelectedFn, mngModalFn }) {
-	const imgUrl = findSourcePath(imgData?.img_file_path); // 이미지 경로
+	const imgUrl = imgData?.member_auth_detail_seq == 0 ? {uri : imgData?.img_file_path} : findSourcePath(imgData?.img_file_path);
 
 		return (
 		<>
