@@ -744,7 +744,7 @@ export const Storage = (props: Props) => {
         {/* ############################################################################################################
         ###### 컨텐츠 영역
         ############################################################################################################ */}
-        <SpaceView viewStyle={{flex: 1}} mb={160} mt={40}>
+        <SpaceView viewStyle={{flex: 1}} mb={180} mt={40}>
           {!tabs[currentIndex].data.length ?
               <SpaceView viewStyle={_styles.noData}>
                 <Text ref={dataRef} style={_styles.noDataText}>

@@ -264,7 +264,7 @@ export const Live = () => {
       <SpaceView pb={50} viewStyle={{backgroundColor: '#3D4348', minHeight: height}}> 
         {!isEmpty ? (
           <SpaceView>
-            <SpaceView mb={15} viewStyle={_styles.imgItemWrap}>
+            <SpaceView mb={25} viewStyle={_styles.imgItemWrap}>
               {/* <View style={_styles.mmbrStatusView}>
                 <Text style={{color: '#A29552', fontSize: 12, fontFamily: 'Pretendard-Bold'}}>NEW</Text>
               </View> */}
@@ -278,7 +278,7 @@ export const Live = () => {
                         source={{uri: imgList[currentImgIdx]?.url?.uri}}
                         style={{
                           width: width - 40,
-                          height: height * 0.68, 
+                          height: height * 0.66, 
                         }}
                         resizeMode={'cover'}
                       />
@@ -331,7 +331,7 @@ export const Live = () => {
             </SpaceView>
 
             {/* 최하단 스킵, 인상 선택 버튼 */}
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 10}}>
               <TouchableOpacity 
                 style={[_styles.bottomBtn,{width: width * 0.36, marginRight: 10}]}
                 onPress={() => openImpressPop('SKIP', 'FACE_TYPE_SKIP', '6')}
