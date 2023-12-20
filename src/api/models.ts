@@ -609,6 +609,9 @@ export async function delete_member_image(body: {
 export async function regist_profile_evaluation(body: {
   profile_score: string;
   face_code: string;
+  member_seq: number;
+  approval_profile_seq: number;
+  newYn: string;
 }) {
   return send(REGIST_PROFILE_EVALUATION, 'POST', body, true, false);
 };

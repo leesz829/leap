@@ -136,6 +136,7 @@ export const Live = () => {
           face_code: pick == 'SKIP' ? code : pickFaceCode,
           member_seq: liveMemberSeq,
           approval_profile_seq: approvalProfileSeq,
+          newYn: 'Y',
         };
   
         const { success, data } = await regist_profile_evaluation(body);
@@ -317,7 +318,7 @@ export const Live = () => {
                   </>
                 ) : (
                   <>
-                    <SpaceView viewStyle={{width: width - 40, height: height * 0.68, borderRadius: 20, backgroundColor: '#707070', opacity: 0.2 }} />
+                    <SpaceView viewStyle={{width: width - 40, height: height * 0.66, borderRadius: 20, backgroundColor: '#707070', opacity: 0.2 }} />
                   </>
                 )}
 
