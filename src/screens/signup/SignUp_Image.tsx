@@ -341,7 +341,7 @@ export const SignUp_Image = (props: Props) => {
 
   /* ########################################################################################## 프로필 사진 아이템 렌더링 */
   function ProfileImageItemNew({ index, imgData, imgSelectedFn }) {
-    const imgUrl = findSourcePath(imgData?.img_file_path); // 이미지 경로
+    const imgUrl = imgData?.member_img_seq == 0 ? {uri : imgData?.img_file_path} : findSourcePath(imgData?.img_file_path); // 이미지 경로
     const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
     const imgStatus = imgData?.status; // 이미지 상태
   
@@ -380,7 +380,7 @@ export const SignUp_Image = (props: Props) => {
 
   /* ########################################################################################## 대표사진 영역 렌더링 */
 function MasterImageArea({ index, imgData, mngModalFn }) {
-  const imgUrl = findSourcePath(imgData?.img_file_path); // 이미지 경로
+  const imgUrl = imgData?.member_img_seq == 0 ? {uri : imgData?.img_file_path} : findSourcePath(imgData?.img_file_path); // 이미지 경로
   const imgDelYn = imgData?.del_yn; // 이미지 삭제 여부
   const imgStatus = imgData?.status; // 이미지 상태
 
