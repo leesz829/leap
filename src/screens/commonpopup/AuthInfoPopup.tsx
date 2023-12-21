@@ -41,11 +41,10 @@ export default function AuthInfoPopup({ isVisible, setIsVisible, closeModal, con
   const onModfy = async () => {
     closeModal();
     navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_AUTH });
-  }
+  };
 
   useFocusEffect(
     React.useCallback(() => {
-
       return () => {
       };
     }, []),
@@ -90,13 +89,14 @@ export default function AuthInfoPopup({ isVisible, setIsVisible, closeModal, con
                       authIcon = ICON.authAsset;
                     }
 
-                    return (
+                    return (isEmptyData(item?.auth_status) && item?.auth_status == 'ACCEPT') && (
                       <>
                         <LinearGradient
                           colors={['#F1B10E', '#EEC80C']}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
-                          style={_styles.authItemWrap}>
+                          style={_styles.authItemWrap}
+                          key={'auth_'+index}>
 
                           <SpaceView viewStyle={_styles.itemSubBg} />
 
@@ -106,17 +106,17 @@ export default function AuthInfoPopup({ isVisible, setIsVisible, closeModal, con
                                 <Image source={authIcon} style={styles.iconSquareSize(20)} />
                               </SpaceView>
 
-                              {isEmptyData(item?.auth_slogan) && (
+                              {isEmptyData(item?.auth_type_name) && (
                                 <SpaceView pt={3} viewStyle={{justifyContent: 'center'}}>
-                                  <Text style={_styles.sloganText}>{item?.auth_slogan}</Text>
+                                  <Text style={_styles.sloganText}>{item?.auth_type_name}</Text>
                                 </SpaceView>
                               )}
                             </SpaceView>
 
-                            <SpaceView>
-                              <Text style={_styles.textStyle(12, '#4A4846', 'L')} numberOfLines={2}>
-                                {isEmptyData(item?.auth_comment) ? (
-                                  <>"{item?.auth_comment}"</>
+                            <SpaceView pr={10}>
+                              <Text style={_styles.textStyle(10, '#4A4846', 'L')} numberOfLines={2}>
+                                {isEmptyData(item?.comment) ? (
+                                  <>"{item?.comment}"</>
                                 ) : (
                                   <>"작성한 인증 코멘트가 없습니다."</>
                                 )}

@@ -435,14 +435,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                 </ScrollView>
               </View>
               
-              <View
-                style={[
-                  modalStyleProduct.bottomContainer,
-                  {
-                    marginBottom: bottom + 10,
-                  },
-                ]}
-              >
+              <SpaceView mb={bottom+10} viewStyle={modalStyleProduct.bottomContainer}>
                 <View style={modalStyleProduct.rowBetween}>
                   <TouchableOpacity 
                     style={modalStyleProduct.puchageButton} 
@@ -462,7 +455,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                   borderRadius={5}
                   onPress={toggleModal}
                 />
-              </View>
+              </SpaceView>
             </View>
 
           </View>

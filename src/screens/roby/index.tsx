@@ -17,6 +17,7 @@ import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
+import { iapConnection } from 'utils/initIAP';
 import { usePopup } from 'Context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
@@ -26,13 +27,13 @@ import { isEmptyData, formatNowDate } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { CommaFormat } from 'utils/functions';
 import { clearPrincipal } from 'redux/reducers/authReducer';
-import { NoticePopup } from 'screens/commonpopup/NoticePopup';
 import AuthInfoPopup from 'screens/commonpopup/AuthInfoPopup';
 import AsyncStorage from '@react-native-community/async-storage';
-import ProfileGrade from 'component/common/ProfileGrade';
 import SocialGrade from 'component/common/SocialGrade';
 import Modal from 'react-native-modal';
 import { myProfile } from 'redux/reducers/authReducer';
+import ProductModal from 'screens/shop/Component/ProductModal';
+
 
 
 
@@ -52,17 +53,12 @@ export const Roby = (props: Props) => {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-  // 공통 팝업
-  const { show } = usePopup();
+  const { show } = usePopup(); // 공통 팝업
+  const [isLoading, setIsLoading] = useState(false); // 로딩 여부
+  const [isClickable, setIsClickable] = useState(true); // 클릭 여부
 
-  // 로딩 여부
-  const [isLoading, setIsLoading] = useState(false);
-
-  // 클릭 여부
-  const [isClickable, setIsClickable] = useState(true);
-
-  // 인증 정보 팝업
-  const [isAuthInfoVisible, setAuthInfoVisible] = useState(false);
+  const [isAuthInfoVisible, setAuthInfoVisible] = useState(false); // 인증 정보 팝업
+  const [isProductModalVisible, setIsProductModalVisible] = useState(false); // 상품 모달 visible
 
   // 인증 정보 팝업 닫기
   const authInfoPopupClose = () => {
@@ -99,8 +95,10 @@ export const Roby = (props: Props) => {
 
   // Modal
   const [isVisible, setIsVisible] = useState(false);
+
+  const [productTargetItem, setProductTargetItem] = useState({});
   
-  // ###### 실시간성 회원 데이터 조회
+  // ####################################################################################################### 실시간성 회원 데이터 조회
   const getPeekMemberInfo = async () => {
     const body = {
       img_acct_cnt: memberBase?.img_acct_cnt,
@@ -110,8 +108,10 @@ export const Roby = (props: Props) => {
       const { success, data } = await peek_member(body);
       if (success) {
         if (data.result_code == '0000') {
+          const auth_list = data?.mbr_second_auth_list.filter(item => item.auth_status == 'ACCEPT');
           dispatch(setPartialPrincipal({
-            mbr_base : data.mbr_base
+            mbr_base : data.mbr_base,
+            mbr_second_auth_list: auth_list,
           }));
           setResLikeList(data.res_like_list);
           setMatchTrgtList(data.match_trgt_list);
@@ -121,10 +121,14 @@ export const Roby = (props: Props) => {
             accResSpecailCnt: data?.real_time_info?.acc_res_specail_cnt,
             accResLiveCnt: data?.real_time_info?.acc_res_live_cnt,
             faceLankList: data?.mbr_face_rank_list,
-          })
+          });
+
+          let popupList = data?.popup_bas_list;
+          popupProc(popupList);
+
 
           // 공지사항 팝업 노출
-          let nowDt = formatNowDate().substring(0, 8);
+          /* let nowDt = formatNowDate().substring(0, 8);
           let endDt = await AsyncStorage.getItem('POPUP_ENDDT_NOTICE');
 
           if(null == endDt || endDt < nowDt) {
@@ -134,7 +138,7 @@ export const Roby = (props: Props) => {
             }
           } else {
             setNoticePopupVisible(false);
-          }
+          } */
 
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -147,7 +151,7 @@ export const Roby = (props: Props) => {
     }
   };
 
-  // ###### 아는 사람 소개
+  // ####################################################################################################### 아는 사람 소개
   const insertMemberPhoneBook = async (phone_book_arr: string, friend_match_flag:string) => {
 
     const body = {
@@ -277,7 +281,7 @@ export const Roby = (props: Props) => {
     }
   }
 
-  // ############################################################ 프로필 재심사 팝업 활성화
+  // ####################################################################################################### 프로필 재심사 팝업 활성화
   const profileReexPopupOpen = async () => {
     if(memberBase?.pass_has_amt < 30) {
       show({
@@ -300,7 +304,7 @@ export const Roby = (props: Props) => {
     }
   }
 
-  // ############################################################ 프로필 재심사 실행
+  // ####################################################################################################### 프로필 재심사 실행
   const profileReexProc = async () => {
 
     // 중복 클릭 방지 설정
@@ -331,10 +335,9 @@ export const Roby = (props: Props) => {
 
   };
 
-  // ####################################################### 팝업 관련 #######################################################
-
-  const [profileReAprPopup, setProfileReAprPopup] = useState(false); // 프로필 재심사 팝업
-  const [useReportPopup, setUseReportPopup] = useState(false); // 사용자 신고하기 팝업
+  /* #################################################################################################################################
+  ##### 팝업 관련
+  ################################################################################################################################# */
 
   // 내 선호 이성 Pop
   const ideal_modalizeRef = useRef<Modalize>(null);
@@ -437,7 +440,49 @@ export const Roby = (props: Props) => {
     });
   }
 
-  // ####################################################################################### 회원 튜토리얼 노출 정보 저장
+  // ####################################################################################################### 팝업 실행
+  const popupProc = async (_popupList:any) => {
+
+    let noticePopup;
+    let promotionPopup;
+
+    _popupList.map((item, index) => {
+      if(item.type == 'NOTICE') {
+        noticePopup = item;
+      } else if(item.type == 'PROMOTION') {
+        promotionPopup = item;
+      }
+    });
+
+    if(promotionPopup) {
+      if(isEmptyData(promotionPopup?.popup_detail) && promotionPopup?.popup_detail.length > 0) {
+        let endDt = await AsyncStorage.getItem('POPUP_ENDDT_PROMOTION_HOME');
+        let nowDt = formatNowDate().substring(0, 8);
+
+        if(null == endDt || endDt < nowDt) {
+          show({
+            type: 'PROMOTION',
+            prodList: promotionPopup?.popup_detail,
+            confirmCallback: async function(isNextChk) {
+              if(isNextChk) {
+                // 팝업 종료 일시 Storage 저장
+                await AsyncStorage.setItem('POPUP_ENDDT_PROMOTION_HOME', nowDt);
+                //isPopup = false;
+              }
+            },
+            etcCallback: async function(item) {
+              setProductTargetItem(item);
+              setIsProductModalVisible(true);
+            },
+          });
+        };
+      };
+    } else {
+      
+    }
+  };
+
+  // ####################################################################################################### 회원 튜토리얼 노출 정보 저장
   const saveMemberTutorialInfo = async () => {
     const body = {
       tutorial_roby_yn: 'N'
@@ -452,7 +497,12 @@ export const Roby = (props: Props) => {
     }
   };
 
-  // ######################################################################################## 초기 실행 함수
+  // ####################################################################################################### 상품상세 팝업 닫기
+  const closeProductDetail = (isPayConfirm: boolean) => {
+    setIsProductModalVisible(false);
+  };
+
+  // ####################################################################################################### 초기 실행 함수
   useEffect(() => {
     if(isFocus) {
       if(memberBase?.status == 'BLOCK') {
@@ -482,6 +532,9 @@ export const Roby = (props: Props) => {
           });
         }; */
       }
+
+      // IAP 연결
+      iapConnection();
     };
   }, [isFocus]);
 
@@ -860,16 +913,22 @@ export const Roby = (props: Props) => {
       </ScrollView>
 
       {/********************************************************** 프로필 관리 버튼 */}
-      <TouchableOpacity 
-          style={_styles.profileBtn}
-          onPress={onPressMangeProfile}>
+      <TouchableOpacity style={_styles.profileBtn} onPress={onPressMangeProfile}>
         <Animated.View>
           <Text style={_styles.profileBtnText}>프로필 관리</Text>
         </Animated.View>
       </TouchableOpacity>
 
-
+      {/* 인증 정보 팝업 */}
       <AuthInfoPopup isVisible={isAuthInfoVisible} closeModal={authInfoPopupClose} authList={mbrProfileAuthList} />
+
+      {/* 상품 상세 팝업 */}
+      <ProductModal
+        isVisible={isProductModalVisible}
+        type={'bm'}
+        item={productTargetItem}
+        closeModal={closeProductDetail}
+      />
     </>
   );
 };

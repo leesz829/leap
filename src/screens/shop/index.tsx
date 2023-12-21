@@ -1,27 +1,11 @@
 import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react';
-import {
-  Image,
-  ScrollView,
-  View,
-  Platform,
-  Alert,
-  FlatList,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-  Text,
-} from 'react-native';
+import { Image, ScrollView, View, Platform, Alert, FlatList, TouchableOpacity, Dimensions, StyleSheet, Text } from 'react-native';
 import Modal from 'react-native-modal';
 import TopNavigation from 'component/TopNavigation';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import { ColorType, MemberBaseData, ScreenNavigationProp } from '@types';
-import {
-  initConnection,
-  getProducts,
-  requestPurchase,
-  getAvailablePurchases,
-} from 'react-native-iap';
+import { initConnection, getProducts, requestPurchase, getAvailablePurchases } from 'react-native-iap';
 import { get_banner_list, purchase_product, update_additional, get_shop_main, get_bm_product, get_cashback_detail_info, cashback_item_receive } from 'api/models';
 import { useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Color } from 'assets/styles/Color';
@@ -250,7 +234,6 @@ export const Shop = () => {
 
   // ######################################################### 상품상세 팝업 열기
   const openProductModal = (item) => {
-
     // show({ content: '준비중입니다.' });
 
     setTargetItem(item);
@@ -381,8 +364,7 @@ export const Shop = () => {
       getShopMain(isPopupShow); 
     }
   }, [isFocus]);
-console.log('payInfo::::', payInfo)
-console.log('tmpltList::::', tmplList);
+
   return (
     <>
       <TopNavigation currentPath={''} />

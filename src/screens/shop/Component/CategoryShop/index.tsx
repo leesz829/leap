@@ -63,95 +63,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
   const dispatch = useDispatch();
   const isFocus = useIsFocused();
   const selectData = selectedCategoryData;
-  // 회원 기본 데이터
-  const memberBase = useUserInfo();
-
-  // ########################## 인앱 getProduct
-   const passProduct = Platform.select({
-    ios: [
-      'prod_pass_a001'
-      , 'prod_pass_a002'
-      , 'prod_pass_a003'
-      , 'prod_pass_a004'
-      , 'prod_pass_a005'
-      , 'prod_pass_a006'
-      , 'prod_pass_a101'
-      , 'prod_pass_b001'
-      , 'prod_pass_b002'
-      , 'prod_pass_b003'
-      , 'prod_pass_b004'
-      , 'prod_pass_b005'
-      , 'prod_pass_b006'
-      , 'prod_pass_b007'
-      , 'prod_pass_b008'
-      , 'prod_pass_b009'
-      , 'prod_pack_a002'
-      , 'prod_pack_a003'
-      , 'prod_pack_a004'
-      , 'prod_pack_a005'
-      , 'prod_pack_a010'
-      , 'prod_pack_a011'
-      , 'prod_pack_a012'
-      , 'prod_pack_a013'
-      , 'prod_pack_a014'
-      , 'prod_subs_a001'
-      , 'prod_subs_a002'
-      , 'prod_subs_a003'
-      , 'prod_subs_b001'
-      , 'prod_subs_b002'
-      , 'prod_subs_b003'
-      , 'prod_subs_b004'
-      , 'prod_subs_b005'
-      , 'prod_subs_e001'
-      , 'prod_subs_e002'
-      , 'prod_subs_e003'
-    ],
-    android: [
-      'prod_pass_a001'
-      , 'prod_pass_a002'
-      , 'prod_pass_a003'
-      , 'prod_pass_a004'
-      , 'prod_pass_a005'
-      , 'prod_pass_a006'
-      , 'prod_pass_a101'
-      , 'prod_pass_b001'
-      , 'prod_pass_b002'
-      , 'prod_pass_b003'
-      , 'prod_pass_b004'
-      , 'prod_pass_b005'
-      , 'prod_pass_b006'
-      , 'prod_pass_b007'
-      , 'prod_pass_b008'
-      , 'prod_pass_b009'
-      , 'prod_pack_a002'
-      , 'prod_pack_a003'
-      , 'prod_pack_a004'
-      , 'prod_pack_a005'
-      , 'prod_pack_a010'
-      , 'prod_pack_a011'
-      , 'prod_pack_a012'
-      , 'prod_pack_a013'
-      , 'prod_pack_a014'
-      , 'prod_subs_a001'
-      , 'prod_subs_a002'
-      , 'prod_subs_a003'
-      , 'prod_subs_b001'
-      , 'prod_subs_b002'
-      , 'prod_subs_b003'
-      , 'prod_subs_b004'
-      , 'prod_subs_b005'
-      , 'prod_subs_e001'
-      , 'prod_subs_e002'
-      , 'prod_subs_e003'
-    ],
-  });
-  
-
-  // 구독상품
-  const subsProduct = Platform.select({
-    ios: ['cash_100', 'cash_200'],
-    android: ['cash_100', 'cash_200'],
-  });
+  const memberBase = useUserInfo(); // 회원 기본 데이터
 
   /* const purchaseUpdateSubscription = purchaseUpdatedListener((purchase: Purchase) => {
     console.log('purchase ::::::: ', purchase);
@@ -177,7 +89,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
   // ################################################################ 초기 실행 함수
   useEffect(() => {
     // 스토어 커넥션
-    async function fetch() {
+    /* async function fetch() {
 
       // 연결 초기화
       const isConnected = await initConnection();
@@ -199,7 +111,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
 
     if(isFocus) {
       fetch();
-    }
+    } */
   }, [isFocus]);
 
   // ########################################################### 카테고리 상품 페이지 로드 실행 함수

@@ -140,17 +140,17 @@ export default function ProfileAuth({ data, isEditBtn, memberData }) {
                           <Image source={authIcon} style={styles.iconSquareSize(20)} />
                         </SpaceView>
 
-                        {isEmptyData(item?.auth_slogan) && (
+                        {isEmptyData(item?.auth_type_name) && (
                           <SpaceView pt={3} viewStyle={{justifyContent: 'center'}}>
-                            <Text style={_styles.sloganText}>{item?.auth_slogan}</Text>
+                            <Text style={_styles.sloganText}>{item?.auth_type_name}</Text>
                           </SpaceView>
                         )}
                       </SpaceView>
 
-                      <SpaceView>
+                      <SpaceView pr={10}>
                         <Text style={_styles.textStyle(12, '#4A4846', 'L')}>
-                          {isEmptyData(item?.auth_comment) ? (
-                            <>"{item?.auth_comment}"</>
+                          {isEmptyData(item?.comment) ? (
+                            <>"{item?.comment}"</>
                           ) : (
                             <>"작성한 인증 코멘트가 없습니다."</>
                           )}

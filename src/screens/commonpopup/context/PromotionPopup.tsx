@@ -61,6 +61,7 @@ export const PromotionPopup = (props: Props) => {
 
   React.useEffect(() => {
     setProdList(props.prodList);
+    console.log('props ::::: ' , props);
   }, [props]);
 
   // ################################################################ 초기 실행 함수
@@ -99,7 +100,6 @@ export const PromotionPopup = (props: Props) => {
                   </SpaceView>
                 {/* )} */}
               </SpaceView>
-
 
               <SpaceView mb={20} viewStyle={_styles.recItemArea}>
                 
