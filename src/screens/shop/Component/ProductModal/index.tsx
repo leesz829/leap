@@ -79,9 +79,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   // ######################################################### 상품 구매하기 함수
   const purchaseBtn = async () => {
 
-    setComfirmModalVisible(false);
-    closeModal(true);
-
     show({ content: '준비중 입니다.', isCross: true });
     return;
 
@@ -451,8 +448,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                         },
                       }); */
 
-                      closeModal(true);
-                      show({ content: '준비중 입니다.', isCross: true });
+                      setComfirmModalVisible(true);
                     }}
                   >
                     <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
@@ -475,20 +471,15 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
           {/* ###################### 구매하기 Confirm 팝업 */}
           <Modal isVisible={comfirmModalVisible} transparent={true} style={modalStyleProduct.modal}>
-              {isPayLoading && <CommonLoading />}
-              <View style={modalStyle.modalBackground}>
-              <View style={[modalStyle.modalStyle1, {backgroundColor: '#3D4348'}]}>
-
+            {isPayLoading && <CommonLoading />}
+            <View style={modalStyle.modalBackground}>
+              {/* <View style={[modalStyle.modalStyle1, {backgroundColor: '#3D4348'}]}>
                 <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
-                  <CommonText fontWeight={'700'} type={'h5'} color={'#D5CD9E'}>
-                    상품 구매
-                  </CommonText>
+                  <CommonText fontWeight={'700'} type={'h5'} color={'#D5CD9E'}>상품 구매</CommonText>
                 </SpaceView>
 
                 <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
-                  <CommonText type={'h5'} textStyle={layoutStyle.textCenter} color={'#D5CD9E'}>
-                    상품을 구매하시겠습니까?
-                  </CommonText>
+                  <CommonText type={'h5'} textStyle={layoutStyle.textCenter} color={'#D5CD9E'}>상품을 구매하시겠습니까?</CommonText>
                 </SpaceView>
 
                 <View style={modalStyle.modalBtnContainer}>
@@ -500,17 +491,35 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
                   <View style={modalStyle.modalBtnline} />
 
-                    <TouchableOpacity 
-                      style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomRightRadius: 5}]}
-                      onPress={() => purchaseBtn()}>
-                      <CommonText type={'h5'} fontWeight={'500'} color={'#3D4348'}>
-                        구매하기
-                      </CommonText>
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity 
+                    style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomRightRadius: 5}]}
+                    onPress={() => purchaseBtn()}>
+                    <CommonText type={'h5'} fontWeight={'500'} color={'#3D4348'}>구매하기</CommonText>
+                  </TouchableOpacity>
+                </View>
+              </View> */}
+
+              <View style={[modalStyle.modalStyle1, {backgroundColor: '#3D4348'}]}>
+                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
+                  <CommonText fontWeight={'700'} type={'h5'} color={'#D5CD9E'}>알림</CommonText>
+                </SpaceView>
+
+                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
+                  <CommonText type={'h5'} textStyle={layoutStyle.textCenter} color={'#D5CD9E'}>준비중 입니다.</CommonText>
+                </SpaceView>
+
+                <View style={modalStyle.modalBtnContainer}>
+                  <TouchableOpacity
+                    style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomLeftRadius: 5}]}
+                    onPress={() => setComfirmModalVisible(false)}>
+                    <CommonText type={'h5'} fontWeight={'500'} color={'#3D4348'}>확인</CommonText>
+                  </TouchableOpacity>
+
+                  <View style={modalStyle.modalBtnline} />
                 </View>
               </View>
-            </Modal>
+            </View>
+          </Modal>
 
         </Modal>
       :
