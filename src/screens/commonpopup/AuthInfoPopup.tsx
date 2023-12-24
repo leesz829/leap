@@ -236,6 +236,7 @@ const _styles = StyleSheet.create({
     borderRadius: 15,
     paddingVertical: 3,
     paddingHorizontal: 10,
+    overflow: 'hidden',
   },
   modBtn: {
     /* position: 'absolute',
