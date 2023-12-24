@@ -18,6 +18,10 @@ import SpaceView from 'component/SpaceView';
 import { ScrollView } from 'react-native-gesture-handler';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import LinearGradient from 'react-native-linear-gradient';
+import MileageInfo from 'component/shop/MileageInfo';
+import { useUserInfo } from 'hooks/useUserInfo';
+
+
 
 
 const DATA = [
@@ -328,11 +332,14 @@ const RenderCategory = ({ onPressTab, tab }) => {
 
 // ######################################################################### List Header 렌더링
 function ListHeaderComponent({ onPressTab, tab }) {
+  const me = useUserInfo();
+
   return (
     <SpaceView>
       <SpaceView>
-        <SpaceView viewStyle={{ marginTop: 90, paddingHorizontal: 20}}>
-          <RespectCard />
+        <SpaceView mt={5} viewStyle={{ paddingHorizontal: 20}}>
+          {/* <RespectCard /> */}
+          <MileageInfo data={me} />
         </SpaceView>
       </SpaceView>
       <SpaceView viewStyle={_styles.categoriesContainer}>

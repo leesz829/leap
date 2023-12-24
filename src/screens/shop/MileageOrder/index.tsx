@@ -1,17 +1,7 @@
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import React, { useEffect, useState } from 'react';
-import {
-  Dimensions,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  ScrollView,
-  ImageBackground,
-  FlatList
-} from 'react-native';
+import { Dimensions, View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, ImageBackground, FlatList } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import { get_order_list } from 'api/models';
@@ -27,6 +17,7 @@ import { ROUTES, STACK } from 'constants/routes';
 import { useProfileImg } from 'hooks/useProfileImg';
 import { layoutStyle } from 'assets/styles/Styles';
 import { Slider } from '@miblanchard/react-native-slider';
+import MileageInfo from 'component/shop/MileageInfo';
 
 
 const DATA = [
@@ -100,73 +91,7 @@ export default function MileageOrder() {
             <Text style={styles.nameText}>{me?.nickname}</Text>
           </SpaceView>
           
-          {me?.respect_grade == 'PLATINUM' || me?.respect_grade == 'DIAMOND' &&
-            <SpaceView viewStyle={styles.floatWrapper}>
-              <LinearGradient
-                colors={['#7AAEDB', '#608B55']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{borderRadius: 10, paddingVertical: 10}}>
-
-                <LinearGradient
-                  colors={['#C9F0FF', me?.respect_grade == 'DIAMOND' ? '#FCF9E4' : '#C9F0FF']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.respectLine}>
-                    <Image source={ICON.sparkler} style={{width: 15, height: 15}} />
-                    <Text style={styles.repectGrade}>{me?.respect_grade}</Text>
-                </LinearGradient>
-
-                <SpaceView mt={20} pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
-                  <SpaceView mt={25} ml={15}>
-                    <Image source={ICON.icChip} style={{width: 40, height: 40}} />
-                  </SpaceView>
-
-                  <SpaceView ml={20}>
-                    <Text style={styles.respectTitle}>닉네임</Text>
-                    <Text style={styles.respectNickname}>{me?.nickname}</Text>
-                  </SpaceView>
-
-                  <SpaceView>
-                    <Text style={styles.respectTitle}>보유RP</Text>
-                    <Text style={styles.rpAmtText}>
-                      {CommaFormat(me?.mileage_point)}
-                      <Text style={styles.rpText}>RP</Text>
-                    </Text>
-                    <Text style={styles.rpAvailable}>이달 사용 가능한 RP</Text>
-
-                    {/* ################################################################################ 이달 사용 RP 영역 */}
-                    <SpaceView mt={5}>
-                      <SpaceView>
-                        <SpaceView viewStyle={{overflow: 'hidden', borderRadius: 50}}>
-                          <LinearGradient
-                            colors={['#32F9E4', '#32F9E4']}
-                            start={{ x: 1, y: 0 }}
-                            end={{ x: 0, y: 0 }}
-                            style={styles.gradient(me?.mileage_point / 10000)}>
-                          </LinearGradient>
-                          <Slider
-                            animateTransitions={true}
-                            renderThumbComponent={() => null}
-                            containerStyle={styles.sliderContainerStyle}
-                            trackStyle={styles.sliderThumbStyle}
-                            trackClickable={false}
-                            disabled
-                          />
-                        </SpaceView>
-                        <Text style={styles.gradeTitle}>5,500RP 남음</Text>
-                      </SpaceView>
-                    </SpaceView>
-                  </SpaceView>
-                </SpaceView>
-
-                <SpaceView pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, layoutStyle.justifyBetween]}>
-                  <Image source={IMAGE.logoLeapTit} style={{width: 60, height: 25}} />
-                  <Text style={styles.rpDescText}>RP는 획득 건 별로 60일 동안 보관됩니다.</Text>
-                </SpaceView>
-              </LinearGradient>
-            </SpaceView>
-          }
+          <MileageInfo data={me} />
         </View>
 
         {orderList.length > 0 ? (
@@ -468,91 +393,5 @@ const styles = StyleSheet.create({
     color: '#ABA99A',
     textAlign: 'center',
     marginTop: 40,
-  },
-
-  floatWrapper: {
-      width: '100%',
-      marginTop:10,
-  },
-  rpStoreBtn: {
-    backgroundColor: '#FFF',
-    borderRadius: 50,
-    paddingHorizontal: 12,
-    paddingVertical: 2,
-  },
-  respectLine: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    height: 35,
-    marginTop: 15,
-  },
-  repectGrade: {
-    fontFamily: 'MinSans-Bold',
-    color: '#000000',
-    marginRight: 10,
-    marginLeft: 2,
-  },
-  respectTitle: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 10,
-    color: '#333B41',
-  },
-  respectNickname: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 16,
-    color: '#FFF',
-  },
-  rpAvailable: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 10,
-    color: '#333B41',
-    marginTop: 15,
-  },
-  rpText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 17,
-    color: '#32F9E4',
-  },
-  rpAmtText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 32,
-    color: '#32F9E4',
-  },
-  gradeTitle: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 10,
-    color: '#32F9E4',
-    textAlign: 'right',
-  },
-  gradient: (value:any) => {
-    let percent = 0;
-
-    if(value != null && typeof value != 'undefined') {
-      percent = value * 100;
-    };
-
-    return {
-      position: 'absolute',
-      width: percent + '%',
-      height: 12,
-      zIndex: 1,
-      borderRadius: 20,
-    };
-  },
-  sliderContainerStyle: {
-    height: 12,
-    borderRadius: 50,
-    backgroundColor: '#FFF',
-  },
-  sliderThumbStyle: {
-    height: 12,
-    borderRadius: 50,
-    backgroundColor: '#FFF',
-  },
-  rpDescText: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 10,
-    color: '#D5CD9E',
   },
 });

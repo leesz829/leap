@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
 import { CommonText } from 'component/CommonText';
+import { BlurView } from "@react-native-community/blur";
 
 
 
@@ -494,6 +495,20 @@ const MatchRenderItem = ({ item, fnDetail }) => {
               end={{ x: 0, y: 1 }}
               style={_styles.thumnailDimArea} />
 
+
+
+            {/* ############################### 열람 블러 영역 */}
+            {/* <BlurView 
+              style={_styles.blurArea}
+              blurType='light'
+              blurAmount={15} >
+
+              <SpaceView viewStyle={_styles.blurDesc}>
+                <Text style={_styles.blurDescText}>큐브를 사용하여 블라인드 카드를 열람합니다.</Text>
+              </SpaceView>
+
+            </BlurView> */}
+
           </SpaceView>
 
 
@@ -724,6 +739,27 @@ const _styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     overflow: 'hidden',
+  },
+  blurArea: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  blurDesc: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 12,
+  },
+  blurDescText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 12,
+    color: '#D5CD9E',
   },
 
 });

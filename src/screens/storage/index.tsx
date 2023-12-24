@@ -6,33 +6,13 @@ import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import { Wallet } from 'component/TopNavigation';
 import * as React from 'react';
-import {
-  //Image,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-  Text,
-  ImageBackground,
-  FlatList,
-  Modal,
-  RefreshControl,
-  ActivityIndicator,
-  Platform,
-} from 'react-native';
+import { ScrollView, View, TouchableOpacity, StyleSheet, Dimensions, Text, FlatList, Platform } from 'react-native';
 import { ICON, IMAGE, findSourcePath } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
 import { useState, useRef } from 'react';
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
-import {
-  RouteProp,
-  useNavigation,
-  useIsFocused,
-  CommonActions,
-  useFocusEffect,
-} from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused, CommonActions, useFocusEffect } from '@react-navigation/native';
 import * as dataUtils from 'utils/data';
 import { useDispatch } from 'react-redux';
 import { get_member_storage, update_match, match_check_all } from 'api/models';
@@ -48,7 +28,6 @@ import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { BlurView } from "@react-native-community/blur";
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
-//import Modal from 'react-native-modal';
 import Image from 'react-native-fast-image';
 
 

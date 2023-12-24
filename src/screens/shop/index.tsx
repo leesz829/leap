@@ -224,7 +224,76 @@ export const Shop = () => {
         item.connect_date = connectDate;
       });
 
-      setProductList(_products);
+      let _tmpProducts = [];
+
+      if(category.value == 'PASS') {
+        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 7500
+        , "item_name": "큐브 150", "item_code": "prod_cube_common_150", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 14000
+        , "item_name": "큐브 300", "item_code": "prod_cube_common_300", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 26000
+        , "item_name": "큐브 600", "item_code": "prod_cube_common_600", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 59000
+        , "item_name": "큐브 1500", "item_code": "prod_cube_common_1500", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 105000
+        , "item_name": "큐브 3000", "item_code": "prod_cube_common_3000", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 179000
+        , "item_name": "큐브 6000", "item_code": "prod_cube_common_6000", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 10000
+        , "item_name": "메가 큐브 10", "item_code": "prod_cube_mega_10", "item_contents": "이성에게 좋아요를 보낼 때 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 19000
+        , "item_name": "메가 큐브 20", "item_code": "prod_cube_mega_20", "item_contents": "이성에게 좋아요를 보낼 때 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 45000
+        , "item_name": "메가 큐브 50", "item_code": "prod_cube_mega_50", "item_contents": "이성에게 좋아요를 보낼 때 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 79000
+        , "item_name": "메가 큐브 100", "item_code": "prod_cube_mega_100", "item_contents": "이성에게 좋아요를 보낼 때 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 149000
+        , "item_name": "메가 큐브 200", "item_code": "prod_cube_mega_200", "item_contents": "이성에게 좋아요를 보낼 때 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 249000
+        , "item_name": "메가 큐브 400", "item_code": "prod_cube_mega_400", "item_contents": "이성에게 좋아요를 보낼 때 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+
+      } else if(category.value == 'SUBSCRIPTION') {
+
+        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 5900
+        , "item_name": "찜하기 이용권(30일)", "item_code": "prod_boost_marking_30", "item_contents": "부스팅 기간 동안 이성의 프로필을 보관함에 30일 동안 보관할 수 있습니다.(부스팅 만료 후 효과는 사라집니다.)"};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 14000
+        , "item_name": "찜하기 이용권(90일)", "item_code": "prod_boost_marking_90", "item_contents": "부스팅 기간 동안 이성의 프로필을 보관함에 30일 동안 보관할 수 있습니다.(부스팅 만료 후 효과는 사라집니다.)"};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 19000
+        , "item_name": "관심 보내기 자유이용권(3일)", "item_code": "prod_boost_likefree_3", "item_contents": "구독 기간 동안 큐브를 사용하지 않고 이성에게 관심을 보낼 수 있습니다."};
+        _tmpProducts.push(_tmpProduct);
+
+      } else if(category.value == 'PACKAGE') {
+        
+        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 27000
+        , "item_name": "스타터 패키지 ", "item_code": "prod_pack_starter00", "item_contents": "관심 보내기 자유이용권(1일) + 큐브 200. (월1회 구매 가능한 상품이며 '관심 보내기 자유이용권'의 효과는 부스팅 만료 후 사라집니다.)"};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 19000
+        , "item_name": "일반 큐브 패키지", "item_code": "prod_pack_cube_00", "item_contents": "100큐브 + 10메가 큐브를 더 효율적인 가격으로 획득하는 상품(월1회 구매 가능)"};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 39000
+        , "item_name": "고급 큐브 패키지", "item_code": "prod_pack_cube_01", "item_contents": "250큐브 + 25메가 큐브를 더 효율적인 가격으로 획득하는 상품(월1회 구매 가능)"};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 79000
+        , "item_name": "특급 큐브 패키지", "item_code": "prod_pack_cube_02", "item_contents": "600큐브 + 60메가 큐브를 더 효율적인 가격으로 획득하는 상품(월1회 구매 가능)"};
+        _tmpProducts.push(_tmpProduct);
+      }
+
+      setProductList(_tmpProducts);
+      //setProductList(_products);
 
       loadingFunc(false);
     } else {
