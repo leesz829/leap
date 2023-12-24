@@ -233,7 +233,7 @@ const _styles = StyleSheet.create({
     fontSize: 14,
     color: '#FFFFFF',
     backgroundColor: '#0EE9F1',
-    borderRadius: 15,
+    borderRadius: 10,
     paddingVertical: 3,
     paddingHorizontal: 10,
     overflow: 'hidden',
