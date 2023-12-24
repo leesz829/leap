@@ -88,6 +88,10 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
   // ######################################################### 상품 구매하기 함수
   const purchaseBtn = async () => {
+
+    show({ content: '준비중 입니다.', isCross: true });
+    return;
+
     if(!isPayLoading) {
       setIsPayLoading(true);
       
@@ -440,15 +444,31 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                   <TouchableOpacity 
                     style={modalStyleProduct.puchageButton} 
                     onPress={() => {
-                      setComfirmModalVisible(true);
-                    }}>
-                      <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
-                      {item?.discount_rate > 0 &&
-                        <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}</Text>
-                      }
-                      <Text style={modalStyleProduct.puchageText}>구매하기</Text>
+
+                      show({
+                        title: '상품 구매',
+                        content: '상품을 구매하시겠습니까?',
+                        cancelBtnText: '취소할래요!',
+                        confirmBtnText: '구매하기',
+                        cancelCallback: function() {
+                  
+                        },
+                        confirmCallback: function () {
+                          purchaseBtn();
+                        },
+                      });
+
+                      //setComfirmModalVisible(true);
+                    }}
+                  >
+                    <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
+                    {item?.discount_rate > 0 &&
+                      <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}</Text>
+                    }
+                    <Text style={modalStyleProduct.puchageText}>구매하기</Text>
                   </TouchableOpacity>
                 </View>
+
                 <CommonBtn
                   value={'취소'}
                   type={'reNewGoBack'}
@@ -457,7 +477,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                 />
               </SpaceView>
             </View>
-
           </View>
 
           {/* ###################### 구매하기 Confirm 팝업 */}
