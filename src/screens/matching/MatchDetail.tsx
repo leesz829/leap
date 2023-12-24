@@ -673,7 +673,7 @@ export default function MatchDetail(props: Props) {
           <ScrollView style={{ flex: 1 }}>
               {data.profile_img_list.length > 0 && isLoad ? (
                 <>
-                  <SpaceView mb={(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') ? 130 : 40}>
+                  <SpaceView mb={(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') ? 130 : 60}>
                     
                     {/* ####################################################################################
                     ####################### 상단 영역

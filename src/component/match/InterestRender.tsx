@@ -103,7 +103,8 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 3,
     backgroundColor: '#FFF8CC',
-    borderRadius: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   titDescText : {
     fontFamily: 'Pretendard-Regular',
