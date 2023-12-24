@@ -2,17 +2,7 @@ import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styl
 import { Color } from 'assets/styles/Color';
 import { ColorType } from '@types';
 import React, { memo, useEffect, useState } from 'react';
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Alert,
-  Platform,
-  PanResponder,
-} from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Alert, Platform, PanResponder } from 'react-native';
 import Modal from 'react-native-modal';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import ViewPager from '../ViewPager';
@@ -88,6 +78,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
   // ######################################################### 상품 구매하기 함수
   const purchaseBtn = async () => {
+
+    setComfirmModalVisible(false);
+    closeModal(true);
 
     show({ content: '준비중 입니다.', isCross: true });
     return;
@@ -445,7 +438,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                     style={modalStyleProduct.puchageButton} 
                     onPress={() => {
 
-                      show({
+                      /* show({
                         title: '상품 구매',
                         content: '상품을 구매하시겠습니까?',
                         cancelBtnText: '취소할래요!',
@@ -456,9 +449,10 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                         confirmCallback: function () {
                           purchaseBtn();
                         },
-                      });
+                      }); */
 
-                      //setComfirmModalVisible(true);
+                      closeModal(true);
+                      show({ content: '준비중 입니다.', isCross: true });
                     }}
                   >
                     <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
