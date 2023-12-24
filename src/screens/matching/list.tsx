@@ -721,8 +721,9 @@ const _styles = StyleSheet.create({
     fontSize: 14,
     color: '#4A4846',
     backgroundColor: '#FFF8CC',
-    borderRadius: 50,
+    borderRadius: 10,
     paddingHorizontal: 10,
+    overflow: 'hidden',
   },
 
 });
