@@ -805,7 +805,7 @@ export default function StoryDetail(props: Props) {
                             style={_styles.voteImgArea(0)}
                           >
                             <SpaceView viewStyle={_styles.voteImgStyle('#FFFFFF')}>
-                              <Image source={findSourcePathLocal(storyData.voteList[0]?.file_path)} style={styles.iconSquareSize(85)} resizeMode={'cover'} />
+                              <Image source={findSourcePath(storyData.voteList[0]?.file_path)} style={styles.iconSquareSize(85)} resizeMode={'cover'} />
                             </SpaceView>
 
                             {/* 선택한 투표 표시 */}
@@ -828,7 +828,7 @@ export default function StoryDetail(props: Props) {
                             style={_styles.voteImgArea(1)}
                           >
                             <SpaceView viewStyle={_styles.voteImgStyle('#5A707F')}>
-                              <Image source={findSourcePathLocal(storyData.voteList[1]?.file_path)} style={styles.iconSquareSize(85)} resizeMode={'cover'} />
+                              <Image source={findSourcePath(storyData.voteList[1]?.file_path)} style={styles.iconSquareSize(85)} resizeMode={'cover'} />
                             </SpaceView>
 
                             {/* 선택한 투표 표시 */}
@@ -1085,14 +1085,12 @@ export default function StoryDetail(props: Props) {
     let url = '';
     
     if(isEmptyData(item?.img_file_path)) {
-      //url = findSourcePath(item?.img_file_path);
-      url = findSourcePathLocal(item?.img_file_path);
+      url = findSourcePath(item?.img_file_path);
+      //url = findSourcePathLocal(item?.img_file_path);
     } else {
-      //url = findSourcePath(item?.file_path);
-      url = findSourcePathLocal(item?.file_path);
+      url = findSourcePath(item?.file_path);
+      //url = findSourcePathLocal(item?.file_path);
     };
-
-    console.log('item:::', item)
 
     return (
       <>
