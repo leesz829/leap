@@ -280,7 +280,7 @@ const _styles = StyleSheet.create({
     color: '#3D4348',
     fontFamily: 'Pretendard-Bold',
     fontSize: 16,
-    borderRadius: 50,
+    borderRadius: 15,
     paddingVertical: 4,
     paddingHorizontal: 45,
     overflow: 'hidden',
