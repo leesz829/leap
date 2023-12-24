@@ -33,6 +33,7 @@ import SocialGrade from 'component/common/SocialGrade';
 import Modal from 'react-native-modal';
 import { myProfile } from 'redux/reducers/authReducer';
 import ProductModal from 'screens/shop/Component/ProductModal';
+import { NoticePopup } from 'screens/commonpopup/NoticePopup';
 
 
 
@@ -64,6 +65,9 @@ export const Roby = (props: Props) => {
   const authInfoPopupClose = () => {
     setAuthInfoVisible(false);
   };
+
+  // 프로모션 팝업
+  const [promotionPopupData, setPromotionPopupData] = useState({});
 
   // 공지사항 팝업
   const [noticePopupVisible, setNoticePopupVisible] = useState(false);
@@ -125,20 +129,6 @@ export const Roby = (props: Props) => {
 
           let popupList = data?.popup_bas_list;
           popupProc(popupList);
-
-
-          // 공지사항 팝업 노출
-          /* let nowDt = formatNowDate().substring(0, 8);
-          let endDt = await AsyncStorage.getItem('POPUP_ENDDT_NOTICE');
-
-          if(null == endDt || endDt < nowDt) {
-            if(data.popup_bas_list?.length > 0 && isEmptyData(data.popup_bas_list[0]?.popup_detail) && data.popup_bas_list[0]?.popup_detail.length > 0) {
-              setNoticeList(data.popup_bas_list[0]?.popup_detail);
-              setNoticePopupVisible(true);
-            }
-          } else {
-            setNoticePopupVisible(false);
-          } */
 
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -383,12 +373,8 @@ export const Roby = (props: Props) => {
 
   // 보관함 이동
   const onPressStorage = async (loadPage:any) => {
-    navigation.navigate(STACK.COMMON, {
+    navigation.navigate(STACK.TAB, {
       screen: 'Storage',
-      params: {
-        headerType: 'common',
-        loadPage: loadPage,
-      },
     });
   };
 
@@ -431,26 +417,18 @@ export const Roby = (props: Props) => {
     });
   };
 
-  const popupGradeGuideOpen = async () => {
-    show({
-      type: 'GUIDE',
-      guideType: 'ROBY_GRADE',
-      guideSlideYn: 'Y',
-      guideNexBtnExpoYn: 'N',
-    });
-  }
-
   // ####################################################################################################### 팝업 실행
   const popupProc = async (_popupList:any) => {
 
-    let noticePopup;
+    let noticePopup:any;
     let promotionPopup;
 
     _popupList.map((item, index) => {
       if(item.type == 'NOTICE') {
         noticePopup = item;
       } else if(item.type == 'PROMOTION') {
-        promotionPopup = item;
+        //promotionPopup = item;
+        setPromotionPopupData(item);
       }
     });
 
@@ -467,7 +445,10 @@ export const Roby = (props: Props) => {
               if(isNextChk) {
                 // 팝업 종료 일시 Storage 저장
                 await AsyncStorage.setItem('POPUP_ENDDT_PROMOTION_HOME', nowDt);
-                //isPopup = false;
+                //isPopup = false;                
+              }
+              if(noticePopup) {
+                noticePopupOpen(noticePopup?.popup_detail);
               }
             },
             etcCallback: async function(item) {
@@ -478,7 +459,51 @@ export const Roby = (props: Props) => {
         };
       };
     } else {
-      
+      if(noticePopup) {
+        noticePopupOpen(noticePopup?.popup_detail);
+      }
+    }
+  };
+
+  // ####################################################################################################### 프로모션 팝업 호출
+  const promotionPopupOpen = async () => {
+    if(isEmptyData(promotionPopupData?.popup_detail) && promotionPopupData?.popup_detail.length > 0) {
+      let endDt = await AsyncStorage.getItem('POPUP_ENDDT_PROMOTION_HOME');
+      let nowDt = formatNowDate().substring(0, 8);
+
+      /* if(null == endDt || endDt < nowDt) { */
+        console.log('promotionPopupData ::::::: ' , promotionPopupData);
+
+        show({
+          type: 'PROMOTION',
+          prodList: promotionPopupData?.popup_detail,
+          confirmCallback: async function(isNextChk) {
+            if(isNextChk) {
+              // 팝업 종료 일시 Storage 저장
+              //await AsyncStorage.setItem('POPUP_ENDDT_PROMOTION_HOME', nowDt);
+              //isPopup = false;                
+            }
+          },
+          etcCallback: async function(item) {
+            setProductTargetItem(item);
+            setIsProductModalVisible(true);
+          },
+        });
+      /* }; */
+    };
+  };
+
+  // ####################################################################################################### 공지사항 팝업 호출
+  const noticePopupOpen = async (popupDetail:any) => {
+    let nowDt = formatNowDate().substring(0, 8);
+    let endDt = await AsyncStorage.getItem('POPUP_ENDDT_NOTICE');
+    if(null == endDt || endDt < nowDt) {
+      if(isEmptyData(popupDetail) && popupDetail.length > 0) {
+        setNoticeList(popupDetail);
+        setNoticePopupVisible(true);
+      }
+    } else {
+      setNoticePopupVisible(false);
     }
   };
 
@@ -638,7 +663,7 @@ export const Roby = (props: Props) => {
                     disabled
                   />
                 </SpaceView>
-                <SpaceView ml={10}> 
+                <SpaceView ml={10}>
                   <Text style={_styles.mmbrshipCntText}><Text style={_styles.mmbrshipCnt}>{memberBase?.auth_acct_cnt}</Text>/45</Text>
                 </SpaceView>
               </View>
@@ -670,6 +695,11 @@ export const Roby = (props: Props) => {
             </SpaceView>
 
             {/* ################################################################################ 리스펙트 등급 영역 */}
+
+            <SpaceView mb={5}>
+              <Text style={[_styles.respectText('#D5CD9E', 20), {marginRight: 20}]}>리스펙트 등급</Text>
+            </SpaceView>
+
             <LinearGradient
               colors={['#092032', '#344756']}
               start={{ x: 0, y: 0 }}
@@ -677,8 +707,8 @@ export const Roby = (props: Props) => {
               style={_styles.respectContainer}>
 
               <SpaceView>
-                <SpaceView pl={15} pr={15} pt={3} pb={10}  viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                  <Text style={[_styles.respectText('#D5CD9E', 20), {marginRight: 20}]}>리스펙트 등급</Text>
+                <SpaceView pl={15} pr={15} pt={3} pb={10}  viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+                  {/* <Text style={[_styles.respectText('#D5CD9E', 20), {marginRight: 20}]}>리스펙트 등급</Text> */}
                   <SocialGrade grade={memberBase?.respect_grade} />
                 </SpaceView>
 
@@ -760,7 +790,7 @@ export const Roby = (props: Props) => {
               </SpaceView>
             </LinearGradient>
 
-            <TouchableOpacity disabled={true} style={_styles.bannerArea}>
+            <TouchableOpacity style={_styles.bannerArea} onPress={promotionPopupOpen}>
               <SpaceView>
                 <Text style={_styles.bannerTitle}>데일리뷰에 원하는 친구가 안 나왔을 때는?{'\n'}프로필 카드를 열어보세요!</Text>
                 <Text style={_styles.bannerDesc}>#인증레벨#MBTI#인상</Text>
@@ -813,22 +843,23 @@ export const Roby = (props: Props) => {
                             )
                           })}
                         </SpaceView>
-                        
-                        <SpaceView viewStyle={_styles.flutingArea}>
-                          <TouchableOpacity 
-                            disabled={memberBase?.reex_yn == 'Y'} 
-                            onPress={() => profileReexPopupOpen()}
-                            activeOpacity={0.8}
-                          >
-                            {memberBase?.reex_yn == 'Y' ? (
-                              <Text style={_styles.flutingTitle}>플러팅 참여중!</Text>
-                            ) : (
-                              <>
-                                <Text style={_styles.flutingTitle}>플러팅 참여하기</Text>
-                                <Text style={_styles.flutingDesc}>내 프로필이 이성들에게 노출됩니다.</Text>
-                              </>
-                            )}
-                          </TouchableOpacity>
+
+                        <SpaceView viewStyle={_styles.flutingArea(memberBase?.reex_yn == 'Y' ? '#FFFFFF' : '#FFDD00')}>
+                          {memberBase?.reex_yn == 'Y' ? (
+                              <TouchableOpacity  onPress={() => onPressStorage()} activeOpacity={0.8}>
+                                <Text style={_styles.flutingTitle('#D5CD9E')}>플러팅 참여중!</Text>
+                                <Text style={_styles.flutingDesc('#32F9E4')}>보관함에서 {resLikeList?.length}명의 회원님들이 보낸 관심을 확인해보세요.</Text>
+                              </TouchableOpacity>
+                          ) : (
+                              <TouchableOpacity 
+                                disabled={memberBase?.reex_yn == 'Y'} 
+                                onPress={() => profileReexPopupOpen()}
+                                activeOpacity={0.8}
+                              >
+                                <Text style={_styles.flutingTitle('#3D4348')}>플러팅 참여하기</Text>
+                                <Text style={_styles.flutingDesc('#5A707F')}>내 프로필이 이성들에게 노출됩니다.</Text>
+                              </TouchableOpacity>
+                          )}
                         </SpaceView>
                       </SpaceView>
                     </SpaceView>
@@ -876,7 +907,7 @@ export const Roby = (props: Props) => {
             style={{backgroundColor: 'rgba(9, 32, 50, 0.4)', margin: 0}}
             animationIn={'slideInDown'}
           >
-            <View style={{alignItems: 'flex-end', marginTop: -220}}>
+            <View style={{alignItems: 'flex-end', marginTop: -260}}>
               <TouchableOpacity
                 style={{marginRight: 20, marginBottom: 10}}
                 onPress={() => {
@@ -929,6 +960,16 @@ export const Roby = (props: Props) => {
         item={productTargetItem}
         closeModal={closeProductDetail}
       />
+
+      {/* 공지사항 팝업 */}
+      {/* {noticePopupVisible && (
+        <NoticePopup
+          popupVisible={noticePopupVisible}
+          setPopupVIsible={setNoticePopupVisible}
+          noticeList={noticeList}
+          //etcCallbackFunc={contents.etcCallback}
+        />
+      )} */}
     </>
   );
 };
@@ -1174,24 +1215,30 @@ const _styles = StyleSheet.create({
     fontSize: 24,
     color: '#FFDD00',
   },
-  flutingArea: {
-    marginTop: 20,
-    marginBottom: -10,
-    backgroundColor: '#FFDD00',
-    borderRadius: 10,
-    paddingVertical: 10,
+  flutingArea: (bgcr:string) => {
+    return {
+      marginTop: 20,
+      marginBottom: -10,
+      backgroundColor: bgcr,
+      borderRadius: 10,
+      paddingVertical: 10,
+    };
   },
-  flutingTitle: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    color: '#3D4348',
-    textAlign: 'center',
+  flutingTitle: (cr:string) => {
+    return {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 14,
+      color: '#3D4348',
+      textAlign: 'center',
+    };
   },
-  flutingDesc: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 10,
-    color: '#5A707F',
-    textAlign: 'center',
+  flutingDesc: (cr:string) => {
+    return {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 10,
+      color: cr,
+      textAlign: 'center',
+    };
   },
   manageContainer: {
     flexDirection: 'row',

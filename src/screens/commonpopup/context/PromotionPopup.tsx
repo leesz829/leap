@@ -61,7 +61,6 @@ export const PromotionPopup = (props: Props) => {
 
   React.useEffect(() => {
     setProdList(props.prodList);
-    console.log('props ::::: ' , props);
   }, [props]);
 
   // ################################################################ 초기 실행 함수
@@ -70,11 +69,12 @@ export const PromotionPopup = (props: Props) => {
     <>
       <Modal visible={props.popupVisible} transparent={true}>
         <View style={modalStyle.modalBackground}>
-        <LinearGradient
+          <LinearGradient
             colors={['#1A1E1C', '#333B41']}
             start={{ x: 0, y: 1 }}
             end={{ x: 0, y: 0 }} 
-            style={_styles.popupContainer}>
+            style={_styles.popupContainer}
+          >
             <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
               <SpaceView viewStyle={_styles.discountBox}>
                 <Text style={_styles.discountText}>할인중</Text>
@@ -112,7 +112,7 @@ export const PromotionPopup = (props: Props) => {
                     {props.prodList?.map((item, index) => {
                       return (
                         <>
-                          <TouchableOpacity key={index} style={_styles.prodItem(currentIndex == index)} onPress={() => { onPressItem(index); }}>
+                          <TouchableOpacity key={'promotion_'+index} style={_styles.prodItem(currentIndex == index)} onPress={() => { onPressItem(index); }}>
                             {/* <Image source={findSourcePath(item.img_path)} style={{width: 60, height: 45}} resizeMode={'cover'} /> */}
                             <Image source={ICON.polygonGreen} style={[styles.iconSquareSize(40), {marginTop: 10}]} />
                             <SpaceView viewStyle={_styles.recListBox}>

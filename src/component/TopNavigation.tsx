@@ -105,16 +105,18 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
         {/* <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" /> */}
         <Text style={_styles.storyTxt(navName == 'LEAP', theme != undefined)}>리프</Text>
+        {navName == 'LEAP' && <View style={_styles.underline} />}
       </TouchableOpacity>
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
         {/* <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" /> */}
         <Text style={_styles.storyTxt(navName == 'LIVE', theme != undefined)}>플러팅</Text>
+        {navName == 'LIVE' && <View style={_styles.underline} />}
       </TouchableOpacity>
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressStory} disabled={navName == 'Story' ? true : false}>
         <Text style={_styles.storyTxt(navName == 'Story', theme != undefined)}>피드</Text>
-        <View style={{borderBottomWidth: navName == 'Story' ? 2 : 0, borderBottomColor: '#7986EE', position: 'absolute', bottom: 1, left: 0, right: 17}} />
+        {navName == 'Story' && <View style={_styles.underline} />}
       </TouchableOpacity>
     </View>
   );
@@ -198,7 +200,10 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   tab: {
-    paddingRight: 16,
+    marginRight: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   tabText: {
     fontSize: 18,
@@ -281,7 +286,7 @@ const _styles = StyleSheet.create({
     if(isOn) {
       _color = '#F1D30E';
     } else if(isTheme) {
-      _color = '#fff';
+      _color = '#445561';
     }
 
     return {
@@ -291,6 +296,13 @@ const _styles = StyleSheet.create({
       //borderBottomWidth: isOn ? 2 : 0,
       //borderBottomColor: '#7986EE',
     };
+  },
+  underline: {
+    backgroundColor: '#F1D30E',
+    position: 'absolute',
+    bottom: 3,
+    width: 25,
+    height: 2,
   },
 
 });

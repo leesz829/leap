@@ -63,11 +63,6 @@ export const NoticePopup = (props: Props) => {
     stopAutoPlay();
   };
 
-  React.useEffect(() => {
-    setNoticeList(props.noticeList);
-  }, [props]);
-
-
   // 공지사항 이동 값
   const noticeMoveValue = useSharedValue(-500);
 
@@ -89,7 +84,6 @@ export const NoticePopup = (props: Props) => {
     }
 
     noticeAnimateInit();
-
     noticeMoveValue.value = withDelay(500, withTiming(20, { duration: 500 }));
   };
 
@@ -121,6 +115,8 @@ export const NoticePopup = (props: Props) => {
     setCurrentIndex(index+1);
   };
 
+
+  // ################################################################ 초기 실행 함수
   useFocusEffect(
     React.useCallback(() => {
       noticeAnimate();
@@ -132,7 +128,11 @@ export const NoticePopup = (props: Props) => {
     }, []),
   );
 
-  // ################################################################ 초기 실행 함수
+  React.useEffect(() => {
+    setNoticeList(props.noticeList);
+  }, [props]);
+
+  
 
   return (
     <>
@@ -250,6 +250,7 @@ const _styles = StyleSheet.create({
   popupWrap: {
     position: 'absolute',
     bottom: 20,
+    zIndex: 10,
   },
   popupContainer: {
       width: width - 150,

@@ -86,92 +86,88 @@ export default function MileageOrder() {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader
-        title={'주문 내역'}
-        backIcon={ICON.back}
-        walletTextStyle={{ color: 'white' }} />
+      <CommonHeader title={'주문 내역'} walletTextStyle={{ color: 'white' }} />
 
-        <LinearGradient
-          colors={['#3D4348', '#1A1E1C']}
-          style={{ minHeight: Dimensions.get('window').height }}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-        >
-          <View style={styles.paddingBox}>
-            <SpaceView mb={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-              <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.profileImg} />
-              <Text style={styles.nameText}>{me?.nickname}</Text>
-            </SpaceView>
-            
-            {me?.respect_grade == 'PLATINUM' || me?.respect_grade == 'DIAMOND' &&
-              <SpaceView viewStyle={styles.floatWrapper}>
+      <LinearGradient
+        colors={['#3D4348', '#1A1E1C']}
+        style={{ minHeight: Dimensions.get('window').height }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <View style={styles.paddingBox}>
+          <SpaceView mb={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+            <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.profileImg} />
+            <Text style={styles.nameText}>{me?.nickname}</Text>
+          </SpaceView>
+          
+          {me?.respect_grade == 'PLATINUM' || me?.respect_grade == 'DIAMOND' &&
+            <SpaceView viewStyle={styles.floatWrapper}>
+              <LinearGradient
+                colors={['#7AAEDB', '#608B55']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{borderRadius: 10, paddingVertical: 10}}>
+
                 <LinearGradient
-                  colors={['#7AAEDB', '#608B55']}
+                  colors={['#C9F0FF', me?.respect_grade == 'DIAMOND' ? '#FCF9E4' : '#C9F0FF']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
-                  style={{borderRadius: 10, paddingVertical: 10}}>
+                  style={styles.respectLine}>
+                    <Image source={ICON.sparkler} style={{width: 15, height: 15}} />
+                    <Text style={styles.repectGrade}>{me?.respect_grade}</Text>
+                </LinearGradient>
 
-                  <LinearGradient
-                    colors={['#C9F0FF', me?.respect_grade == 'DIAMOND' ? '#FCF9E4' : '#C9F0FF']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.respectLine}>
-                      <Image source={ICON.sparkler} style={{width: 15, height: 15}} />
-                      <Text style={styles.repectGrade}>{me?.respect_grade}</Text>
-                  </LinearGradient>
+                <SpaceView mt={20} pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
+                  <SpaceView mt={25} ml={15}>
+                    <Image source={ICON.icChip} style={{width: 40, height: 40}} />
+                  </SpaceView>
 
-                  <SpaceView mt={20} pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
-                    <SpaceView mt={25} ml={15}>
-                      <Image source={ICON.icChip} style={{width: 40, height: 40}} />
-                    </SpaceView>
+                  <SpaceView ml={20}>
+                    <Text style={styles.respectTitle}>닉네임</Text>
+                    <Text style={styles.respectNickname}>{me?.nickname}</Text>
+                  </SpaceView>
 
-                    <SpaceView ml={20}>
-                      <Text style={styles.respectTitle}>닉네임</Text>
-                      <Text style={styles.respectNickname}>{me?.nickname}</Text>
-                    </SpaceView>
+                  <SpaceView>
+                    <Text style={styles.respectTitle}>보유RP</Text>
+                    <Text style={styles.rpAmtText}>
+                      {CommaFormat(me?.mileage_point)}
+                      <Text style={styles.rpText}>RP</Text>
+                    </Text>
+                    <Text style={styles.rpAvailable}>이달 사용 가능한 RP</Text>
 
-                    <SpaceView>
-                      <Text style={styles.respectTitle}>보유RP</Text>
-                      <Text style={styles.rpAmtText}>
-                        {CommaFormat(me?.mileage_point)}
-                        <Text style={styles.rpText}>RP</Text>
-                      </Text>
-                      <Text style={styles.rpAvailable}>이달 사용 가능한 RP</Text>
-
-                      {/* ################################################################################ 이달 사용 RP 영역 */}
-                      <SpaceView mt={5}>
-                        <SpaceView>
-                          <SpaceView viewStyle={{overflow: 'hidden', borderRadius: 50}}>
-                            <LinearGradient
-                              colors={['#32F9E4', '#32F9E4']}
-                              start={{ x: 1, y: 0 }}
-                              end={{ x: 0, y: 0 }}
-                              style={styles.gradient(me?.mileage_point / 10000)}>
-                            </LinearGradient>
-                            <Slider
-                              animateTransitions={true}
-                              renderThumbComponent={() => null}
-                              containerStyle={styles.sliderContainerStyle}
-                              trackStyle={styles.sliderThumbStyle}
-                              trackClickable={false}
-                              disabled
-                            />
-                          </SpaceView>
-                          <Text style={styles.gradeTitle}>5,500RP 남음</Text>
+                    {/* ################################################################################ 이달 사용 RP 영역 */}
+                    <SpaceView mt={5}>
+                      <SpaceView>
+                        <SpaceView viewStyle={{overflow: 'hidden', borderRadius: 50}}>
+                          <LinearGradient
+                            colors={['#32F9E4', '#32F9E4']}
+                            start={{ x: 1, y: 0 }}
+                            end={{ x: 0, y: 0 }}
+                            style={styles.gradient(me?.mileage_point / 10000)}>
+                          </LinearGradient>
+                          <Slider
+                            animateTransitions={true}
+                            renderThumbComponent={() => null}
+                            containerStyle={styles.sliderContainerStyle}
+                            trackStyle={styles.sliderThumbStyle}
+                            trackClickable={false}
+                            disabled
+                          />
                         </SpaceView>
+                        <Text style={styles.gradeTitle}>5,500RP 남음</Text>
                       </SpaceView>
                     </SpaceView>
                   </SpaceView>
+                </SpaceView>
 
-                  <SpaceView pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, layoutStyle.justifyBetween]}>
-                    <Image source={IMAGE.logoLeapTit} style={{width: 60, height: 25}} />
-                    <Text style={styles.rpDescText}>RP는 획득 건 별로 60일 동안 보관됩니다.</Text>
-                  </SpaceView>
-                </LinearGradient>
-              </SpaceView>
-            }
-          </View>
-                
+                <SpaceView pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, layoutStyle.justifyBetween]}>
+                  <Image source={IMAGE.logoLeapTit} style={{width: 60, height: 25}} />
+                  <Text style={styles.rpDescText}>RP는 획득 건 별로 60일 동안 보관됩니다.</Text>
+                </SpaceView>
+              </LinearGradient>
+            </SpaceView>
+          }
+        </View>
 
         {orderList.length > 0 ? (
           <FlatList
@@ -192,7 +188,7 @@ export default function MileageOrder() {
             </SpaceView>
           </>
         )}
-        </LinearGradient>
+      </LinearGradient>
     </>
   );
 }
@@ -215,6 +211,7 @@ const RenderItem = ({ data }) => {
 
       {prodList.map((item, idx) => (
         <TouchableOpacity
+          key={idx}
           onPress={() => {
             if(item.order_type == 'AUCT'){
               onPressMileageOrder();

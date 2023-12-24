@@ -56,7 +56,7 @@ export default function InterviewRender({ title, isEdit, dataList }) {
                     )}
 
                     <SpaceView viewStyle={_styles.answerRow}>
-                      <Text style={_styles.answerText}>"{isEmptyData(e?.answer) ? e?.answer : '답변을 등록해 주세요.'}"</Text>
+                      <Text style={_styles.answerText(isEmptyData(e?.answer) ? '#D5CD9E' : '#ABA99A')}>"{isEmptyData(e?.answer) ? e?.answer : '답변을 등록해 주세요.'}"</Text>
                     </SpaceView>
                   </SpaceView>
 
@@ -135,7 +135,7 @@ const _styles = StyleSheet.create({
   questionText: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 14,
-    color: '#F1B10E',
+    color: '#FFDD00',
   },
   answerRow: {
     /* flexDirection: 'row',
@@ -143,15 +143,14 @@ const _styles = StyleSheet.create({
     marginTop: 10,
     position: 'relative', */
   },
-  answerText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 20,
-    color: '#F3DEA6',
+  answerText: (_cr:string,) => {
+    return {
+      fontFamily: 'Pretendard-Regular',
+      fontSize: 20,
+      color: _cr,
+    };
   },
   modBtn: {
-    // position: 'absolute',
-    // top: 0,
-    // right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     width: 65,

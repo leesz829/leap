@@ -664,16 +664,16 @@ export default function MatchDetail(props: Props) {
         }
 
         <LinearGradient
-            colors={['#3D4348', '#1A1E1C']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={_styles.wrap}
-          >
+          colors={['#3D4348', '#1A1E1C']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={_styles.wrap}
+        >
 
           <ScrollView style={{ flex: 1 }}>
               {data.profile_img_list.length > 0 && isLoad ? (
                 <>
-                  <SpaceView mb={data?.match_base?.match_status != 'LIVE_HIGH' ? 200 : 40}>
+                  <SpaceView mb={(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') ? 130 : 40}>
                     
                     {/* ####################################################################################
                     ####################### 상단 영역

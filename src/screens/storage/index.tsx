@@ -69,7 +69,7 @@ export const Storage = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocusStorage = useIsFocused();
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
 
@@ -201,7 +201,7 @@ export const Storage = (props: Props) => {
           if(zzimItemUseYn == 'Y') {
             tabsData.push({
               type: 'ZZIM',
-              title: '찜',
+              title: '찜하기',
               data: zzimListData,
               isNew: false,
             });
@@ -442,11 +442,6 @@ export const Storage = (props: Props) => {
     setCurrentIndex(index);
   }; */
 
-  React.useEffect(() => {
-
-  }, []);
-
-
   /* ################################################################################ 보관함 아이템 렌더링 */
   const StorageRenderItem = React.memo(({ item, index }) => {
     //const _type = item?.type; // 유형
@@ -621,7 +616,7 @@ export const Storage = (props: Props) => {
 
                         {isEmptyData(item?.live_face) && (
                           <SpaceView ml={15}>
-                            <Text style={_styles.listHeaderLiveFaceText}><Text style={{fontFamily: 'Pretendard-Bold'}}>|</Text>  #{item?.live_face}</Text>
+                            <Text style={_styles.listHeaderLiveFaceText}><Text style={{fontFamily: 'Pretendard-Bold'}}>|</Text>  "{item?.live_face}"</Text>
                           </SpaceView>
                         )}
                       </SpaceView>
@@ -721,57 +716,58 @@ export const Storage = (props: Props) => {
         end={{ x: 0, y: 1 }}
         style={_styles.wrap}
       >
-        
-        {/* ############################################################################################################
-        ###### 탭 영역
-        ############################################################################################################ */}
-        <SpaceView mb={10}>
-          <SpaceView viewStyle={layoutStyle.alignCenter}>
-            <SpaceView viewStyle={_styles.tabArea}>
-              {tabs.map((item, index) => (
-                <>
-                  <SpaceView key={index}>
-                    <TouchableOpacity onPress={() => { onPressDot(index); }}>
-                        <Text style={_styles.tabText(currentIndex == index)}>{item.title}</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                </>
-              ))}
-            </SpaceView>
-          </SpaceView>
-        </SpaceView>
-
-        {/* ############################################################################################################
-        ###### 컨텐츠 영역
-        ############################################################################################################ */}
-        <SpaceView viewStyle={{flex: 1}} mb={180} mt={40}>
-          {!tabs[currentIndex].data.length ?
-              <SpaceView viewStyle={_styles.noData}>
-                <Text ref={dataRef} style={_styles.noDataText}>
-                  {tabs[currentIndex].title}이 없습니다.   
-                </Text>
+        {!isLoading && (
+          <>
+            {/* ############################################################################################################
+            ###### 탭 영역
+            ############################################################################################################ */}
+            <SpaceView mb={10}>
+              <SpaceView viewStyle={layoutStyle.alignCenter}>
+                <SpaceView viewStyle={_styles.tabArea}>
+                  {tabs.map((item, index) => (
+                    <>
+                      <SpaceView key={index} viewStyle={{paddingHorizontal: 5}}>
+                        <TouchableOpacity onPress={() => { onPressDot(index); }}>
+                            <Text style={_styles.tabText(currentIndex == index)}>{item.title}</Text>
+                        </TouchableOpacity>
+                      </SpaceView>
+                    </>
+                  ))}
+                </SpaceView>
               </SpaceView>
-              :
-              <FlatList
-                ref={dataRef}
-                data={tabs[currentIndex].data}
-                keyExtractor={(item, index) => index.toString()}
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item, index }) => {
-                  const type = tabs[currentIndex].type;
+            </SpaceView>
 
-                  return (
-                    <View key={index}>
-                      <StorageRenderItem item={item} index={index} />
-                    </View>
-                  )
-                }}
-              />
-          }
+            {/* ############################################################################################################
+            ###### 컨텐츠 영역
+            ############################################################################################################ */}
+            <SpaceView viewStyle={{flex: 1}} mb={180} mt={40}>
+              {!tabs[currentIndex].data.length ?
+                  <SpaceView viewStyle={_styles.noData}>
+                    <Text ref={dataRef} style={_styles.noDataText}>
+                      {tabs[currentIndex].title}이 없습니다.   
+                    </Text>
+                  </SpaceView>
+                  :
+                  <FlatList
+                    ref={dataRef}
+                    data={tabs[currentIndex].data}
+                    keyExtractor={(item, index) => index.toString()}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({ item, index }) => {
+                      const type = tabs[currentIndex].type;
 
-
-        </SpaceView>
+                      return (
+                        <View key={index}>
+                          <StorageRenderItem item={item} index={index} />
+                        </View>
+                      )
+                    }}
+                  />
+              }
+            </SpaceView>
+          </>
+        )}
       </LinearGradient>
     </>
   );
@@ -796,7 +792,7 @@ const _styles = StyleSheet.create({
     borderRadius: Platform.OS == 'ios' ? 20 : 50,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    width: '60%',
+    //width: '60%',
   },
   tabText: (isOn: boolean) => {
 		return {

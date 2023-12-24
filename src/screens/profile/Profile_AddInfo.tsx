@@ -295,7 +295,7 @@ export const Profile_AddInfo = (props: Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsHorizontalScrollIndicator={false}>
+				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-200}}>
 					<SpaceView mt={10} viewStyle={_styles.titleContainer}>
 						<Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.addInfoImg} />
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase.nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
@@ -385,7 +385,7 @@ export const Profile_AddInfo = (props: Props) => {
 					{/* ##################################################################################################################
 					###### 선택 정보
 					################################################################################################################## */}
-					<SpaceView mt={20}>
+					<SpaceView mt={20} mb={10}>
 						<View>
 							<Text style={_styles.choiceTitle}>선택 정보</Text>
 						</View>
@@ -484,37 +484,36 @@ export const Profile_AddInfo = (props: Props) => {
 							</View>
 						</View>
 					</SpaceView>
-
-          			<SpaceView mt={50}>
-            			<SpaceView>
-              				<CommonBtn
-                				value={'저장하기'}
-								type={'reNewId'}
-								fontSize={16}
-								fontFamily={'Pretendard-Bold'}
-								borderRadius={5}
-								onPress={() => {
-									saveFn();
-								}}
-							/>
-            			</SpaceView>
-
-		            	<SpaceView mt={15}>
-              				<CommonBtn
-								value={'이전으로'}
-								type={'reNewGoBack'}
-								isGradient={false}
-								fontFamily={'Pretendard-Light'}
-								fontSize={14}
-								borderRadius={5}
-								onPress={() => {
-									navigation.goBack();
-								}}
-							/>
-            			</SpaceView>
-          			</SpaceView>
-
 				</ScrollView>
+
+				<SpaceView mb={10}>
+					<SpaceView>
+						<CommonBtn
+							value={'저장하기'}
+							type={'reNewId'}
+							fontSize={16}
+							fontFamily={'Pretendard-Bold'}
+							borderRadius={5}
+							onPress={() => {
+								saveFn();
+							}}
+						/>
+					</SpaceView>
+
+					<SpaceView mt={8}>
+						<CommonBtn
+							value={'이전으로'}
+							type={'reNewGoBack'}
+							isGradient={false}
+							fontFamily={'Pretendard-Light'}
+							fontSize={14}
+							borderRadius={5}
+							onPress={() => {
+								navigation.goBack();
+							}}
+						/>
+					</SpaceView>
+				</SpaceView>
 			</LinearGradient>
 		</>
 	);
@@ -593,7 +592,7 @@ const _styles = StyleSheet.create({
 		fontSize: 12,
 		color: '#F3E270',
 		textAlign: 'center',
-		width: 90,
+		width: 120,
 		backgroundColor:'#445561',
 		borderRadius: 50,
 		justifyContent: 'center',
@@ -613,7 +612,7 @@ const _styles = StyleSheet.create({
 
 const pickerSelectStyles = StyleSheet.create({
 	inputIOS: {
-		width: 100,
+		width: 120,
 		height: 30,
 		backgroundColor:'#445561',
 		borderRadius: 50,
@@ -622,7 +621,7 @@ const pickerSelectStyles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	inputAndroid: {
-		width: 90,
+		width: 120,
 		backgroundColor:'#445561',
 		borderRadius: 50,
 		textAlign: 'center',

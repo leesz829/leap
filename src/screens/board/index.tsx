@@ -183,7 +183,7 @@ export const Board = (props: Props) => {
 															<View style={_styles.newIcon} />
 														)}
 														<CommonText textStyle={_styles.titleText} type={'h5'} fontWeight={'200'} color={'#D5CD9E'}>{item.title}</CommonText>
-														<CommonText type={'h6'} fontWeight={'200'} color={'#445561'}>{item.reg_dt}</CommonText>
+														<CommonText type={'h6'} fontWeight={'200'} color={'#E1DFD1'}>{item.reg_dt}</CommonText>
 													</View>
 												</View>
 

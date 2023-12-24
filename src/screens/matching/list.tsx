@@ -380,11 +380,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
               onPress={() => { nextImage(); }}
               style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
 
-            <TouchableOpacity 
-              style={_styles.infoArea}
-              onPress={() => { fnDetail(item?.member_seq); }}
-              activeOpacity={0.8} 
-            >
+            <SpaceView viewStyle={_styles.infoArea}>
               {currentImgIdx == 0 && (
                 <SpaceView pl={30} pr={30} viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
 
@@ -395,29 +391,49 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                   <SpaceView mb={3}><Text style={_styles.infoText(25)}>{item.nickname}, {item.age}</Text></SpaceView>
 
                   {/* 한줄소개 */}
-                  <SpaceView><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>
+                  <SpaceView ml={25} mr={25}><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>
+
+                  {/* 상세 버튼 */}
+                  <TouchableOpacity
+                    onPress={() => { fnDetail(item?.member_seq); }}
+                    style={{position: 'absolute', bottom: -10, right: 10, zIndex: 2}}
+                  >
+                    <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
+                  </TouchableOpacity>
 
                 </SpaceView>
               )}
               {currentImgIdx == 1 && (
                 <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
-                  <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
-                    <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+                  <SpaceView mb={8} viewStyle={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
-                    {/* 인상 수식어 표시 */}
-                    {isEmptyData(item?.face_modifier) && (
-                      <SpaceView ml={8}><Text style={_styles.faceModifierText}>#{item?.face_modifier}</Text></SpaceView>
-                    )}
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
+                      <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+
+                      {/* 인상 수식어 표시 */}
+                      {isEmptyData(item?.face_modifier) && (
+                        <SpaceView ml={8}><Text style={_styles.faceModifierText}>#{item?.face_modifier}</Text></SpaceView>
+                      )}
+                    </SpaceView>
+
+                    <TouchableOpacity onPress={() => { fnDetail(item?.member_seq); }}>
+                      <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
+                    </TouchableOpacity>
                   </SpaceView>
                   <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     {item?.face_list.length > 0 && (
                       <>
                         {item?.face_list?.map((i, n) => {
                           return isEmptyData(i.face_code_name) && (
-                            <SpaceView key={n} mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
+                            <>
+                              <SpaceView key={n} mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
+                                <Text style={_styles.faceText}>#{i.face_code_name}</Text>
+                              </SpaceView>
+                              <SpaceView key={n} mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
                               <Text style={_styles.faceText}>#{i.face_code_name}</Text>
                             </SpaceView>
+                            </>
                           )
                         })}
                       </>
@@ -427,9 +443,15 @@ const MatchRenderItem = ({ item, fnDetail }) => {
               )}
               {currentImgIdx == 2 && (
                 <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
-                  <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
-                    <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+                  <SpaceView mb={8} viewStyle={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
+                      <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
+                    </SpaceView>
+
+                    <TouchableOpacity onPress={() => { fnDetail(item?.member_seq); }}>
+                      <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
+                    </TouchableOpacity>
                   </SpaceView>
                   <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     {item?.auth_list.length > 0 && (
@@ -455,7 +477,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                               {/* <Image source={authIcon} style={styles.iconSquareSize(16)} />
                               <SpaceView ml={8}><Text style={_styles.faceText}>{i.slogan_name}</Text></SpaceView> */}
 
-                              <SpaceView><Text style={_styles.faceText}>#{i.slogan_name}</Text></SpaceView>
+                              <SpaceView><Text style={_styles.faceText}>#{i.auth_type_name}</Text></SpaceView>
                             </SpaceView>
                           )
                         })}
@@ -464,7 +486,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                   </SpaceView>
                 </SpaceView>
               )}
-            </TouchableOpacity>
+            </SpaceView>
 
             <LinearGradient
               colors={['transparent', '#000000']}

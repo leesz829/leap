@@ -262,6 +262,7 @@ export const ICON = {
   circleReward: require('assets/icon/icon-circle-reward.png'),
   chatRed: require('assets/icon/icon-chat-red.png'),
   cardBlack: require('assets/icon/icon-card-black.png'),
+  blindDetail: require('assets/icon/icon-blind-detail.png'),
 };
 
 export const GIF_IMG = {

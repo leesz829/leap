@@ -53,6 +53,8 @@ export default function StoryEdit(props: Props) {
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
   const inputRef = React.useRef();
 
+  const [title, setTitle] = useState(''); // 제목
+
   const [isSecret, setIsSecret] = useState(false); // 비밀 여부
   
   const [storyBoardSeq, setStoryBoardSeq] = useState(props.route.params.storyBoardSeq);
@@ -353,6 +355,15 @@ export default function StoryEdit(props: Props) {
         switch (data.result_code) {
         case SUCCESS:
 
+          setTitle(data.story?.story_type == 'STORY' ? '스토리 수정' : data.story?.story_type == 'VOTE' ? '투표 수정' : '시크릿 수정');
+
+          if(data.story?.story_type == 'VOTE') {
+            setCurrentIndex(1);
+          } else if(data.story?.story_type == 'SECRET') {
+            setCurrentIndex(2);
+          }
+
+
           setStoryData({
             ...storyData,
             storyBoardSeq: data.story?.story_board_seq,
@@ -496,6 +507,8 @@ export default function StoryEdit(props: Props) {
     if(isFocus) {
       if(isEmptyData(props.route.params.storyBoardSeq)) {
         getStoryBoard();
+      } else {
+        setTitle(storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표 등록' : '시크릿 등록');
       }
     };
   }, [isFocus]);
@@ -513,20 +526,22 @@ export default function StoryEdit(props: Props) {
          
         <CommonHeader 
           type={'STORY_REGI'}
-          title={storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표 등록' : '시크릿 등록'}
+          title={title}
           callbackFunc={storyRegister} />
 
-        <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, _styles.tabArea]}>
-          <TouchableOpacity onPress={() => (tab('STORY'))}>
-            <Text style={_styles.tabText, {color: currentIndex == 0 ? '#FFDD00' : '#445561'}}>스토리</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{marginHorizontal: 20}} onPress={() => (tab('VOTE'))}>
-            <Text style={_styles.tabText, {color: currentIndex == 1 ? '#FFDD00' : '#445561'}}>투표</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => (tab('SECRET'))}>
-            <Text style={_styles.tabText, {color: currentIndex == 2 ? '#FFDD00' : '#445561'}}>시크릿</Text>
-          </TouchableOpacity>     
-        </SpaceView>
+        {!isEmptyData(props.route.params.storyBoardSeq) && (
+          <SpaceView mb={10} viewStyle={_styles.tabArea}>
+            <TouchableOpacity disabled={isEmptyData(props.route.params.storyBoardSeq)} onPress={() => (tab('STORY'))}>
+              <Text style={_styles.tabText, {color: currentIndex == 0 ? '#FFDD00' : '#445561'}}>스토리</Text>
+            </TouchableOpacity>
+            <TouchableOpacity disabled={isEmptyData(props.route.params.storyBoardSeq)} style={{marginHorizontal: 20}} onPress={() => (tab('VOTE'))}>
+              <Text style={_styles.tabText, {color: currentIndex == 1 ? '#FFDD00' : '#445561'}}>투표</Text>
+            </TouchableOpacity>
+            <TouchableOpacity disabled={isEmptyData(props.route.params.storyBoardSeq)} onPress={() => (tab('SECRET'))}>
+              <Text style={_styles.tabText, {color: currentIndex == 2 ? '#FFDD00' : '#445561'}}>시크릿</Text>
+            </TouchableOpacity>     
+          </SpaceView>
+        )}
       </LinearGradient>
       
 
@@ -826,6 +841,9 @@ const _styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 30,
     paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tabContainer: {
     elevation: 5,
@@ -833,7 +851,7 @@ const _styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.8,
     shadowRadius: 4,
-    height: 100,
+    //height: 100,
   },
   tabText: {
     fontFamily: 'MinSans-Bold',

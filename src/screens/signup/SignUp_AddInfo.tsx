@@ -283,7 +283,7 @@ export const SignUp_AddInfo = (props : Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsHorizontalScrollIndicator={false} style={{marginBottom: 80}}>
+				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-200}}>
 					<SpaceView viewStyle={_styles.titleContainer}>
 						<Image source={findSourcePath(mstImgPath)} style={_styles.addInfoImg} />
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
@@ -474,8 +474,10 @@ export const SignUp_AddInfo = (props : Props) => {
 							</View>
 						</View>
 					</SpaceView>
+				</ScrollView>
 
-					<SpaceView mt={30}>
+				<SpaceView mb={10}>
+					<SpaceView>
 						<CommonBtn
 							value={'관심사 등록하기'}
 							type={'reNewId'}
@@ -488,7 +490,7 @@ export const SignUp_AddInfo = (props : Props) => {
 						/>
 					</SpaceView>
 
-					<SpaceView mt={20}>
+					<SpaceView mt={8}>
 						<CommonBtn
 							value={'이전으로'}
 							type={'reNewGoBack'}
@@ -501,7 +503,8 @@ export const SignUp_AddInfo = (props : Props) => {
 							}}
 						/>
 					</SpaceView>
-				</ScrollView>
+				</SpaceView>
+
 			</LinearGradient>
 		</>
 	);
@@ -580,7 +583,7 @@ const _styles = StyleSheet.create({
 		fontSize: 12,
 		color: '#F3E270',
 		textAlign: 'center',
-		width: 90,
+		width: 120,
 		backgroundColor:'#445561',
 		borderRadius: 50,
 		justifyContent: 'center',
@@ -599,7 +602,7 @@ const _styles = StyleSheet.create({
 
 const pickerSelectStyles = StyleSheet.create({
 	inputIOS: {
-		width: 100,
+		width: 120,
 		height: 30,
 		backgroundColor:'#445561',
 		borderRadius: 50,
@@ -608,7 +611,7 @@ const pickerSelectStyles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	inputAndroid: {
-		width: 90,
+		width: 120,
 		backgroundColor:'#445561',
 		borderRadius: 50,
 		textAlign: 'center',
