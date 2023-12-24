@@ -283,6 +283,7 @@ const _styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 4,
     paddingHorizontal: 45,
+    overflow: 'hidden',
   },
 
 });
