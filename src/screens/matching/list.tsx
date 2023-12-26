@@ -431,9 +431,6 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                               <SpaceView key={n} mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
                                 <Text style={_styles.faceText}>#{i.face_code_name}</Text>
                               </SpaceView>
-                              <SpaceView key={n} mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
-                              <Text style={_styles.faceText}>#{i.face_code_name}</Text>
-                            </SpaceView>
                             </>
                           )
                         })}

@@ -153,7 +153,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
     if(selectData?.value == 'SUBSCRIPTION' || selectData?.value == 'PACKAGE' || selectData?.value == 'PASS') {
 
       // 튜토리얼 팝업 노출
-      if((selectData?.value == 'SUBSCRIPTION' && (!isEmptyData(memberBase?.tutorial_subscription_item_yn) || memberBase?.tutorial_subscription_item_yn == 'Y')) ||
+      /* if((selectData?.value == 'SUBSCRIPTION' && (!isEmptyData(memberBase?.tutorial_subscription_item_yn) || memberBase?.tutorial_subscription_item_yn == 'Y')) ||
         (selectData?.value == 'PACKAGE' && (!isEmptyData(memberBase?.tutorial_package_item_yn) || memberBase?.tutorial_package_item_yn == 'Y')) ||
         (selectData?.value == 'PASS' && (!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y'))) {
 
@@ -177,7 +177,7 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
             }
           }
         });
-      };
+      }; */
     }
   }, [selectData]);
 
