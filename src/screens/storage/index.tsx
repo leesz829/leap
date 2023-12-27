@@ -723,7 +723,7 @@ export const Storage = (props: Props) => {
               {!tabs[currentIndex].data.length ?
                   <SpaceView viewStyle={_styles.noData}>
                     <Text ref={dataRef} style={_styles.noDataText}>
-                      {tabs[currentIndex].title}이 없습니다.   
+                      {tabs[currentIndex].title}{tabs[currentIndex].type == 'ZZIM' ? '가' : '이'} 없습니다.   
                     </Text>
                   </SpaceView>
                   :

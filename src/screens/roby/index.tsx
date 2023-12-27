@@ -630,7 +630,7 @@ export const Roby = (props: Props) => {
 
             {/* ################################################################################ 최근소식, 우편함 버튼 영역 */}
             <SpaceView viewStyle={_styles.etcBtnArea}>
-              <TouchableOpacity onPress={onPressRecent} style={[_styles.etcBtnItem, {marginRight: 10}]}>
+              <TouchableOpacity onPress={onPressRecent} style={[_styles.etcBtnItem, {marginRight: 10 }]}>
                 <Image source={ICON.mailGold} style={styles.iconSquareSize(15)} />
                 <Text style={_styles.etcBtnText}>{memberBase?.new_board_cnt}{memberBase?.new_board_cnt > 99 && '+'}</Text>
               </TouchableOpacity>
@@ -642,7 +642,7 @@ export const Roby = (props: Props) => {
             </SpaceView>
 
             {/* ################################################################################ 멤버십 영역 */}
-            <SpaceView mt={75} mb={35}>
+            <SpaceView mt={35} mb={35}>
               <Text style={_styles.mmbrshipTitle}>멤버십 레벨</Text>
               <View style={{flexDirection: 'row', alignItems: 'flex-end', marginTop: -20}}>
                 <SpaceView mb={10} viewStyle={{width: '60%'}}>
@@ -1295,9 +1295,8 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
   },
   etcBtnArea: {
-    position: 'absolute',
-    top: 15,
-    right: 0,
+    marginLeft: 'auto',
+    marginTop: 15,
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 1,

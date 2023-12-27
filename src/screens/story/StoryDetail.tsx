@@ -626,7 +626,7 @@ export default function StoryDetail(props: Props) {
                     }
 
                     {(memberBase?.member_seq === item?.member_seq) && (item.del_yn == 'N') && (
-                      <TouchableOpacity style={{ paddingLeft: 5 }} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
+                      <TouchableOpacity style={{ paddingLeft: 5, }} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
                         <Text style={_styles.replyTextDel}>삭제</Text>
                       </TouchableOpacity>
                     )}

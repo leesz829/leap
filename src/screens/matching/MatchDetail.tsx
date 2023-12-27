@@ -670,7 +670,7 @@ export default function MatchDetail(props: Props) {
           style={_styles.wrap}
         >
 
-          <ScrollView style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1, marginBottom: 40 }}>
               {data.profile_img_list.length > 0 && isLoad ? (
                 <>
                   <SpaceView mb={(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') ? 130 : 60}>
