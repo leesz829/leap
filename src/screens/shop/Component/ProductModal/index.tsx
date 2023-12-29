@@ -48,7 +48,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   const isFocus = useIsFocused();
   const { bottom } = useSafeAreaInsets();
   const [isPayLoading, setIsPayLoading] = useState(false);
-  const [comfirmModalVisible, setComfirmModalVisible] = useState(false);
 
   // 회원 기본 정보
   const memberBase = useUserInfo();
@@ -152,8 +151,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         show({
           content: msg,
           confirmCallback: function () {
-            setComfirmModalVisible(false);
-            closeModal(true);
+            toggleCloseFn(true);
           },
         });
       } else {
@@ -161,8 +159,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
         [{ 
           text: '확인',
           onPress: () => {
-            setComfirmModalVisible(false);
-            closeModal(true);
+            toggleCloseFn(true);
           }
         }]);
       }
@@ -178,29 +175,17 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   const passPurchase = async () => {
     if(money_type_code == 'PASS') {
       if(memberBase.pass_has_amt < buy_price) {
-        closeModal(false);
+        toggleCloseFn(false);
         setIsPayLoading(false);
-        setComfirmModalVisible(false);
-
-        if(Platform.OS == 'android') {
-          show({ content: '큐브가 부족합니다.' });
-        } else {
-          Alert.alert('알림', '큐브가 부족합니다.', [{ text: '확인' }]);
-        }
+        show({ content: '큐브가 부족합니다.', isCross: true });
         
         return;
       };
     } else if(money_type_code == 'ROYAL_PASS') {
       if(memberBase.royal_pass_has_amt < buy_price) {
-        closeModal(false);
+        toggleCloseFn(false);
         setIsPayLoading(false);
-        setComfirmModalVisible(false);
-
-        if(Platform.OS == 'android') {
-          show({ content: '메가큐브가 부족합니다.' });
-        } else {
-          Alert.alert('알림', '메가큐브가 부족합니다.', [{ text: '확인' }]);
-        }
+        show({ content: '메가큐브가 부족합니다.', isCross: true });
         
         return;
       };
@@ -321,10 +306,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
           
         } catch (error) {
           purchaseUpdateSubscription.remove();
-          Alert.alert('알림', '구매에 실패하였습니다.');
           setIsPayLoading(false);
-          setComfirmModalVisible(false);
-          closeModal(false);
+          toggleCloseFn(false);
+          show({ content: '구매에 실패하였습니다.', isCross: true });
         } finally {
           await finishTransaction({
             purchase: purchase,
@@ -339,10 +323,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   
     let purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
       purchaseErrorSubscription.remove();
-      Alert.alert('알림', '구매에 실패하였습니다.');
       setIsPayLoading(false);
-      setComfirmModalVisible(false);
-      closeModal(false);
+      toggleCloseFn(false);
+      show({ content: '구매에 실패하였습니다.', isCross: true });
     });
 
   };
@@ -356,37 +339,20 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     if (success) {
       if(data?.result_code == '0000') {
         setIsPayLoading(false);
-        setComfirmModalVisible(false);
-        closeModal(true);
+        toggleCloseFn(false);
         //navigation.navigate(STACK.TAB, { screen: 'Shop' });
 
-        if(Platform.OS == 'android') {
-          show({ content: '구매에 성공하였습니다.\n구매한 상품은 선물함에서 획득 가능합니다.' });
-        } else {
-          Alert.alert('알림', '구매에 성공하였습니다.\n구매한 상품은 선물함에서 획득 가능합니다.', [{ text: '확인' }]);
-        }
-      } else {
-        closeModal(false);
-        setIsPayLoading(false);
-        setComfirmModalVisible(false);
+        show({ content: '구매에 성공하였습니다.\n구매한 상품은 선물함에서 획득 가능합니다.', isCross: true });
 
-        if(Platform.OS == 'android') {
-          show({ content: '구매에 실패하였습니다.' });
-        } else {
-          Alert.alert('알림', '구매에 실패하였습니다.', [{ text: '확인' }]);
-        }
+      } else {
+        setIsPayLoading(false);
+        toggleCloseFn(false);
+        show({ content: '구매에 실패하였습니다.', isCross: true });
       }
     } else {
-      closeModal(false);
       setIsPayLoading(false);
-      setComfirmModalVisible(false);
-
-      if(Platform.OS == 'android') {
-        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-      } else {
-        Alert.alert('알림', '오류입니다. 관리자에게 문의해주세요.', [{ text: '확인' }]);
-      }
-
+      toggleCloseFn(false);
+      show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true });
     }
   };
 
@@ -464,8 +430,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                             purchaseBtn();
                           },
                         });
-
-                        //setComfirmModalVisible(true);
                       }}
                     >
                       <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
