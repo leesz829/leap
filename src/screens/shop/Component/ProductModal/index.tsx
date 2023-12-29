@@ -86,6 +86,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   };
 
   useEffect(() => {
+    console.log('isVisible ::::: ' , isVisible);
     if(isVisible) {
       productt_onOpen();
     }
@@ -392,6 +393,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
             handleStyle={modalStyle.modalHandleStyle}
             modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#333B41'}}
             modalHeight={360} 
+            onOverlayPress={() => { toggleCloseFn(false); }}
           >
             <View style={[modalStyleProduct.root, {minHeight: '45%'}]}>
               <View style={modalStyleProduct.infoContainer}>
