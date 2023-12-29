@@ -9,7 +9,7 @@ import ProductModal from '../Component/ProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES, STACK } from 'constants/routes';
 import { get_auct_product, get_product_list, order_goods } from 'api/models';
-import { CommaFormat, getRemainTime } from 'utils/functions';
+import { CommaFormat, getRemainTime, isEmptyData } from 'utils/functions';
 import { usePopup } from 'Context';
 import { useDispatch } from 'react-redux';
 import { myProfile } from 'redux/reducers/authReducer';
@@ -50,12 +50,12 @@ export default function MileageShop() {
   const [data, setData] = useState(DATA);
 
   const [brandList, setBrandList] = useState([
-    {brand_seq: 0, brand_name: 'ALL', logoPath: null, data: [],},
-    {brand_seq: 7, brand_name: '네이버', logoPath: ICON.naverLogo, data: [],},
-    {brand_seq: 15, brand_name: '스타벅스', logoPath: ICON.starbucksLogo, data: [],},
+    /* {brand_seq: 0, brand_name: 'ALL', img_file_path: null}, */
+    /* {brand_seq: 7, brand_name: '네이버', logoPath: ICON.naverLogo, data: [],},
+    {brand_seq: 15, brand_name: '스타벅스', logoPath: ICON.starbucksLogo, data: [],}, */
   ]);
 
-  const [currentTab, setCurrentTab] = useState(brandList[0]);
+  const [currentBrandSeq, setCurrentBrandSeq] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -117,7 +117,6 @@ export default function MileageShop() {
 
 
   }
-  
 
   async function fetch() {
     setIsLoading(true);
@@ -144,6 +143,12 @@ export default function MileageShop() {
         if (sp) {
           setData(pd?.prod_list);
 
+          let _brandList = [{brand_seq: 0, brand_name: 'ALL', img_file_path: null}];
+          pd?.brand_list.forEach(e => {
+            _brandList.push(e);
+          });
+
+          setBrandList(_brandList);
         };
       };
 
@@ -166,11 +171,10 @@ export default function MileageShop() {
     // return () => clearInterval(timer);
   }, [tab]);
 
-  const onPressTab = (value) => {
+  const onPressTab = (brandSeq:any) => {
     //setIsLoading(true);
     //setTab(value);
-    console.log('value ::::: ' , value);
-    setCurrentTab(value);
+    setCurrentBrandSeq(brandSeq);
   };
 
   // ######################################################### 주문내역 이동
@@ -202,7 +206,7 @@ export default function MileageShop() {
         end={{ x: 0, y: 1 }}
         style={_styles.root}>
 
-        <ListHeaderComponent onPressTab={onPressTab} tab={brandList} />
+        <ListHeaderComponent onPressTab={onPressTab} tabList={brandList} />
 
         <SectionGrid
           itemDimension={tab.value == 'gifticon' ? (Dimensions.get('window').width -75) / 2 : Dimensions.get('window').width - 37}
@@ -217,7 +221,7 @@ export default function MileageShop() {
             //console.log('item ::::: ' , item);
             return (
               <>
-                {(!isLoading && (currentTab.brand_seq == 0 || currentTab.brand_seq == item?.brand_seq)) && (
+                {(!isLoading && (currentBrandSeq == 0 || currentBrandSeq == item?.brand_seq)) && (
                   <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} />
                 )}
               </>
@@ -230,7 +234,7 @@ export default function MileageShop() {
 }
 
 // ######################################################################### 카테고리 렌더링
-const RenderCategory = ({ onPressTab, tab }) => {
+const RenderCategory = ({ onPressTab, tabList }) => {
   const [prodData, setProdData] = useState();
 
   async function fetch() {
@@ -256,7 +260,7 @@ const RenderCategory = ({ onPressTab, tab }) => {
 
     // timer = setInterval(fnAuctTimeCount, 1000);
     // return () => clearInterval(timer);
-  }, [tab]);
+  }, [tabList]);
   // return categories?.map((item, index) => (
   //   <TouchableOpacity
   //     key={index}
@@ -279,12 +283,11 @@ const RenderCategory = ({ onPressTab, tab }) => {
         console.log('itemL:::::::', item.data)
       ))} */}
 
-
-      {tab?.map((item, index) => {
+      {tabList?.map((item, index) => {
 
         return (
           <SpaceView key={'brand_'+index} mr={10}>
-            <TouchableOpacity onPress={() => onPressTab(item)}>
+            <TouchableOpacity onPress={() => onPressTab(item?.brand_seq)}>
               {/* <Text>{item?.brand_name}</Text> */}
 
               {item?.brand_seq == 0 ? (
@@ -293,14 +296,20 @@ const RenderCategory = ({ onPressTab, tab }) => {
                 </SpaceView>
 
               ) : (
-                <Image source={item?.logoPath} style={styles.iconSquareSize(75)} />
+                <>
+                  {isEmptyData(item?.img_file_path) ? (
+                    <Image source={findSourcePath(item?.img_file_path)} style={styles.iconSquareSize(75)} />
+                  ) : (
+                    <View style={{width: 75, height: 75, borderRadius: 50, backgroundColor: '#D5CD9E', alignItems: 'center', justifyContent: 'center'}}>
+                      <Text style={_styles.brandAllLogoText}>{item?.brand_name}</Text>
+                    </View>
+                  )}
+                </>
               )}
             </TouchableOpacity>
           </SpaceView>
         );
       })}
-
-
     </ScrollView>
 
   
@@ -331,7 +340,7 @@ const RenderCategory = ({ onPressTab, tab }) => {
 };
 
 // ######################################################################### List Header 렌더링
-function ListHeaderComponent({ onPressTab, tab }) {
+function ListHeaderComponent({ onPressTab, tabList }) {
   const me = useUserInfo();
 
   return (
@@ -346,7 +355,7 @@ function ListHeaderComponent({ onPressTab, tab }) {
         <SpaceView mb={10}>
           <Text style={_styles.allBrandText}>ALL BRAND</Text>
         </SpaceView>
-        <RenderCategory onPressTab={onPressTab} tab={tab} />
+        <RenderCategory onPressTab={onPressTab} tabList={tabList} />
         <SpaceView mt={20} viewStyle={{borderBottomColor: '#D5CD9E', borderBottomWidth: 1}}>
           <Text style={[_styles.allBrandText, {marginBottom: 5}]}>GIFTICON</Text>
         </SpaceView>
@@ -446,8 +455,6 @@ const RenderItem = ({ item, type, callFn }) => {
       //setErrMsg(JSON.stringify(err));
     }
   }
-
-  console.log('item?.prod_name :::::::: ' , item?.prod_name);
 
   return (
     <>

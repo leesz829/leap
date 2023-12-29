@@ -610,14 +610,16 @@ export const Roby = (props: Props) => {
             </TouchableOpacity>
           </SpaceView>
 
-          <View style={_styles.profileInfoContainer}>
+          <SpaceView ml={15} viewStyle={_styles.profileInfoContainer}>
             {isEmptyData(memberBase?.face_modifier) && ( 
               <View style={_styles.bestFaceContainer}>
                 <Text style={_styles.bestFaceText}>#{memberBase?.face_modifier}</Text>
               </View>
             )}
-            <Text style={_styles.profileName}>{memberBase?.nickname}</Text>
-          </View>
+            <SpaceView>
+              <Text style={_styles.profileName}>{memberBase?.nickname}</Text>
+            </SpaceView>
+          </SpaceView>
         </SpaceView>
 
         <LinearGradient
@@ -709,7 +711,7 @@ export const Roby = (props: Props) => {
               <SpaceView>
                 <SpaceView pl={15} pr={15} pt={3} pb={10}  viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
                   {/* <Text style={[_styles.respectText('#D5CD9E', 20), {marginRight: 20}]}>리스펙트 등급</Text> */}
-                  <SocialGrade grade={memberBase?.respect_grade} />
+                  <SocialGrade grade={memberBase?.respect_grade} sizeType={'BASE'} />
                 </SpaceView>
 
                 <View style={_styles.underline} />
@@ -994,14 +996,12 @@ const _styles = StyleSheet.create({
   },
   profileInfoContainer: {
     flexDirection: 'column',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    marginLeft: 15,
   },
   profileName: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 24,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
     lineHeight: 28,
     letterSpacing: 0,
     textAlign: 'left',

@@ -57,7 +57,6 @@ import {
   ITEM_LIST,
   USE_ITEM,
   USE_PASS_ITEM_ALL,
-  POINT_HISTORY,
   PRODUCT_LIST,
   PRODUCT_AUCT,
   PRODUCT_AUCT_DETAIL,
@@ -908,15 +907,6 @@ export async function use_item(body: {
 // 패스 아이템 전체 사용
 export async function use_pass_item_all() {
   return send(USE_PASS_ITEM_ALL, 'POST', undefined, true, false);
-}
-
-/* ========================================================================================================
-==================================================== POINT
-======================================================================================================== */
-
-//포인트 내역 조회
-export async function get_point_history() {
-  return send(POINT_HISTORY, 'POST', undefined, true, false);
 }
 
 /* ========================================================================================================

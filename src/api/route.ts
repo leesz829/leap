@@ -117,11 +117,6 @@ export const USE_ITEM = '/item/useItem';
 export const USE_PASS_ITEM_ALL = '/item/usePassItemAll';
 
 /**
- * POINT
- */
-export const POINT_HISTORY = '/prod/selectMobileProdList';
-
-/**
  * PRODUCT
  */
 export const SHOP_MAIN = '/prod/shopMain';

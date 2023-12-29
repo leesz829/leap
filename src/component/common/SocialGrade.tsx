@@ -14,15 +14,15 @@ import { isEmptyData } from 'utils/functions';
 #### 소셜 등급 노출 Component
 #########################################################################
 ###################################################################### */
-export default function SocialGrade({ grade }) {
+export default function SocialGrade({ grade, sizeType }) {
   
   return (
     <>
       {isEmptyData(grade) && (
         <>
           <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-            <Image source={ICON.sparkler} style={styles.iconSquareSize(36)} />
-            <Text style={_styles.gradeText}>{grade}</Text>
+            <Image source={ICON.sparkler} style={styles.iconSquareSize(sizeType == 'SMALL' ? 16 : 36)} />
+            <Text style={_styles.gradeText(sizeType)}>{grade}</Text>
           </SpaceView>
         </>
       )}
@@ -38,12 +38,14 @@ export default function SocialGrade({ grade }) {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-  gradeText: {
-    fontFamily: 'MinSans-Bold',
-    fontSize: 29,
-    fontWeight: '800',
-    color: '#000000',
-    marginLeft: 10,
+  gradeText: (sizeType:string) => {
+    return {
+      fontFamily: 'MinSans-Bold',
+      fontSize: sizeType == 'SMALL' ? 14 : 36,
+      fontWeight: '800',
+      color: '#000000',
+      marginLeft: sizeType == 'SMALL' ? 3 : 10,
+    };
   },
 
 });

@@ -37,23 +37,23 @@ interface Props {
 const { width, height } = Dimensions.get('window');
 
 export const Profile_Auth = (props: Props) => {
-  const navigation = useNavigation<ScreenNavigationProp>();
-  const dispatch = useDispatch();
+  	const navigation = useNavigation<ScreenNavigationProp>();
+  	const dispatch = useDispatch();
 
-  const { show } = usePopup();  // 공통 팝업
+  	const { show } = usePopup();  // 공통 팝업
 	const isFocus = useIsFocused();
 	const [isLoading, setIsLoading] = React.useState(false); // 로딩 여부
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
-  const memberBase = useUserInfo(); // 회원 기본정보
+  	const memberBase = useUserInfo(); // 회원 기본정보
 
-  const [selectedAuthCode, setSelectedAuthCode] = React.useState('JOB'); // 선택한 인증 코드
+  	const [selectedAuthCode, setSelectedAuthCode] = React.useState('JOB'); // 선택한 인증 코드
 	const [currentAuthCode, setCurrentAuthCode] = React.useState('JOB'); // 현재 인증 코드
 	const [authList, setAuthList] = React.useState([]); // 인증 목록
 
-  const [isMod, setIsMod] = React.useState({status: false}); // 수정 여부
+  	const [isMod, setIsMod] = React.useState({status: false}); // 수정 여부
 
-  const authInfoArr = [
+  	const authInfoArr = [
 		{ name: '직업', code: 'JOB' },
 		{ name: '학업', code: 'EDU' },
 		{ name: '소득', code: 'INCOME' },
@@ -62,7 +62,7 @@ export const Profile_Auth = (props: Props) => {
 		{ name: '차량', code: 'VEHICLE' },
 	];
   
-  // ############################################################################# 인증 탭 클릭 함수
+  	// ############################################################################# 인증 탭 클릭 함수
 	const selectedAuthTab = async (_authCode:string) => {
 		setSelectedAuthCode(_authCode);
 	};
@@ -74,7 +74,7 @@ export const Profile_Auth = (props: Props) => {
 		});
 	};
 
-  // ############################################################################# 저장 함수
+  	// ############################################################################# 저장 함수
 	const saveFn = async (_isMod:boolean, _name:string, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
 		if(_isMod) {
 			if(currentAuthCode != selectedAuthCode) {
@@ -96,100 +96,99 @@ export const Profile_Auth = (props: Props) => {
 		}
 	};
 
-  // ############################################################################# 인증 저장
+  	// ############################################################################# 인증 저장
 	const saveAuth = async (isTab:boolean, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
-      // 데이터 없을 시 저장 방지
-	  if(!_authDetailList.length && !isEmptyData(_imgDelSeqStr) && !isEmptyData(_authComment)) {
-		navigation.goBack();
-		return;
-	  };
+    	// 데이터 없을 시 저장 방지
+	  	if(!_authDetailList.length && !isEmptyData(_imgDelSeqStr) && !isEmptyData(_authComment)) {
+			navigation.goBack();
+			return;
+	  	};
 
-	  // 중복 클릭 방지 설정
-	  if(isClickable) {
-		  setIsClickable(false);
-		  setIsLoading(true);
+	  	// 중복 클릭 방지 설정
+	  	if(isClickable) {
+			setIsClickable(false);
+		  	setIsLoading(true);
   
-      const body = {
-        file_list: _authDetailList,
-        auth_code: _authCode,
-        auth_comment: _authComment,
-        img_del_seq_str: _imgDelSeqStr,
-      };
+      		const body = {
+        		file_list: _authDetailList,
+        		auth_code: _authCode,
+	        	auth_comment: _authComment,
+		        img_del_seq_str: _imgDelSeqStr,
+      		};
 
-      console.log('body ::::: ' , body.img_del_seq_str);
+      		console.log('body ::::: ' , body.img_del_seq_str);
 
-      /* setIsClickable(true);
-      setIsLoading(false);
-      return; */
+			/* setIsClickable(true);
+			setIsLoading(false);
+			return; */
 
-      try {
-        const { success, data } = await save_profile_auth(body);
-        if (success) {
-          switch (data.result_code) {
-            case SUCCESS:
-              //getAuth();
+      		try {
+        		const { success, data } = await save_profile_auth(body);
+        		if (success) {
+          			switch (data.result_code) {
+            			case SUCCESS:
+              				//getAuth();
 
-              if(isTab) {
-                getAuth();
-              } else {
-                navigation.goBack();
-              }
-              break;
-            default:
-              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-              break;
-          }
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsClickable(true);
-        setIsLoading(false);
-      };
-	  }
+              				if(isTab) {
+                				getAuth();
+              				} else {
+                				navigation.goBack();
+              				}
+              				break;
+            			default:
+              				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              				break;
+          			}
+        		} else {
+          			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        		}
+      		} catch (error) {
+        		console.log(error);
+      		} finally {
+        		setIsClickable(true);
+        		setIsLoading(false);
+      		};
+	  	}
 	};
 
-  // ############################################################################# 인증 정보 조회
+  	// ############################################################################# 인증 정보 조회
 	const getAuth = async () => {
-	  try {
-      const body = {};
-  		const { success, data } = await get_member_profile_auth(body);
-      if (success) {
-        switch (data.result_code) {
-          case SUCCESS:
-            if(isEmptyData(data.auth_list)) {
-              setAuthList(data?.auth_list);
-            }
-      
-            break;
-          default:
-            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            break;
-        }
-      } else {
-        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-      }
-	  } catch (error) {
-		  console.log(error);
-	  } finally {
-		  setIsLoading(false);
-	  }
+	  	try {
+      		const body = {};
+  			const { success, data } = await get_member_profile_auth(body);
+      		if (success) {
+        		switch (data.result_code) {
+          			case SUCCESS:
+            			if(isEmptyData(data.auth_list)) {
+              				setAuthList(data?.auth_list);
+            			}
+            			break;
+          			default:
+            			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            			break;
+        		}
+      		} else {
+        		show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      		}
+	  	} catch (error) {
+			console.log(error);
+	  	} finally {
+			setIsLoading(false);
+	  	}
 	};
 
-  // 첫 렌더링 때 실행
-  React.useEffect(() => {
-    if(isFocus) {
-      getAuth();
-    }
-  }, [isFocus]);
+  	// 첫 렌더링 때 실행
+  	React.useEffect(() => {
+	    if(isFocus) {
+      		getAuth();
+    	}
+	}, [isFocus]);
 
-  return (
-    <>
-      {isLoading && <CommonLoading />}
+  	return (
+	    <>
+      		{isLoading && <CommonLoading />}
 
-      {/* #############################################################################################################
+      		{/* #############################################################################################################
 			######### 상단 영역
 			############################################################################################################# */}
 			<SpaceView viewStyle={{backgroundColor: '#445561', padding: 30}}>
@@ -215,35 +214,35 @@ export const Profile_Auth = (props: Props) => {
 			{/* #############################################################################################################
 			######### 컨텐츠 영역
 			############################################################################################################# */}
-      {authList.length > 0 ? (
-        <>
-          {authList.map((item, index) => {
-            return currentAuthCode == item?.common_code && (
-              <> 
-                <AuthRender 
-                  key={'auth'+index}
-                  _data={item}
-                  _selectedAuthCode={selectedAuthCode} 
-                  _modActiveFn={modActive}
-                  _setCurrentCode={setCurrentAuthCode} 
-                  _isModStatus={isMod.status}
-                  _saveFn={saveFn}
-                />
-              </>
-            )
-          })}
-        </>
-      ) : (
-        <>
-          <LinearGradient
-				    colors={['#3D4348', '#1A1E1C']}
-				    start={{ x: 0, y: 0 }}
-				    end={{ x: 0, y: 1 }}
-				    style={_styles.wrap} />
-        </>
-      )}			
-    </>
-  );
+      		{authList.length > 0 ? (
+        		<>
+          			{authList.map((item, index) => {
+            			return currentAuthCode == item?.common_code && (
+              				<> 
+                				<AuthRender 
+                  					key={'auth'+index}
+                  					_data={item}
+                  					_selectedAuthCode={selectedAuthCode} 
+                  					_modActiveFn={modActive}
+                  					_setCurrentCode={setCurrentAuthCode} 
+                  					_isModStatus={isMod.status}
+                  					_saveFn={saveFn}
+                				/>
+              				</>
+            			)
+          			})}
+        		</>
+      		) : (
+        		<>
+          			<LinearGradient
+				    	colors={['#3D4348', '#1A1E1C']}
+				    	start={{ x: 0, y: 0 }}
+				    	end={{ x: 0, y: 1 }}
+				    	style={_styles.wrap} />
+        		</>
+      		)}
+    	</>
+  	);
 };
 
 
@@ -318,21 +317,21 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 					delArr = imgMngData.member_auth_detail_seq;
 				} else {
 
-          // 중복 여부 체크
-          let isDup = false;
+          			// 중복 여부 체크
+          			let isDup = false;
+					
+          			if(typeof delArr == 'number') {
+            			if(delArr == imgMngData.member_auth_detail_seq) { isDup = true; }
+          			} else {
+            			const delList = delArr.split(',');
+            			delList.map((item, index) => {
+              				if(item == imgMngData.member_auth_detail_seq) { isDup = true; }
+            			});
+          			}
 
-          if(typeof delArr == 'number') {
-            if(delArr == imgMngData.member_auth_detail_seq) { isDup = true; }
-          } else {
-            const delList = delArr.split(',');
-            delList.map((item, index) => {
-              if(item == imgMngData.member_auth_detail_seq) { isDup = true; }
-            });
-          }
-
-          if(!isDup) {
-            delArr = delArr + ',' + imgMngData.member_auth_detail_seq;
-          }
+          			if(!isDup) {
+            			delArr = delArr + ',' + imgMngData.member_auth_detail_seq;
+          			}
 				}
 
 				setImgDelSeqStr(delArr);

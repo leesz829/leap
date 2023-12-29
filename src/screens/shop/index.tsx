@@ -463,7 +463,7 @@ export const Shop = () => {
             </TouchableOpacity>
           </SpaceView>
 
-          {memberBase?.gender == 'M' ?
+          {memberBase?.gender == 'M' && (
             <SpaceView viewStyle={_styles.shadowContainer}>
               <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
                 {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? 
@@ -530,12 +530,14 @@ export const Shop = () => {
                 </TouchableOpacity>
               </SpaceView>
             </SpaceView>
-          :
+          )}
+
+          {(memberBase?.gender == 'W' || memberBase?.test_member_yn == 'Y') && (
             <LinearGradient
               colors={['#FF7B92', '#FFF7C1']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={{paddingHorizontal: 15, paddingVertical: 20, marginTop: 20}}
+              style={{paddingHorizontal: 15, paddingVertical: 20, marginTop: 10}}
             >
               <Text style={_styles.mileageTitle}>보유 RP</Text>
               <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
@@ -553,7 +555,7 @@ export const Shop = () => {
               </SpaceView>
               <Text style={_styles.rpStoreDesc}>RP 스토어에서 교환 가능한 쓸쓸한 기프티콘 보고 가세요.</Text>
             </LinearGradient>
-          }
+          )}
 
           {/* ############################################### 카테고리별 */}
           <SpaceView mb={200}>

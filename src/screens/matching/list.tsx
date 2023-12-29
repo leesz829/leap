@@ -2,7 +2,7 @@ import { RouteProp, useIsFocused, useNavigation, useFocusEffect, CommonActions }
 import React, { useEffect, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import { get_daily_match_list, report_check_user, report_check_user_confirm, update_additional } from 'api/models';
+import { get_daily_match_list, profile_open, update_additional } from 'api/models';
 import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import { usePopup } from 'Context';
@@ -19,7 +19,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
 import { CommonText } from 'component/CommonText';
-import { BlurView } from "@react-native-community/blur";
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
+import SocialGrade from 'component/common/SocialGrade';
 
 
 
@@ -55,6 +57,7 @@ export default function MatchingList(props: Props) {
   const [data, setData] = React.useState({
     introSecondYn: '',
     matchList: [],
+    freeOpenCnt: 0,
   })
 
   // 팝업 목록
@@ -80,7 +83,8 @@ export default function MatchingList(props: Props) {
         if (data.result_code == '0000') {
           setData({
             introSecondYn: data?.intro_second_yn,
-            matchList: data?.match_list
+            matchList: data?.match_list,
+            freeOpenCnt: data?.free_open_cnt,
           });
 
           if(data?.match_list.length > 0) {
@@ -176,13 +180,53 @@ export default function MatchingList(props: Props) {
     });
   };
 
+  // ############################################################ 프로필 열람
+  const profileOpen = async (trgtMemberSeq:number) => {
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoad(true);
+  
+        const body = {
+          type: 'MATCH',
+          trgt_member_seq: trgtMemberSeq,
+        };
+  
+        const { success, data } = await profile_open(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              goMatchDetail(trgtMemberSeq);
+              break;
+            case EXIST:
+              show({ content: '이미 보관함에 존재하는 회원입니다.', isCross: true });
+              break;
+            case '6010':
+              show({ content: '보유 패스가 부족합니다.', isCross: true, });
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoad(false);
+      }
+    }
+  };
+
   // ################################################################ 초기 실행 함수
   React.useEffect(() => {
     if(isFocus) {
       if(memberBase?.status == 'BLOCK') {
         show({
           title: '서비스 이용 제한 알림',
-          //content: '서비스 운영정책 위반으로 회원님의 계정상태가\n이용제한 상태로 전환되었습니다.\n문의사항 : cs@limeeted.com',
           content: '서비스 운영정책 위반으로 회원님의 계정상태가\n이용제한 상태로 전환되었습니다.',
           confirmCallback: function() {
             dispatch(clearPrincipal());
@@ -243,17 +287,21 @@ export default function MatchingList(props: Props) {
 
         {!isEmpty ? (
           <>
-            <SpaceView pb={190}>
+            <SpaceView pb={150}>
               <FlatList
                 ref={scrollRef}
                 data={data.matchList}
-                //renderItem={MatchRenderItem}
                 renderItem={(props) => {
                   //console.log('props : ', JSON.stringify(props));
                   const { item, index } = props;
                   return (
                     <>
-                      <MatchRenderItem item={item} fnDetail={goMatchDetail} />
+                      <MatchRenderItem 
+                        item={item} 
+                        fnDetail={goMatchDetail} 
+                        fnProfileOpen={profileOpen} 
+                        freeOpenCnt={data?.freeOpenCnt} 
+                        respectGrade={memberBase?.respect_grade} />
                     </>
                   )
                 }}
@@ -328,23 +376,58 @@ export default function MatchingList(props: Props) {
 /* #####################################################################################################################################
 ####### 매칭 아이템 렌더링
 ##################################################################################################################################### */
-const MatchRenderItem = ({ item, fnDetail }) => {
+function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGrade }) {
   const imgList = item?.img_list; // 이미지 목록
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const _renderWidth = width - 40;
+  const _renderHeight = height * 0.73;
 
   // 이전 이미지
   const prevImage = async () => {
     if(currentImgIdx > 0) {
       setCurrentImgIdx(currentImgIdx-1);
     }
-  }
+  };
 
   // 다음 이미지
   const nextImage = async () => {
     if(currentImgIdx+1 < imgList.length && currentImgIdx < 2) {
       setCurrentImgIdx(currentImgIdx+1);
     }
-  }
+  };
+
+  // 상세 실행
+  const detailProc = async () => {
+    if(item?.open_yn == 'Y') {
+      fnDetail(item?.member_seq);
+    } else {
+      setIsOpen(true);
+    }
+  };
+
+  // 열람 실행
+  const openProc = async() => {
+    if(item?.open_yn == 'Y') {
+      fnDetail(item?.member_seq);
+    } else {
+      fnProfileOpen(item?.member_seq);
+    }
+  };
+
+  // 열람 취소
+  const openCancel = async() => {
+    setIsOpen(false);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        setIsOpen(false);
+      };
+    }, []),
+  );
 
   return (
     <>
@@ -357,7 +440,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
             {imgList.length > 0 && (
               <Image
                 source={findSourcePath(imgList[currentImgIdx].img_file_path)}
-                style={{ flex: 1, width: width - 40, height: height * 0.73 }}
+                style={{ flex: 1, width: _renderWidth, height: _renderHeight }}
                 resizeMode={'cover'}
               />
             )}
@@ -396,7 +479,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
 
                   {/* 상세 버튼 */}
                   <TouchableOpacity
-                    onPress={() => { fnDetail(item?.member_seq); }}
+                    onPress={() => { detailProc(); }}
                     style={{position: 'absolute', bottom: -10, right: 10, zIndex: 2}}
                   >
                     <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
@@ -418,7 +501,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                       )}
                     </SpaceView>
 
-                    <TouchableOpacity onPress={() => { fnDetail(item?.member_seq); }}>
+                    <TouchableOpacity onPress={() => { detailProc(); }}>
                       <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
                     </TouchableOpacity>
                   </SpaceView>
@@ -447,7 +530,7 @@ const MatchRenderItem = ({ item, fnDetail }) => {
                       <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
                     </SpaceView>
 
-                    <TouchableOpacity onPress={() => { fnDetail(item?.member_seq); }}>
+                    <TouchableOpacity onPress={() => { detailProc(); }}>
                       <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
                     </TouchableOpacity>
                   </SpaceView>
@@ -492,20 +575,58 @@ const MatchRenderItem = ({ item, fnDetail }) => {
               end={{ x: 0, y: 1 }}
               style={_styles.thumnailDimArea} />
 
-
-
             {/* ############################### 열람 블러 영역 */}
-            {/* <BlurView 
-              style={_styles.blurArea}
-              blurType='light'
-              blurAmount={15} >
+            {isOpen && (
+              <>
+                <BlurView 
+                  style={_styles.blurArea(_renderWidth, _renderHeight)}
+                  blurType='light'
+                  blurAmount={15}
+                />
 
-              <SpaceView viewStyle={_styles.blurDesc}>
-                <Text style={_styles.blurDescText}>큐브를 사용하여 블라인드 카드를 열람합니다.</Text>
-              </SpaceView>
+                <SpaceView viewStyle={_styles.blurArea(_renderWidth, _renderHeight)}>
+                  {freeOpenCnt > 0 ? (
+                    <SpaceView>
+                      <SpaceView viewStyle={_styles.blurDesc}>
+                        <SpaceView mr={5}><SocialGrade grade={respectGrade} sizeType={'SMALL'} /></SpaceView>
+                        <Text style={_styles.blurDescText}>무료 열람 활성화</Text>
+                      </SpaceView>
 
-            </BlurView> */}
+                      <SpaceView mt={5} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style={_styles.blurAddText('#FFDD00')}>{freeOpenCnt}회남음</Text>
+                      </SpaceView>
+                    </SpaceView>
+                  ) : (
+                    <SpaceView>
+                      <SpaceView viewStyle={_styles.blurDesc}>
+                        <Text style={_styles.blurDescText}>큐브를 사용하여 블라인드 카드를 열람합니다.</Text>
+                      </SpaceView>
 
+                      <SpaceView mt={5} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <Image source={ICON.cubeCyan} style={styles.iconSquareSize(35)} />
+                        <Text style={_styles.blurAddText('#32F9E4')}>15</Text>
+                      </SpaceView>
+                    </SpaceView>
+                  )}
+
+                  <SpaceView viewStyle={_styles.bluBtnArea}>
+                    <LinearGradient
+                      colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.5)']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                      style={_styles.bluBtnGradient}>
+                      
+                      <TouchableOpacity style={_styles.bluBtnTouch(true)} onPress={() => { openCancel(); }}>
+                        <Text style={_styles.bluBtnText('#E1DFD1')}>취소</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={_styles.bluBtnTouch(false)} onPress={() => { openProc(); }}>
+                        <Text style={_styles.bluBtnText('#FFDD00')}>열람하기</Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+                  </SpaceView>
+                </SpaceView>
+              </>
+            )}
           </SpaceView>
 
 
@@ -737,26 +858,81 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
     overflow: 'hidden',
   },
-  blurArea: {
+  blurArea: (_width:number, _height:number) => {
+    return {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      width: _width,
+      height: _height,
+      zIndex: 2,
+      alignItems: 'center',
+      alignContent: 'center',
+      justifyContent: 'center',
+    };
+  },
+  blurArea22: {
     position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zIndex: 2,
+      alignItems: 'center',
+      alignContent: 'center',
+      justifyContent: 'center',
   },
   blurDesc: {
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
     paddingVertical: 2,
     paddingHorizontal: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   blurDescText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 12,
     color: '#D5CD9E',
+  },
+  blurAddText: (cr:string) => {
+    return {
+      fontFamily: 'Pretendard-Medium',
+      fontSize: 23,
+      color: '#32F9E4',
+    };
+  },
+  bluBtnArea: {
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 30,
+  },
+  bluBtnGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 18,
+  },
+  bluBtnTouch: (isBorder:boolean) => {
+    return {
+      width: '50%',
+      paddingVertical: 20,
+      borderRightWidth: isBorder ? 1 : 0,
+      borderRightColor: '#64614B',
+    };
+  },
+  bluBtnText: (cr:string) => {
+    return {
+      fontFamily: 'Pretendard-SemiBold',
+      fontSize: 16,
+      color: cr,
+      textAlign: 'center',
+    };
   },
 
 });
