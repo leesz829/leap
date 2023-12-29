@@ -1,9 +1,7 @@
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
-import { Color } from 'assets/styles/Color';
-import { ColorType } from '@types';
 import React, { memo, useEffect, useState } from 'react';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Alert, Platform, PanResponder } from 'react-native';
-import Modal from 'react-native-modal';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Alert, Platform, PanResponder, Modal } from 'react-native';
+//import Modal from 'react-native-modal';
 import { findSourcePath, ICON } from 'utils/imageUtils';
 import ViewPager from '../ViewPager';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,7 +21,7 @@ import {
 } from 'react-native-iap';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
 import { purchase_product, order_goods } from 'api/models';
@@ -32,6 +30,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { CommonBtn } from 'component/CommonBtn';
 import LinearGradient from 'react-native-linear-gradient';
+import { Modalize } from 'react-native-modalize';
+
 
 
 interface Props {
@@ -45,6 +45,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   const { width, height } = Dimensions.get('window');
   const navigation = useNavigation();
   const { show } = usePopup(); // 공통 팝업
+  const isFocus = useIsFocused();
   const { bottom } = useSafeAreaInsets();
   const [isPayLoading, setIsPayLoading] = useState(false);
   const [comfirmModalVisible, setComfirmModalVisible] = useState(false);
@@ -75,6 +76,21 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
   // 재화 구분 코드
   const money_type_code = item?.money_type_code;
+
+  const product_modalizeRef = React.useRef<Modalize>(null);
+  const productt_onOpen = () => {
+    product_modalizeRef.current?.open();
+  };
+
+  const productt_onClose = () => {
+    product_modalizeRef.current?.close();
+  };
+
+  useEffect(() => {
+    if(isVisible) {
+      productt_onOpen();
+    }
+  }, [isVisible]);
 
   // ######################################################### 상품 구매하기 함수
   const purchaseBtn = async () => {
@@ -373,8 +389,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     }
   };
 
-  const toggleModal = async () => {
-    closeModal(false);
+  const toggleCloseFn = async (isPayConfirm:boolean) => {
+    closeModal(isPayConfirm);
+    productt_onClose();
   };
 
   // 터치 컨트롤 함수
@@ -383,7 +400,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (_, gestureState) => {
         if (gestureState.dy > 50 && gestureState.dy > gestureState.dx) {
-          toggleModal();
+          toggleCloseFn(false);
           // 아래로 스와이프 동작이면 스크롤을 막음
           //scrollViewRef.current.setNativeProps({ scrollEnabled: false });
         } else {
@@ -399,165 +416,117 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
   return (
     <>
-      {type == 'bm' ?
-        ////////////////////////////// BM상품 팝업창
-        <Modal 
-          isVisible={isVisible} 
-          style={modalStyleProduct.modal}
-          //onSwipeComplete={toggleModal}
-          //onBackdropPress={toggleModal} // 모달 외부 터치 시 모달 닫기
-          //swipeDirection="down" // 아래 방향으로 스와이프
-          //propagateSwipe={true}
-          onRequestClose={() => { closeModal(false); }}>
-
-          <View style={[modalStyleProduct.root, {minHeight: '45%'}]}>
-            <View style={modalStyleProduct.infoContainer}>
-              <SpaceView>
-                <Text style={modalStyleProduct.title}>상품구매</Text>
-                <SpaceView mt={30} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
-                  <Image source={ICON.polygonGreen} style={styles.iconSize40} />
-                  <Text style={[modalStyleProduct.giftName, {marginTop: 0}]}>{prod_name}</Text>
+      {type == 'bm' ? (
+        <>
+          {/* BM상품 팝업창 */}
+          <Modalize
+            ref={product_modalizeRef}
+            adjustToContentHeight={false}
+            handleStyle={modalStyle.modalHandleStyle}
+            modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#333B41'}}
+            modalHeight={360} 
+          >
+            <View style={[modalStyleProduct.root, {minHeight: '45%'}]}>
+              <View style={modalStyleProduct.infoContainer}>
+                <SpaceView>
+                  <Text style={modalStyleProduct.title}>상품구매</Text>
+                  <SpaceView mt={30} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
+                    <Image source={ICON.polygonGreen} style={styles.iconSize40} />
+                    <Text style={[modalStyleProduct.giftName, {marginTop: 0}]}>{prod_name}</Text>
+                  </SpaceView>
+                  <SpaceView viewStyle={{height: 50}}>
+                    <Text style={modalStyleProduct.giftDesc} numberOfLines={2}>{item?.item_contents}</Text>
+                  </SpaceView>
                 </SpaceView>
-                <Text style={modalStyleProduct.giftDesc}>{item?.item_contents}</Text>
-              </SpaceView>
 
-              <View style={modalStyleProduct.infoContents}>
-                <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: height - 625}}>
-                  <View>
-                    <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
+                {/* <View style={modalStyleProduct.infoContents}>
+                  <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }} style={{maxHeight: height - 625}}>
+                    <View>
+                      <Text style={modalStyleProduct.brandContentText}>{prod_content}</Text>
+                    </View>
+                  </ScrollView>
+                </View> */}
+                
+                <SpaceView mb={bottom+10} viewStyle={modalStyleProduct.bottomContainer}>
+                  <View style={modalStyleProduct.rowBetween}>
+                    <TouchableOpacity 
+                      style={modalStyleProduct.puchageButton} 
+                      onPress={() => {
+                        show({
+                          title: '상품 구매',
+                          content: '상품을 구매하시겠습니까?',
+                          cancelBtnText: '취소할래요!',
+                          confirmBtnText: '구매하기',
+                          cancelCallback: function() {
+                          },
+                          confirmCallback: function () {
+                            purchaseBtn();
+                          },
+                        });
+
+                        //setComfirmModalVisible(true);
+                      }}
+                    >
+                      <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
+                      {item?.discount_rate > 0 &&
+                        <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}</Text>
+                      }
+                      <Text style={modalStyleProduct.puchageText}>구매하기</Text>
+                    </TouchableOpacity>
                   </View>
-                </ScrollView>
+
+                  <CommonBtn
+                    value={'취소'}
+                    type={'reNewGoBack'}
+                    borderRadius={5}
+                    onPress={() => toggleCloseFn(false)}
+                  />
+                </SpaceView>
               </View>
-              
-              <SpaceView mb={bottom+10} viewStyle={modalStyleProduct.bottomContainer}>
-                <View style={modalStyleProduct.rowBetween}>
-                  <TouchableOpacity 
-                    style={modalStyleProduct.puchageButton} 
-                    onPress={() => {
-
-                      /* show({
-                        title: '상품 구매',
-                        content: '상품을 구매하시겠습니까?',
-                        cancelBtnText: '취소할래요!',
-                        confirmBtnText: '구매하기',
-                        cancelCallback: function() {
-                  
-                        },
-                        confirmCallback: function () {
-                          purchaseBtn();
-                        },
-                      }); */
-
-                      setComfirmModalVisible(true);
-                    }}
-                  >
-                    <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
-                    {item?.discount_rate > 0 &&
-                      <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}</Text>
-                    }
-                    <Text style={modalStyleProduct.puchageText}>구매하기</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <CommonBtn
-                  value={'취소'}
-                  type={'reNewGoBack'}
-                  borderRadius={5}
-                  onPress={toggleModal}
-                />
-              </SpaceView>
             </View>
-          </View>
-
-          {/* ###################### 구매하기 Confirm 팝업 */}
-          <Modal isVisible={comfirmModalVisible} transparent={true} style={modalStyleProduct.modal}>
-            {isPayLoading && <CommonLoading />}
+          </Modalize>
+        </>
+      ) : (
+        <>
+          {/* 기프티콘 상품 교환 팝업 */}
+          <Modal visible={isVisible} transparent={true}>
             <View style={modalStyle.modalBackground}>
-              {/* <View style={[modalStyle.modalStyle1, {backgroundColor: '#3D4348'}]}>
-                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
-                  <CommonText fontWeight={'700'} type={'h5'} color={'#D5CD9E'}>상품 구매</CommonText>
-                </SpaceView>
+              <View style={[modalStyle.modalStyle1, {overflow: 'hidden'}]}>
+                <LinearGradient
+                  colors={['#3D4348', '#1A1E1C']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={modalStyleProduct.container}
+                >
+                  <View style={modalStyleProduct.titleBox}>
+                    <Text style={modalStyleProduct.titleText}>기프티콘 교환</Text>
+                  </View>
+                  
+                  <View style={modalStyleProduct.contentBody}>
+                    <SpaceView viewStyle={modalStyleProduct.giftDescArea}>
+                        <Text style={modalStyleProduct.prodDesc}>{item?.prod_content}</Text>
+                        <Text style={modalStyleProduct.rpAmtText}>{item?.buy_price}RP로 기프티콘 교환합니다.</Text>
+                    </SpaceView>
+                  </View>
 
-                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
-                  <CommonText type={'h5'} textStyle={layoutStyle.textCenter} color={'#D5CD9E'}>상품을 구매하시겠습니까?</CommonText>
-                </SpaceView>
-
-                <View style={modalStyle.modalBtnContainer}>
-                  <TouchableOpacity
-                    style={[modalStyle.modalBtn, {backgroundColor: '#FFF', borderBottomLeftRadius: 5}]}
-                    onPress={() => setComfirmModalVisible(false)}>
-                    <CommonText type={'h5'} fontWeight={'500'} color={'#3D4348'}>취소할래요!</CommonText>
-                  </TouchableOpacity>
-
-                  <View style={modalStyle.modalBtnline} />
-
-                  <TouchableOpacity 
-                    style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomRightRadius: 5}]}
-                    onPress={() => purchaseBtn()}>
-                    <CommonText type={'h5'} fontWeight={'500'} color={'#3D4348'}>구매하기</CommonText>
-                  </TouchableOpacity>
-                </View>
-              </View> */}
-
-              <View style={[modalStyle.modalStyle1, {backgroundColor: '#3D4348'}]}>
-                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalHeader]}>
-                  <CommonText fontWeight={'700'} type={'h5'} color={'#D5CD9E'}>알림</CommonText>
-                </SpaceView>
-
-                <SpaceView viewStyle={[layoutStyle.alignCenter, modalStyle.modalBody]}>
-                  <CommonText type={'h5'} textStyle={layoutStyle.textCenter} color={'#D5CD9E'}>준비중 입니다.</CommonText>
-                </SpaceView>
-
-                <View style={modalStyle.modalBtnContainer}>
-                  <TouchableOpacity
-                    style={[modalStyle.modalBtn, {backgroundColor: '#FFDD00', borderBottomLeftRadius: 5}]}
-                    onPress={() => setComfirmModalVisible(false)}>
-                    <CommonText type={'h5'} fontWeight={'500'} color={'#3D4348'}>확인</CommonText>
-                  </TouchableOpacity>
-
-                  <View style={modalStyle.modalBtnline} />
-                </View>
+                  <View style={modalStyleProduct.bottomBox}>
+                    <TouchableOpacity 
+                      style={[modalStyleProduct.allButton, {backgroundColor: '#FFF', marginRight: 5}]} 
+                      onPress={() => toggleCloseFn(false)}>
+                      <Text style={modalStyleProduct.allButtonText}>취소</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      style={modalStyleProduct.allButton}
+                      onPress={() => purchaseBtn()}>
+                      <Text style={[modalStyleProduct.allButtonText]}>확인</Text>
+                    </TouchableOpacity>
+                  </View>
+                </LinearGradient>
               </View>
             </View>
           </Modal>
-
-        </Modal>
-      :
-        ///////////////////////////  기프티콘 상품 교환 팝업창
-        <Modal isVisible={isVisible} onRequestClose={() => { closeModal(); }}>
-          <LinearGradient
-            colors={['#3D4348', '#1A1E1C']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={modalStyleProduct.container}
-          >
-            <View style={modalStyleProduct.titleBox}>
-              <Text style={modalStyleProduct.titleText}>기프티콘 교환</Text>
-            </View>
-            
-            <View style={modalStyleProduct.contentBody}>
-              <SpaceView viewStyle={modalStyleProduct.giftDescArea}>
-                  <Text style={modalStyleProduct.prodDesc}>{item?.prod_content}</Text>
-                  <Text style={modalStyleProduct.rpAmtText}>{item?.buy_price}RP로 기프티콘 교환합니다.</Text>
-              </SpaceView>
-            </View>
-
-            <View style={modalStyleProduct.bottomBox}>
-              <TouchableOpacity 
-                style={[modalStyleProduct.allButton, {backgroundColor: '#FFF', marginRight: 5}]} 
-                onPress={toggleModal}>
-
-                <Text style={modalStyleProduct.allButtonText}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={modalStyleProduct.allButton}
-                onPress={() => purchaseBtn()}>
-                <Text style={[modalStyleProduct.allButtonText]}>확인</Text>
-              </TouchableOpacity>
-            </View>
-          </LinearGradient>
-        </Modal>
-      }
+        </>
+      )}
     </>
   );
 }
