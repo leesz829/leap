@@ -95,6 +95,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   // ######################################################### 상품 구매하기 함수
   const purchaseBtn = async () => {
 
+    closeModal(false);
     show({ content: '준비중 입니다.', isCross: true });
     return;
 
