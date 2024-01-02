@@ -409,8 +409,8 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<SpaceView viewStyle={{height: height-310}}>
-					<ScrollView showsVerticalScrollIndicator={false}>
+				<ScrollView showsVerticalScrollIndicator={false}>
+					<SpaceView pb={300}>
 						<View>
 							{((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
 								<View style={_styles.authBoxStatus}>
@@ -495,8 +495,8 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 								}}
 							/>
 						</SpaceView>
-					</ScrollView>
-				</SpaceView>
+					</SpaceView>
+				</ScrollView>
 			</LinearGradient>
 
 			{/* ###############################################
