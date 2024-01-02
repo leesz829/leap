@@ -98,10 +98,23 @@ export const Profile_Auth = (props: Props) => {
 
   	// ############################################################################# 인증 저장
 	const saveAuth = async (isTab:boolean, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
-    	// 데이터 없을 시 저장 방지
-	  	if(!_authDetailList.length && !isEmptyData(_imgDelSeqStr) && !isEmptyData(_authComment)) {
-			navigation.goBack();
+
+		let isSave = false; // 저장 여부
+
+		// 증명자료 유효성 체크
+		if(_authDetailList.length == 0) {
+			show({ content: '증명자료를 등록해 주세요.' });
 			return;
+		}
+
+		// 저장 여부 체크
+		_authDetailList.map((item, index) => {
+			const memberAuthDetailSeq = item?.member_auth_detail_seq;
+			if(memberAuthDetailSeq == 0) { isSave = true; }
+		});
+
+		if(isEmptyData(_imgDelSeqStr) || isEmptyData(_authComment)) {
+			isSave = true;
 	  	};
 
 	  	// 중복 클릭 방지 설정
@@ -116,37 +129,30 @@ export const Profile_Auth = (props: Props) => {
 		        img_del_seq_str: _imgDelSeqStr,
       		};
 
-      		console.log('body ::::: ' , body.img_del_seq_str);
-
-			/* setIsClickable(true);
-			setIsLoading(false);
-			return; */
-
       		try {
-        		const { success, data } = await save_profile_auth(body);
-        		if (success) {
-          			switch (data.result_code) {
-            			case SUCCESS:
-              				//getAuth();
+				if(isSave) {
+					const { success, data } = await save_profile_auth(body);
+					if (success) {
+						switch (data.result_code) {
+							case SUCCESS:
+								break;
+							default:
+								show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+								break;
+						}
+					} else {
+						show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+					}
+				}
 
-              				if(isTab) {
-                				getAuth();
-              				} else {
-                				navigation.goBack();
-              				}
-              				break;
-            			default:
-              				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-              				break;
-          			}
-        		} else {
-          			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-        		}
       		} catch (error) {
         		console.log(error);
       		} finally {
         		setIsClickable(true);
         		setIsLoading(false);
+
+				if(isTab) { getAuth();
+				} else { navigation.goBack(); }
       		};
 	  	}
 	};
@@ -403,7 +409,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView style={{marginBottom: 300}} showsVerticalScrollIndicator={false}>
+				<ScrollView style={{marginBottom: 250}} showsVerticalScrollIndicator={false}>
 					<View>
             			{((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
 							<View style={_styles.authBoxStatus}>

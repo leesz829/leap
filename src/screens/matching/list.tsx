@@ -22,6 +22,7 @@ import { CommonText } from 'component/CommonText';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 import SocialGrade from 'component/common/SocialGrade';
+import { iapConnection } from 'utils/initIAP';
 
 
 
@@ -260,6 +261,9 @@ export default function MatchingList(props: Props) {
         // 데일리 매칭 정보 조회
         getDailyMatchList(isPopupShow);
       }
+
+      // IAP 연결
+      iapConnection();
     };
   }, [isFocus]);
 
