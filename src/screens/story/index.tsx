@@ -508,6 +508,7 @@ export const Story = () => {
     if(isFocus) {
       setIsRefreshing(false);
 
+      //getStoryBoardList('BASE', 0);
       getStoryActive();
 
       if(storyList.length == 0) {

@@ -59,7 +59,7 @@ export const BasePopup = (props: Props) => {
 
               {/* ########################################################### 타이틀 영역 */}
               {props.type != 'AUCTION' ? (
-                <SpaceView pt={15} pb={15} pl={15} viewStyle={[layoutStyle.alignStart]}>
+                <SpaceView pt={15} pb={10} pl={12} viewStyle={[layoutStyle.alignStart]}>
                   <Text style={_styles.titleText}>{isEmptyData(props.title) ? props.title : '알림'}</Text>
                 </SpaceView>
               ) : (
@@ -85,8 +85,8 @@ export const BasePopup = (props: Props) => {
                 }
 
                 {isEmptyData(props.passAmt) && (
-                  <SpaceView mb={10}>
-                    <Image style={styles.iconSquareSize(46)} source={isEmptyData(props.passType) && props.passType == 'ROYAL' ? ICON.megaCubeCyan : ICON.cubeCyan} resizeMode={'contain'} />
+                  <SpaceView mt={-3} mb={10}>
+                    <Image style={styles.iconSquareSize(46)} source={isEmptyData(props.passType) && props.passType == 'ROYAL' ? ICON.megaCubeCyan : ICON.cubeYCyan} resizeMode={'contain'} />
                   </SpaceView>
                 )}
 
@@ -108,7 +108,7 @@ export const BasePopup = (props: Props) => {
 
               {/* ########################################################### 버튼 영역 */}
               {(!isEmptyData(props.btnExpYn) || props.btnExpYn == 'Y') &&
-                <SpaceView viewStyle={_styles.btnContainer}>
+                <SpaceView mt={10} mb={15} viewStyle={_styles.btnContainer}>
                   {props.isConfirm ? (
                     <>
                       <TouchableOpacity onPress={onPressCancel}>
@@ -161,7 +161,6 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginVertical: 15,
     marginHorizontal: 10,
   },
 
@@ -196,10 +195,10 @@ const _styles = StyleSheet.create({
   },
   contentArea: {
     paddingHorizontal: 35,
-    marginVertical: 10,
+    marginVertical: 13,
     zIndex: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 70,
+    //minHeight: 70,
   },
 });

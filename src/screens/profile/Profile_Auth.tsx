@@ -135,6 +135,9 @@ export const Profile_Auth = (props: Props) => {
 					if (success) {
 						switch (data.result_code) {
 							case SUCCESS:
+								if(isTab) { getAuth();
+								} else { navigation.goBack(); }
+
 								break;
 							default:
 								show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -143,6 +146,10 @@ export const Profile_Auth = (props: Props) => {
 					} else {
 						show({ content: '오류입니다. 관리자에게 문의해주세요.' });
 					}
+
+				} else {
+					if(isTab) { getAuth();
+					} else { navigation.goBack(); }
 				}
 
       		} catch (error) {
@@ -150,9 +157,6 @@ export const Profile_Auth = (props: Props) => {
       		} finally {
         		setIsClickable(true);
         		setIsLoading(false);
-
-				if(isTab) { getAuth();
-				} else { navigation.goBack(); }
       		};
 	  	}
 	};
@@ -412,7 +416,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 				<ScrollView showsVerticalScrollIndicator={false}>
 					<SpaceView pb={300}>
 						<View>
-							{((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
+							{isEmptyData(_authStatus) && (
 								<View style={_styles.authBoxStatus}>
 									<Text style={_styles.statusText(_authStatus)}>
 										{_authStatus == 'PROGRESS' && '심사중'}
@@ -425,7 +429,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 								<View style={{flexDirection: 'row', alignItems: 'center'}}>
 									<Image source={ICON.commentYellow} style={styles.iconSize16} />
 									<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
-								</View>			
+								</View>
 								<Text style={_styles.contentsSubtitle}>
 									{_authCode == 'JOB' ? '• 재직증명서, 사원증, 명함, 공무원증(급수포함), 사업자등록증, 재무제표, 기타 입증자료'
 										: _authCode == 'EDU' ? '• 졸업 증명서, 재학 증명서, 학위 증명서'
@@ -511,9 +515,9 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 				<SpaceView pl={30} pr={30} mb={30} viewStyle={_styles.imgMngModalWrap}>
 					<SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
 						{isEmptyData(imgMngData.img_file_path) && (
-						<SpaceView mr={10}>
-							<Image source={findSourcePath(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
-						</SpaceView>
+							<SpaceView mr={10}>
+								<Image source={findSourcePath(imgMngData.img_file_path)} style={[styles.iconSquareSize(64), {borderRadius:5}]} />
+							</SpaceView>
 						)}
 						<SpaceView>
 							<Text style={_styles.imgMngModalTit}>인증 자료 수정</Text>
@@ -525,9 +529,13 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 						<TouchableOpacity onPress={() => { imgModfyProc(); }} style={{marginBottom: 8}}>
 							<Text style={_styles.imgMngModalBtn('#FFDD00', 16, '#3D4348')}>변경</Text>
 						</TouchableOpacity>
-						<TouchableOpacity onPress={() => { imgDelProc(); }} style={{marginBottom: 8}}>
-							<Text style={_styles.imgMngModalBtn('#FFFFFF', 16, '#FF4D29')}>삭제</Text>
-						</TouchableOpacity>
+
+						{_authStatus != 'ACCEPT' && (
+							<TouchableOpacity onPress={() => { imgDelProc(); }} style={{marginBottom: 8}}>
+								<Text style={_styles.imgMngModalBtn('#FFFFFF', 16, '#FF4D29')}>삭제</Text>
+							</TouchableOpacity>
+						)}
+
 						<TouchableOpacity onPress={() => { imgMng_onClose(); }}>
 							<Text style={_styles.imgMngModalBtn('transparent', 16, '#D5CD9E', '#BBB18B')}>취소</Text>
 						</TouchableOpacity>

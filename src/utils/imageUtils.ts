@@ -240,6 +240,7 @@ export const ICON = {
   polygonGray: require('assets/icon/icon-polygon-gray.png'),
   megaCubeCyan: require('assets/icon/icon-megacube-cyan.png'),
   cubeCyan: require('assets/icon/icon-cube-cyan.png'),
+  cubeYCyan: require('assets/icon/icon-cube-y-cyan.png'),
   menuCyan: require('assets/icon/icon-menu-cyan.png'),
   naverLogo: require('assets/icon/icon-naver-logo.png'),
   circleS: require('assets/icon/icon-circle-s.png'),

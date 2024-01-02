@@ -574,7 +574,7 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
             </SpaceView>
 
             <LinearGradient
-              colors={['transparent', '#000000']}
+              colors={['rgba(0, 0, 0, 0.0)', 'rgba(0, 0, 0, 0.9)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={_styles.thumnailDimArea} />

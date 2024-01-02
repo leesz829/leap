@@ -573,10 +573,26 @@ export const Storage = (props: Props) => {
                   <SpaceView viewStyle={{flexDirection: 'row'}}>
                     {_authList.map((i, n) => {
                       const isLast = _authList.length == (n+1) ? true : false;
-                      return (
+
+                      const authCode = i?.common_code;
+                      let authIcon = ICON.authJob;
+
+                      if(authCode == 'EDU') {
+                        authIcon = ICON.authEdu;
+                      } else if(authCode == 'INCOME') {
+                        authIcon = ICON.authIncome;
+                      } else if(authCode == 'ASSET') {
+                        authIcon = ICON.authAsset;
+                      } else if(authCode == 'SNS') {
+                        authIcon = ICON.authSns;
+                      } else if(authCode == 'VEHICLE') {
+                        authIcon = ICON.authVehicle;
+                      }
+
+                      return i.auth_type_name && (
                         <SpaceView key={_trgtMemberSeq + n} mr={isLast ? 10 : 5} viewStyle={_styles.authArea}>
-                          <Image source={ICON.authEdu} style={styles.iconSize16} />
-                          <Text style={_styles.authText}>{i.slogan_name}</Text>
+                          <Image source={authIcon} style={styles.iconSquareSize(18)} />
+                          <Text style={_styles.authText}>{i.auth_type_name}</Text>
                         </SpaceView>
                       )
                     })}
@@ -638,10 +654,26 @@ export const Storage = (props: Props) => {
 
                               {_authList.map((i, n) => {
                                 const isLast = _authList.length == (n+1) ? true : false;
-                                return (
+
+                                const authCode = i?.common_code;
+                                let authIcon = ICON.authJob;
+
+                                if(authCode == 'EDU') {
+                                  authIcon = ICON.authEdu;
+                                } else if(authCode == 'INCOME') {
+                                  authIcon = ICON.authIncome;
+                                } else if(authCode == 'ASSET') {
+                                  authIcon = ICON.authAsset;
+                                } else if(authCode == 'SNS') {
+                                  authIcon = ICON.authSns;
+                                } else if(authCode == 'VEHICLE') {
+                                  authIcon = ICON.authVehicle;
+                                }
+
+                                return i.auth_type_name && (
                                   <SpaceView key={_trgtMemberSeq + n} mr={isLast ? 90 : 5} viewStyle={_styles.authArea}>
-                                    <Image source={ICON.authEdu} style={styles.iconSize16} />
-                                    <Text style={_styles.authText}>{i.slogan_name}</Text>
+                                    <Image source={authIcon} style={styles.iconSquareSize(18)} />
+                                    <Text style={_styles.authText}>{i.auth_type_name}</Text>
                                   </SpaceView>
                                 )
                               })}

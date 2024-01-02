@@ -424,7 +424,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                         show({
                           title: '상품 구매',
                           content: '상품을 구매하시겠습니까?',
-                          cancelBtnText: '취소할래요!',
+                          cancelBtnText: '취소하기',
                           confirmBtnText: '구매하기',
                           cancelCallback: function() {
                           },
