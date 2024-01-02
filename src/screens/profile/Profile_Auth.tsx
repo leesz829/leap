@@ -409,93 +409,94 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView style={{marginBottom: 250}} showsVerticalScrollIndicator={false}>
-					<View>
-            			{((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
-							<View style={_styles.authBoxStatus}>
-								<Text style={_styles.statusText(_authStatus)}>
-									{_authStatus == 'PROGRESS' && '심사중'}
-									{_authStatus == 'ACCEPT' && '승인'}
-									{_authStatus == 'REFUSE' && '반려'}
+				<SpaceView viewStyle={{height: height-310}}>
+					<ScrollView showsVerticalScrollIndicator={false}>
+						<View>
+							{((isEmptyData(_authStatus) && isEmptyData(authDetailList)) || isEmptyData(authComment)) && (
+								<View style={_styles.authBoxStatus}>
+									<Text style={_styles.statusText(_authStatus)}>
+										{_authStatus == 'PROGRESS' && '심사중'}
+										{_authStatus == 'ACCEPT' && '승인'}
+										{_authStatus == 'REFUSE' && '반려'}
+									</Text>
+								</View>
+							)}
+							<View>
+								<View style={{flexDirection: 'row', alignItems: 'center'}}>
+									<Image source={ICON.commentYellow} style={styles.iconSize16} />
+									<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
+								</View>			
+								<Text style={_styles.contentsSubtitle}>
+									{_authCode == 'JOB' ? '• 재직증명서, 사원증, 명함, 공무원증(급수포함), 사업자등록증, 재무제표, 기타 입증자료'
+										: _authCode == 'EDU' ? '• 졸업 증명서, 재학 증명서, 학위 증명서'
+										: _authCode == 'ASSET' ? '• 은행 직인이 찍힌 잔고 증명서 및 확인 가능한 부동산 관련 서류 또는 그 외에 확인 가능한 자산 입증 서류'
+										: _authCode == 'VEHICLE' ? '• 자동차 등록증, 최근 자동차 보험 납부 기록'
+										: _authCode == 'SNS' ? '• 대중적 SNS인 인스타그램, 페이스북, 틱톡 등에서 메시지 수신이 가능한 계정이 노출된 스크린샷\n\n• 유튜브, 트위치 등은 별도 문의 부탁드립니다.\n(kozel.macju@gmail.com 또는 가입 후 \'고객문의\')'
+										: '• 소득 금액 증명원, 근로 소득 원천 징수증, 부가 가치세 증명원, 기타소득 입증자료, 근로계약서 등'
+									}
 								</Text>
+								<View style={_styles.uploadBoxContainer}>
+									<AuthImageRender index={0} imgData={authDetailList.length > 0 ? authDetailList[0] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+									<AuthImageRender index={1} imgData={authDetailList.length > 1 ? authDetailList[1] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+									<AuthImageRender index={2} imgData={authDetailList.length > 2 ? authDetailList[2] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+								</View>
 							</View>
-						)}
-						<View>
-							<View style={{flexDirection: 'row', alignItems: 'center'}}>
-								<Image source={ICON.commentYellow} style={styles.iconSize16} />
-								<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
-							</View>			
-							<Text style={_styles.contentsSubtitle}>
-								{_authCode == 'JOB' ? '• 재직증명서, 사원증, 명함, 공무원증(급수포함), 사업자등록증, 재무제표, 기타 입증자료'
-									: _authCode == 'EDU' ? '• 졸업 증명서, 재학 증명서, 학위 증명서'
-									: _authCode == 'ASSET' ? '• 은행 직인이 찍힌 잔고 증명서 및 확인 가능한 부동산 관련 서류 또는 그 외에 확인 가능한 자산 입증 서류'
-									: _authCode == 'VEHICLE' ? '• 자동차 등록증, 최근 자동차 보험 납부 기록'
-									: _authCode == 'SNS' ? '• 대중적 SNS인 인스타그램, 페이스북, 틱톡 등에서 메시지 수신이 가능한 계정이 노출된 스크린샷\n\n• 유튜브, 트위치 등은 별도 문의 부탁드립니다.\n(kozel.macju@gmail.com 또는 가입 후 \'고객문의\')'
-									: '• 소득 금액 증명원, 근로 소득 원천 징수증, 부가 가치세 증명원, 기타소득 입증자료, 근로계약서 등'
-								}
-							</Text>
-							<View style={_styles.uploadBoxContainer}>
-								<AuthImageRender index={0} imgData={authDetailList.length > 0 ? authDetailList[0] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
-								<AuthImageRender index={1} imgData={authDetailList.length > 1 ? authDetailList[1] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
-								<AuthImageRender index={2} imgData={authDetailList.length > 2 ? authDetailList[2] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
-							</View>
-						</View>
-						<View>
-							<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-								<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
-								<Text style={_styles.contentsTitle}>인증 소개글(선택)</Text>
+							<View>
+								<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+									<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
+									<Text style={_styles.contentsTitle}>인증 소개글(선택)</Text>
+								</View>
+
+								<TextInput
+									value={authComment}
+									onChangeText={(text) => setAuthComment(text)}
+									autoCapitalize={'none'}
+									multiline={true}
+									style={_styles.inputContainer}
+									placeholder={'인증 소개글 입력(가입 후 변경 가능)'}
+									placeholderTextColor={'#FFFDEC'}
+									maxLength={50}
+									caretHidden={true}
+								/>
 							</View>
 
-							<TextInput
-								value={authComment}
-								onChangeText={(text) => setAuthComment(text)}
-								autoCapitalize={'none'}
-								multiline={true}
-								style={_styles.inputContainer}
-								placeholder={'인증 소개글 입력(가입 후 변경 가능)'}
-								placeholderTextColor={'#FFFDEC'}
-								maxLength={50}
-								caretHidden={true}
+							<View>
+								<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+									<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
+									<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
+								</View>
+								<AuthMaterialRender authCode={_authCode} />
+							</View>
+						</View>
+
+						<SpaceView mt={50}>
+							<CommonBtn
+								value={'저장하기'}
+								type={'reNewId'}
+								fontSize={16}
+								fontFamily={'Pretendard-Bold'}
+								borderRadius={5}
+								onPress={() => {
+									_saveFn(false, _authName, _authCode, authDetailList, authComment, imgDelSeqStr);
+								}}
 							/>
-						</View>
+						</SpaceView>
 
-						<View>
-							<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-								<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
-								<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
-							</View>
-							<AuthMaterialRender authCode={_authCode} />
-						</View>
-					</View>
-
-					<SpaceView mt={50}>
-						<CommonBtn
-							value={'저장하기'}
-							type={'reNewId'}
-							fontSize={16}
-							fontFamily={'Pretendard-Bold'}
-							borderRadius={5}
-							onPress={() => {
-								_saveFn(false, _authName, _authCode, authDetailList, authComment, imgDelSeqStr);
-							}}
-						/>
-					</SpaceView>
-
-					<SpaceView mt={20}>
-						<CommonBtn
-							value={'이전으로'}
-							type={'reNewGoBack'}
-							isGradient={false}
-							fontFamily={'Pretendard-Light'}
-							fontSize={14}
-							borderRadius={5}
-							onPress={() => {
-								navigation.goBack();
-							}}
-						/>
-					</SpaceView>
-				</ScrollView>
-
+						<SpaceView mt={10}>
+							<CommonBtn
+								value={'이전으로'}
+								type={'reNewGoBack'}
+								isGradient={false}
+								fontFamily={'Pretendard-Light'}
+								fontSize={14}
+								borderRadius={5}
+								onPress={() => {
+									navigation.goBack();
+								}}
+							/>
+						</SpaceView>
+					</ScrollView>
+				</SpaceView>
 			</LinearGradient>
 
 			{/* ###############################################
