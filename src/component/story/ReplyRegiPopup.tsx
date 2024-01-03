@@ -303,7 +303,7 @@ const _styles = StyleSheet.create({
   memberImageStyle: {
     width: 50,
     height: 50,
-    borderRadius: 20,
+    borderRadius: 50,
     overflow: 'hidden',
     marginRight: 15,
   },
@@ -317,6 +317,8 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Medium',
     fontSize: 13,
     color: '#000',
+    borderRadius: 8,
+    overflow: 'hidden',
   },
   btnArea: {
     position: 'absolute',
