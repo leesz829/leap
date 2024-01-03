@@ -229,7 +229,7 @@ export const Profile_Introduce = (props: Props) => {
                 <SpaceView>
                   <Text style={_styles.introduceText}>한줄 소개</Text>
                 </SpaceView>
-                <SpaceView viewStyle={{}}>
+                <SpaceView>
                   <TextInput
                     value={comment}
                     onChangeText={(text) => setComment(text)}
@@ -239,7 +239,9 @@ export const Profile_Introduce = (props: Props) => {
                     placeholder={'프로필 카드 상단에 공개되는 내 상세 소개 입력'}
                     placeholderTextColor={'#FFFDEC'}
                     maxLength={50}
-                    caretHidden={true}
+                    //caretHidden={true}
+                    textAlignVertical={'top'}
+                    textAlign={'left'}
                   />
                   <SpaceView mt={5}>
                     <Text style={_styles.countText}>({isEmptyData(comment) ? comment.length : 0}/50)</Text>
@@ -261,7 +263,8 @@ export const Profile_Introduce = (props: Props) => {
                     placeholder={'프로필 카드 상단에 공개되는 내 상세 소개 입력'}
                     placeholderTextColor={'#FFFDEC'}
                     maxLength={3000}
-                    caretHidden={true}
+                    textAlignVertical={'top'}
+                    textAlign={'left'}
                   />
                   <SpaceView mt={5}>
                     <Text style={_styles.countText}>({isEmptyData(addData?.introduceComment) ? addData?.introduceComment.length : 0}/3000)</Text>
@@ -285,7 +288,8 @@ export const Profile_Introduce = (props: Props) => {
                           placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
                           placeholderTextColor={'#FFFDEC'}
                           maxLength={200}
-                          caretHidden={true}
+                          textAlignVertical={'top'}
+                          textAlign={'left'}
                         />
                         <SpaceView mt={5}>
                           <Text style={_styles.countText}>({isEmptyData(item?.answer) ? item?.answer.length : 0}/200)</Text>
@@ -359,6 +363,8 @@ const _styles = StyleSheet.create({
 			textAlign: 'center',
 			fontFamily: 'Pretendard-Light',
 			color: '#F3E270',
+      paddingVertical: 10,
+      paddingHorizontal: 10,
     };
 	},
 	introduceText: {
