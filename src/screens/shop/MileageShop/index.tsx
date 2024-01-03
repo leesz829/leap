@@ -2,7 +2,7 @@ import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
-import { findSourcePath, ICON } from 'utils/imageUtils';
+import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import { SectionGrid } from 'react-native-super-grid';
 import RespectCard from '../Component/BannerPannel';
 import ProductModal from '../Component/ProductModal';
@@ -187,19 +187,70 @@ export default function MileageShop() {
     <>
       {isLoading && <CommonLoading />}
 
-      <SpaceView viewStyle={ _styles.header}>
-        <SpaceView viewStyle={_styles.headerTitleArea}>
-          <Text style={_styles.headerTitle}>RP Store</Text>
+      {(me?.respect_grade !== 'DIAMOND' && me?.respect_grade !== 'PLATINUM') ? 
+        <SpaceView viewStyle={_styles.floatWrapper}>
+          <LinearGradient
+            colors={['#A2A2A2', '#606060']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{borderRadius: 10,  paddingVertical: 10}}>
+
+            <SpaceView pl={10} pr={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyBetween]}>
+              <SpaceView viewStyle={_styles.headerTitleArea}>
+                <Text style={_styles.headerTitle}>RP Store</Text>
+              </SpaceView>
+              <SpaceView viewStyle={[layoutStyle.row]}>
+                <TouchableOpacity style={_styles.orderHistBtn} onPress={onPressLimitShop}>
+                  <Text style={_styles.orderHistText}>주문내역</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={_styles.exitBtn} onPress={() => (navigation.goBack())}>
+                  <Text style={_styles.exitText}>나가기</Text>
+                </TouchableOpacity>
+              </SpaceView>
+            </SpaceView>
+
+            <LinearGradient
+              colors={['#C0C3C4', '#7D7969']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={_styles.respectLine}>
+                <Image source={ICON.sparkler} style={{width: 15, height: 15}} />
+                <Text style={_styles.repectGrade}>{me?.respect_grade}</Text>
+            </LinearGradient>
+
+            <SpaceView mt={8} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
+              <SpaceView ml={10}>
+                <Text style={_styles.respectDesc}>리스펙트 등급 <Text style={{color: '#32F9E4'}}>플래티넘</Text>부터 원하는 상품으로 교환할 수 있어요.</Text>
+              </SpaceView>
+            </SpaceView>
+
+            <SpaceView pl={15} pr={15} mt={20} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, layoutStyle.justifyBetween]}>
+              <Image source={IMAGE.logoLeapTit} style={{width: 60, height: 25}} />
+              <SpaceView>
+                <Text style={_styles.rpAmtText}>
+                  {CommaFormat(me?.mileage_point)}
+                  <Text style={_styles.rpText}>RP</Text>
+                </Text>
+              </SpaceView>
+            </SpaceView>
+          </LinearGradient>
         </SpaceView>
-        <SpaceView viewStyle={[layoutStyle.row]}>
-          <TouchableOpacity style={_styles.orderHistBtn} onPress={onPressLimitShop}>
-            <Text style={_styles.orderHistText}>주문내역</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={_styles.exitBtn} onPress={() => (navigation.goBack())}>
-            <Text style={_styles.exitText}>나가기</Text>
-          </TouchableOpacity>
+      :
+        <SpaceView viewStyle={ _styles.header}>
+          <SpaceView viewStyle={_styles.headerTitleArea}>
+            <Text style={_styles.headerTitle}>RP Store</Text>
+          </SpaceView>
+          <SpaceView viewStyle={[layoutStyle.row]}>
+            <TouchableOpacity style={_styles.orderHistBtn} onPress={onPressLimitShop}>
+              <Text style={_styles.orderHistText}>주문내역</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={_styles.exitBtn} onPress={() => (navigation.goBack())}>
+              <Text style={_styles.exitText}>나가기</Text>
+            </TouchableOpacity>
+          </SpaceView>
         </SpaceView>
-      </SpaceView>
+      }
+      
 
       <LinearGradient
         colors={['#3D4348', '#1A1E1C']}
@@ -849,6 +900,100 @@ const _styles = StyleSheet.create({
     fontSize: 12,
     color: '#fff',
   },
+
+
+
+
+
+
+
+floatWrapper: {
+  width: '100%',
+  backgroundColor: '#3D4348',
+  paddingHorizontal: 20,
+  paddingTop: 20,
+},
+rpStoreBtn: {
+  backgroundColor: '#FFF',
+  borderRadius: 50,
+  paddingHorizontal: 12,
+  paddingVertical: 2,
+},
+respectLine: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  height: 30,
+  marginTop: 10,
+},
+repectGrade: {
+  fontFamily: 'MinSans-Bold',
+  color: '#000000',
+  marginRight: 10,
+  marginLeft: 2,
+},
+respectTitle: {
+  fontFamily: 'Pretendard-SemiBold',
+  fontSize: 10,
+  color: '#333B41',
+},
+respectDesc: {
+  fontFamily: 'Pretendard-Light',
+  fontSize: 10,
+  color: '#D5CD9E',
+},
+rpAvailable: {
+  fontFamily: 'Pretendard-SemiBold',
+  fontSize: 10,
+  color: '#333B41',
+  marginTop: 5,
+},
+rpText: {
+  fontFamily: 'Pretendard-SemiBold',
+  fontSize: 17,
+  color: '#32F9E4',
+},
+rpAmtText: {
+  fontFamily: 'Pretendard-Medium',
+  fontSize: 32,
+  color: '#32F9E4',
+},
+gradeTitle: {
+  fontFamily: 'Pretendard-Light',
+  fontSize: 10,
+  color: '#32F9E4',
+  textAlign: 'right',
+},
+gradient: (value:any) => {
+  let percent = 0;
+
+  if(value != null && typeof value != 'undefined') {
+    percent = value * 100;
+  };
+
+  return {
+    position: 'absolute',
+    width: percent + '%',
+    height: 12,
+    zIndex: 1,
+    borderRadius: 20,
+  };
+},
+sliderContainerStyle: {
+  height: 12,
+  borderRadius: 50,
+  backgroundColor: '#FFF',
+},
+sliderThumbStyle: {
+  height: 12,
+  borderRadius: 50,
+  backgroundColor: '#FFF',
+},
+rpDescText: {
+  fontFamily: 'Pretendard-Light',
+  fontSize: 10,
+  color: '#D5CD9E',
+},
 });
 
 const categories = [

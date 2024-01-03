@@ -249,6 +249,8 @@ export const ICON = {
   circleC: require('assets/icon/icon-circle-c.png'),
   circleD: require('assets/icon/icon-circle-d.png'),
   circleE: require('assets/icon/icon-circle-e.png'),
+  circleComplete: require('assets/icon/icon-circle-complete.png'),
+  circleUnrank: require('assets/icon/icon-circle-unrank.png'),
   starGray: require('assets/icon/icon-star-gray.png'),
   starCyan: require('assets/icon/icon-star-cyan.png'),
   paiksLogo: require('assets/icon/icon-paiks-logo.png'),

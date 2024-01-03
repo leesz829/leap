@@ -438,7 +438,7 @@ export const Shop = () => {
       getShopMain(isPopupShow); 
     }
   }, [isFocus]);
-
+console.log('payINfo:::', payInfo);
   return (
     <>
       <TopNavigation currentPath={''} />
@@ -492,14 +492,14 @@ export const Shop = () => {
               :
                 <Image source={
                     payInfo?.receive_flag == 'N' ?
-                      payInfo?.tmplt_name == 'E' ? ICON.circleE
+                      payInfo?.tmplt_name == 'E' ? ICON.circleUnrank
                       : payInfo?.tmplt_name == 'D' ? ICON.circleE
                       : payInfo?.tmplt_name == 'C' ? ICON.circleD
                       : payInfo?.tmplt_name == 'B' ? ICON.circleC
                       : payInfo?.tmplt_name == 'A' ? ICON.circleB
-                      : payInfo?.tmplt_name == 'S' ? ICON.circleA
-                      : payInfo?.tmplt_name == 'S' && ICON.circleS
-                    : ICON[`circle${payInfo?.tmplt_name}`]
+                      : payInfo?.tmplt_name == 'S' && ICON.circleA
+                    : payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name !== 'S' ? ICON[`circle${payInfo?.tmplt_name}`]
+                    : payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' && ICON.circleComplete
                 } style={styles.iconSquareSize(70)} />
               }
               

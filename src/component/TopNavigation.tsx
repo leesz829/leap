@@ -104,7 +104,7 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
         {/* <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" /> */}
-        <Text style={_styles.storyTxt(navName == 'LEAP', theme != undefined)}>리프</Text>
+        <Text style={[_styles.storyTxt(navName == 'LEAP', theme != undefined)]}>LEAP</Text>
         {navName == 'LEAP' && <View style={_styles.underline} />}
       </TouchableOpacity>
 
@@ -300,9 +300,10 @@ const _styles = StyleSheet.create({
   underline: {
     backgroundColor: '#F1D30E',
     position: 'absolute',
-    bottom: 3,
+    bottom: -3,
     width: 25,
-    height: 2,
+    height: 3,
+    borderRadius: 50,
   },
 
 });
