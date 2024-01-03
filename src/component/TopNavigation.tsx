@@ -7,7 +7,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import type { FC } from 'react';
 import * as React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -300,7 +300,7 @@ const _styles = StyleSheet.create({
   underline: {
     backgroundColor: '#F1D30E',
     position: 'absolute',
-    bottom: -3,
+    bottom: Platform.OS == 'ios' ? -3 : 2,
     width: 25,
     height: 3,
     borderRadius: 50,
