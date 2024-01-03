@@ -295,198 +295,202 @@ export const Profile_AddInfo = (props: Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-250}}>
-					<SpaceView mt={10} viewStyle={_styles.titleContainer}>
-						<Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.addInfoImg} />
-						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase.nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
-					</SpaceView>
+				<ScrollView showsVerticalScrollIndicator={false} style={{height: height - 250, marginBottom: 10}}>
+					<SpaceView>
+						<SpaceView mt={10} viewStyle={_styles.titleContainer}>
+							<Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.addInfoImg} />
+							<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase.nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
+						</SpaceView>
 
-					{/* ##################################################################################################################
-					###### 필수 정보
-					################################################################################################################## */}
-					<SpaceView mt={30}>
-						<View>
-							<Text style={_styles.essentialTitle}>필수 정보</Text>
-						</View>
-						<View style={_styles.underline}></View>
-						<View style={_styles.essentialOption}>
-
-							{/* ############################################################################# 키 */}
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>키(cm)</Text>
-								{/* <TextInput maxLength={3} style={_styles.optionSelect}/> */}
-
-								<TextInput
-									value={addData.height}
-									onChangeText={(text) => setAddData({...addData, height: text})}
-									keyboardType="number-pad"
-									autoCapitalize={'none'}
-									style={_styles.optionText}
-									maxLength={3}
-								/>
+						{/* ##################################################################################################################
+						###### 필수 정보
+						################################################################################################################## */}
+						<SpaceView mt={30}>
+							<View>
+								<Text style={_styles.essentialTitle}>필수 정보</Text>
 							</View>
+							<View style={_styles.underline}></View>
+							<View style={_styles.essentialOption}>
 
-							{/* ############################################################################# 직업 */}
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>직업</Text>
-								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={{
-											inputIOS: {
-												...pickerSelectStyles.inputIOS,
-												width: 120,
-											},
-											inputAndroid: {
-												...pickerSelectStyles.inputAndroid,
-												width: 120,
-											},
-										}}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={busiCdCallbackFn}
-										value={addData.business}
-										items={busiGrpCdList}
+								{/* ############################################################################# 키 */}
+								<View style={_styles.option}>
+									<Text style={_styles.optionTitle}>키(cm)</Text>
+									{/* <TextInput maxLength={3} style={_styles.optionSelect}/> */}
+
+									<TextInput
+										value={addData.height}
+										onChangeText={(text) => setAddData({...addData, height: text})}
+										keyboardType="number-pad"
+										autoCapitalize={'none'}
+										style={_styles.optionText}
+										maxLength={3}
 									/>
+								</View>
+
+								{/* ############################################################################# 직업 */}
+								<View style={_styles.option}>
+									<Text style={_styles.optionTitle}>직업</Text>
+									<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
+										<RNPickerSelect
+											placeholder={{label: '선택', value: ''}}
+											style={{
+												inputIOS: {
+													...pickerSelectStyles.inputIOS,
+													width: 120,
+												},
+												inputAndroid: {
+													...pickerSelectStyles.inputAndroid,
+													width: 120,
+												},
+											}}
+											useNativeAndroidPickerStyle={false}
+											onValueChange={busiCdCallbackFn}
+											value={addData.business}
+											items={busiGrpCdList}
+										/>
+										<RNPickerSelect
+											placeholder={{label: '선택', value: ''}}
+											style={{
+												inputIOS: {
+													...pickerSelectStyles.inputIOS,
+													width: 120,
+												},
+												inputAndroid: {
+													...pickerSelectStyles.inputAndroid,
+													width: 120,
+												},
+											}}
+											useNativeAndroidPickerStyle={false}
+											onValueChange={(value) => setAddData({...addData, job: value})}
+											value={addData.job}
+											items={jobCdList}
+										/>
+									</View>
+								</View>
+
+								{/* ############################################################################# 체형 */}
+								<View style={_styles.option}>
+									<Text style={_styles.optionTitle}>체형</Text>
 									<RNPickerSelect
 										placeholder={{label: '선택', value: ''}}
-										style={{
-											inputIOS: {
-												...pickerSelectStyles.inputIOS,
-												width: 120,
-											},
-											inputAndroid: {
-												...pickerSelectStyles.inputAndroid,
-												width: 120,
-											},
-										}}
+										style={pickerSelectStyles}
 										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, job: value})}
-										value={addData.job}
-										items={jobCdList}
+										onValueChange={(value) => setAddData({...addData, form_body: value})}
+										value={addData.form_body}
+										items={memberBase.gender == 'M' ? codeData.manBodyCdList : codeData.womanBodyCdList}
 									/>
 								</View>
 							</View>
+						</SpaceView>
 
-							{/* ############################################################################# 체형 */}
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>체형</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, form_body: value})}
-									value={addData.form_body}
-									items={memberBase.gender == 'M' ? codeData.manBodyCdList : codeData.womanBodyCdList}
-								/>
+						{/* ##################################################################################################################
+						###### 선택 정보
+						################################################################################################################## */}
+						<SpaceView mt={20} mb={10}>
+							<View>
+								<Text style={_styles.choiceTitle}>선택 정보</Text>
 							</View>
-						</View>
-					</SpaceView>
+							<View style={_styles.underline}></View>
+							<View>
 
-					{/* ##################################################################################################################
-					###### 선택 정보
-					################################################################################################################## */}
-					<SpaceView mt={20} mb={10}>
-						<View>
-							<Text style={_styles.choiceTitle}>선택 정보</Text>
-						</View>
-						<View style={_styles.underline}></View>
-						<View>
-
-							{/* ############################################################################# MBTI */}
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>MBTI</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, mbti_type: value})}
-									value={addData.mbti_type}
-									items={codeData.mbtiCdList}
-								/>
-							</View>
-
-							{/* ############################################################################# 선호지역 */}
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>선호지역</Text>
-								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
+								{/* ############################################################################# MBTI */}
+								<View style={_styles.option}>
+									<Text style={_styles.optionTitle}>MBTI</Text>
 									<RNPickerSelect
 										placeholder={{label: '선택', value: ''}}
-										style={{
-											inputIOS: {
-												...pickerSelectStyles.inputIOS,
-												width: 120,
-											},
-											inputAndroid: {
-												...pickerSelectStyles.inputAndroid,
-												width: 120,
-											},
-										}}
+										style={pickerSelectStyles}
 										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, prefer_local1: value})}
-										value={addData.prefer_local1}
-										items={codeData.localCdList}
+										onValueChange={(value) => setAddData({...addData, mbti_type: value})}
+										value={addData.mbti_type}
+										items={codeData.mbtiCdList}
 									/>
+								</View>
+
+								{/* ############################################################################# 선호지역 */}
+								<View style={_styles.option}>
+									<Text style={_styles.optionTitle}>선호지역</Text>
+									<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
+										<RNPickerSelect
+											placeholder={{label: '선택', value: ''}}
+											style={{
+												inputIOS: {
+													...pickerSelectStyles.inputIOS,
+													width: 120,
+												},
+												inputAndroid: {
+													...pickerSelectStyles.inputAndroid,
+													width: 120,
+												},
+											}}
+											useNativeAndroidPickerStyle={false}
+											onValueChange={(value) => setAddData({...addData, prefer_local1: value})}
+											value={addData.prefer_local1}
+											items={codeData.localCdList}
+										/>
+										<RNPickerSelect
+											placeholder={{label: '선택', value: ''}}
+											style={{
+												inputIOS: {
+													...pickerSelectStyles.inputIOS,
+													width: 120,
+												},
+												inputAndroid: {
+													...pickerSelectStyles.inputAndroid,
+													width: 120,
+												},
+											}}
+											useNativeAndroidPickerStyle={false}
+											onValueChange={(value) => setAddData({...addData, prefer_local2: value})}
+											value={addData.prefer_local2}
+											items={codeData.localCdList}
+										/>
+									</View>
+								</View>
+
+								{/* ############################################################################# 종교 */}
+								<View style={_styles.option}>
+									<Text style={_styles.optionTitle}>종교</Text>
 									<RNPickerSelect
 										placeholder={{label: '선택', value: ''}}
-										style={{
-											inputIOS: {
-												...pickerSelectStyles.inputIOS,
-												width: 120,
-											},
-											inputAndroid: {
-												...pickerSelectStyles.inputAndroid,
-												width: 120,
-											},
-										}}
+										style={pickerSelectStyles}
 										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, prefer_local2: value})}
-										value={addData.prefer_local2}
-										items={codeData.localCdList}
+										onValueChange={(value) => setAddData({...addData, religion: value})}
+										value={addData.religion}
+										items={codeData.religionCdList}
+									/>
+								</View>
+
+								{/* ############################################################################# 음주 */}
+								<View style={_styles.option}>
+									<Text style={_styles.optionTitle}>음주</Text>
+									<RNPickerSelect
+										placeholder={{label: '선택', value: ''}}
+										style={pickerSelectStyles}
+										useNativeAndroidPickerStyle={false}
+										onValueChange={(value) => setAddData({...addData, drinking: value})}
+										value={addData.drinking}
+										items={codeData.drinkCdList}
+									/>
+								</View>
+								<View style={_styles.option}>
+									<Text style={_styles.optionTitle}>흡연</Text>
+									<RNPickerSelect
+										placeholder={{label: '선택', value: ''}}
+										style={pickerSelectStyles}
+										useNativeAndroidPickerStyle={false}
+										onValueChange={(value) => setAddData({...addData, smoking: value})}
+										value={addData.smoking}
+										items={codeData.smokeCdList}
 									/>
 								</View>
 							</View>
-
-							{/* ############################################################################# 종교 */}
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>종교</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, religion: value})}
-									value={addData.religion}
-									items={codeData.religionCdList}
-								/>
-							</View>
-
-							{/* ############################################################################# 음주 */}
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>음주</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, drinking: value})}
-									value={addData.drinking}
-									items={codeData.drinkCdList}
-								/>
-							</View>
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>흡연</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, smoking: value})}
-									value={addData.smoking}
-									items={codeData.smokeCdList}
-								/>
-							</View>
-						</View>
+						</SpaceView>
+						
 					</SpaceView>
+					
 				</ScrollView>
 
-				<SpaceView mb={10}>
+				<SpaceView mb={60}>
 					<SpaceView>
 						<CommonBtn
 							value={'저장하기'}
