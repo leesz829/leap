@@ -340,13 +340,13 @@ export const Live = () => {
                 <Text style={[_styles.bottomTxt, {color: '#656565'}]}>스킵</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[_styles.bottomBtn,{width: width * 0.47, backgroundColor: '#FCBB15'}]}
+                style={[_styles.bottomBtn,{width: width * 0.47, backgroundColor: '#FFDD00'}]}
                 onPress={() => { 
                   if(isLoad) {
                     setLiveModalVisible(true);
                   }
                 }} >
-                <Text style={[_styles.bottomTxt, {color: '#FFF'}]}>인상 선택하기</Text>
+                <Text style={[_styles.bottomTxt, {color: '#3D4348'}]}>느낌 선택하기</Text>
               </TouchableOpacity>
             </View>
 

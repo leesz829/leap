@@ -120,7 +120,7 @@ export const BoardDetail = (props: Props) => {
 						<SpaceView mt={10} viewStyle={_styles.descArea}>
 							<CommonText textStyle={{fontSize: 16}} type={'h5'} color={'#D5CD9E'}>{boardData?.title}</CommonText>
 						</SpaceView>
-						<CommonText textStyle={_styles.dateText} type={'h6'} color={'#445561'}>{boardData?.reg_dt}</CommonText>
+						<CommonText textStyle={_styles.dateText} type={'h6'} color={'#E1DFD1'}>{boardData?.reg_dt}</CommonText>
 						<CommonText textStyle={{fontSize: 16}} type={'h5'} color={'#D5CD9E'}>{boardData?.content}</CommonText>
 							
 						{boardData?.board_type == 'EVENT' &&

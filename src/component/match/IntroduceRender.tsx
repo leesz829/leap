@@ -56,7 +56,7 @@ const _styles = StyleSheet.create({
   commentText: {
     fontFamily: 'Pretendard-Light',
     fontSize: 14,
-    color: '#F3DEA6',
+    color: '#F3E270',
     textAlign: 'center',
   },
   commentUnderline: {

@@ -159,7 +159,7 @@ export const Profile_Interest = (props: Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-180}}>
+				<ScrollView showsVerticalScrollIndicator={false}>
 					<SpaceView mt={20}>
 						<Text style={_styles.title}>관심사 등록하기</Text>
 						<Text style={_styles.subTitle}>나와 관심사를 공유할 수 있는 사람을 찾을 수 있어요.</Text>
@@ -189,35 +189,34 @@ export const Profile_Interest = (props: Props) => {
 					</SpaceView>
 				</ScrollView>
 
-        <SpaceView mb={20}>
+        <SpaceView mb={80}>
           <SpaceView>
-						<CommonBtn
-							value={'저장하기'}
-							type={'reNewId'}
-							fontSize={16}
-							fontFamily={'Pretendard-Bold'}
-							borderRadius={5}
-							onPress={() => {
-								saveFn();
-							}}
-						/>
-					</SpaceView>
+            <CommonBtn
+              value={'저장하기'}
+              type={'reNewId'}
+              fontSize={16}
+              fontFamily={'Pretendard-Bold'}
+              borderRadius={5}
+              onPress={() => {
+                saveFn();
+              }}
+            />
+          </SpaceView>
 
-					<SpaceView mt={10}>
-						<CommonBtn
-							value={'이전으로'}
-							type={'reNewGoBack'}
-							isGradient={false}
-							fontFamily={'Pretendard-Light'}
-							fontSize={14}
-							borderRadius={5}
-							onPress={() => {
-								navigation.goBack();
-							}}
-						/>
-					</SpaceView>
+          <SpaceView mt={10}>
+            <CommonBtn
+              value={'이전으로'}
+              type={'reNewGoBack'}
+              isGradient={false}
+              fontFamily={'Pretendard-Light'}
+              fontSize={14}
+              borderRadius={5}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          </SpaceView>
         </SpaceView>
-
 			</LinearGradient>
 
 			{/* #############################################################################

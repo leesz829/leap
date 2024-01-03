@@ -220,7 +220,7 @@ export const Profile_Introduce = (props: Props) => {
           enableOnAndroid>
 
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <ScrollView showsVerticalScrollIndicator={false} style={{height: height-190}}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{height: height - 250, marginBottom: 50}}>
               <SpaceView mt={20} mb={30}>
                 <Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>님의{'\n'}프로필 정보 수정하기</Text>
               </SpaceView>
@@ -297,36 +297,36 @@ export const Profile_Introduce = (props: Props) => {
               </SpaceView>
             </ScrollView>
           </TouchableWithoutFeedback>
+
+          <SpaceView viewStyle={_styles.btnArea}>
+            <SpaceView>
+              <CommonBtn
+                value={'저장하기'}
+                type={'reNewId'}
+                fontSize={16}
+                fontFamily={'Pretendard-Bold'}
+                borderRadius={5}
+                onPress={() => {
+                  saveFn();
+                }}
+              />
+            </SpaceView>
+
+            <SpaceView mt={10}>
+              <CommonBtn
+                value={'이전으로'}
+                type={'reNewGoBack'}
+                isGradient={false}
+                fontFamily={'Pretendard-Light'}
+                fontSize={14}
+                borderRadius={5}
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              />
+            </SpaceView>
+          </SpaceView>
         </KeyboardAwareScrollView>
-
-        <SpaceView mb={250} viewStyle={_styles.btnArea}>
-          <SpaceView mt={10}>
-            <CommonBtn
-              value={'저장하기'}
-              type={'reNewId'}
-              fontSize={16}
-              fontFamily={'Pretendard-Bold'}
-              borderRadius={5}
-              onPress={() => {
-                saveFn();
-              }}
-            />
-          </SpaceView>
-
-          <SpaceView mt={10}>
-            <CommonBtn
-              value={'이전으로'}
-              type={'reNewGoBack'}
-              isGradient={false}
-              fontFamily={'Pretendard-Light'}
-              fontSize={14}
-              borderRadius={5}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          </SpaceView>
-        </SpaceView>
 			</LinearGradient>
 
     </>
@@ -358,13 +358,14 @@ const _styles = StyleSheet.create({
 			borderRadius: 5,
 			textAlign: 'center',
 			fontFamily: 'Pretendard-Light',
-			color: '#FFFDEC',
-		};
-	  },
+			color: '#F3E270',
+    };
+	},
 	introduceText: {
 		fontFamily: 'Pretendard-Regular',
 		color: '#FFDD00',
 		marginBottom: 10,
+   
 	},
 	countText: {
 		marginLeft: 3,
@@ -374,7 +375,6 @@ const _styles = StyleSheet.create({
 		textAlign: 'right',
 	},
   btnArea: {
-
+    marginTop: -45,
   },
-
 });

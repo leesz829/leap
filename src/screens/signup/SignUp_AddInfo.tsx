@@ -580,10 +580,11 @@ const _styles = StyleSheet.create({
 	},
 	optionText: {
 		fontFamily: 'Pretendard-Light',
-		fontSize: 12,
+		fontSize: 14,
 		color: '#F3E270',
 		textAlign: 'center',
 		width: 120,
+		height: 30,
 		backgroundColor:'#445561',
 		borderRadius: 50,
 		justifyContent: 'center',
