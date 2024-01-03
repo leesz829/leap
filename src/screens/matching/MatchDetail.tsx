@@ -105,6 +105,8 @@ export default function MatchDetail(props: Props) {
     setCheckReportType('');
   };
 
+  const [isModHeader, setIsModHeader] = useState(false); // 헤더 변경 여부 구분
+
   // ######################################################################################## 관심 및 찐심 보내기 관련
   const [message, setMessage] = useState('');
 
@@ -186,7 +188,7 @@ export default function MatchDetail(props: Props) {
           });
 
           // 타이틀 설정
-          let _titleText = '프로필 상세';
+          let _titleText = '프로필 카드';
           if(type == 'STORAGE') {
             if(data?.match_base.match_status == 'ACCEPT') {
               _titleText = '매칭 성공';
@@ -199,7 +201,7 @@ export default function MatchDetail(props: Props) {
                 _titleText = '보낸관심';
               }
             }
-          }
+          };
 
           setTitleText(_titleText);
 
@@ -528,6 +530,16 @@ export default function MatchDetail(props: Props) {
     report_check_user_confirm(body);
   }
 
+  /* ################################################################################ 스크롤 제어 */
+  const handleScroll = async (event) => {
+    const yOffset = event.nativeEvent.contentOffset.y;
+    if(yOffset > height * 0.7) {
+      setIsModHeader(true);
+    } else {
+      setIsModHeader(false);
+    }
+  };
+
 
   // ################################################################ 초기 실행 함수
   useEffect(() => {
@@ -564,7 +576,16 @@ export default function MatchDetail(props: Props) {
 
   return (
       <>
-        <CommonHeader title={titleText} />
+        {isModHeader ? (
+          <CommonHeader 
+            title={titleText} 
+            type={'MATCH_DETAIL'} 
+            callbackFunc={report_onOpen} 
+            mstImgPath={findSourcePath(data.profile_img_list[0]?.img_file_path)}
+            nickname={data?.match_member_info.nickname} />
+        ) : (
+          <CommonHeader title={titleText} type={'MATCH_DETAIL'} callbackFunc={report_onOpen} />
+        )}
 
         {/* ############################################################################################### 버튼 영역 */}
         {data.profile_img_list.length > 0 
@@ -672,7 +693,10 @@ export default function MatchDetail(props: Props) {
           style={_styles.wrap}
         >
 
-          <ScrollView style={{ flex: 1, marginBottom: 40 }}>
+          <ScrollView 
+            style={{ flex: 1, marginBottom: 40 }}
+            onScroll={handleScroll}
+          >
               {data.profile_img_list.length > 0 && isLoad ? (
                 <>
                   <SpaceView mb={(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') ? 130 : 60}>
@@ -686,9 +710,9 @@ export default function MatchDetail(props: Props) {
                       <SpaceView viewStyle={_styles.profileImgWrap}>
                         <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
 
-                        <TouchableOpacity onPress={() => { report_onOpen(); }} style={{position: 'absolute', top: 10, right: 25}}>
+                        {/* <TouchableOpacity onPress={() => { report_onOpen(); }} style={{position: 'absolute', top: 10, right: 25}}>
                           <Image source={ICON.reportBtn} style={styles.iconSquareSize(32)} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                       </SpaceView>
 
                       <SpaceView viewStyle={_styles.infoArea}>

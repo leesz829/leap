@@ -295,7 +295,7 @@ export const Profile_AddInfo = (props: Props) => {
 				end={{ x: 0, y: 1 }}
 				style={_styles.wrap}
 			>
-				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-150}}>
+				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-250}}>
 					<SpaceView mt={10} viewStyle={_styles.titleContainer}>
 						<Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.addInfoImg} />
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase.nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
@@ -486,7 +486,7 @@ export const Profile_AddInfo = (props: Props) => {
 					</SpaceView>
 				</ScrollView>
 
-				<SpaceView mt={-70}>
+				<SpaceView mb={10}>
 					<SpaceView>
 						<CommonBtn
 							value={'저장하기'}
@@ -528,6 +528,7 @@ export const Profile_AddInfo = (props: Props) => {
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
+		minHeight: height,
 		padding: 30,
 	},
 	titleContainer: {

@@ -42,6 +42,8 @@ function CommonHeader({
   walletTextStyle,
   isLogoType,
   type,
+  mstImgPath,
+  nickname,
   callbackFunc,
 }: NavigationHeaderProps) {
 
@@ -108,24 +110,38 @@ function CommonHeader({
 
               {/* 제목 */}
               <SpaceView viewStyle={{width: width}}>
-                <Text style={_styles.titleStyle}>{title}</Text>
+                {isEmptyData(mstImgPath) ? (
+                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Image source={mstImgPath} style={_styles.mstImgStyle} />
+                    <Text style={_styles.nicknameText}>{nickname}</Text>
+                  </SpaceView>
+                ) : (
+                  <Text style={_styles.titleStyle}>{title}</Text>
+                )}
               </SpaceView>
 
               <SpaceView viewStyle={_styles.btnContainer}>
                 {type == 'STORY_REGI' ? (
                   <>
                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      {/* <SpaceView mr={15}>{right || <Wallet textStyle={walletTextStyle} />}</SpaceView> */}
                       <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
                         <Text style={_styles.regiText}>등록</Text>
                       </TouchableOpacity>
                     </SpaceView>
                   </>
+                ) : type == 'MATCH_DETAIL' ? (
+                  <>
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
+                        <Image source={ICON.reportBtn} style={styles.iconSquareSize(32)} />
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </>  
                 ) : (
                   <>
                     {/* 재화 표시 */}
                     {/* <View>{right || <Wallet textStyle={walletTextStyle} />}</View> */}
-                  </>  
+                  </>
                 )}
 
               </SpaceView>
@@ -173,22 +189,10 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: 7,
   },
-  nicknameText: (storyType:string, gender:string) => {
-    let clr = '#333333';
-    if(storyType == 'SECRET') {
-      if(gender == 'M') {
-        clr = '#7986EE';
-      } else {
-        clr = '#FE0456';
-      }
-    }
-
-    return {
-      fontFamily: 'Pretendard-Medium',
-      fontSize: 14,
-      color: clr,
-      marginTop: -3,
-    };
+  nicknameText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 20,
+    color: '#D5CD9E',
   },
   scoreText: {
     fontFamily: 'Pretendard-Medium',

@@ -229,7 +229,7 @@ export const Profile_Introduce = (props: Props) => {
                 <SpaceView>
                   <Text style={_styles.introduceText}>한줄 소개</Text>
                 </SpaceView>
-                <SpaceView>
+                <SpaceView viewStyle={{}}>
                   <TextInput
                     value={comment}
                     onChangeText={(text) => setComment(text)}
