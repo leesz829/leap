@@ -487,10 +487,9 @@ export const Profile_AddInfo = (props: Props) => {
 						</SpaceView>
 						
 					</SpaceView>
-					
 				</ScrollView>
 
-				<SpaceView mb={60}>
+				<SpaceView mb={Platform.OS == 'IOS' ? 60 : 10}>
 					<SpaceView>
 						<CommonBtn
 							value={'저장하기'}
