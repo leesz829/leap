@@ -80,48 +80,52 @@ export default function AuthInfoPopup({ isVisible, setIsVisible, closeModal, con
                     if(authCode == 'EDU') {
                       authIcon = ICON.authEdu;
                     } else if(authCode == 'INCOME') {
-                      authIcon = ICON.authAsset;
+                      authIcon = ICON.authIncome;
                     } else if(authCode == 'ASSET') {
                       authIcon = ICON.authAsset;
                     } else if(authCode == 'SNS') {
-                      authIcon = ICON.authAsset;
+                      authIcon = ICON.authSns;
                     } else if(authCode == 'VEHICLE') {
-                      authIcon = ICON.authAsset;
+                      authIcon = ICON.authVehicle;
                     }
 
                     return (isEmptyData(item?.auth_status) && item?.auth_status == 'ACCEPT') && (
                       <>
                         <LinearGradient
-                          colors={['#F1B10E', '#EEC80C']}
+                          colors={['#565B61', '#565B61']}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                           style={_styles.authItemWrap}
-                          key={'auth_'+index}>
+                          key={'auth_'+index}
+                        >
 
                           <SpaceView viewStyle={_styles.itemSubBg} />
 
-                          <SpaceView ml={20} mr={8} mt={8} mb={8} viewStyle={{flexDirection: 'column', justifyContent: 'space-between'}}>
-                            <SpaceView mb={15} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                              <SpaceView>
-                                <Image source={authIcon} style={styles.iconSquareSize(20)} />
+                          <SpaceView>
+                            <SpaceView pl={20} pr={10} viewStyle={{height: 100, width: '100%'}}>
+                              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                <SpaceView pt={5}>
+                                  <Image source={authIcon} style={styles.iconSquareSize(40)} />
+                                </SpaceView>
+                                {isEmptyData(item?.auth_type_name) && (
+                                  <SpaceView viewStyle={_styles.authType}>
+                                    <Text style={_styles.sloganText}>{item?.auth_type_name}</Text>
+                                  </SpaceView>
+                                )}
                               </SpaceView>
 
-                              {isEmptyData(item?.auth_type_name) && (
-                                <SpaceView pt={3} viewStyle={{justifyContent: 'center'}}>
-                                  <Text style={_styles.sloganText}>{item?.auth_type_name}</Text>
-                                </SpaceView>
-                              )}
+                              <SpaceView mt={5}>
+                                <Text style={_styles.textStyle(12, index%2 == 0 ? '#BEC2C8' : '#F3E270', 'L')} numberOfLines={3}>
+                                  {isEmptyData(item?.comment) ? (
+                                    <>"{item?.comment}"</>
+                                  ) : (
+                                    <>"작성한 인증 코멘트가 없습니다."</>
+                                  )}
+                                </Text>
+                              </SpaceView>
                             </SpaceView>
 
-                            <SpaceView pr={10}>
-                              <Text style={_styles.textStyle(10, '#4A4846', 'L')} numberOfLines={2}>
-                                {isEmptyData(item?.comment) ? (
-                                  <>"{item?.comment}"</>
-                                ) : (
-                                  <>"작성한 인증 코멘트가 없습니다."</>
-                                )}
-                              </Text>
-                            </SpaceView>
+                            
                           </SpaceView>
 
                         </LinearGradient>
@@ -221,7 +225,7 @@ const _styles = StyleSheet.create({
     marginBottom: 10,
   },
   itemSubBg: {
-    backgroundColor: '#0EE9F1',
+    backgroundColor: '#E3AA71',
     position: 'absolute',
     top: 0,
     bottom: 0,
@@ -230,11 +234,11 @@ const _styles = StyleSheet.create({
   },
   sloganText: {
     fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: '#FFFFFF',
-    backgroundColor: '#0EE9F1',
-    borderRadius: 10,
-    paddingVertical: 3,
+    fontSize: 13,
+    color: '#E0AC6E',
+    backgroundColor: '#000208',
+    borderRadius: 15,
+    paddingVertical: 1,
     paddingHorizontal: 10,
     overflow: 'hidden',
   },
@@ -285,6 +289,9 @@ const _styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 45,
     overflow: 'hidden',
+  },
+  authType: {
+
   },
 
 });

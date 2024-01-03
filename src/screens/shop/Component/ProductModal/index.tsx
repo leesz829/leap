@@ -434,9 +434,12 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                         });
                       }}
                     >
-                      <Text style={modalStyleProduct.puchageText}>{CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}</Text>
+                      <Text style={modalStyleProduct.puchageText}>
+                        {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}
+                        {type != 'bm' ? '' : item?.money_type_code == 'INAPP' ? '원' : ''}
+                      </Text>
                       {item?.discount_rate > 0 &&
-                        <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}</Text>
+                        <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}원</Text>
                       }
                       <Text style={modalStyleProduct.puchageText}>구매하기</Text>
                     </TouchableOpacity>

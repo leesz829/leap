@@ -7,8 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useUserInfo } from 'hooks/useUserInfo';
 import SpaceView from 'component/SpaceView';
 import { styles, layoutStyle } from 'assets/styles/Styles';
-import { isEmptyData } from 'utils/functions';
-import { CommaFormat } from 'utils/functions';
+import { CommaFormat, isEmptyData } from 'utils/functions';
 import { Slider } from '@miblanchard/react-native-slider';
 
 
@@ -22,13 +21,13 @@ export default function MileageInfo({ data }) {
   
   return (
     <>
-      {data?.respect_grade == 'PLATINUM' || data?.respect_grade == 'DIAMOND' &&
+      {(data?.respect_grade == 'PLATINUM' || data?.respect_grade == 'DIAMOND') &&
         <SpaceView viewStyle={_styles.floatWrapper}>
           <LinearGradient
             colors={['#7AAEDB', '#608B55']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={{borderRadius: 10, paddingVertical: 10}}>
+            style={{borderRadius: 10,  paddingVertical: 5}}>
 
             <LinearGradient
               colors={['#C9F0FF', data?.respect_grade == 'DIAMOND' ? '#FCF9E4' : '#C9F0FF']}
@@ -39,7 +38,7 @@ export default function MileageInfo({ data }) {
                 <Text style={_styles.repectGrade}>{data?.respect_grade}</Text>
             </LinearGradient>
 
-            <SpaceView mt={20} pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
+            <SpaceView mt={8} pl={15} pr={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween]}>
               <SpaceView mt={25} ml={15}>
                 <Image source={ICON.icChip} style={{width: 40, height: 40}} />
               </SpaceView>
@@ -117,8 +116,8 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    height: 35,
-    marginTop: 15,
+    height: 30,
+    marginTop: 10,
   },
   repectGrade: {
     fontFamily: 'MinSans-Bold',
@@ -140,7 +139,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 10,
     color: '#333B41',
-    marginTop: 15,
+    marginTop: 5,
   },
   rpText: {
     fontFamily: 'Pretendard-SemiBold',

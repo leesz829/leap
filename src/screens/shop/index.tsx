@@ -89,7 +89,9 @@ export const Shop = () => {
 
       // 프로모션 팝업 노출
       if(isPopupShow) {
-        if(data.popup_bas_list?.length > 0 && isEmptyData(data.popup_bas_list[0]?.popup_detail) && data.popup_bas_list[0]?.popup_detail.length > 0) {
+
+        // 24.01.03 임시 주석
+        /* if(data.popup_bas_list?.length > 0 && isEmptyData(data.popup_bas_list[0]?.popup_detail) && data.popup_bas_list[0]?.popup_detail.length > 0) {
           let endDt = await AsyncStorage.getItem('POPUP_ENDDT_PROMOTION');
           let nowDt = formatNowDate().substring(0, 8);
 
@@ -109,7 +111,7 @@ export const Shop = () => {
               },
             });
           };
-        };  
+        };   */
       };
 
       // 이벤트 팝업 노출
@@ -269,28 +271,28 @@ export const Shop = () => {
 
       } else if(category.value == 'SUBSCRIPTION') {
 
-        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 5900
+        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "SUBSCRIPTION", "money_type_code": "INAPP", "shop_buy_price": 5900
         , "item_name": "찜하기 이용권(30일)", "item_code": "prod_boost_marking_30", "item_contents": "부스팅 기간 동안 이성의 프로필을 보관함에 30일 동안 보관할 수 있습니다.(부스팅 만료 후 효과는 사라집니다.)"};
         _tmpProducts.push(_tmpProduct);
-        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 14000
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "SUBSCRIPTION", "money_type_code": "INAPP", "shop_buy_price": 14000
         , "item_name": "찜하기 이용권(90일)", "item_code": "prod_boost_marking_90", "item_contents": "부스팅 기간 동안 이성의 프로필을 보관함에 30일 동안 보관할 수 있습니다.(부스팅 만료 후 효과는 사라집니다.)"};
         _tmpProducts.push(_tmpProduct);
-        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 19000
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "SUBSCRIPTION", "money_type_code": "INAPP", "shop_buy_price": 19000
         , "item_name": "관심 보내기 자유이용권(3일)", "item_code": "prod_boost_likefree_3", "item_contents": "구독 기간 동안 큐브를 사용하지 않고 이성에게 관심을 보낼 수 있습니다."};
         _tmpProducts.push(_tmpProduct);
 
       } else if(category.value == 'PACKAGE') {
         
-        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 27000
+        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PACKAGE", "money_type_code": "INAPP", "shop_buy_price": 27000
         , "item_name": "스타터 패키지 ", "item_code": "prod_pack_starter00", "item_contents": "관심 보내기 자유이용권(1일) + 큐브 200. (월1회 구매 가능한 상품이며 '관심 보내기 자유이용권'의 효과는 부스팅 만료 후 사라집니다.)"};
         _tmpProducts.push(_tmpProduct);
-        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 19000
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PACKAGE", "money_type_code": "INAPP", "shop_buy_price": 19000
         , "item_name": "일반 큐브 패키지", "item_code": "prod_pack_cube_00", "item_contents": "100큐브 + 10메가 큐브를 더 효율적인 가격으로 획득하는 상품(월1회 구매 가능)"};
         _tmpProducts.push(_tmpProduct);
-        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 39000
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PACKAGE", "money_type_code": "INAPP", "shop_buy_price": 39000
         , "item_name": "고급 큐브 패키지", "item_code": "prod_pack_cube_01", "item_contents": "250큐브 + 25메가 큐브를 더 효율적인 가격으로 획득하는 상품(월1회 구매 가능)"};
         _tmpProducts.push(_tmpProduct);
-        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 79000
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PACKAGE", "money_type_code": "INAPP", "shop_buy_price": 79000
         , "item_name": "특급 큐브 패키지", "item_code": "prod_pack_cube_02", "item_contents": "600큐브 + 60메가 큐브를 더 효율적인 가격으로 획득하는 상품(월1회 구매 가능)"};
         _tmpProducts.push(_tmpProduct);
       }
@@ -449,81 +451,91 @@ export const Shop = () => {
         end={{ x: 0, y: 1 }}
         style={_styles.wrap}
       >
-        <ScrollView style={{marginBottom: 10}} showsVerticalScrollIndicator={false}>
-          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingLeft: 10, backgroundColor: '#3D4348'}]}>
-            <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image source={ICON.cubeCyan} style={styles.iconSquareSize(30)} />
-                <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
-              </SpaceView>
-              <SpaceView ml={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image source={ICON.megaCubeCyan} style={styles.iconSquareSize(33)} />
-                <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
-              </SpaceView>
+        <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {backgroundColor: '#3D4348', width: width, zIndex: 1,}]}>
+          <SpaceView ml={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image source={ICON.cubeCyan} style={styles.iconSquareSize(30)} />
+              <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
             </SpaceView>
-            <TouchableOpacity
-              style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, _styles.inventoryBtn]}
-              onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}
-            >
-              <Image source={ICON.menuCyan} style={[styles.iconSize20, {marginLeft: 8}]} />
-              <Text style={_styles.inventoryText}>보유 아이템</Text>
-            </TouchableOpacity>
+            <SpaceView ml={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image source={ICON.megaCubeCyan} style={styles.iconSquareSize(33)} />
+              <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
+            </SpaceView>
           </SpaceView>
 
-          {memberBase?.gender == 'M' && (
-            <SpaceView viewStyle={_styles.shadowContainer}>
-              <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
-                {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? 
-                  <TouchableOpacity onPress={() => {onPressGetReward(payInfo?.event_tmplt_seq, payInfo?.tmplt_name);}}>
-                    <Image source={ICON.circleReward} style={styles.iconSquareSize(70)} />
-                  </TouchableOpacity>
+          <TouchableOpacity
+            style={_styles.inventoryBtn}
+            onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}
+          >
+            <Image source={ICON.menuCyan} style={styles.iconSquareSize(20)} />
+            <Text style={_styles.inventoryText}>보유 아이템</Text>
+
+            {newItemCnt > 0 && (
+              <SpaceView viewStyle={_styles.newInvenArea}>
+                <View style={_styles.newInvenTriangle} />
+                <SpaceView viewStyle={_styles.newInvenTextArea}>
+                  <Text style={_styles.newInvenText}>새 아이템 도착!</Text>
+                </SpaceView>
+              </SpaceView>
+            )}
+
+          </TouchableOpacity>
+        </SpaceView>
+
+        {memberBase?.gender == 'M' && (
+          <SpaceView viewStyle={_styles.shadowContainer}>
+            <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
+              {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? 
+                <TouchableOpacity onPress={() => {onPressGetReward(payInfo?.event_tmplt_seq, payInfo?.tmplt_name);}}>
+                  <Image source={ICON.circleReward} style={styles.iconSquareSize(70)} />
+                </TouchableOpacity>
+              :
+                <Image source={
+                    payInfo?.receive_flag == 'N' ?
+                      payInfo?.tmplt_name == 'E' ? ICON.circleE
+                      : payInfo?.tmplt_name == 'D' ? ICON.circleE
+                      : payInfo?.tmplt_name == 'C' ? ICON.circleD
+                      : payInfo?.tmplt_name == 'B' ? ICON.circleC
+                      : payInfo?.tmplt_name == 'A' ? ICON.circleB
+                      : payInfo?.tmplt_name == 'S' ? ICON.circleA
+                      : payInfo?.tmplt_name == 'S' && ICON.circleS
+                    : ICON[`circle${payInfo?.tmplt_name}`]
+                } style={styles.iconSquareSize(70)} />
+              }
+              
+              <SpaceView ml={10} mb={5}>
+                <Text style={_styles.rewardTitle}>
+                  <Text style={{color: '#F1D30E'}}>
+                    {payInfo?.receive_flag == 'Y'
+                      ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
+                      : payInfo?.tmplt_name
+                    }
+                  </Text>
+                  {'보상은 '}
+                  {isEmptyData(payInfo?.tmplt_level) && isEmptyData(tmplList) &&
+                    <Text style={{color: '#32F9E4'}}>
+                      {payInfo?.tmplt_name == 'S' && payInfo?.receive_flag == 'Y' ? '이미 보상은 끝'
+                        : tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1].item_name
+                      }
+                    </Text>
+                  }
+                  입니다.
+                </Text>
+
+                {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ?
+                  <Text style={_styles.rewardDesc}>
+                    {payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.
+                  </Text>
                 :
-                  <Image source={
-                      payInfo?.receive_flag == 'N' ?
-                        payInfo?.tmplt_name == 'E' ? ICON.circleE
-                        : payInfo?.tmplt_name == 'D' ? ICON.circleE
-                        : payInfo?.tmplt_name == 'C' ? ICON.circleD
-                        : payInfo?.tmplt_name == 'B' ? ICON.circleC
-                        : payInfo?.tmplt_name == 'A' ? ICON.circleB
-                        : payInfo?.tmplt_name == 'S' ? ICON.circleA
-                        : payInfo?.tmplt_name == 'S' && ICON.circleS
-                      : ICON[`circle${payInfo?.tmplt_name}`]
-                  } style={styles.iconSquareSize(70)} />
-                }
-                
-                <SpaceView ml={10} mb={5}>
-                  <Text style={_styles.rewardTitle}>
-                    <Text style={{color: '#F1D30E'}}>
+                  payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' ?
+                    <Text style={_styles.rewardDesc}>이미 보상은 끝</Text>
+                  :
+                    <Text style={_styles.rewardDesc}>
+                      {payInfo?.receive_flag == 'N' ? payInfo?.target_buy_price - payInfo?.member_buy_price : payInfo?.target_buy_price}
+                      {' 원 더 결제하면 '}
                       {payInfo?.receive_flag == 'Y'
                         ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
                         : payInfo?.tmplt_name
-                      }
-                    </Text>
-                    {'보상은 '}
-                    {isEmptyData(payInfo?.tmplt_level) && isEmptyData(tmplList) &&
-                      <Text style={{color: '#32F9E4'}}>
-                        {payInfo?.tmplt_name == 'S' && payInfo?.receive_flag == 'Y' ? '이미 보상은 끝'
-                          : tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1].item_name
-                        }
-                      </Text>
-                    }
-                    입니다.
-                  </Text>
-
-                  {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ?
-                    <Text style={_styles.rewardDesc}>
-                      {payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.
-                    </Text>
-                  :
-                    payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' ?
-                      <Text style={_styles.rewardDesc}>이미 보상은 끝</Text>
-                    :
-                      <Text style={_styles.rewardDesc}>
-                        {payInfo?.receive_flag == 'N' ? payInfo?.target_buy_price - payInfo?.member_buy_price : payInfo?.target_buy_price}
-                        {' 원 더 결제하면 '}
-                        {payInfo?.receive_flag == 'Y'
-                          ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
-                          : payInfo?.tmplt_name
                         }
                         등급 달성!
                       </Text> 
@@ -544,7 +556,7 @@ export const Shop = () => {
               colors={['#FF7B92', '#FFF7C1']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={{paddingHorizontal: 15, paddingVertical: 20, marginTop: 10}}
+              style={{paddingHorizontal: 15, paddingVertical: 10, marginTop: 10}}
             >
               <Text style={_styles.mileageTitle}>보유 RP</Text>
               <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
@@ -564,6 +576,8 @@ export const Shop = () => {
             </LinearGradient>
           )}
 
+        {/* <ScrollView style={{marginBottom: 10}} showsVerticalScrollIndicator={false}> */}
+
           {/* ############################################### 카테고리별 */}
           <SpaceView mb={200}>
             <CategoryShop 
@@ -576,7 +590,7 @@ export const Shop = () => {
               selectedCategoryData={selectedCategoryData}
             />
           </SpaceView>
-        </ScrollView>
+        {/* </ScrollView> */}
       </LinearGradient>
 
       {/* 상품 상세 팝업 */}
@@ -688,10 +702,14 @@ const _styles = StyleSheet.create({
     minHeight: height,
   },
   inventoryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#445561',
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
-    paddingHorizontal: 20,
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
+    paddingLeft: 20,
+    paddingRight: 10,
   },
   inventoryText: {
     fontFamily: 'Pretendard-Medium',
@@ -845,4 +863,41 @@ const _styles = StyleSheet.create({
     color: '#ABA99A',
     marginBottom: 15,
   },
+  newInvenArea: {
+    position: 'absolute',
+    left: 16,
+    bottom: -20,
+  },
+  newInvenTextArea: {
+    
+  },
+  newInvenText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 10,
+    color: '#F1D30E',
+    backgroundColor: '#fff',
+    borderRadius: 3,
+    overflow: 'hidden',
+    textAlign: 'center',
+    paddingVertical: 1,
+    paddingHorizontal: 5,
+  },
+  newInvenTriangle: {
+    marginTop: 2,
+    marginLeft: 5,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#fff',
+    transform: [{ rotate: '360deg' }],
+  },
+
+
+
+
 });

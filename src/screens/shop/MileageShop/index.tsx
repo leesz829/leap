@@ -48,6 +48,7 @@ export default function MileageShop() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
+  const me = useUserInfo();
 
   const [brandList, setBrandList] = useState([
     /* {brand_seq: 0, brand_name: 'ALL', img_file_path: null}, */
@@ -222,7 +223,7 @@ export default function MileageShop() {
             return (
               <>
                 {(!isLoading && (currentBrandSeq == 0 || currentBrandSeq == item?.brand_seq)) && (
-                  <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} />
+                  <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} memberData={me} />
                 )}
               </>
             )
@@ -365,7 +366,7 @@ function ListHeaderComponent({ onPressTab, tabList }) {
 }
 
 // ######################################################################### 상품 아이템 렌더링
-const RenderItem = ({ item, type, callFn }) => {  
+const RenderItem = ({ item, type, callFn, memberData }) => {  
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
@@ -509,7 +510,12 @@ const RenderItem = ({ item, type, callFn }) => {
 
       ) : (
 
-        <TouchableOpacity activeOpacity={0.8} style={_styles.renderItem} onPress={() => onPressItem(item)}>
+        <TouchableOpacity 
+          activeOpacity={0.8} 
+          style={_styles.renderItem} 
+          onPress={() => onPressItem(item)}
+          disabled={memberData?.respect_grade != 'PLATINUM' && memberData?.respect_grade != 'DIAMOND'}
+        >
           <View style={{ flexDirection: 'column' }}>
 
             <SpaceView viewStyle={_styles.thumbArea}>

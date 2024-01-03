@@ -183,41 +183,47 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
 
   return (
     <>
+
+      {/* ############################################################# 카테고리 탭 */}
+      <LinearGradient
+        colors={['#092032', '#344756']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.itemDescArea}
+      >
+        <SpaceView mb={10} viewStyle={_styles.tabBtnArea}>
+          {categoryList?.map((item, index) => (
+            <TouchableOpacity
+              key={`category-${item.value}-${index}`}
+              onPress={() => onPressCategoryFunc(item)}
+            >
+              <Image source={item.value === selectData.value ? item.imgActive : item.imgUnactive} style={[item.value == 'RECOMMENDER' ? _styles.starImg : _styles.itemImg]} />
+            </TouchableOpacity>
+          ))}
+          {/* <SpaceView viewStyle={{position: 'absolute', top: -20, left: 6}}>
+            <View style={_styles.balloonArea}>
+              <View style={_styles.balloon}>
+                <Text style={_styles.balloonText}>N개의 추천 상품이 있어요.</Text>
+              </View>
+              <View style={_styles.tail} />
+            </View>
+          </SpaceView> */}
+        </SpaceView>
+        <Text style={_styles.itemDescText}>{selectData.desc}</Text>
+      </LinearGradient>
+
+      {/* ############################################################# 상품 목록 */}
       <ScrollView style={_styles.categoryWrap} showsVerticalScrollIndicator={false}>
 
-        <LinearGradient
-          colors={['#092032', '#344756']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={_styles.itemDescArea}
-        >
-          <SpaceView mb={10} viewStyle={_styles.tabBtnArea}>
-            {categoryList?.map((item, index) => (
-              <TouchableOpacity
-                key={`category-${item.value}-${index}`}
-                onPress={() => onPressCategoryFunc(item)}>
-                <Image source={item.value === selectData.value ? item.imgActive : item.imgUnactive} style={[item.value == 'RECOMMENDER' ? _styles.starImg : _styles.itemImg]} />
-              </TouchableOpacity>
-            ))}
-            {/* <SpaceView viewStyle={{position: 'absolute', top: -20, left: 6}}>
-              <View style={_styles.balloonArea}>
-                <View style={_styles.balloon}>
-                  <Text style={_styles.balloonText}>N개의 추천 상품이 있어요.</Text>
-                </View>
-                <View style={_styles.tail} />
-              </View>
-            </SpaceView> */}
-          </SpaceView>
-          <Text style={_styles.itemDescText}>{selectData.desc}</Text>
-        </LinearGradient>
-
-        {productList?.map((item, index) => (
-          <RenderItem
-            key={`product-${item?.item_code}-${index}`}
-            item={item}
-            openModal={openProductModalFunc}
-          />
-        ))}
+        <SpaceView mb={height-150}>
+          {productList?.map((item, index) => (
+            <RenderItem
+              key={`product-${item?.item_code}-${index}`}
+              item={item}
+              openModal={openProductModalFunc}
+            />
+          ))}
+        </SpaceView>
 
       </ScrollView>
     </>
@@ -334,7 +340,7 @@ const _styles = StyleSheet.create({
   categoryWrap: {
     flexDirection: 'column',
     //height: height - 450,
-    marginTop: 20,
+    //marginTop: 20,
   },
   categoryText: (isSelected: boolean) => {
     return {
@@ -344,7 +350,8 @@ const _styles = StyleSheet.create({
   },
   itemContainer: {
     //paddingVertical: 15,
-    marginTop: 15,
+    //marginTop: 15,
+    marginBottom: 15,
     paddingTop: 15,
     borderTopColor: '#445561',
     borderTopWidth: 1,
@@ -488,16 +495,16 @@ const _styles = StyleSheet.create({
   itemDescArea: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 30,
+    paddingVertical: 25,
     borderRadius: 10,
     marginHorizontal: 10,
+    marginVertical: 15,
   },
   itemDescText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 12,
     color: '#E1DFD1',
     textAlign: 'center',
-    marginTop: 10,
   },
 
   itemImg: {

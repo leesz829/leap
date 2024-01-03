@@ -194,17 +194,18 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   discountBox: {
-    backgroundColor: '#FFF',
-    paddingVertical: 2,
-    width: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 50,
+
   },
   discountText: {
-    fontFamily: 'Pretendard-Medium',
+    fontFamily: 'Pretendard-SemiBold',
     color: '#FF4D29',
-    fontSize: 10,
+    fontSize: 12,
+    backgroundColor: '#FFF',
+    paddingVertical: 1,
+    borderRadius: 50,
+    overflow: 'hidden',
+    width: 45,
+    textAlign: 'center',
   },
   speakerIconArea: {
     position: 'absolute',
@@ -258,10 +259,10 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   recTitText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 10,
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 12,
     color: '#D5CD9E',
-    marginLeft: 5,
+    marginLeft: 7,
   },
   recList: {
     width: width - 120,

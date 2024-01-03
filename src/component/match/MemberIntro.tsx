@@ -54,13 +54,13 @@ export default function MemberIntro({ addData, faceModifier, nickname, gender, i
                     <SpaceView viewStyle={_styles.faceArea}><Text style={_styles.faceText}>#{faceModifier}</Text></SpaceView>
                   )}
                   {isEmptyData(addData?.mbti_type_name) && (
-                    <SpaceView viewStyle={_styles.faceArea}><Text style={_styles.faceText}>#{addData?.mbti_type_name}</Text></SpaceView>
+                    <SpaceView viewStyle={_styles.faceArea}><Text style={_styles.faceText}>{addData?.mbti_type_name}</Text></SpaceView>
                   )}
                   {isEmptyData(addData?.prefer_local1_name) && (
-                    <SpaceView viewStyle={_styles.faceArea}><Text style={_styles.faceText}>#{addData?.prefer_local1_name}</Text></SpaceView>
+                    <SpaceView viewStyle={_styles.faceArea}><Text style={_styles.faceText}>{addData?.prefer_local1_name}</Text></SpaceView>
                   )}
                   {isEmptyData(addData?.prefer_local2_name) && (
-                    <SpaceView viewStyle={_styles.faceArea}><Text style={_styles.faceText}>#{addData?.prefer_local2_name}</Text></SpaceView>
+                    <SpaceView viewStyle={_styles.faceArea}><Text style={_styles.faceText}>{addData?.prefer_local2_name}</Text></SpaceView>
                   )}
                 </SpaceView>
 

@@ -180,6 +180,7 @@ export const Roby = (props: Props) => {
     if (type == '01' || type == '03') {
       if(isClickable) {
         setIsClickable(false);
+        setIsLoading(true);
 
         try {
           if(type == '01') {
@@ -199,6 +200,7 @@ export const Roby = (props: Props) => {
 
         } finally {
           setIsClickable(true);
+          setIsLoading(false);
         }
       }
     }
@@ -209,6 +211,7 @@ export const Roby = (props: Props) => {
 
         if (await grantedCheck()) {
           setIsClickable(false);
+          setIsLoading(true);
 
           Contacts.getAll().then(contacts => {
             contacts.forEach(contact => {
@@ -227,6 +230,7 @@ export const Roby = (props: Props) => {
             insertMemberPhoneBook("", "Y");
           }).finally(item => {
             setIsClickable(true);
+            setIsLoading(false);
             show({
               type: 'RESPONSIVE',
               content: isFriendMatch ? '소개 제외 대상이 업데이트 되었습니다.' : '소개 제외 대상과 상호 미노출을 해제하였습니다.',
@@ -474,9 +478,18 @@ export const Roby = (props: Props) => {
       /* if(null == endDt || endDt < nowDt) { */
         console.log('promotionPopupData ::::::: ' , promotionPopupData);
 
+        let _tmpProducts = [];
+        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 4000
+        , "item_name": "큐브 80", "item_code": "prod_cube_common_80", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 7500
+        , "item_name": "큐브 150", "item_code": "prod_cube_common_150", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        _tmpProducts.push(_tmpProduct);
+
         show({
           type: 'PROMOTION',
-          prodList: promotionPopupData?.popup_detail,
+          //prodList: promotionPopupData?.popup_detail,
+          prodList: _tmpProducts,
           confirmCallback: async function(isNextChk) {
             if(isNextChk) {
               // 팝업 종료 일시 Storage 저장
@@ -632,12 +645,12 @@ export const Roby = (props: Props) => {
 
             {/* ################################################################################ 최근소식, 우편함 버튼 영역 */}
             <SpaceView viewStyle={_styles.etcBtnArea}>
-              <TouchableOpacity onPress={onPressRecent} style={[_styles.etcBtnItem, {marginRight: 10 }]}>
+              <TouchableOpacity onPress={onPressRecent} style={[_styles.etcBtnItem, {marginRight: 10 }]} hitSlop={commonStyle.hipSlop20}>
                 <Image source={ICON.mailGold} style={styles.iconSquareSize(15)} />
                 <Text style={_styles.etcBtnText}>{memberBase?.new_board_cnt}{memberBase?.new_board_cnt > 99 && '+'}</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={onPressMail} style={_styles.etcBtnItem}>
+              <TouchableOpacity onPress={onPressMail} style={_styles.etcBtnItem} hitSlop={commonStyle.hipSlop20}>
                 <Image source={ICON.bellYellow} style={styles.iconSquareSize(13)} />
                 <Text style={_styles.etcBtnText}>{memberBase?.msg_cnt}{memberBase?.msg_cnt > 99 && '+'}</Text>
               </TouchableOpacity>
@@ -709,7 +722,7 @@ export const Roby = (props: Props) => {
               style={_styles.respectContainer}>
 
               <SpaceView>
-                <SpaceView pl={15} pr={15} pt={3} pb={10}  viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+                <SpaceView pl={15} pr={15} pb={7}  viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
                   {/* <Text style={[_styles.respectText('#D5CD9E', 20), {marginRight: 20}]}>리스펙트 등급</Text> */}
                   <SocialGrade grade={memberBase?.respect_grade} sizeType={'BASE'} />
                 </SpaceView>
@@ -725,8 +738,8 @@ export const Roby = (props: Props) => {
                     
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <TouchableOpacity onPress={() => (setRespectType('MEMBER'))}>
-                        <View style={_styles.greenDot(memberBase?.respect_grade == 'MEMBER')} />
-                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'MEMBER'), {color: respectType == 'MEMBER' ? '#32F9E4' : '#E1DFD1'}]}>MEMBER</Text>
+                        <View style={_styles.greenDot(memberBase?.respect_grade == 'MEMBER' || memberBase?.respect_grade == 'UNKNOWN')} />
+                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'MEMBER'), {color: (respectType == 'MEMBER' || memberBase?.respect_grade == 'UNKNOWN') ? '#32F9E4' : '#E1DFD1'}]}>MEMBER</Text>
                       </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
@@ -759,7 +772,7 @@ export const Roby = (props: Props) => {
                     </View>
                   </SpaceView>
 
-                  {respectType == 'MEMBER' ? (
+                  {(respectType == 'MEMBER' || respectType == 'UNKNOWN') ? (
                     <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
                       <Text style={_styles.respectDescText}>
                         매일 리프에 방문하고 활동을 해보세요.{'\n'}
@@ -792,9 +805,9 @@ export const Roby = (props: Props) => {
               </SpaceView>
             </LinearGradient>
 
-            <TouchableOpacity style={_styles.bannerArea} onPress={promotionPopupOpen}>
+            <TouchableOpacity style={_styles.bannerArea} onPress={promotionPopupOpen} /* disabled={true} */>
               <SpaceView>
-                <Text style={_styles.bannerTitle}>데일리뷰에 원하는 친구가 안 나왔을 때는?{'\n'}프로필 카드를 열어보세요!</Text>
+                <Text style={_styles.bannerTitle}>블라인드 카드에 원하는 친구가 안 나왔을 때는?{'\n'}프로필 카드를 열어보세요!</Text>
                 <Text style={_styles.bannerDesc}>#인증레벨#MBTI#인상</Text>
                 <View style={_styles.bannerTextLine} />
               </SpaceView>
@@ -882,7 +895,7 @@ export const Roby = (props: Props) => {
                     <Image source={memberBase?.match_yn == 'Y' ? ICON.checkYellow : ICON.checkGold} style={[styles.iconSize16, {marginRight: 5}]} />
                     <Text style={_styles.manageTitle}>내 프로필 공개</Text>
                   </View>
-                  <Text style={_styles.manageDesc}>{memberBase?.match_yn == 'Y' ? '이성들에게 내 프로필이 소개되고 있어요.' : '내 프로필이 비공개 상태에요.'}</Text>
+                  <Text style={_styles.manageDesc}>{memberBase?.match_yn == 'Y' ? '이성들에게 내 프로필이\n소개되고 있어요.' : '내 프로필이 비공개 상태에요.'}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -1256,7 +1269,7 @@ const _styles = StyleSheet.create({
     fontSize: 12,
     color: '#E1DFD1',
     marginTop: 15,
-    marginHorizontal: 10,
+    marginHorizontal: 0,
   },
   openProfileBox: {
     width: '47%',
