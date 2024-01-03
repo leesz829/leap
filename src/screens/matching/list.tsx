@@ -11,7 +11,7 @@ import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styl
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, FlatList, RefreshControl } from 'react-native';
 import { useDispatch } from 'react-redux'; 
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, GIF_IMG } from 'utils/imageUtils';
-import { formatNowDate, isEmptyData } from 'utils/functions';
+import { formatNowDate, isEmptyData, CommaFormat } from 'utils/functions';
 import { Watermark } from 'component/Watermark';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { ROUTES, STACK } from 'constants/routes';
@@ -384,6 +384,7 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
   const imgList = item?.img_list; // 이미지 목록
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const memberBase = useUserInfo(); // 본인 데이터
 
   const _renderWidth = width - 40;
   const _renderHeight = height * 0.73;
@@ -440,7 +441,7 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
 
           <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
 
-            {/* 이미지 */}
+            {/* ############################ 이미지 */}
             {imgList.length > 0 && (
               <Image
                 source={findSourcePath(imgList[currentImgIdx].img_file_path)}
@@ -449,7 +450,7 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
               />
             )}
 
-            {/* 인디케이터 */}
+            {/* ############################ 인디케이터 */}
             <SpaceView viewStyle={_styles.pagingContainer}>
               {imgList?.map((i, n) => {
                 return n < 3 && (
@@ -460,14 +461,25 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
               })}
             </SpaceView>
 
+            {/* ############################ 상세 버튼 */}
+            <TouchableOpacity
+              onPress={() => { detailProc(); }}
+              style={{position: 'absolute', bottom: 10, right: 10, zIndex: 2}}
+            >
+              <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
+            </TouchableOpacity>
+
+            {/* ############################ 이전 버튼 */}
             <TouchableOpacity 
               onPress={() => { prevImage(); }}
               style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2}} />
 
+            {/* ############################ 다음 버튼 */}
             <TouchableOpacity 
               onPress={() => { nextImage(); }}
               style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
 
+            {/* ############################ 내용 */}
             <SpaceView viewStyle={_styles.infoArea}>
               {currentImgIdx == 0 && (
                 <SpaceView pl={30} pr={30} viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
@@ -480,14 +492,6 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
 
                   {/* 한줄소개 */}
                   <SpaceView ml={25} mr={25}><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>
-
-                  {/* 상세 버튼 */}
-                  <TouchableOpacity
-                    onPress={() => { detailProc(); }}
-                    style={{position: 'absolute', bottom: -10, right: 10, zIndex: 2}}
-                  >
-                    <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
-                  </TouchableOpacity>
 
                 </SpaceView>
               )}
@@ -505,9 +509,6 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
                       )}
                     </SpaceView>
 
-                    <TouchableOpacity onPress={() => { detailProc(); }}>
-                      <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
-                    </TouchableOpacity>
                   </SpaceView>
                   <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     {item?.face_list.length > 0 && (
@@ -528,19 +529,16 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
               )}
               {currentImgIdx == 2 && (
                 <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
-                  <SpaceView mb={8} viewStyle={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <SpaceView viewStyle={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                       <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
                       <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
                     </SpaceView>
-
-                    <TouchableOpacity onPress={() => { detailProc(); }}>
-                      <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
-                    </TouchableOpacity>
                   </SpaceView>
-                  <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                    {item?.auth_list.length > 0 && (
-                      <>
+                
+                  {item?.auth_list.length > 0 && (
+                    <>
+                      <SpaceView mt={12} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                         {item?.auth_list?.map((i, n) => {
                           const authCode = i.common_code;
                           let authIcon = ICON.authJob;
@@ -557,22 +555,25 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
                             authIcon = ICON.authAsset;
                           }
 
-                          return isEmptyData(i.slogan_name) && (
-                            <SpaceView key={'auth'+n} mb={7} mr={5} viewStyle={_styles.authItemWrap}>
-                              {/* <Image source={authIcon} style={styles.iconSquareSize(16)} />
-                              <SpaceView ml={8}><Text style={_styles.faceText}>{i.slogan_name}</Text></SpaceView> */}
+                          return isEmptyData(i.auth_type_name) && (
+                            <>
+                              <SpaceView key={'auth'+n} mb={7} mr={5} viewStyle={_styles.authItemWrap}>
+                                {/* <Image source={authIcon} style={styles.iconSquareSize(16)} />
+                                <SpaceView ml={8}><Text style={_styles.faceText}>{i.slogan_name}</Text></SpaceView> */}
 
-                              <SpaceView><Text style={_styles.faceText}>#{i.auth_type_name}</Text></SpaceView>
-                            </SpaceView>
+                                <SpaceView><Text style={_styles.faceText}>#{i.auth_type_name}</Text></SpaceView>
+                              </SpaceView>
+                            </>
                           )
                         })}
-                      </>
-                    )}
-                  </SpaceView>
+                      </SpaceView>
+                    </>
+                  )}
                 </SpaceView>
               )}
             </SpaceView>
 
+            {/* ############################### 하단 딤 처리 영역 */}
             <LinearGradient
               colors={['rgba(0, 0, 0, 0.0)', 'rgba(0, 0, 0, 0.9)']}
               start={{ x: 0, y: 0 }}
@@ -596,7 +597,7 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
                         <Text style={_styles.blurDescText}>무료 열람 활성화</Text>
                       </SpaceView>
 
-                      <SpaceView mt={5} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                      <SpaceView mt={10} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                         <Text style={_styles.blurAddText('#FFDD00')}>{freeOpenCnt}회남음</Text>
                       </SpaceView>
                     </SpaceView>
@@ -606,8 +607,8 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
                         <Text style={_styles.blurDescText}>큐브를 사용하여 블라인드 카드를 열람합니다.</Text>
                       </SpaceView>
 
-                      <SpaceView mt={5} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                        <Image source={ICON.cubeCyan} style={styles.iconSquareSize(35)} />
+                      <SpaceView mt={10} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <SpaceView mr={3}><Image source={ICON.cubeYCyan} style={styles.iconSquareSize(30)} /></SpaceView>
                         <Text style={_styles.blurAddText('#32F9E4')}>15</Text>
                       </SpaceView>
                     </SpaceView>
@@ -627,6 +628,17 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
                         <Text style={_styles.bluBtnText('#FFDD00')}>열람하기</Text>
                       </TouchableOpacity>
                     </LinearGradient>
+                  </SpaceView>
+
+                  <SpaceView viewStyle={_styles.cubeInfoArea}>
+                    <SpaceView mr={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <SpaceView mr={3}><Image source={ICON.cubeYCyan} style={styles.iconSquareSize(15)} /></SpaceView>
+                      <Text style={_styles.cubeAmtText}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
+                    </SpaceView>
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <SpaceView mr={1}><Image source={ICON.megaCubeCyan} style={styles.iconSquareSize(20)} /></SpaceView>
+                      <Text style={_styles.cubeAmtText}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
+                    </SpaceView>
                   </SpaceView>
                 </SpaceView>
               </>
@@ -775,7 +787,7 @@ const _styles = StyleSheet.create({
   },
   thumnailDimArea: {
     position: 'absolute',
-    bottom: 0,
+    bottom: -1,
     left: 0,
     right: 0,
     opacity: 0.8,
@@ -877,17 +889,6 @@ const _styles = StyleSheet.create({
       justifyContent: 'center',
     };
   },
-  blurArea22: {
-    position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      zIndex: 2,
-      alignItems: 'center',
-      alignContent: 'center',
-      justifyContent: 'center',
-  },
   blurDesc: {
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
@@ -937,6 +938,18 @@ const _styles = StyleSheet.create({
       color: cr,
       textAlign: 'center',
     };
+  },
+  cubeInfoArea: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    flexDirection: 'row',
+    zIndex: 2,
+  },
+  cubeAmtText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 12,
+    color: '#32F9E4',
   },
 
 });

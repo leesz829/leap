@@ -450,12 +450,16 @@ export const Shop = () => {
         style={_styles.wrap}
       >
         <ScrollView style={{marginBottom: 10}} showsVerticalScrollIndicator={false}>
-          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingLeft: 15, backgroundColor: '#3D4348'}]}>
-            <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter,{marginLeft: -5}]}>
-              <Image source={ICON.cubeCyan} style={[styles.iconSquareSize(30), {marginBottom: 5}]} />
-              <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
-              <Image source={ICON.megaCubeCyan} style={[styles.iconSize40, {marginLeft: 10}]} />
-              <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
+          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {paddingLeft: 10, backgroundColor: '#3D4348'}]}>
+            <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={ICON.cubeCyan} style={styles.iconSquareSize(30)} />
+                <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
+              </SpaceView>
+              <SpaceView ml={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={ICON.megaCubeCyan} style={styles.iconSquareSize(33)} />
+                <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
+              </SpaceView>
             </SpaceView>
             <TouchableOpacity
               style={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter, _styles.inventoryBtn]}
@@ -700,7 +704,7 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Medium',
     fontSize: 20,
     color: '#32F9E4',
-    marginTop: -8,
+    marginLeft: 2,
   },
 
   bannerWrapper: {

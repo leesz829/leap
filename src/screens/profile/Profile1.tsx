@@ -462,9 +462,11 @@ export const Profile1 = (props: Props) => {
           {/* ############################################################################################################# 간단 소개 영역 */}
           <SpaceView pl={15} pr={15} mb={40}>
             <MemberIntro 
-              memberData={profileData?.member_info} 
-              isEditBtn={true}
-              faceList={memberBase?.best_face} />
+              addData={profileData?.member_add}
+              faceModifier={profileData?.member_info?.face_modifier}
+              nickname={profileData?.member_info?.nickname}
+              gender={profileData?.member_info?.gender}
+              isEditBtn={true} />
           </SpaceView>
 
           {/* ############################################################################################################# 자기 소개 영역 */}

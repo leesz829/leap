@@ -74,6 +74,7 @@ export default function MatchDetail(props: Props) {
   const [data, setData] = useState<any>({
     match_base: {},
     match_member_info: {},
+    match_member_add: {},
     profile_img_list: [],
     second_auth_list: [],
     interview_list: [],
@@ -173,6 +174,7 @@ export default function MatchDetail(props: Props) {
           setData({
             match_base: data?.match_base,
             match_member_info: data?.match_member_info,
+            match_member_add: data?.match_member_add,
             profile_img_list: data?.profile_img_list,
             second_auth_list: auth_list,
             interview_list: data?.interview_list,
@@ -709,9 +711,11 @@ export default function MatchDetail(props: Props) {
                     {/* ############################################################################################################# 간단 소개 영역 */}
                     <SpaceView pl={15} pr={15} mb={40}>
                       <MemberIntro 
-                        memberData={data?.match_member_info} 
-                        isEditBtn={false}
-                        faceList={data?.face_list} />
+                        addData={data?.match_member_add}
+                        faceModifier={data?.match_member_info?.face_modifier}
+                        nickname={data?.match_member_info?.nickname}
+                        gender={data?.match_member_info?.gender}
+                        isEditBtn={false} />
                     </SpaceView>
 
                     {/* ############################################################################################################# 자기 소개 영역 */}
