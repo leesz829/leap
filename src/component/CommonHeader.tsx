@@ -6,7 +6,7 @@ import { StackScreenProp } from '@types';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 import { Wallet } from './TopNavigation';
-import { commonStyle, styles } from 'assets/styles/Styles';
+import { commonStyle, layoutStyle, styles } from 'assets/styles/Styles';
 import { usePopup } from 'Context';
 import { isEmptyData } from 'utils/functions';
 import SpaceView from './SpaceView';
@@ -112,7 +112,9 @@ function CommonHeader({
               <SpaceView viewStyle={{width: width}}>
                 {isEmptyData(mstImgPath) ? (
                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                    <Image source={mstImgPath} style={_styles.mstImgStyle} />
+                    <SpaceView viewStyle={_styles.mstImgArea}>
+                      <Image source={mstImgPath} style={_styles.mstImgStyle} />
+                    </SpaceView>
                     <Text style={_styles.nicknameText}>{nickname}</Text>
                   </SpaceView>
                 ) : (
@@ -132,8 +134,10 @@ function CommonHeader({
                 ) : type == 'MATCH_DETAIL' ? (
                   <>
                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
-                        <Image source={ICON.reportBtn} style={styles.iconSquareSize(32)} />
+                      <TouchableOpacity style={[layoutStyle.row]} onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
+                        <View style={_styles.dot} />
+                        <View style={[_styles.dot, {marginHorizontal: 2}]} />
+                        <View style={_styles.dot} />
                       </TouchableOpacity>
                     </SpaceView>
                   </>  
@@ -182,17 +186,22 @@ const _styles = StyleSheet.create({
     color: '#D5CD9E',
     textAlign: 'center',
   },
+  mstImgArea: {
+    borderColor: '#D5CD9E',
+    borderWidth: 1,
+    borderRadius: 50,
+  },
   mstImgStyle: {
     width: 32,
     height: 32,
     borderRadius: 50,
     overflow: 'hidden',
-    marginRight: 7,
   },
   nicknameText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 20,
     color: '#D5CD9E',
+    marginLeft: 7,
   },
   scoreText: {
     fontFamily: 'Pretendard-Medium',
@@ -211,6 +220,12 @@ const _styles = StyleSheet.create({
     height: 56,
     justifyContent: 'center',
     zIndex: 1,
+  },
+  dot: {
+    height: 6,
+    width: 6,
+    borderRadius: 50,
+    backgroundColor: '#D5CD9E',
   },
 
 });

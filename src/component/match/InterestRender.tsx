@@ -117,7 +117,7 @@ const _styles = StyleSheet.create({
   interestItem: (isOn) => {
     return {
       borderRadius: 20,
-      backgroundColor: 'rgba(135,135,135,0.5)',
+      backgroundColor: '#FFFFFF',
       paddingHorizontal: 10,
       paddingVertical: 5,
       marginRight: 5,
@@ -129,7 +129,7 @@ const _styles = StyleSheet.create({
     return {
       fontFamily: 'Pretendard-Regular',
       fontSize: 14,
-      color: isOn ? '#08D2F2' : '#EEEAEB',
+      color: isOn ? '#08D2F2' : '#D5CD9E',
     };
   },
   modBtn: {

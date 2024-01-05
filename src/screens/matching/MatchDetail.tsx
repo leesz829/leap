@@ -192,12 +192,10 @@ export default function MatchDetail(props: Props) {
           if(type == 'STORAGE') {
             if(data?.match_base.match_status == 'ACCEPT') {
               _titleText = '매칭 성공';
-            } else if(data?.match_base.match_status == 'LIVE_HIGH') {
-              _titleText = '플러팅 고평점';
-            } else {
+            } else {
               if(matchType == 'RES') {
                 _titleText = '받은관심';
-              } else {
+              } else if(matchType == 'REQ') {
                 _titleText = '보낸관심';
               }
             }
