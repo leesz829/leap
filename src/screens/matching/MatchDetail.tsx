@@ -192,6 +192,8 @@ export default function MatchDetail(props: Props) {
           if(type == 'STORAGE') {
             if(data?.match_base.match_status == 'ACCEPT') {
               _titleText = '매칭 성공';
+            } else if(data?.match_base.match_status == 'ZZIM') {
+              _titleText = '찜하기';
             } else {
               if(matchType == 'RES') {
                 _titleText = '받은관심';
@@ -612,7 +614,7 @@ export default function MatchDetail(props: Props) {
               )}
             </TouchableOpacity>
 
-            {data?.match_member_info?.zzim_yn == 'Y' && (
+            {type != 'STORAGE' && data?.match_member_info?.zzim_yn == 'Y' && (
               <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
                 <Text style={_styles.btnText('ZZIM', '#3D4348')}>찜하기</Text>
               </TouchableOpacity>
@@ -958,6 +960,7 @@ export default function MatchDetail(props: Props) {
           confirmFunc={interestSend}
           useItem={data?.use_item}
         />
+
 
         {/* ##################################################################################
                     찐심 보내기 팝업
@@ -1308,8 +1311,8 @@ const _styles = StyleSheet.create({
   },
   gradeArea: {
     position: 'absolute',
-    top: 0,
-    right: 10,
+    top: 15,
+    right: 25,
     backgroundColor: '#FFFFFF',
     borderRadius: Platform.OS == 'ios' ? 8 : 15,
     overflow: 'hidden',

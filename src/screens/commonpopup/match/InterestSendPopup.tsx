@@ -36,21 +36,25 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
   const [selectedInterest, setSelectedInterest] = React.useState('interest');
 
   // 자유이용권 아이템 사용 여부
-  const [isFreeItemUse, setIsFreeItemUse] = React.useState(function() {
-    let result = false;
-    if(isEmptyData(useItem) && isEmptyData(useItem?.FREE_LIKE)) {
-      let endDt = useItem?.FREE_LIKE?.end_dt;
-      if(endDt > formatNowDate()) {
-        result = true;
-      }
-    };
-    return result;
-  });
+  const [isFreeItemUse, setIsFreeItemUse] = React.useState(false);
 
   // 관심 선택 콜백 함수
   const interestTypeCallbackFn = (value: string) => {
     setSelectedInterest(value);
   };
+
+  React.useEffect(() => {
+    if(isVisible) {
+      let isFreeUse = false;
+      if(isEmptyData(useItem) && isEmptyData(useItem?.FREE_LIKE)) {
+        let endDt = useItem?.FREE_LIKE?.end_dt;
+        if(endDt > formatNowDate()) {
+          isFreeUse = true;
+        }
+      };
+      setIsFreeItemUse(isFreeUse);
+    }
+  }, [isVisible]);
 
   return (
     <Modal isVisible={isVisible} onRequestClose={() => { closeModal(); }}>
@@ -124,7 +128,7 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
             <Text style={_styles.btnStyle('#FFDD00')}>보내기</Text>
 
             <SpaceView viewStyle={_styles.sendEtc}>
-              {selectedInterest == 'INTEREST' ? (
+              {selectedInterest == 'interest' ? (
                 <>
                   {!isFreeItemUse ? (
                     <>

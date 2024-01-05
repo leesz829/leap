@@ -8,7 +8,7 @@ import TopNavigation from 'component/TopNavigation';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
-import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, FlatList, RefreshControl } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, FlatList, RefreshControl, Platform } from 'react-native';
 import { useDispatch } from 'react-redux'; 
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { formatNowDate, isEmptyData, CommaFormat } from 'utils/functions';
@@ -445,8 +445,8 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
             {imgList.length > 0 && (
               <Image
                 source={findSourcePath(imgList[currentImgIdx].img_file_path)}
-                style={{ flex: 1, width: _renderWidth, height: _renderHeight }}
-                resizeMode={'cover'}
+                style={{ width: _renderWidth, height: _renderHeight }}
+                //resizeMode={'cover'}
               />
             )}
 
@@ -478,6 +478,12 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
             <TouchableOpacity 
               onPress={() => { nextImage(); }}
               style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
+
+            {/* ############################ 리스펙트 등급 표시 */}
+            <SpaceView viewStyle={_styles.gradeArea}>
+              <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
+              <Text style={_styles.gradeText}>{item?.respect_grade}</Text>
+            </SpaceView>
 
             {/* ############################ 내용 */}
             <SpaceView viewStyle={_styles.infoArea}>
@@ -951,6 +957,24 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Medium',
     fontSize: 12,
     color: '#32F9E4',
+  },
+  gradeArea: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    backgroundColor: '#FFFFFF',
+    borderRadius: Platform.OS == 'ios' ? 8 : 15,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+  },
+  gradeText:  {
+    fontFamily: 'MinSans-Bold',
+    fontSize: 13,
+    color: '#000000',
+    marginLeft: 3,
   },
 
 });

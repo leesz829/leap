@@ -142,6 +142,7 @@ export default function MileageShop() {
         // 재고 상품 목록 조회
         const { success: sp, data: pd } = await get_product_list();
         if (sp) {
+          console.log('pd?.prod_list :::::: ' , pd?.prod_list.length);
           setData(pd?.prod_list);
 
           let _brandList = [{brand_seq: 0, brand_name: 'ALL', img_file_path: null}];
