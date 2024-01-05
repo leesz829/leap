@@ -620,7 +620,7 @@ console.log('payINfo:::', payInfo);
           </View>
 
           <SpaceView viewStyle={{paddingHorizontal: 15}}>
-            {tmplList?.map((item) => (
+            {/* {tmplList?.map((item) => (
               <SpaceView key={item?.tmplt_level} mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
                 <Image source={ICON[`circle${item.tmplt_name.trim()}`]} style={styles.iconSquareSize(40)} />
                 <SpaceView>
@@ -628,7 +628,53 @@ console.log('payINfo:::', payInfo);
                   <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>{item?.item_name}</Text>
                 </SpaceView>
               </SpaceView>
-            ))}
+            ))} */}
+
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleE} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>20000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>(캐시백 보상)메가큐브 2</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleD} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>50000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>(캐시백 보상)메가큐브 4</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleC} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>100000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>(캐시백 보상)메가큐브 9</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleB} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>150000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>(캐시백 보상)메가큐브 12</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleA} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>200000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>(캐시백 보상)메가큐브 15</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mb={15} viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+              <Image source={ICON.circleS} style={styles.iconSquareSize(40)} />
+              <SpaceView>
+                <Text style={{fontFamily: 'Pretendard-Regular', textAlign: 'right',color: '#D5CD9E'}}>300000P 충전하면</Text>
+                <Text style={{fontFamily: 'Pretendard-SemiBold', fontSize: 20, color: '#32F9E4', textAlign: 'right'}}>(캐시백 보상)메가큐브 30</Text>
+              </SpaceView>
+            </SpaceView>
+
+
+
           </SpaceView>
 
           <View style={_styles.bottomBox}>
