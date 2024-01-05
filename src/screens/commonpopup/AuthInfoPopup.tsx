@@ -115,7 +115,7 @@ export default function AuthInfoPopup({ isVisible, setIsVisible, closeModal, con
                               </SpaceView>
 
                               <SpaceView mt={5}>
-                                <Text style={_styles.textStyle(12, index%2 == 0 ? '#BEC2C8' : '#F3E270', 'L')} numberOfLines={3}>
+                                <Text style={_styles.textStyle(12, !isEmptyData(item?.comment) ? '#BEC2C8' : '#F3E270', 'L')} numberOfLines={3}>
                                   {isEmptyData(item?.comment) ? (
                                     <>"{item?.comment}"</>
                                   ) : (

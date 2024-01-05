@@ -896,6 +896,9 @@ export default function MatchDetail(props: Props) {
           /* modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]} */
           modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#333B41'}}
           modalHeight={550}
+          scrollViewProps={{
+            scrollEnabled: false, // 스크롤 비활성화
+          }}
           FooterComponent={
             <>
               <SpaceView pl={25} pr={25} pb={20} viewStyle={{backgroundColor: '#333B41'}}>
@@ -916,11 +919,7 @@ export default function MatchDetail(props: Props) {
         >
           <SpaceView viewStyle={{backgroundColor: '#333B41'}}>
             <SpaceView mt={25} ml={30}>
-              {/* <CommonText fontWeight={'700'} type={'h3'}>사용자 신고 및 차단하기</CommonText> */}
               <Text style={_styles.reportTitle}>사용자 신고 및 차단하기</Text>
-              {/* <TouchableOpacity onPress={report_onClose}>
-                <Image source={ICON.xBtn2} style={{width: 20, height: 20}} />
-              </TouchableOpacity> */}
             </SpaceView>
 
             <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 0}]}>

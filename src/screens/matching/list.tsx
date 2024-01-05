@@ -497,7 +497,7 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
               )}
               {currentImgIdx == 1 && (
                 <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
-                  <SpaceView mb={8} viewStyle={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <SpaceView viewStyle={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                       <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
@@ -510,9 +510,10 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
                     </SpaceView>
 
                   </SpaceView>
-                  <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                    {item?.face_list.length > 0 && (
-                      <>
+                  
+                  {item?.face_list.length > 0 && (
+                    <>
+                      <SpaceView mt={12} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
                         {item?.face_list?.map((i, n) => {
                           return isEmptyData(i.face_code_name) && (
                             <>
@@ -522,9 +523,9 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
                             </>
                           )
                         })}
-                      </>
-                    )}
-                  </SpaceView>
+                      </SpaceView>
+                    </>
+                  )}
                 </SpaceView>
               )}
               {currentImgIdx == 2 && (

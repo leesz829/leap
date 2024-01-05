@@ -216,13 +216,24 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
       <ScrollView style={_styles.categoryWrap} showsVerticalScrollIndicator={false}>
 
         <SpaceView mb={height-150}>
-          {productList?.map((item, index) => (
-            <RenderItem
-              key={`product-${item?.item_code}-${index}`}
-              item={item}
-              openModal={openProductModalFunc}
-            />
-          ))}
+
+          {productList.length > 0 ? (
+            <>
+              {productList?.map((item, index) => (
+                <RenderItem
+                  key={`product-${item?.item_code}-${index}`}
+                  item={item}
+                  openModal={openProductModalFunc}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
+                <Text style={_styles.emptyText}>등록된 상품이 없습니다.</Text>
+              </SpaceView>
+            </>
+          )}
         </SpaceView>
 
       </ScrollView>
@@ -546,6 +557,13 @@ const _styles = StyleSheet.create({
     borderTopWidth: 8,
     borderTopColor: '#FFF',
   },
+  emptyText: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 14,
+    color: '#F1D30E',
+  },
+
+
 });
 
 const categories = [

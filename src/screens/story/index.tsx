@@ -738,18 +738,6 @@ export const Story = () => {
                   </SpaceView>
                 </>
               )}
-
-              {/* ##################################################################### 하단 버튼 */}
-              <SpaceView viewStyle={_styles.btnArea}>
-                <SpaceView viewStyle={_styles.btnTextArea}>
-                  {/* <TouchableOpacity onPress={() => { goStoryActive(); }} style={_styles.btnItemArea}>
-                    <Image source={ICON.clockIcon} style={styles.iconSquareSize(18)} />
-                  </TouchableOpacity> */}
-                  <TouchableOpacity onPress={() => { goStoryEdit(); }}>
-                    <Text style={_styles.btnRegiText}>스토리 등록</Text>
-                  </TouchableOpacity>
-                </SpaceView>
-              </SpaceView>
             </>
           )}
 
@@ -785,6 +773,20 @@ export const Story = () => {
           <TouchableOpacity onPress={() => { scrollToTop(); }}>
             <Text style={_styles.topBtnText}>맨위로</Text>
           </TouchableOpacity>
+        </SpaceView>
+      )}
+
+      {/* ##################################################################### 하단 버튼 */}
+      {currentIndex == 0 && (
+        <SpaceView viewStyle={_styles.btnArea}>
+          <SpaceView viewStyle={_styles.btnTextArea}>
+            {/* <TouchableOpacity onPress={() => { goStoryActive(); }} style={_styles.btnItemArea}>
+              <Image source={ICON.clockIcon} style={styles.iconSquareSize(18)} />
+            </TouchableOpacity> */}
+            <TouchableOpacity onPress={() => { goStoryEdit(); }}>
+              <Text style={_styles.btnRegiText}>스토리 등록</Text>
+            </TouchableOpacity>
+          </SpaceView>
         </SpaceView>
       )}
     </>
@@ -891,7 +893,7 @@ const _styles = StyleSheet.create({
   },
   btnArea: {
     position: 'absolute',
-    bottom: 65,
+    bottom: 13,
     right: 10,
     alignItems: 'center',
     zIndex: 1,
@@ -900,9 +902,9 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
   btnItemArea: {
-    width: 50,
-    paddingVertical: 8,
-    paddingHorizontal: 30,
+    //width: 50,
+    paddingHorizontal: 25,
+    paddingVertical: 15,
     marginHorizontal: 8,
     borderRadius: 20,
     overflow: 'hidden',

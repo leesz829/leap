@@ -1071,7 +1071,7 @@ export default function StoryDetail(props: Props) {
           <TouchableOpacity style={[_styles.modBtn, {backgroundColor: '#FFF'}]} onPress={ deleteStoryBoard }>
             <Text style={[_styles.closeBtnText, {color: '#FF4D29'}]}>삭제</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[_styles.modBtn]} onPress={storyMod_onClose} hitSlop={commonStyle.hipSlop20}>
+          <TouchableOpacity style={[_styles.modBtn, {borderWidth: 1, borderColor: '#BBB18B'}]} onPress={storyMod_onClose} hitSlop={commonStyle.hipSlop20}>
             <Text style={[_styles.closeBtnText, {color: '#D5CD9E'}]}>취소</Text>
           </TouchableOpacity>
         </SpaceView>
@@ -1485,6 +1485,7 @@ const _styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 5,
     marginTop: 10,
+    overflow: 'hidden',
   },
   closeBtnText: {
     fontFamily: 'Pretendard-Bold',

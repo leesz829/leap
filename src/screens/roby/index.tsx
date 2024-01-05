@@ -390,7 +390,12 @@ export const Roby = (props: Props) => {
   // 우편함 이동
   const onPressMail = async () => {
     setIsVisible(false);
-    navigation.navigate(STACK.TAB, { screen: 'Message' });
+    navigation.navigate(STACK.TAB, { 
+      screen: 'Message' ,
+      params: {
+        headerType: 'common',
+      }
+    });
   };
 
   // 이용약관 이동
@@ -738,36 +743,36 @@ export const Roby = (props: Props) => {
                     
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <TouchableOpacity onPress={() => (setRespectType('MEMBER'))}>
-                        <View style={_styles.greenDot(memberBase?.respect_grade == 'MEMBER' || memberBase?.respect_grade == 'UNKNOWN')} />
-                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'MEMBER'), {color: (respectType == 'MEMBER' || memberBase?.respect_grade == 'UNKNOWN') ? '#32F9E4' : '#E1DFD1'}]}>MEMBER</Text>
+                        <View style={_styles.greenDot(memberBase?.respect_grade == 'MEMBER')} />
+                        <Text style={[_styles.respectGradeText(respectType == 'MEMBER' || respectType == 'UNKNOWN')]}>MEMBER</Text>
                       </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
                       <TouchableOpacity onPress={() => (setRespectType('SILVER'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'SILVER')} />
-                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'SILVER'), {color: respectType == 'SILVER' ? '#32F9E4' : '#E1DFD1'}]}>SILVER</Text>
+                        <Text style={[_styles.respectGradeText(respectType == 'SILVER')]}>SILVER</Text>
                       </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
                       <TouchableOpacity onPress={() => (setRespectType('GOLD'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'GOLD')} />
-                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'GOLD'), {color: respectType == 'GOLD' ? '#32F9E4' : '#E1DFD1'}]}>GOLD</Text>
+                        <Text style={[_styles.respectGradeText(respectType == 'GOLD')]}>GOLD</Text>
                       </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
                       <TouchableOpacity onPress={() => (setRespectType('PLATINUM'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'PLATINUM')} />
-                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'PLATINUM'), {color: respectType == 'PLATINUM' ? '#32F9E4' : '#E1DFD1'}]}>PLATINUM</Text>
+                        <Text style={[_styles.respectGradeText(respectType == 'PLATINUM')]}>PLATINUM</Text>
                       </TouchableOpacity>
 
                       <SpaceView mt={7} viewStyle={_styles.respectGradeUnderLine} />
 
                       <TouchableOpacity onPress={() => (setRespectType('DIAMOND'))}>
                         <View style={_styles.greenDot(memberBase?.respect_grade == 'DIAMOND')} />
-                        <Text style={[_styles.respectGradeText(memberBase?.respect_grade == 'DIAMOND'), {color: respectType == 'DIAMOND' ? '#32F9E4' : '#E1DFD1'}]}>DIAMOND</Text>
+                        <Text style={[_styles.respectGradeText(respectType == 'DIAMOND')]}>DIAMOND</Text>
                       </TouchableOpacity>
                     </View>
                   </SpaceView>
@@ -844,20 +849,26 @@ export const Roby = (props: Props) => {
                       <Text style={_styles.popularDesc}>LIVE에서 {memberPeekData?.accResLiveCnt}명에게 호감을 받으셨어요.</Text>
 
                       <SpaceView pb={10}>
-                        <SpaceView mt={20}>
-                          <Text style={{fontFamily: 'Pretendard-Regular', color: '#FFDD00'}}>대표 인상 TOP3</Text>
-                        </SpaceView>
-                        <SpaceView mt={10} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                          {memberPeekData.faceLankList.map((item, index) => {
-                            return item?.face_code_name && index < 3 && (
-                              <>
-                                <SpaceView key={'face' + index} mr={5} mb={7} viewStyle={[_styles.bestFaceContainer, {alignItems: 'center'}]}>
-                                  <Text style={_styles.bestFaceText}>#{item?.face_code_name}</Text>
-                                </SpaceView>
-                              </>
-                            )
-                          })}
-                        </SpaceView>
+
+                        {/* ############## 대표인상 노출 */}
+                        {memberPeekData?.faceLankList?.length > 0 && (
+                          <SpaceView>
+                            <SpaceView mt={20}>
+                              <Text style={{fontFamily: 'Pretendard-Regular', color: '#FFDD00'}}>대표 인상 TOP3</Text>
+                            </SpaceView>
+                            <SpaceView mt={10} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                              {memberPeekData.faceLankList.map((item, index) => {
+                                return item?.face_code_name && index < 3 && (
+                                  <>
+                                    <SpaceView key={'face' + index} mr={5} mb={7} viewStyle={[_styles.bestFaceContainer, {alignItems: 'center'}]}>
+                                      <Text style={_styles.bestFaceText}>#{item?.face_code_name}</Text>
+                                    </SpaceView>
+                                  </>
+                                )
+                              })}
+                            </SpaceView>
+                          </SpaceView>
+                        )}
 
                         <SpaceView viewStyle={_styles.flutingArea(memberBase?.reex_yn == 'Y' ? '#FFFFFF' : '#FFDD00')}>
                           {memberBase?.reex_yn == 'Y' ? (
@@ -1289,12 +1300,12 @@ const _styles = StyleSheet.create({
   },
   profileBtn: {
     backgroundColor: '#FFDD00',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     borderRadius: 50,
     position: 'absolute',
     bottom: 13,
-    right: 15,
+    right: 10,
   },
   profileBtnText: {
     fontFamily: 'Pretendard-Bold',

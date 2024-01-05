@@ -417,7 +417,7 @@ export const Shop = () => {
       let isPopupShow = true;
 
       // 튜토리얼 팝업 노출
-      if(!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y') {
+      /* if(!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y') {
         isPopupShow = false;
 
         show({
@@ -432,7 +432,7 @@ export const Shop = () => {
             popupShow();
           }
         });
-      };
+      }; */
       
       getCashBackPayInfo('FOCUS');
       getShopMain(isPopupShow); 
@@ -648,13 +648,13 @@ console.log('payINfo:::', payInfo);
 
 // 카테고리 목록
 const categoryList = [
-  // {
-  //   label: '추천상품',
-  //   value: 'RECOMMENDER',
-  //   imgActive: ICON.starCyan,
-  //   imgUnactive: ICON.starGray,
-  //   desc: '리프의 추천 Pick!\n가성비 좋은 상품을 만나보세요.',
-  // },
+  {
+    label: '추천상품',
+    value: 'RECOMMENDER',
+    imgActive: ICON.starCyan,
+    imgUnactive: ICON.starGray,
+    desc: '리프의 추천 Pick!\n가성비 좋은 상품을 만나보세요.',
+  },
   {
     label: '패스상품',
     value: 'PASS',
@@ -667,14 +667,14 @@ const categoryList = [
     value: 'SUBSCRIPTION',
     imgActive: ICON.drinkCyan,
     imgUnactive: ICON.drinkGray,
-    desc: '큐브는 리피에서 사용하는 재화입니다.\n쓰임새가 다른 큐브와 메가큐브 2가지로 구분합니다.',
+    desc: '매칭에 유리한 효과를 가진 다양한 아이템이 준비되어 있습니다.',
   },
   {
     label: '패키지상품',
     value: 'PACKAGE',
     imgActive: ICON.cardCyan,
     imgUnactive: ICON.cardGray,
-    desc: '큐브는 리피에서 사용하는 재화입니다.\n쓰임새가 다른 큐브와 메가큐브 2가지로 구분합니다.',
+    desc: '꿀맛나는 할인율! 구매하면 무조건 이득!',
   },
 ];
 

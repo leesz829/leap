@@ -76,9 +76,11 @@ export const PromotionPopup = (props: Props) => {
             style={_styles.popupContainer}
           >
             <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-              <SpaceView viewStyle={_styles.discountBox}>
-                <Text style={_styles.discountText}>할인중</Text>
-              </SpaceView>
+              {prodList[currentIndex]?.discount_rate > 0 && (
+                <SpaceView mr={7} viewStyle={_styles.discountBox}>
+                  <Text style={_styles.discountText}>할인중</Text>
+                </SpaceView>
+              )}
               <Text style={_styles.recTitText}>{prodList?.length}개의 추천 상품</Text>
             </SpaceView>
 
@@ -114,13 +116,17 @@ export const PromotionPopup = (props: Props) => {
                         <>
                           <TouchableOpacity key={'promotion_'+index} style={_styles.prodItem(currentIndex == index)} onPress={() => { onPressItem(index); }}>
                             {/* <Image source={findSourcePath(item.img_path)} style={{width: 60, height: 45}} resizeMode={'cover'} /> */}
-                            <Image source={ICON.polygonGreen} style={[styles.iconSquareSize(40), {marginTop: 10}]} />
-                            <SpaceView viewStyle={_styles.recListBox}>
-                              <SpaceView mr={5} viewStyle={_styles.recDiscountBox}>
-                                <Text style={_styles.recDiscountText}>{item?.discount_rate > 0 && '-'}{item?.discount_rate}%</Text>
-                              </SpaceView>
+
+                            <SpaceView mt={2} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                              <Image source={ICON.polygonGreen} style={[styles.iconSquareSize(40)]} />
                               <Text style={_styles.recItemName}>{item?.item_name}</Text>
                             </SpaceView>
+
+                            {item?.discount_rate > 0 && (
+                              <SpaceView viewStyle={_styles.recDiscountBox}>
+                                <Text style={_styles.recDiscountText}>{item?.discount_rate > 0 && '-'}{item?.discount_rate}%</Text>
+                              </SpaceView>
+                            )}
                           </TouchableOpacity>
                         </>
                       )
@@ -235,11 +241,15 @@ const _styles = StyleSheet.create({
   },
   recDiscountBox: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    width: 40,
+    width: 35,
     height: 15,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    overflow: 'hidden',
+    position: 'absolute',
+    top: 3,
+    right: 3,
   },
   recDiscountText: {
     color: '#FF4D29', 
@@ -249,8 +259,9 @@ const _styles = StyleSheet.create({
   recItemName: {
     width: 80,
     fontFamily: 'Pretendard-Regular',
+    fontSize: 13,
     color: '#D5CD9E',
-    marginTop: 10,
+    //marginTop: 10,
   },
   recItemArea: {
     flexDirection: 'column',
@@ -262,7 +273,6 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 12,
     color: '#D5CD9E',
-    marginLeft: 7,
   },
   recList: {
     width: width - 120,
@@ -333,7 +343,7 @@ const _styles = StyleSheet.create({
       backgroundColor: '#6A6A6A',
       width: width - 270,
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      //justifyContent: 'center',
       alignItems: 'center',
     };
   },

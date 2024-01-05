@@ -17,7 +17,7 @@ export default function InterviewRender({ title, isEdit, dataList }) {
     <>
       {isEmptyData(dataList) && dataList.length > 0 && (
         <SpaceView>
-          <SpaceView mb={25} viewStyle={{alignItems: 'center'}}>
+          <SpaceView mb={15} viewStyle={{alignItems: 'center'}}>
             <SpaceView viewStyle={{flexDirection: 'row'}}>
               <View style={{zIndex:1}}>
                 <Text style={_styles.titText}>{title}</Text>
@@ -26,7 +26,19 @@ export default function InterviewRender({ title, isEdit, dataList }) {
             </SpaceView>
           </SpaceView>
 
-          <SpaceView viewStyle={{alignItems:'flex-start', justifyContent: 'flex-start'}}>
+          {(isEmptyData(isEdit) && isEdit) && (
+            <SpaceView viewStyle={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+              <TouchableOpacity
+                onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
+                style={_styles.modBtn} 
+              >
+                <Image source={ICON.squarePen} style={styles.iconSize16} />
+                <Text style={_styles.modBtnText}>수정</Text>
+              </TouchableOpacity>
+            </SpaceView>
+          )}
+
+          <SpaceView mt={10} viewStyle={{alignItems:'flex-start', justifyContent: 'flex-start'}}>
             {dataList.map((e, index) => {
 
               let isExp = true;
@@ -41,19 +53,6 @@ export default function InterviewRender({ title, isEdit, dataList }) {
                     <SpaceView mb={10} viewStyle={_styles.questionRow}>
                       <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
                     </SpaceView>
-
-                    {(isEmptyData(isEdit) && isEdit) && (
-                      <SpaceView viewStyle={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-                        <TouchableOpacity
-                          onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
-                          style={_styles.modBtn} 
-                          key={index}
-                        >
-                          <Image source={ICON.squarePen} style={styles.iconSize16} />
-                          <Text style={_styles.modBtnText}>수정</Text>
-                        </TouchableOpacity>
-                      </SpaceView>
-                    )}
 
                     <SpaceView viewStyle={_styles.answerRow}>
                       <Text style={_styles.answerText(isEmptyData(e?.answer) ? '#F3E270' : '#ABA99A')}>"{isEmptyData(e?.answer) ? e?.answer : '답변을 등록해 주세요.'}"</Text>

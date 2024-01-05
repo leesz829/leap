@@ -168,10 +168,10 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
               <Image style={_style.iconSize} source={ICON.cartGray} />
             }
 
-            {/* {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
+            {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
               <View style={_style.shopIconArea}><Text style={_style.newText}>NEW</Text></View>
             }
-            {memberBase?.gender == 'W' && (
+            {/* {memberBase?.gender == 'W' && (
               <>
                 <Animated.View style={[_style.shopLimitArea, shopDescStyle]}>
                   <View style={_style.shopLimitTextArea}>

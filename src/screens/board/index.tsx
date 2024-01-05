@@ -145,7 +145,7 @@ export const Board = (props: Props) => {
 				colors={['#3D4348', '#1A1E1C']}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 0, y: 1 }}
-				style={{paddingHorizontal: 25, minHeight: height}}
+				style={{minHeight: height}}
 			>		
 				<ScrollView showsVerticalScrollIndicator={false}>
 
@@ -154,45 +154,42 @@ export const Board = (props: Props) => {
 
 							return (memberBase?.member_seq != 905 || (memberBase?.member_seq == 905 && (item.board_seq == 63 || item.board_seq == 82))) && (
 								<>
-									<SpaceView mb={10} key={item.board_seq}>
-										<View style={_styles.rowContainer}>
-											<TouchableOpacity
-												style={_styles.inner}
-												activeOpacity={0.3}
-												onPress={() => (
-													onPressBoardDetail(item)
-													//sstoggleAccordion(item);
-													)			
-												}>
-												
-												<View style={[_styles.titleContainer, activeIndex === item.board_seq && _styles.active]}>
-													<View style={{flexDirection:'row'}}>
-														{item.board_type == 'EVENT' &&
-															<Text style={_styles.iconType('#AFF20E')}>이벤트</Text>
-														}
-														{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'NOTICE') &&
-															<Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
-														}
-														{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'GUIDE') &&
-															<Text style={_styles.iconType('#FFDD00')}>가이드</Text>
-														}
-													</View>
-
-													<View>
-														{(item.new_yn == 'Y' && item.view_yn == 'N') && (
-															<View style={_styles.newIcon} />
-														)}
-														<CommonText textStyle={_styles.titleText} type={'h5'} fontWeight={'200'} color={'#D5CD9E'}>{item.title}</CommonText>
-														<CommonText type={'h6'} fontWeight={'200'} color={'#E1DFD1'}>{item.reg_dt}</CommonText>
-													</View>
+									<SpaceView mb={10} key={item.board_seq} viewStyle={_styles.rowContainer}>
+										<TouchableOpacity
+											style={_styles.inner}
+											activeOpacity={0.3}
+											onPress={() => (
+												onPressBoardDetail(item)
+												//sstoggleAccordion(item);
+											)}
+										>
+											<View style={[_styles.titleContainer, activeIndex === item.board_seq && _styles.active]}>
+												<View style={{flexDirection:'row'}}>
+													{item.board_type == 'EVENT' &&
+														<Text style={_styles.iconType('#AFF20E')}>이벤트</Text>
+													}
+													{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'NOTICE') &&
+														<Text style={_styles.iconType('#00FFDC')}>공지사항</Text>
+													}
+													{(item.board_type == 'RECENT_NEWS' && item.board_sub_type == 'GUIDE') &&
+														<Text style={_styles.iconType('#FFDD00')}>가이드</Text>
+													}
 												</View>
 
-												<View style={[_styles.iconContainer, activeIndex === item.board_seq && _styles.activeIcon]}>
-													{/* <Image source={ICON.arrBottom} style={_styles.iconStyle} /> */}
-													<Image source={ICON.circleArrow} style={styles.iconSize18} />
+												<View>
+													{(item.new_yn == 'Y' && item.view_yn == 'N') && (
+														<View style={_styles.newIcon} />
+													)}
+													<CommonText textStyle={_styles.titleText} type={'h5'} fontWeight={'200'} color={'#D5CD9E'}>{item.title}{item.new_yn}{item.view_yn}</CommonText>
+													<CommonText type={'h6'} fontWeight={'200'} color={'#E1DFD1'}>{item.reg_dt}</CommonText>
 												</View>
-											</TouchableOpacity>
-										</View>
+											</View>
+
+											<View style={[_styles.iconContainer, activeIndex === item.board_seq && _styles.activeIcon]}>
+												{/* <Image source={ICON.arrBottom} style={_styles.iconStyle} /> */}
+												<Image source={ICON.circleArrow} style={styles.iconSize18} />
+											</View>
+										</TouchableOpacity>
 									</SpaceView>
 								</>
 							)
@@ -221,12 +218,10 @@ const _styles = StyleSheet.create({
 	inner: {
 	  	width: '100%',
 	},
-	labelContainer: {
-	  	marginBottom: 12,
-	},
 	rowContainer: {
 	 	flexDirection: 'row',
 	  	justifyContent: 'space-between',
+		paddingHorizontal: 25,
 	},
 	iconStyle: {
 	  	width: 18,
@@ -296,11 +291,12 @@ const _styles = StyleSheet.create({
 	},
 	newIcon: {
 		position: 'absolute',
-		top: 10,
+		top: 9,
 		left: -7,
 		width: 5,
 		height: 5,
 		backgroundColor: '#FF4D29',
 		borderRadius: 30,
+		overflow: 'hidden',
 	},
   });

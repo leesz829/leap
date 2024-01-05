@@ -74,6 +74,8 @@ export const Login = () => {
     try {
       
       const { success, data } = await signin(body);
+
+      console.log('data::::: '  , data);
       
       if (success) {
         switch (data.result_code) {

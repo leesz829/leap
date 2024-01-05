@@ -143,7 +143,11 @@ export const Message = (props: Props) => {
 		<>
 			{isLoading && <CommonLoading />}
 
-			<TopNavigation currentPath={''} />
+			{props.route.params?.headerType == 'common' ? (
+				<CommonHeader title={'알림'} />
+			) : (
+				<TopNavigation currentPath={''} />
+			)}
       
         	<LinearGradient
           		colors={['#3D4348', '#1A1E1C']}

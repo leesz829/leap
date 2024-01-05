@@ -142,7 +142,7 @@ export default function ProfileAuth({ data, isEditBtn, memberData }) {
                         </SpaceView>
 
                         <SpaceView>
-                          <Text style={_styles.textStyle(12, index%2 == 0 ? '#BEC2C8' : '#E5AA6D', 'L')} numberOfLines={3}>
+                          <Text style={_styles.textStyle(12, !isEmptyData(item?.comment) ? '#BEC2C8' : '#E5AA6D', 'L')} numberOfLines={3}>
                             {isEmptyData(item?.comment) ? (
                               <>"{item?.comment}"</>
                             ) : (
