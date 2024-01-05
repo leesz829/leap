@@ -64,7 +64,7 @@ export default function AuthInfoPopup({ isVisible, setIsVisible, closeModal, con
               style={_styles.popupContainer}>
 
               <SpaceView pl={15} pr={15} mt={15} mb={10} viewStyle={_styles.titleArea}>
-                <Text style={_styles.titleText}>{memberBase?.nickname}님의{'\n'}인증 정보</Text>
+                <Text style={_styles.titleText}><Text style={{color: '#F3E270'}}>{memberBase?.nickname}</Text>님의{'\n'}인증 정보</Text>
                 <TouchableOpacity style={[_styles.authRegiBtn, {marginLeft: 5}]} onPress={() => { onModfy(); }}>
                   <Image source={ICON.penSquare} style={styles.iconSquareSize(15)} />
                   <Text style={_styles.authRegiText}>수정</Text>
@@ -115,7 +115,7 @@ export default function AuthInfoPopup({ isVisible, setIsVisible, closeModal, con
                               </SpaceView>
 
                               <SpaceView mt={5}>
-                                <Text style={_styles.textStyle(12, !isEmptyData(item?.comment) ? '#BEC2C8' : '#F3E270', 'L')} numberOfLines={3}>
+                                <Text style={_styles.textStyle(12, !isEmptyData(item?.auth_comment) ? '#BEC2C8' : '#F3E270', 'L')} numberOfLines={3}>
                                   {isEmptyData(item?.comment) ? (
                                     <>"{item?.comment}"</>
                                   ) : (
@@ -181,7 +181,7 @@ const _styles = StyleSheet.create({
   titleText: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 18,
-    color: '#FFDD00',
+    color: '#D5CD9E',
   },
 
   textStyle: (_fSize:number, _fColor:string, _fType:string) => {
@@ -237,7 +237,7 @@ const _styles = StyleSheet.create({
     fontSize: 13,
     color: '#E0AC6E',
     backgroundColor: '#000208',
-    borderRadius: 15,
+    borderRadius: 8,
     paddingVertical: 1,
     paddingHorizontal: 10,
     overflow: 'hidden',
@@ -285,7 +285,7 @@ const _styles = StyleSheet.create({
     color: '#3D4348',
     fontFamily: 'Pretendard-Bold',
     fontSize: 16,
-    borderRadius: 15,
+    borderRadius: 8,
     paddingVertical: 4,
     paddingHorizontal: 45,
     overflow: 'hidden',

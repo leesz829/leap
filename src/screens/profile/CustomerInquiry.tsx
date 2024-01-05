@@ -215,7 +215,7 @@ const _styles = StyleSheet.create({
   contentsText: {
     fontFamily: 'Pretendard-Medium',
     color: '#E1DFD1',
-    height: height - 580,
+    height: 150,
   },
 	// bottomArea: {
 	// 	paddingHorizontal: 5,

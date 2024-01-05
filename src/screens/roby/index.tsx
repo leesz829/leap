@@ -798,10 +798,10 @@ export const Roby = (props: Props) => {
                       <View style={[_styles.respectBox]}>
                         <Image source={ICON.moneyBill} style={styles.iconSquareSize(14)} />
                         <Text style={[_styles.respectText('#D5CD9E', 11), {marginLeft: 5, textAlign: 'center'}]}>
-                          {respectType == 'SILVER' && '월요일마다 보너스 코인 10개'}
-                          {respectType == 'GOLD' && '월요일마다 보너스 코인 20개'}
-                          {respectType == 'PLATINUM' && '월요일마다 보너스 코인 30개'}
-                          {respectType == 'DIAMOND' && '월요일마다 보너스 코인 50개'}
+                          {respectType == 'SILVER' && '월요일마다 보너스 큐브 10개'}
+                          {respectType == 'GOLD' && '월요일마다 보너스 큐브 20개'}
+                          {respectType == 'PLATINUM' && '월요일마다 보너스 큐브 30개'}
+                          {respectType == 'DIAMOND' && '월요일마다 보너스 큐브 50개'}
                         </Text>
                       </View>
                     </SpaceView>

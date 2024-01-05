@@ -172,7 +172,7 @@ export const Profile = (props: Props) => {
           }); */
 
         } else if (data.result_code == '6010') {
-          show({ content: '보유 패스가 부족합니다.' });
+          show({ content: '보유 큐브가 부족합니다.' });
           return false;
         } else if (data.result_code == '8005') {
           show({ content: '존재하지 않는 추천인 입니다.' });

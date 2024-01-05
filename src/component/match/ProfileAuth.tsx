@@ -142,7 +142,7 @@ export default function ProfileAuth({ data, isEditBtn, memberData }) {
                         </SpaceView>
 
                         <SpaceView>
-                          <Text style={_styles.textStyle(12, !isEmptyData(item?.comment) ? '#BEC2C8' : '#E5AA6D', 'L')} numberOfLines={3}>
+                          <Text style={_styles.textStyle(12, !isEmptyData(item?.auth_comment) ? '#BEC2C8' : '#E5AA6D', 'L')} numberOfLines={3}>
                             {isEmptyData(item?.comment) ? (
                               <>"{item?.comment}"</>
                             ) : (
@@ -231,7 +231,7 @@ const _styles = StyleSheet.create({
     fontSize: 13,
     color: '#E0AC6E',
     backgroundColor: '#000208',
-    borderRadius: 15,
+    borderRadius: 8,
     paddingVertical: 1,
     paddingHorizontal: 10,
     overflow: 'hidden',

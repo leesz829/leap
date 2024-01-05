@@ -124,7 +124,7 @@ export default function StoryDetail(props: Props) {
           } else {
             show({
               title: '비밀 댓글 달기',
-              content: '보유 패스가 부족합니다.',
+              content: '보유 큐브가 부족합니다.',
               confirmBtnText: '상점 이동',
               isCross: true,
               cancelCallback: function() { 
@@ -414,7 +414,7 @@ export default function StoryDetail(props: Props) {
             } else {
               show({
                 title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
-                content: '보유 로얄패스가 부족합니다.',
+                content: '보유 메가큐브가 부족합니다.',
                 confirmBtnText: '상점 이동',
                 isCross: true,
                 cancelCallback: function() { 
@@ -430,7 +430,7 @@ export default function StoryDetail(props: Props) {
             } else {
               show({
                 title: isSecret ? '비공개 프로필 열람' : '프로필 카드 열람',
-                content: '보유 패스가 부족합니다.',
+                content: '보유 큐브가 부족합니다.',
                 confirmBtnText: '상점 이동',
                 isCross: true,
                 cancelCallback: function() { 

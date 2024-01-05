@@ -10,6 +10,7 @@ import { CommonTextarea } from 'component/CommonTextarea';
 import SpaceView from 'component/SpaceView';
 import { commonStyle, styles } from 'assets/styles/Styles';
 import { isEmptyData, formatNowDate } from 'utils/functions';
+import { VoteEndRadioBox } from 'component/story/VoteEndRadioBox';
 
 
 const { width } = Dimensions.get('window');
@@ -17,7 +18,7 @@ const { width } = Dimensions.get('window');
 interface Props {
   isVisible: boolean;
   closeModal: () => void;
-  confirmFunc: (level:number) => void;
+  confirmFunc: (type:string, message:string) => void;
   useItem: undefined;
 }
 
@@ -25,6 +26,14 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
   const memberBase = useUserInfo(); // 회원 기본정보
   const [message, setMessage] = React.useState(''); // 메시지
   const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  // 관심 유형
+  const [interestList, setInterestList] = React.useState([
+    {label: '관심', value: 'interest'},
+    {label: '좋아요', value: 'sincere'},
+  ]);
+
+  const [selectedInterest, setSelectedInterest] = React.useState('interest');
 
   // 자유이용권 아이템 사용 여부
   const [isFreeItemUse, setIsFreeItemUse] = React.useState(function() {
@@ -38,6 +47,11 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
     return result;
   });
 
+  // 관심 선택 콜백 함수
+  const interestTypeCallbackFn = (value: string) => {
+    setSelectedInterest(value);
+  };
+
   return (
     <Modal isVisible={isVisible} onRequestClose={() => { closeModal(); }}>
       <SafeAreaView style={_styles.container}>
@@ -46,10 +60,30 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
           <Image style={styles.iconSquareSize(25)} source={ICON.xBlueIcon} resizeMode={'contain'} />
         </TouchableOpacity> */}
 
-        <View style={_styles.titleBox}>
-          <Text style={_styles.titleText}>메시지 작성</Text>
-          <Text style={_styles.countText}>({message.length}/150)</Text>
-        </View>
+        <SpaceView mb={2} viewStyle={_styles.titleBox}>
+          <Text style={_styles.titleText}>
+            이성에게 <Text style={{color: '#32F9E4'}}>관심</Text>을 보냅니다.{'\n'}
+            만약 놓치고 싶지 않은 사람이라면 <Text style={{color: '#32F9E4'}}>좋아요</Text>를 추천 드려요.
+          </Text>
+        </SpaceView>
+
+        <SpaceView viewStyle={{flexDirection: 'row', borderRadius: 35, overflow: 'hidden', width: 150, marginHorizontal: 13}}>
+
+          {interestList.map((item, index) => {
+            if (!item.label) return;
+
+            return (
+              <TouchableOpacity 
+                //disabled={!props.isModfy}
+                key={index} 
+                style={_styles.checkWrap(item.value === selectedInterest)} 
+                onPress={() => interestTypeCallbackFn(item.value)}
+                activeOpacity={0.9}>
+                <Text style={_styles.labelText(item.value === selectedInterest)}>{item.label}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </SpaceView>
         
         <View style={_styles.contentBody}>
           <SpaceView viewStyle={_styles.messageArea}>
@@ -66,32 +100,55 @@ export default function InterestSendPopup({ isVisible, closeModal, confirmFunc, 
               maxLength={150}
               numberOfLines={4}
             />
+
+            <SpaceView viewStyle={{position:'absolute', bottom: 20, right: 20}}>
+              <Text style={_styles.numberText}>{message.length}/150</Text>
+            </SpaceView>
           </SpaceView>
         </View>
 
-        <View style={_styles.bottomBox}>
+        <SpaceView mt={10} mb={15} viewStyle={_styles.btnContainer}>
           <TouchableOpacity 
-            style={[_styles.allButton, {backgroundColor: '#FFF'}]} 
             onPress={() => {
               closeModal();
-            }}>    
-
-            <Text style={_styles.allButtonText}>
-              취소하기
-            </Text>
+            }}
+          >
+            <Text style={_styles.btnStyle('#ffffff')}>취소하기</Text>
           </TouchableOpacity>
+
           <TouchableOpacity 
-            style={_styles.allButton} 
             onPress={() => {
-              confirmFunc(message);
-            }}>    
+              confirmFunc(selectedInterest, message);
+            }}
+          >
+            <Text style={_styles.btnStyle('#FFDD00')}>보내기</Text>
 
-            <Text style={_styles.allButtonText}>
-              {/* {!isFreeItemUse ? '패스 15개로 ' : ''}관심 보내기 */}
-              관심 보내기
-            </Text>
+            <SpaceView viewStyle={_styles.sendEtc}>
+              {selectedInterest == 'INTEREST' ? (
+                <>
+                  {!isFreeItemUse ? (
+                    <>
+                      <Image source={ICON.cubeYCyan} style={styles.iconSquareSize(12)} />
+                      <Text style={_styles.sendText}>15</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Image source={ICON.cubeYCyan} style={styles.iconSquareSize(12)} />
+                      <Text style={_styles.sendText}>FREE</Text>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Image source={ICON.megaCubeCyan} style={styles.iconSquareSize(15)} />
+                  <Text style={_styles.sendText}>2</Text>
+                </>
+              )}
+              
+            </SpaceView>
           </TouchableOpacity>
-        </View>
+        </SpaceView>
+
       </SafeAreaView>
     </Modal>
   );
@@ -108,19 +165,16 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     paddingVertical: 10,
-    backgroundColor: '#FFDD00',
-    paddingHorizontal: 20,
+    paddingHorizontal: 13,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
   },
   titleText: {
-    fontFamily: 'Pretendard-Bold',
-    color: '#445561',
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 13,
+    color: '#D5CD9E',
   },
   countText: {
     fontFamily: 'Pretendard-Regular',
@@ -178,15 +232,79 @@ const _styles = StyleSheet.create({
     width: '100%',
     height: 100,
     maxHeight: 100,
-    //borderWidth: 1,
     borderRadius: 10,
     padding: 8,
     textAlignVertical: 'top',
     backgroundColor: '#445561',
-    color: '#E1DFD1',
-    //borderColor: "#EBE9EF",
+    color: '#F3E270',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 12,
   },
+  checkWrap: (isOn:boolean) => {
+    return {
+      backgroundColor: '#292F33',
+      //paddingHorizontal: 22,
+      paddingVertical: 5,
+      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '50%',
+    };
+  },
+  labelText: (isOn:boolean) => {
+    return {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 15,
+      color: isOn ? '#FFDD00' : '#445561',
+      textAlign: 'center',
+      width: (width / 5) - 8,
+    };
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginHorizontal: 10,
+  },
+  btnStyle: (bgcr: string) => {
+    return {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 15,
+      color: '#3D4348',
+      backgroundColor: isEmptyData(bgcr) ? bgcr : '#FFFFFF',
+      borderRadius: 8,
+      paddingVertical: 4,
+      width: 110,
+      textAlign: 'center',
+      marginHorizontal: 3,
+      overflow: 'hidden',
+    };
+  },
+  numberText: {
+    fontFamily: 'Pretendard-Light',
+    fontSize: 11,
+    color: '#E1DFD1',
+  },
+  sendEtc: {
+    position: 'absolute',
+    top: -10,
+    right: 0,
+    backgroundColor: '#292F33',
+    borderRadius: 8,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+  },
+  sendText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 11,
+    color: '#32F9E4',
+  },
+
+
+
   // closeBtnArea: {
   //   position: 'absolute',
   //   top: -8,

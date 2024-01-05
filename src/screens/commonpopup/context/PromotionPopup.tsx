@@ -229,7 +229,7 @@ const _styles = StyleSheet.create({
   subTitleText: {
     fontFamily: 'Pretendard-Light',
     fontSize: 12,
-    color: '#D5CD9E',
+    color: '#E1DFD1',
   },
   // masterItemArea: {
   //   alignItems: 'center',

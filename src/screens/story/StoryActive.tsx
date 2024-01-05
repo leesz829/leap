@@ -190,7 +190,7 @@ export default function StoryActive(props: Props) {
           if(memberBase?.pass_has_amt >= 15) {
             profileCardOpen(memberSeq);
           } else {
-            show({ content: '패스가 부족합니다.', isCross: true });
+            show({ content: '큐브가 부족합니다.', isCross: true });
           }
         },
         cancelCallback: function() {

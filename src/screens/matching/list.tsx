@@ -204,7 +204,7 @@ export default function MatchingList(props: Props) {
               show({ content: '이미 보관함에 존재하는 회원입니다.', isCross: true });
               break;
             case '6010':
-              show({ content: '보유 패스가 부족합니다.', isCross: true, });
+              show({ content: '보유 큐브가 부족합니다.', isCross: true, });
               break;
             default:
               show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true });
@@ -464,7 +464,7 @@ function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGr
             {/* ############################ 상세 버튼 */}
             <TouchableOpacity
               onPress={() => { detailProc(); }}
-              style={{position: 'absolute', bottom: 10, right: 10, zIndex: 2}}
+              style={{position: 'absolute', bottom: 10, right: 10, zIndex: 2, borderWidth: item?.open_yn == 'Y' ? 1 : 0, borderColor: '#FFDD00', borderRadius: 20}}
             >
               <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
             </TouchableOpacity>

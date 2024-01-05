@@ -185,7 +185,7 @@ const _styles = StyleSheet.create({
       fontSize: 15,
       color: '#3D4348',
       backgroundColor: isEmptyData(bgcr) ? bgcr : '#FFFFFF',
-      borderRadius: 15,
+      borderRadius: 8,
       paddingVertical: 4,
       width: 110,
       textAlign: 'center',

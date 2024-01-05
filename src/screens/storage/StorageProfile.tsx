@@ -455,7 +455,7 @@ export const StorageProfile = (props: Props) => {
             },
           });
         } else if (data.result_code == '6010') {
-          show({ content: '보유 패스가 부족합니다.' });
+          show({ content: '보유 큐브가 부족합니다.' });
           return false;
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });

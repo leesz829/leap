@@ -159,7 +159,7 @@ export const Story = () => {
             profileCardOpen(memberSeq);
           } else {
             show({
-              content: '패스가 부족합니다.',
+              content: '큐브가 부족합니다.',
               isCross: true,
             });
           }

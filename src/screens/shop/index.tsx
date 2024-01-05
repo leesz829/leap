@@ -667,14 +667,14 @@ const categoryList = [
     value: 'SUBSCRIPTION',
     imgActive: ICON.drinkCyan,
     imgUnactive: ICON.drinkGray,
-    desc: '매칭에 유리한 효과를 가진 다양한 아이템이 준비되어 있습니다.',
+    desc: '매칭에 유리한 효과를 가진\n다양한 아이템이 준비되어 있습니다.',
   },
   {
     label: '패키지상품',
     value: 'PACKAGE',
     imgActive: ICON.cardCyan,
     imgUnactive: ICON.cardGray,
-    desc: '꿀맛나는 할인율! 구매하면 무조건 이득!',
+    desc: '꿀맛나는 할인율!\n구매하면 무조건 이득!',
   },
 ];
 

@@ -119,8 +119,8 @@ export default function MatchDetail(props: Props) {
   };
 
   // 관심 보내기
-  const interestSend = (message:string) => {
-    insertMatchInfo('interest', 0, message);
+  const interestSend = (type:string, message:string) => {
+    insertMatchInfo(type, 0, message);
     setInterestSendModalVisible(false);
     setMessage('');
   };
@@ -393,6 +393,10 @@ export default function MatchDetail(props: Props) {
       return;
     }
 
+    if(activeType == 'sincere') {
+      special_level = 1;
+    }
+
     let body = {
       active_type: activeType,
       res_member_seq: data.match_member_info.member_seq,
@@ -423,7 +427,7 @@ export default function MatchDetail(props: Props) {
           navigation.goBack();
           
         } else if (data.result_code == '6010') {
-          show({ content: '보유 패스가 부족합니다.', isCross: true, });
+          show({ content: '보유 큐브가 부족합니다.', isCross: true, });
           return false;
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.', isCross: true, });
@@ -593,18 +597,26 @@ export default function MatchDetail(props: Props) {
           <SpaceView viewStyle={_styles.btnWrap}>
             {type != 'STORAGE' && (
               <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-                <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
+                <Text style={_styles.btnText('REFUSE', '#3D4348')}>스킵</Text>
               </TouchableOpacity>
             )}
-
               
             <TouchableOpacity onPress={() => { popupActive('interest'); }}>
-              <Text style={_styles.btnText('REQ', '#43ABAE')}>호감 보내기</Text>
+              <Text style={_styles.btnText('REQ', '#3D4348')}>관심</Text>
+
+              {isEmptyData(data?.use_item) && isEmptyData(data?.use_item?.FREE_LIKE) && data?.use_item?.FREE_LIKE?.use_yn == 'Y' && (
+                <SpaceView viewStyle={_styles.sendEtc}>
+                  <Image source={ICON.cubeYCyan} style={styles.iconSquareSize(12)} />
+                  <Text style={_styles.sendText}>FREE</Text>
+                </SpaceView>
+              )}
             </TouchableOpacity>
 
-            {/* <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
-              <Text style={_styles.btnText('ZZIM', '#43ABAE')}>찜하기</Text>
-            </TouchableOpacity> */}
+            {data?.match_member_info?.zzim_yn == 'Y' && (
+              <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
+                <Text style={_styles.btnText('ZZIM', '#3D4348')}>찜하기</Text>
+              </TouchableOpacity>
+            )}            
           </SpaceView>
         )}
 
@@ -708,9 +720,11 @@ export default function MatchDetail(props: Props) {
                       <SpaceView viewStyle={_styles.profileImgWrap}>
                         <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
 
-                        {/* <TouchableOpacity onPress={() => { report_onOpen(); }} style={{position: 'absolute', top: 10, right: 25}}>
-                          <Image source={ICON.reportBtn} style={styles.iconSquareSize(32)} />
-                        </TouchableOpacity> */}
+                        {/* 리스펙트 등급 표시 */}
+                        <SpaceView viewStyle={_styles.gradeArea}>
+                          <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
+                          <Text style={_styles.gradeText}>{data?.match_member_info?.respect_grade}</Text>
+                        </SpaceView>
                       </SpaceView>
 
                       <SpaceView viewStyle={_styles.infoArea}>
@@ -948,11 +962,11 @@ export default function MatchDetail(props: Props) {
         {/* ##################################################################################
                     찐심 보내기 팝업
         ################################################################################## */}
-        <SincereSendPopup
+        {/* <SincereSendPopup
           isVisible={sincereSendModalVisible}
           closeModal={sincereSendCloseModal}
           confirmFunc={sincereSend}
-        />
+        /> */}
 
         {/* ##################################################################################
                     인증 Pick
@@ -1118,11 +1132,14 @@ const _styles = StyleSheet.create({
   },
   btnText: (type:string, _fColor:string) => {
     let ph = 30;
+    let bg = '#fff';
 
     if(type == 'REQ') {
       ph = 55;
+      bg = '#FFDD00';
     } else if(type == 'ZZIM') {
       ph = 15;
+      bg = '#FFDD00';
     }
     
     return {
@@ -1131,7 +1148,7 @@ const _styles = StyleSheet.create({
       color: _fColor,
       textAlign: 'center',
       borderRadius: 10,
-      backgroundColor: '#fff',
+      backgroundColor: bg,
       paddingHorizontal: ph,
       paddingVertical: 10,
       marginHorizontal: type == 'REQ' ? 5 : 0,
@@ -1272,4 +1289,42 @@ const _styles = StyleSheet.create({
     color: '#FFFDEC',
     marginTop: 10,
   },
+  sendEtc: {
+    position: 'absolute',
+    top: -10,
+    right: 15,
+    backgroundColor: '#292F33',
+    borderRadius: 8,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+  },
+  sendText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 11,
+    color: '#32F9E4',
+  },
+  gradeArea: {
+    position: 'absolute',
+    top: 0,
+    right: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: Platform.OS == 'ios' ? 8 : 15,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+  },
+  gradeText:  {
+    fontFamily: 'MinSans-Bold',
+    fontSize: 13,
+    color: '#000000',
+    marginLeft: 3,
+  },
+
+
+
 });
