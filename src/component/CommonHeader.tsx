@@ -27,6 +27,9 @@ export type NavigationHeaderProps = {
   profileScore?: any;
   authLevel?: any;
   storyType?: string;
+  secretYn?: string;
+  nicknameModifier?: string;
+  nicknameNoun?: string;
   callbackFunc: () => void;
 };
 
@@ -44,6 +47,10 @@ function CommonHeader({
   type,
   mstImgPath,
   nickname,
+  gender,
+  secretYn,
+  nicknameModifier,
+  nicknameNoun,
   callbackFunc,
 }: NavigationHeaderProps) {
 
@@ -113,9 +120,19 @@ function CommonHeader({
                 {isEmptyData(mstImgPath) ? (
                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                     <SpaceView viewStyle={_styles.mstImgArea}>
-                      <Image source={mstImgPath} style={_styles.mstImgStyle} />
+                      {title == '시크릿' || secretYn == 'Y' ?
+                        <Image source={gender == 'W' ? ICON.storyFemale : ICON.storyMale} style={[_styles.mstImgStyle, {backgroundColor: '#FFF'}]} />
+                      :
+                        <Image source={mstImgPath} style={_styles.mstImgStyle} />
+                      }
+                      
                     </SpaceView>
-                    <Text style={_styles.nicknameText}>{nickname}</Text>
+                    {title == '스토리' && secretYn == 'Y' ?
+                      <Text style={_styles.nicknameText}>{nicknameModifier} {nicknameNoun}</Text>
+                    :
+                      <Text style={_styles.nicknameText}>{nickname}</Text>
+                    }
+                    
                   </SpaceView>
                 ) : (
                   <Text style={_styles.titleStyle}>{title}</Text>

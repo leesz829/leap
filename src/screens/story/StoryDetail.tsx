@@ -715,6 +715,9 @@ export default function StoryDetail(props: Props) {
         profileScore={storyData.board?.profile_score}
         authLevel={storyData.board?.auth_acct_cnt}
         storyType={storyData.board?.story_type}
+        secretYn={storyData.board?.secret_yn}
+        nicknameModifier={storyData.board?.nickname_modifier}
+        nicknameNoun={storyData.board?.nickname_noun}
       />
 
       <LinearGradient
