@@ -292,6 +292,7 @@ export const IMAGE = {
   logoLeapTmon: require('assets/img/logo_leap_tmon.png'),
   logoLeapTit: require('assets/img/logo_leap_tit.png'),
   logoLeapTit02: require('assets/img/logo_leap_tit02.png'),
+  logoLeapTit03: require('assets/img/logo_leap_tit03.png'),
   storySecretMale: require('assets/img/story_secret_male.png'),
   storySecretFemale: require('assets/img/story_secret_female.png'),
 };

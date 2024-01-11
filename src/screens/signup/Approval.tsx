@@ -295,11 +295,12 @@ export const Approval = (props: Props) => {
         style={_styles.wrap}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          <SpaceView mt={20}>
+          <SpaceView mt={20} pl={30} pr={30} pt={80}>
+            <Image source={IMAGE.logoLeapTit03} style={{width: 110, height: 28.3, marginBottom: 5}} />
             <Text style={_styles.title}>가입 심사 진행중</Text>
-              <View style={{marginTop: 10}}>
-                <Text style={_styles.subTitle}>심사 기간은 1 ~ 3일이며,{'\n'}결과는 PUSH 메세지로 전송됩니다.</Text>
-              </View>
+            <View style={{marginTop: 10}}>
+              <Text style={_styles.subTitle}>심사 기간은 1 ~ 3일이며,{'\n'}<Text style={{fontSize: 16}}>결과는 PUSH 메세지로 전송됩니다.</Text></Text>
+            </View>
           </SpaceView>
 
           <SpaceView viewStyle={_styles.imgContainer}>
@@ -313,13 +314,13 @@ export const Approval = (props: Props) => {
 
           {(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) && (
             <>
-              <SpaceView mt={30}>
+              <SpaceView mt={330} pl={30} pr={30}>
                 <View style={_styles.refNoticeContainer}>
                   <Image source={ICON.commentRed} style={styles.iconSize16} />
                   <Text style={_styles.refNoticeText}>반려사유 안내</Text>
                 </View>
                 <View style={_styles.refuseBox}>
-                  <Text style={_styles.refBoxText}>가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요. '프로필 수정하기' 누르고 반려 내용을 확인해주세요.</Text>
+                  <Text style={_styles.refBoxText}>가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}"프로필 수정하기" 누르고 반려 내용을 확인해주세요.</Text>
                 </View>
               </SpaceView>
             </>
@@ -339,7 +340,7 @@ export const Approval = (props: Props) => {
             </>
           )} */}
 
-          <SpaceView viewStyle={_styles.btnContainer}>
+          <SpaceView mt={(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) ? 0 : 450} pl={30} pr={30} viewStyle={_styles.btnContainer}>
             <TouchableOpacity style={_styles.exitBtnContainer} onPress={() => { exitBtn(); }}>
               <Text style={_styles.exitBtn}>가입철회</Text>
             </TouchableOpacity>
@@ -347,6 +348,14 @@ export const Approval = (props: Props) => {
               <Text style={_styles.modBtn}>프로필 수정하기</Text>
             </TouchableOpacity>
           </SpaceView>
+
+          <LinearGradient
+            colors={['#092032', '#344756']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={_styles.container}
+          />
+
         </ScrollView>
       </LinearGradient>      
     </>
@@ -363,10 +372,18 @@ export const Approval = (props: Props) => {
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,
-		padding: 30,
 	},
+  container:{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    minHeight: height,
+    zIndex: -1,
+    opacity: 0.8,
+  },
 	title: {
-		fontSize: 30,
+		fontSize: 40,
 		fontFamily: 'Pretendard-Bold',
 		color: '#D5CD9E',
 	},
@@ -376,17 +393,19 @@ const _styles = StyleSheet.create({
     color: '#E1DFD1',
   },
   imgContainer: {
-    width: 230,
-    height: 350,
+    position: 'absolute',
+    top: 80,
+    right: 30,
+    width: 270,
+    height: 450,
     borderRadius: 50,
     backgroundColor: '#FFF',
-    marginLeft: 'auto',
-    marginTop: 10,
     overflow: 'hidden',
+    zIndex: -2,
   },
   profileImg: {
-    width: 230,
-    height: 350,
+    width: 270,
+    height: 450,
   },
   refNoticeContainer: {
     flexDirection: 'row',
@@ -410,7 +429,7 @@ const _styles = StyleSheet.create({
   },
   refBoxText: {
     fontFamily: 'Pretendard-Light',
-    fontSize: 13,
+    fontSize: 12,
     color: '#FFFDEC',
     textAlign: 'center',
   },
@@ -418,7 +437,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-    marginTop: 50,
+    marginTop: 44,
   },
   modBtnContainer: {
     width: '62%',
@@ -429,7 +448,8 @@ const _styles = StyleSheet.create({
     borderRadius: 5,
   },
   modBtn: {
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
     color: '#3D4348',
   },
   exitBtnContainer: {
@@ -441,7 +461,8 @@ const _styles = StyleSheet.create({
     borderRadius: 5,
   },
   exitBtn: {
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14,
     color: '#FF4D29',
   },
 });
