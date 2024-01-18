@@ -164,6 +164,12 @@ export const Roby = (props: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
+      setIsClickable(true);
+      setIsLoading(false);
+      show({
+        type: 'RESPONSIVE',
+        content: isFriendMatch ? '소개 제외 대상이 업데이트 되었습니다.' : '소개 제외 대상과 상호 미노출을 해제하였습니다.',
+      });
     }
   };
 
@@ -228,13 +234,11 @@ export const Roby = (props: Props) => {
             console.log(error);
             setIsFriendMatch(true);
             insertMemberPhoneBook("", "Y");
-          }).finally(item => {
+
             setIsClickable(true);
             setIsLoading(false);
-            show({
-              type: 'RESPONSIVE',
-              content: isFriendMatch ? '소개 제외 대상이 업데이트 되었습니다.' : '소개 제외 대상과 상호 미노출을 해제하였습니다.',
-            });
+
+          }).finally(item => {
           });
         } else {
           setIsFriendMatch(true);
@@ -914,7 +918,7 @@ export const Roby = (props: Props) => {
                   style={_styles.openPhoneBox}
                   onPress={() => {
                     updateMemberInfo('02', isFriendMatch ? 'N' : 'Y');
-                  }}  
+                  }}
                 >
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <SpaceView mr={5}><Image source={isFriendMatch ? ICON.checkGold : ICON.checkYellow} style={styles.iconSquareSize(16)} /></SpaceView>

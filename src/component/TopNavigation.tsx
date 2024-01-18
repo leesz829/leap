@@ -13,6 +13,7 @@ import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Tooltip from 'rn-tooltip';
 import { isEmptyData } from 'utils/functions';
+import SpaceView from 'component/SpaceView';
 
 interface Props {
   currentPath: string;
@@ -101,12 +102,23 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   }, [navName, theme]);
 
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
         {/* <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" /> */}
         <Text style={[_styles.storyTxt(navName == 'LEAP', theme != undefined)]}>LEAP</Text>
         {navName == 'LEAP' && <View style={_styles.underline} />}
       </TouchableOpacity>
+
+      <SpaceView viewStyle={{position: 'absolute', top: 37, left: 10}}>
+        <SpaceView viewStyle={_styles.notiContainer}>
+          <SpaceView viewStyle={_styles.notiArea}>
+            <Image source={ICON.sparkler} style={_styles.imgSize} />
+            <Text style={_styles.notiGrade}>GOLD</Text>
+            <Text style={_styles.notiText}> 밤10시에 무료 열람 활성화</Text>
+          </SpaceView>
+          <View style={_styles.tail} />
+        </SpaceView>
+      </SpaceView>
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
         {/* <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" /> */}
@@ -305,5 +317,45 @@ const _styles = StyleSheet.create({
     height: 3,
     borderRadius: 50,
   },
-
+  notiContainer: {
+    position: 'relative',
+    alignItems: 'flex-start',
+  },
+  notiArea: {
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 3,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+  },
+  notiGrade: {
+    fontSize: 9,
+    fontFamily: 'MinSans-Bold',
+    color: '#000',
+  },
+  notiText: {
+    fontSize: 8,
+    fontFamily: 'Pretendard-Medium',
+    color: '#D5CD9E',
+  },
+  imgSize: {
+    width: 12,
+    height: 12,
+  },
+  tail: {
+    position: 'absolute',
+    left: '50%',
+    top: -7,
+    marginLeft: -50,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 8,
+    borderLeftColor: 'transparent',
+    borderRightWidth: 8,
+    borderRightColor: 'transparent',
+    borderBottomWidth: 8,
+    borderBottomColor: '#FFF',
+  },
 });
