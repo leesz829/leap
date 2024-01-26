@@ -26,6 +26,7 @@ import { CommaFormat, formatNowDate, isEmptyData } from 'utils/functions';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 import { layoutStyle, styles } from 'assets/styles/Styles';
+import { ProfileDrawingPopup } from 'screens/commonpopup/ProfileDrawingPopup';
 
 const { width, height } = Dimensions.get('window');
 
@@ -40,6 +41,10 @@ export default function Inventory() {
   const { show } = usePopup();  // 공통 팝업
   const dispatch = useDispatch();
 
+  // 뽑기권 팝업
+  const [isProfileDrawingVisible, setIsProfileDrawingVisible] = React.useState(false);
+  // 뽑기권 데이터
+  const [profileDrawingData, setProfileDrawingData] = useState([]);
 
   // ########################################################################################## 데이터 조회
   const fetchData = async (item:any) => {
@@ -78,7 +83,7 @@ export default function Inventory() {
       title: '사용/획득',
       content: item.cate_name + ' 사용/획득 하시겠습니까?' ,
       cancelCallback: function() {
-        
+
       },
       confirmCallback: async function() {
         setIsLoading(true);
@@ -89,6 +94,13 @@ export default function Inventory() {
           cate_common_code: item.cate_common_code,
           inventory_seq: item.inventory_seq,
         };
+
+        if(item?.cate_common_code == 'MBTI' || item?.cate_common_code == 'IMPRESSION') {
+          setIsProfileDrawingVisible(true);
+          setProfileDrawingData(item);
+          setIsLoading(false);
+          return false;
+        }
 
         try {
           const { success, data } = await use_item(body);
@@ -310,6 +322,7 @@ export default function Inventory() {
       <Text style={_styles.noInvenText}>보관 중인 아이템이 없습니다.</Text>
     </View>
   );
+
   return (
     <>
       {isLoading && <CommonLoading />}
@@ -332,6 +345,12 @@ export default function Inventory() {
       />
 
       </LinearGradient>
+
+      <ProfileDrawingPopup
+        popupVisible={isProfileDrawingVisible}
+        setPopupVIsible={setIsProfileDrawingVisible}
+        item={profileDrawingData}
+      />
     </>
   );
 }

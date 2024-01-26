@@ -98,7 +98,7 @@ export const PromotionPopup = (props: Props) => {
 
                 {/* {(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0) && ( */}
                   <SpaceView>
-                    <Image source={ICON.polygonGreen} style={{width: 70, height: 110}} />
+                    <Image source={ICON.cubeYCyan} style={styles.iconSquareSize(70)} />
                   </SpaceView>
                 {/* )} */}
               </SpaceView>
@@ -117,8 +117,8 @@ export const PromotionPopup = (props: Props) => {
                           <TouchableOpacity key={'promotion_'+index} style={_styles.prodItem(currentIndex == index)} onPress={() => { onPressItem(index); }}>
                             {/* <Image source={findSourcePath(item.img_path)} style={{width: 60, height: 45}} resizeMode={'cover'} /> */}
 
-                            <SpaceView mt={2} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                              <Image source={ICON.polygonGreen} style={[styles.iconSquareSize(40)]} />
+                            <SpaceView mt={2} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 25}}>
+                              <Image source={ICON.cubeYCyan} style={[styles.iconSquareSize(28), {marginRight: 4}]} />
                               <Text style={_styles.recItemName}>{item?.item_name}</Text>
                             </SpaceView>
 
@@ -137,7 +137,7 @@ export const PromotionPopup = (props: Props) => {
 
               <TouchableOpacity 
                 disabled={prodList[currentIndex]?.buy_count_max < 999999 && prodList[currentIndex]?.buy_count >= prodList[currentIndex]?.buy_count_max}
-                style={_styles.masterPriceArea(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0)} 
+                style={_styles.masterPriceArea(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0, prodList[currentIndex]?.buy_count_max < 999999 && prodList[currentIndex]?.buy_count >= prodList[currentIndex]?.buy_count_max)}
                 onPress={() => { onPressEtc(prodList[currentIndex]) }}>
                 
                 {(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0) && (
@@ -145,14 +145,15 @@ export const PromotionPopup = (props: Props) => {
                       -{prodList[currentIndex]?.discount_rate}%  
                   </Text>
                 )}
-                <View style={{flexDirection: 'column', alignItems: 'flex-end'}}>
-                  <Text style={_styles.price}>{CommaFormat(prodList[currentIndex]?.shop_buy_price)}<Text style={_styles.priceUnit}>원</Text></Text>
+                <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+                  <Text style={_styles.price}>{CommaFormat(prodList[currentIndex]?.shop_buy_price)}</Text>
+                  <Image source={ICON.cubeYCyan} style={styles.iconSquareSize(15)} />
 
                   {(isEmptyData(prodList[currentIndex]?.discount_rate) && prodList[currentIndex]?.discount_rate != 0) && (
                     <>
                       <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyCenter]}>
                         <Text style={_styles.orgPrice}>{CommaFormat(prodList[currentIndex]?.original_price)}</Text>
-                        <Text style={_styles.orgPriceUnit}>원</Text>
+                        {/* <Text style={_styles.orgPriceUnit}>원</Text> */}
                       </SpaceView>
                     </>
                   )}
@@ -257,7 +258,6 @@ const _styles = StyleSheet.create({
     fontSize: 10,
   },
   recItemName: {
-    width: 80,
     fontFamily: 'Pretendard-Regular',
     fontSize: 13,
     color: '#D5CD9E',
@@ -279,7 +279,7 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: 15,
   },
-  masterPriceArea: (isDiscount:boolean) => {
+  masterPriceArea: (isDiscount:boolean, isMaxCnt:boolean) => {
     return {
       flexDirection: 'row',
       justifyContent: isDiscount ? 'space-between' : 'center',
@@ -287,7 +287,7 @@ const _styles = StyleSheet.create({
       marginBottom: 10,
       paddingHorizontal: 10,
       paddingVertical: 5,
-      backgroundColor: '#FFDD00',
+      backgroundColor: isMaxCnt ? '#D6D3D3' : '#FFDD00',
       borderRadius: 10,
       overflow: 'hidden',
     };
@@ -338,12 +338,12 @@ const _styles = StyleSheet.create({
       borderRadius: 3,
       borderWidth: isOn ? 1 : 0,
       borderColor: '#FFDD00',
-      overflow: 'hidden',
+      //overflow: 'hidden',
       marginRight: 10,
       backgroundColor: '#6A6A6A',
-      width: width - 270,
+      width: width - 250,
       flexDirection: 'row',
-      //justifyContent: 'center',
+      justifyContent: 'center',
       alignItems: 'center',
     };
   },

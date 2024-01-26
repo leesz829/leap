@@ -31,7 +31,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { CommonBtn } from 'component/CommonBtn';
 import LinearGradient from 'react-native-linear-gradient';
 import { Modalize } from 'react-native-modalize';
-
+import { ProfileDrawingPopup } from 'screens/commonpopup/ProfileDrawingPopup';
 
 
 interface Props {
@@ -76,6 +76,9 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   // 재화 구분 코드
   const money_type_code = item?.money_type_code;
 
+  // 뽑기권 팝업
+  const [isProfileDrawingVisible, setIsProfileDrawingVisible] = React.useState(false);
+
   const product_modalizeRef = React.useRef<Modalize>(null);
   const productt_onOpen = () => {
     product_modalizeRef.current?.open();
@@ -86,22 +89,22 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
   };
 
   useEffect(() => {
-    console.log('isVisible ::::: ' , isVisible);
     if(isVisible) {
       productt_onOpen();
+      setIsProfileDrawingVisible(false);
     }
   }, [isVisible]);
 
   // ######################################################### 상품 구매하기 함수
   const purchaseBtn = async () => {
 
-    closeModal(false);
-    show({ content: '준비중 입니다.', isCross: true });
-    return;
+    // closeModal(false);
+    // show({ content: '준비중 입니다.', isCross: true });
+    // return;
 
     if(!isPayLoading) {
       setIsPayLoading(true);
-      
+
       try {
         if(type == 'bm'){
 
@@ -174,6 +177,10 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
 
   // ######################################################### 패스 구매 결제
   const passPurchase = async () => {
+    if(item?.cate_common_code == 'MBTI' || item?.cate_common_code == 'IMPRESSION') {
+      setIsProfileDrawingVisible(true);
+    }
+
     if(money_type_code == 'PASS') {
       if(memberBase.pass_has_amt < buy_price) {
         toggleCloseFn(false);
@@ -201,7 +208,12 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       result_code: '0000',
     };
 
-    purchaseResultSend(dataParam);
+    if(item?.cate_common_code == 'MBTI' || item?.cate_common_code == 'IMPRESSION') {
+      setIsPayLoading(false);
+      toggleCloseFn(false);
+    }else {
+      purchaseResultSend(dataParam);
+    }
   };
 
   // ######################################################### AOS 결제 처리
@@ -213,8 +225,6 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
       });
 
       let dataParam = {};
-
-      console.log('result ::::: ', result);
 
       if(isEmptyData(result) && result.length > 0 && isEmptyData(result[0].transactionReceipt)) {
         const receiptDataJson = JSON.parse(result[0].transactionReceipt);
@@ -382,6 +392,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
     })
   ).current;
 
+
   return (
     <>
       {type == 'bm' ? (
@@ -400,7 +411,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                 <SpaceView>
                   <Text style={modalStyleProduct.title}>상품구매</Text>
                   <SpaceView mt={30} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter, layoutStyle.alignCenter]}>
-                    <Image source={ICON.polygonGreen} style={styles.iconSize40} />
+                    <Image source={ICON.cubeYCyan} style={styles.iconSize32} />
                     <Text style={[modalStyleProduct.giftName, {marginTop: 0}]}>{prod_name}</Text>
                   </SpaceView>
                   <SpaceView viewStyle={{height: 50}}>
@@ -418,7 +429,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                 
                 <SpaceView mb={bottom+10} viewStyle={modalStyleProduct.bottomContainer}>
                   <View style={modalStyleProduct.rowBetween}>
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                       style={modalStyleProduct.puchageButton} 
                       onPress={() => {
                         show({
@@ -433,12 +444,16 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
                           },
                         });
                       }}
+                    > */}
+                    <TouchableOpacity
+                      style={modalStyleProduct.puchageButton} 
+                      onPress={() => { purchaseBtn(); }}
                     >
                       <Text style={modalStyleProduct.puchageText}>
                         {CommaFormat(item?.shop_buy_price != null ? item?.shop_buy_price : item?.buy_price)}
                         {type != 'bm' ? '' : item?.money_type_code == 'INAPP' ? '원' : ''}
                       </Text>
-                      {item?.discount_rate > 0 &&
+                      {item?.discount_rate > 0 && item?.money_type_code == 'INAPP' &&
                         <Text style={modalStyleProduct.originalPriceText}>{item?.original_price}원</Text>
                       }
                       <Text style={modalStyleProduct.puchageText}>구매하기</Text>
@@ -455,6 +470,12 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
               </View>
             </View>
           </Modalize>
+
+          <ProfileDrawingPopup
+            popupVisible={isProfileDrawingVisible}
+            setPopupVIsible={setIsProfileDrawingVisible}
+            item={item}
+          />
         </>
       ) : (
         <>
@@ -496,6 +517,7 @@ export default function ProductModal({ isVisible, type, closeModal, item }: Prop
             </View>
           </Modal>
         </>
+        
       )}
     </>
   );

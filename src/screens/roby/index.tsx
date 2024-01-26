@@ -2,7 +2,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import {  request_reexamination, peek_member, update_setting, set_member_phone_book, update_additional } from 'api/models';
+import {  request_reexamination, peek_member, update_setting, set_member_phone_book, update_additional, get_bm_product } from 'api/models';
 import { commonStyle, layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
@@ -483,22 +483,22 @@ export const Roby = (props: Props) => {
     if(isEmptyData(promotionPopupData?.popup_detail) && promotionPopupData?.popup_detail.length > 0) {
       let endDt = await AsyncStorage.getItem('POPUP_ENDDT_PROMOTION_HOME');
       let nowDt = formatNowDate().substring(0, 8);
-
+      
       /* if(null == endDt || endDt < nowDt) { */
-        console.log('promotionPopupData ::::::: ' , promotionPopupData);
+        //console.log('promotionPopupData ::::::: ' , promotionPopupData);
 
-        let _tmpProducts = [];
-        let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 4000
-        , "item_name": "큐브 80", "item_code": "prod_cube_common_80", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
-        _tmpProducts.push(_tmpProduct);
-        _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 7500
-        , "item_name": "큐브 150", "item_code": "prod_cube_common_150", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
-        _tmpProducts.push(_tmpProduct);
+        // let _tmpProducts = [];
+        // let _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 4000
+        // , "item_name": "큐브 80", "item_code": "prod_cube_common_80", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        // _tmpProducts.push(_tmpProduct);
+        // _tmpProduct = {"buy_count_max": 999999, "discount_rate": 0, "item_type_code": "PASS", "money_type_code": "INAPP", "shop_buy_price": 7500
+        // , "item_name": "큐브 150", "item_code": "prod_cube_common_150", "item_contents": "이성에게 관심을 보내거나 내게 온 관심을 확인하는데 사용합니다."};
+        // _tmpProducts.push(_tmpProduct);
 
         show({
           type: 'PROMOTION',
-          //prodList: promotionPopupData?.popup_detail,
-          prodList: _tmpProducts,
+          prodList: promotionPopupData?.popup_detail,
+          //prodList: _tmpProducts,
           confirmCallback: async function(isNextChk) {
             if(isNextChk) {
               // 팝업 종료 일시 Storage 저장
