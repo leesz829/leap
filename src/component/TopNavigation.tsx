@@ -63,6 +63,7 @@ const TopNavigation: FC<Props> = (props) => {
     </>
   );
 };
+
 function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   const memberBase = useUserInfo(); // 회원 기본정보
 
@@ -102,23 +103,25 @@ function NaviButtons({ navName, theme }: { navName: string; theme?: string }) {
   }, [navName, theme]);
 
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: memberBase?.free_open_cnt == 0 && (memberBase?.respect_grade != 'MEMBER' && memberBase?.respect_grade != 'UNKNOWN') ? 12 : 0 }}>
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLimeeted} disabled={navName == 'LIMEETED' ? true : false}>
         {/* <Image style={_styles.limitedIcon} source={limitedIcon} resizeMode="contain" /> */}
         <Text style={[_styles.storyTxt(navName == 'LEAP', theme != undefined)]}>LEAP</Text>
         {navName == 'LEAP' && <View style={_styles.underline} />}
       </TouchableOpacity>
 
-      <SpaceView viewStyle={{position: 'absolute', top: 37, left: 10}}>
-        <SpaceView viewStyle={_styles.notiContainer}>
-          <SpaceView viewStyle={_styles.notiArea}>
-            <Image source={ICON.sparkler} style={_styles.imgSize} />
-            <Text style={_styles.notiGrade}>GOLD</Text>
-            <Text style={_styles.notiText}> 밤10시에 무료 열람 활성화</Text>
+      {(memberBase?.free_open_cnt == 0 && (memberBase?.respect_grade != 'MEMBER' && memberBase?.respect_grade != 'UNKNOWN')) &&
+        <SpaceView viewStyle={{position: 'absolute', top: 37, left: 10}}>
+          <SpaceView viewStyle={_styles.notiContainer}>
+            <SpaceView viewStyle={_styles.notiArea}>
+              <Image source={ICON.sparkler} style={_styles.imgSize} />
+              <Text style={_styles.notiGrade}>{memberBase?.respect_grade}</Text>
+              <Text style={_styles.notiText}> 밤10시에 무료 열람 활성화</Text>
+            </SpaceView>
+            <View style={_styles.tail} />
           </SpaceView>
-          <View style={_styles.tail} />
         </SpaceView>
-      </SpaceView>
+      }
 
       <TouchableOpacity style={[_styles.tab]} onPress={onPressLive} disabled={navName == 'LIVE' ? true : false}>
         {/* <Image style={_styles.liveIcon} source={liveIcon} resizeMode="contain" /> */}
