@@ -87,6 +87,9 @@ export const Story = () => {
     });
   };
 
+  // 채팅방 이동
+  const goChatRoom = async () => {navigation.navigate(STACK.COMMON, { screen: 'Chat' })};
+
   // ##################################################################################### 탭 관련
   const [currentIndex, setCurrentIndex] = useState(0);
   const dataRef = useRef(null);
@@ -574,6 +577,13 @@ export const Story = () => {
             </SpaceView>
           </SpaceView>
         </SpaceView>
+        
+        <TouchableOpacity 
+          style={{paddingVertical: 5, backgroundColor: '#FFF6BE', width: 150, marginLeft: 10, borderRadius: 10, marginBottom: 10}}
+          onPress={() => { goChatRoom(); }}
+        >
+          <Text style={{textAlign: 'center'}}>채팅방 입장 임시 버튼</Text>
+        </TouchableOpacity>
 
         {/* ############################################################################################################
         ################################################################################################################

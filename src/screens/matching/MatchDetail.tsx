@@ -28,9 +28,10 @@ import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
 import AuthPickRender from 'component/match/AuthPickRender';
 import LinearGradient from 'react-native-linear-gradient';
-import { update_match_status, resolve_match, get_matched_member_info } from 'api/models';
+import { update_match_status, resolve_match, get_matched_member_info, get_chat_room_list } from 'api/models';
 import { ROUTES, STACK } from 'constants/routes';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { SUCCESS } from 'constants/reusltcode';
 
 
 interface Props {
@@ -552,6 +553,8 @@ export default function MatchDetail(props: Props) {
       setIsEmpty(false);
       // 데일리 매칭 정보 조회
       getMatchInfo();
+
+      getChatRoomList();
     }
   }, [isFocus]);
 
@@ -576,6 +579,50 @@ export default function MatchDetail(props: Props) {
     navigation.canGoBack()
       ? navigation.goBack()
       : navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login01' }] }));
+  }
+
+  const [chatData, setChatData] = useState([]);
+  // ############################################################################# 채팅방 목록 조회
+  const getChatRoomList = async () => {
+    try {
+
+      const body = {
+        member_seq: memberBase?.member_seq,
+        trgt_member_seq: 1366,
+      };
+
+      const { success, data } = await get_chat_room_list(body);
+
+      if(success) {
+        switch (data.result_code) {
+          case SUCCESS:
+            setChatData(data?.chat_room_list);
+            break;
+          default:
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+        }
+      } else {
+        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+    }
+  };
+
+  
+  // ############################################################ 채팅방 이동
+  const goChatDetail = async () => {
+    navigation.navigate(STACK.COMMON, { 
+      screen: 'ChatDetail',
+      params: {
+        match_seq: chatData.length > 0 ? chatData[0]?.match_seq : data.match_member_info?.match_seq,
+        chat_room_seq: chatData.length > 0 ? chatData[0]?.chat_room_seq : data.match_member_info?.chat_room_seq,
+        chat_room_id: chatData.length > 0 ? chatData[0]?.chat_room_id : data.match_member_info?.chat_room_id,
+      } 
+    });
   }
 
   return (
@@ -709,6 +756,18 @@ export default function MatchDetail(props: Props) {
             style={{ flex: 1, marginBottom: 40 }}
             onScroll={handleScroll}
           >
+            {props.route.params?.type == 'OPEN' &&
+              <>
+                <TouchableOpacity onPress={() => { goChatDetail(); }}>
+                  <SpaceView mr={15} viewStyle={layoutStyle.alignEnd}>
+                    <SpaceView viewStyle={{paddingVertical: 5, backgroundColor: '#FFF6BE', width: 150, marginLeft: 10, borderRadius: 10, marginBottom: 10}}>
+                      <Text style={{textAlign: 'center'}}>채팅 신청 임시 버튼</Text>
+                    </SpaceView>
+                  </SpaceView>
+                </TouchableOpacity>
+              </>
+            }
+
               {data.profile_img_list.length > 0 && isLoad ? (
                 <>
                   <SpaceView mb={(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') ? 130 : 60}>

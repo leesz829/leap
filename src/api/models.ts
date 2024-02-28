@@ -113,6 +113,7 @@ import {
   SAVE_MEMBER_INTEREST,
   JOIN_SAVE_PROFILE_NICKNAME,
   JOIN_SAVE_PROFILE_INTRODUCE,
+  GET_CHAT_ROOM_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -1138,4 +1139,18 @@ export async function story_profile_secret_proc(body: {
 
 }) {
   return send(STORY_PROFILE_SECRET_PROC, 'POST', body, true, false);
+};
+
+
+
+/* ========================================================================================================
+==================================================== 채팅
+======================================================================================================== */
+
+// 채팅방 목록을 조회한다.
+export async function get_chat_room_list(body: { 
+  member_seq: number;
+  trgt_member_seq: number;
+}) {
+  return send(GET_CHAT_ROOM_LIST, 'POST', body, true, false);
 };

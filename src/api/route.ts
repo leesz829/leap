@@ -167,3 +167,7 @@ export const GET_STORY_LIKE_LIST = '/story/getStoryLikeList';
 export const SAVE_STORY_VOTE_MEMBER = '/story/saveStoryVoteMember';
 export const STORY_PROFILE_SECRET_PROC = '/story/profileSecretProc';
 
+/**
+ * 채팅
+ */
+export const GET_CHAT_ROOM_LIST = '/chat/getChatRoomList';

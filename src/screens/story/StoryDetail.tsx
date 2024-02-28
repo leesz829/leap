@@ -472,6 +472,7 @@ export default function StoryDetail(props: Props) {
                 params: {
                   trgtMemberSeq: memberSeq,
                   type: 'OPEN',
+                  matchSeq: data?.match_seq,
                   //matchType: 'STORY',
                 } 
               });

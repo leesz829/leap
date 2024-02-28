@@ -51,6 +51,10 @@ import { Profile_Introduce } from 'screens/profile/Profile_Introduce';
 import {Terms} from 'screens/policy/Terms';
 import {Privacy} from 'screens/policy/Privacy';
 
+import { Chat } from 'screens/chat';
+import { ChatDetail } from 'screens/chat/ChatDetail';
+
+
 const CommonStack = createStackNavigator<StackParamList>();
 
 const CommonNavigation = () => {
@@ -98,6 +102,8 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="Profile_Introduce" component={Profile_Introduce} />
       <CommonStack.Screen name="Terms" component={Terms} />
       <CommonStack.Screen name="Privacy" component={Privacy} />
+      <CommonStack.Screen name="Chat" component={Chat} />
+      <CommonStack.Screen name="ChatDetail" component={ChatDetail} />
     </CommonStack.Navigator>
   );
 };
