@@ -286,7 +286,7 @@ export const ChatDetail = (props: Props) => {
       setIsLoading(false);
     }
   };
-console.log('asdfdsf:::', chatData);
+
 	// ###################################################################### 방 나가기 처리
 	const exitChat = async () => {
     const body = {
