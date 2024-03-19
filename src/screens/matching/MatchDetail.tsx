@@ -28,7 +28,7 @@ import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
 import AuthPickRender from 'component/match/AuthPickRender';
 import LinearGradient from 'react-native-linear-gradient';
-import { update_match_status, resolve_match, get_matched_member_info, get_chat_room_list } from 'api/models';
+import { update_match_status, resolve_match, get_matched_member_info, chat_room_info } from 'api/models';
 import { ROUTES, STACK } from 'constants/routes';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { SUCCESS } from 'constants/reusltcode';
@@ -140,6 +140,9 @@ export default function MatchDetail(props: Props) {
 
   // 본인 보유 아이템 정보
   const [freeContactYN, setFreeContactYN] = useState('N');
+
+  // 채팅 데이터
+  const [chatData, setChatData] = useState([]);
 
   // ######################################################################################## 매칭 정보 조회
   const getMatchInfo = async () => {
@@ -553,8 +556,8 @@ export default function MatchDetail(props: Props) {
       setIsEmpty(false);
       // 데일리 매칭 정보 조회
       getMatchInfo();
-
-      getChatRoomList();
+      // 채팅 정보 조회
+      chatRoomInfo();
     }
   }, [isFocus]);
 
@@ -581,22 +584,21 @@ export default function MatchDetail(props: Props) {
       : navigation.dispatch(CommonActions.reset({ index: 1, routes: [{ name: 'Login01' }] }));
   }
 
-  const [chatData, setChatData] = useState([]);
   // ############################################################################# 채팅방 목록 조회
-  const getChatRoomList = async () => {
-    try {
+  const chatRoomInfo = async () => {
+    try { 
 
       const body = {
         member_seq: memberBase?.member_seq,
-        trgt_member_seq: 1366,
+        trgt_member_seq: trgtMemberSeq,
       };
 
-      const { success, data } = await get_chat_room_list(body);
+      const { success, data } = await chat_room_info(body);
 
       if(success) {
         switch (data.result_code) {
           case SUCCESS:
-            setChatData(data?.chat_room_list);
+            setChatData(data?.chat_room_info);
             break;
           default:
             show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -612,17 +614,59 @@ export default function MatchDetail(props: Props) {
     }
   };
 
-  
   // ############################################################ 채팅방 이동
   const goChatDetail = async () => {
-    navigation.navigate(STACK.COMMON, { 
-      screen: 'ChatDetail',
-      params: {
-        match_seq: chatData.length > 0 ? chatData[0]?.match_seq : data.match_member_info?.match_seq,
-        chat_room_seq: chatData.length > 0 ? chatData[0]?.chat_room_seq : data.match_member_info?.chat_room_seq,
-        chat_room_id: chatData.length > 0 ? chatData[0]?.chat_room_id : data.match_member_info?.chat_room_id,
-      } 
-    });
+    const chatInfoData = chatData ? chatData : data.match_member_info;
+
+    if(data.match_member_info?.chat_open_cnt > 0) {
+      navigation.navigate(STACK.COMMON, { 
+        screen: 'ChatDetail',
+        params: {
+          match_seq: chatInfoData?.match_seq,
+          chat_room_seq: chatInfoData?.chat_room_seq,
+          chat_room_id: chatInfoData?.chat_room_id,
+          chat_member_seq: chatInfoData?.chat_member_seq,
+          chat_type: 'OPEN',
+          sch_member_seq: chatInfoData?.res_member_seq == memberBase?.member_seq ? chatInfoData?.req_member_seq : chatInfoData?.res_member_seq,
+        } 
+      });
+    }else {
+      show({
+        title: '채팅방 입장',
+        content: '큐브 1을 소모하여 채팅방에 입장하시겠습니까?',
+        passType: 'PASS',
+        passAmt: '1',
+        confirmCallback: function() {
+          if(memberBase?.pass_has_amt >= 1) {
+            navigation.navigate(STACK.COMMON, { 
+              screen: 'ChatDetail',
+              params: {
+                match_seq: chatInfoData?.match_seq,
+                chat_room_seq: chatInfoData?.chat_room_seq,
+                chat_room_id: chatInfoData?.chat_room_id,
+                chat_member_seq: chatInfoData?.chat_member_seq,
+                chat_type: 'OPEN',
+                sch_member_seq: chatInfoData?.res_member_seq == memberBase?.member_seq ? chatInfoData?.req_member_seq : chatInfoData?.res_member_seq,
+              } 
+            });
+          } else {
+            show({
+              title: '채팅방 입장',
+              content: '보유 큐브가 부족합니다.',
+              confirmBtnText: '상점 이동',
+              isCross: true,
+              cancelCallback: function() { 
+              },
+              confirmCallback: function () {
+                navigation.navigate(STACK.TAB, { screen: 'Cashshop' });
+              },
+            });
+          }
+        },
+        cancelCallback: function() {
+        },
+      });
+    }
   }
 
   return (
@@ -756,7 +800,7 @@ export default function MatchDetail(props: Props) {
             style={{ flex: 1, marginBottom: 40 }}
             onScroll={handleScroll}
           >
-            {props.route.params?.type == 'OPEN' &&
+            {props.route.params?.type == 'OPEN' && props.route.params?.matchType == 'STORY' &&
               <>
                 <TouchableOpacity onPress={() => { goChatDetail(); }}>
                   <SpaceView mr={15} viewStyle={layoutStyle.alignEnd}>

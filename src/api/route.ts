@@ -171,3 +171,5 @@ export const STORY_PROFILE_SECRET_PROC = '/story/profileSecretProc';
  * 채팅
  */
 export const GET_CHAT_ROOM_LIST = '/chat/getChatRoomList';
+export const CHAT_ROOM_INFO = '/chat/selectChatRoomInfo';
+export const CHAT_EXIT = '/chat/updateChatRoomStatus';

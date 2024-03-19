@@ -158,6 +158,16 @@ function CommonHeader({
                       </TouchableOpacity>
                     </SpaceView>
                   </>  
+                ) : type == 'CHAT_DETAIL' ? (
+                  <>
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <TouchableOpacity style={[layoutStyle.row]} onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
+                        <View style={_styles.dot} />
+                        <View style={[_styles.dot, {marginHorizontal: 2}]} />
+                        <View style={_styles.dot} />
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </>
                 ) : (
                   <>
                     {/* 재화 표시 */}

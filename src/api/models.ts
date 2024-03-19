@@ -114,6 +114,8 @@ import {
   JOIN_SAVE_PROFILE_NICKNAME,
   JOIN_SAVE_PROFILE_INTRODUCE,
   GET_CHAT_ROOM_LIST,
+  CHAT_ROOM_INFO,
+  CHAT_EXIT,
 } from './route';
 
 /* ========================================================================================================
@@ -1150,7 +1152,23 @@ export async function story_profile_secret_proc(body: {
 // 채팅방 목록을 조회한다.
 export async function get_chat_room_list(body: { 
   member_seq: number;
-  trgt_member_seq: number;
 }) {
   return send(GET_CHAT_ROOM_LIST, 'POST', body, true, false);
+};
+
+// 채팅방 정보를 조회한다.
+export async function chat_room_info(body: { 
+  member_seq: number;
+  trgt_member_seq: number;
+}) {
+  return send(CHAT_ROOM_INFO, 'POST', body, true, false);
+};
+
+// 채팅방 나가기를 한다.
+export async function update_chat_exit(body: {
+  member_seq: number;
+  chat_room_seq: number;
+  chat_member_status: string;
+}) {
+  return send(CHAT_EXIT, 'POST', body, true, false);
 };

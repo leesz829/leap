@@ -15,10 +15,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { TextInput } from 'react-native-gesture-handler';
 import { CommonBtn } from 'component/CommonBtn';
-import { commonStyle } from 'assets/styles/Styles';
-import { get_chat_room_list, get_match_detail } from 'api/models';
+import { commonStyle, styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { get_chat_room_list, update_chat_exit } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
-import { isEmptyData} from 'utils/functions';
+import { isEmptyData, formatNowDate } from 'utils/functions';
+import { findSourcePath, IMAGE, GIF_IMG, findSourcePathLocal } from 'utils/imageUtils';
+
 
 
 /* ################################################################################################################
@@ -38,6 +40,8 @@ export const Chat = (props: Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const [isLoading, setIsLoading] = useState(false);
   const [chatData, setChatData] = useState([]);
+  const isFocus = useIsFocused();
+  const { show } = usePopup(); // 공통 팝업
 
   const memberBase = useUserInfo();
 
@@ -79,14 +83,19 @@ export const Chat = (props: Props) => {
         match_seq: item?.match_seq,
         chat_room_id: item?.chat_room_id,
         chat_room_seq: item?.chat_room_seq,
+        chat_member_seq: item?.chat_member_seq,
+        chat_room_status: item?.chat_room_status,
+        sch_member_seq: item?.res_member_seq == memberBase?.member_seq ? item?.req_member_seq : item?.res_member_seq,
       }
     });
   };
 
   // ######################################################################################## 초기 실행 함수
   useEffect(() => {
-    getChatRoomList();
-  }, []);
+    if(isFocus) {
+      getChatRoomList();
+    }
+  }, [isFocus]);
 
 
   return (
@@ -99,21 +108,42 @@ export const Chat = (props: Props) => {
         end={{ x: 0, y: 1 }}
         style={_styles.container}
       >
+
         <ScrollView style={{marginBottom: 200}}>
           <SpaceView viewStyle={_styles.chatRoomList}>
             {chatData.map((item, index) => {
-               return (
+              // 채팅방 유효기한
+              const expDate = formatNowDate() < item?.end_chat_room_dt;
+              // 비활성화 회원 메세지 받을 시 노출
+              const exitMember = item?.chat_member_status == 'EXIT' && item?.message && item?.status == 'CHAT_ACTIVE';
+              // 활성화 회원
+              const joinMember = item?.chat_member_status == 'JOIN';
+              // 비입장 회원 메세지 받을 시 노출
+              const recevieMsg = !item?.chat_member_status && item?.message;
+              
+              return (
                 <>
-                  <TouchableOpacity
-                    key={index}
-                    style={_styles.chatRoomBox}
-                    onPress={() => {
-                      goChatDetail(item);
-                  }}>
-                      <Text style={_styles.chatRoomText}>{item?.nickname}</Text>
-                      <Text style={_styles.chatRoomText}>{item?.message ? item?.message : '메세지가 없습니다.'}</Text>
-                      <Text style={_styles.chatRoomText}>{item?.message_reg_dt}</Text>
-                  </TouchableOpacity>
+                  {expDate && (joinMember || recevieMsg || exitMember) &&
+                    <TouchableOpacity
+                      key={index}
+                      style={_styles.chatRoomBox}
+                      onPress={() => {
+                        goChatDetail(item);
+                    }}>
+                      <SpaceView viewStyle={{flex: 1}}>
+                        <SpaceView viewStyle={_styles.chatMemberImg}>
+                          <Image source={findSourcePath(item?.enter_gubun == 'REQ' ? item?.req_img_path : item?.res_img_path)} style={styles.iconSquareSize(50)} resizeMode={'cover'} />
+                        </SpaceView>
+                      </SpaceView>
+
+                      <SpaceView viewStyle={{flex: 1}}>
+                        <Text style={_styles.chatRoomText}>{item?.enter_gubun == 'RES' ? item?.req_nickname : item?.res_nickname}</Text>
+                      </SpaceView>
+                      <SpaceView viewStyle={{flex: 1}}>
+                        <Text style={_styles.chatRoomText} numberOfLines={1} ellipsizeMode="tail">{item?.message ? item?.message : '메세지가 없습니다.'}</Text>
+                      </SpaceView>
+                    </TouchableOpacity>
+                  }
                 </>
               );
             })}
@@ -139,7 +169,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     height: 80,
     borderTopWidth: 1,
     borderBottomWidth: 1,
@@ -150,5 +180,24 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-Medium',
     fontSize: 14,
     color: '#FFF',
+  },
+  chatMemberImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    overflow: 'hidden',
+  },
+  exitBtn: {
+    width: 50,
+    height: 25,
+    backgroundColor: 'rgba(225, 223, 209, 0.45)',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  exitBtnText: {
+    fontFamily: 'Pretendard-SemiBold',
+    color: 'yellow',
   },
 });
