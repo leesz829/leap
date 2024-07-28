@@ -582,53 +582,47 @@ export const Roby = (props: Props) => {
         </SpaceView>
 
         {/* ################################################################################ 메뉴 모달 영역 */}
-        <LinearGradient
-          colors={['#3D4348', '#1A1E1C']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
+        <Modal 
+          isVisible={isVisible}
+          style={{backgroundColor: 'rgba(9, 32, 50, 0.6)', margin: 0}}
+          animationIn={'slideInDown'}
         >
-          <Modal 
-            isVisible={isVisible}
-            style={{backgroundColor: 'rgba(9, 32, 50, 0.6)', margin: 0}}
-            animationIn={'slideInDown'}
-          >
-            <SpaceView pr={10} viewStyle={{alignItems: 'flex-end', marginTop: -140}}>
-              <TouchableOpacity
-                style={{marginBottom: 50}}
-                onPress={() => {
-                  setIsVisible(false);
-                  //setModalAnimated(true);
-                }}
-              >
-                <Image source={ICON.closeBtn} style={styles.iconSquareSize(40)} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressPreferneces} style={_styles.menuItemWrap}>
-                <Text style={styles.fontStyle('EB', 26, '#fff')}>선호이성 설정</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressMangeAccount} style={_styles.menuItemWrap}>
-                <Text style={styles.fontStyle('EB', 26, '#fff')}>계정 관리</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressAlarmSetting} style={_styles.menuItemWrap}>
-                <Text style={styles.fontStyle('EB', 26, '#fff')}>리프 설정</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressCustomerInquiry} style={_styles.menuItemWrap}>
-                <Text style={styles.fontStyle('EB', 26, '#fff')}>1:1 문의</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressTerms} style={_styles.menuItemWrap}>
-                <Text style={styles.fontStyle('EB', 26, '#fff')}>이용약관</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressPrivacy} style={_styles.menuItemWrap}>
-                <Text style={styles.fontStyle('EB', 26, '#fff')}>개인정보취급방침 안내</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressRecent} style={_styles.menuItemWrap}>
-                <Text style={styles.fontStyle('EB', 26, '#fff')}>새소식</Text>
-              </TouchableOpacity>
-              {/* <TouchableOpacity onPress={onPressMangeProfile} style={_styles.menuItemWrap}>
-                <Text style={styles.fontStyle('EB', 26, '#fff')}>프로필관리</Text>
-              </TouchableOpacity> */}
-            </SpaceView>
-          </Modal>
-        </LinearGradient>
+          <SpaceView pr={10} viewStyle={{alignItems: 'flex-end', marginTop: -140}}>
+            <TouchableOpacity
+              style={{marginBottom: 50}}
+              onPress={() => {
+                setIsVisible(false);
+                //setModalAnimated(true);
+              }}
+            >
+              <Image source={ICON.closeBtn} style={styles.iconSquareSize(40)} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressPreferneces} style={_styles.menuItemWrap}>
+              <Text style={styles.fontStyle('EB', 26, '#fff')}>선호이성 설정</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressMangeAccount} style={_styles.menuItemWrap}>
+              <Text style={styles.fontStyle('EB', 26, '#fff')}>계정 관리</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressAlarmSetting} style={_styles.menuItemWrap}>
+              <Text style={styles.fontStyle('EB', 26, '#fff')}>리프 설정</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressCustomerInquiry} style={_styles.menuItemWrap}>
+              <Text style={styles.fontStyle('EB', 26, '#fff')}>1:1 문의</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressTerms} style={_styles.menuItemWrap}>
+              <Text style={styles.fontStyle('EB', 26, '#fff')}>이용약관</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressPrivacy} style={_styles.menuItemWrap}>
+              <Text style={styles.fontStyle('EB', 26, '#fff')}>개인정보취급방침 안내</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressRecent} style={_styles.menuItemWrap}>
+              <Text style={styles.fontStyle('EB', 26, '#fff')}>새소식</Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity onPress={onPressMangeProfile} style={_styles.menuItemWrap}>
+              <Text style={styles.fontStyle('EB', 26, '#fff')}>프로필관리</Text>
+            </TouchableOpacity> */}
+          </SpaceView>
+        </Modal>
         
       </ScrollView>
 
