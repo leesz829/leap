@@ -469,32 +469,16 @@ const _styles = StyleSheet.create({
       overflow: 'hidden',
     };
   },
-
-  // liveTxt01: {
-  //   fontFamily: 'AppleSDGothicNeoEB00',
-  //   fontSize: 19,
-  //   color: '#000000',
-  // },
   liveTxt01: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 16,
     color: '#D5CD9E',
   },
-  // liveTxt02: {
-  //   fontFamily: 'AppleSDGothicNeoB00',
-  //   fontSize: 14,
-  //   color: '#262626',
-  // },
   liveTxt02: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 15,
     color: '#FFDD00',
   },
-  // liveTxt03: {
-  //   fontFamily: 'AppleSDGothicNeoB00',
-  //   fontSize: 12,
-  //   color: '#8E8E8E',
-  // },
   liveTxt03: {
     fontFamily: 'Pretendard-Light',
     fontSize: 13,

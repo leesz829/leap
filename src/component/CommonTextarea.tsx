@@ -56,7 +56,7 @@ export const CommonTextarea: FC<Props> = (props: any) => {
           autoCapitalize="none"
           style={_style.inputStyle}
           placeholder={props.placeholder || ''}
-          placeholderTextColor={Color.black2222}
+          placeholderTextColor={'#808080'}
           {...props}
           editable={props.disabled ? false : true}
           secureTextEntry={props.isMasking ? true : false}
@@ -78,7 +78,7 @@ const _styles = (props: Props) => {
     labelStyle: {
       fontSize: 14, 
       lineHeight: 20,
-      fontFamily: 'AppleSDGothicNeoR00',
+      fontFamily: 'SUITE-Regular',
       color: Color.gray6666,
     },
     inputContainer: {
@@ -96,9 +96,10 @@ const _styles = (props: Props) => {
       textAlignVertical: 'top',
       backgroundColor: '#ffffff',
       color: props.fontColor != null ? props.fontColor : '#000000',
-      borderColor: "#ebe9ef",
-      borderStyle: "solid",
+      //borderColor: "#ebe9ef",
+      //borderStyle: "solid",
       fontSize: props.fontSize != null ? props.fontSize : 14,
+      fontFamily: 'SUITE-SemiBold',
     },
   })
 };

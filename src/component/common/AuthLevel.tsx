@@ -78,7 +78,7 @@ export default function AuthLevel({ authAcctCnt, type }) {
 const _styles = StyleSheet.create({
   authText: (type:string) => {
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-ExtraBold',
       fontSize: type == 'SMALL' ? 8 : 10,
       letterSpacing: 0,
       textAlign: 'left',

@@ -3,23 +3,17 @@ import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-n
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
-import { SimpleGrid } from 'react-native-super-grid';
 import { ICON } from 'utils/imageUtils';
-import { CommonBtn } from 'component/CommonBtn';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { STACK, ROUTES } from 'constants/routes';
 import LinearGradient from 'react-native-linear-gradient';
-import Carousel from 'react-native-snap-carousel';
 import { isEmptyData } from 'utils/functions';
-import AuthLevel from 'component/common/AuthLevel';
-import { Slider } from '@miblanchard/react-native-slider';
 import { useUserInfo } from 'hooks/useUserInfo';
 
 
 const { width } = Dimensions.get('window');
 
-export default function ProfileAuth({ data, isEditBtn, memberData }) {
+export default function ProfileAuth({ dataList, isEditBtn, memberData }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const memberBase = useUserInfo();
@@ -29,9 +23,9 @@ export default function ProfileAuth({ data, isEditBtn, memberData }) {
       {data.length > 0 && (
         <SpaceView>
 
-          <SpaceView mb={15} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-
-            {/* ########################################################################################### 타이틀 */}
+          {/* ########################################################################################### 타이틀 */}
+          {/* <SpaceView mb={15} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+            
             <SpaceView viewStyle={{flexDirection: 'row'}}>
               <Text style={_styles.textStyle(20, '#EEEAEB', 'B')}>{memberData.nickname}님의 인증 정보🤩</Text>
             </SpaceView>
@@ -44,125 +38,68 @@ export default function ProfileAuth({ data, isEditBtn, memberData }) {
                 <Text style={_styles.modBtnText}>수정</Text>
               </TouchableOpacity>
             )}
-          </SpaceView>
-
-          {/* ########################################################################################### 인증 목록(세로) */}
-          {/* <SpaceView>
-            <ScrollView 
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={_styles.authList}>
-
-              {data?.map((item, index) => {
-                const authCode = item.common_code;
-                let authIcon = ICON.authJob;
-
-                if(authCode == 'EDU') {
-                  authIcon = ICON.authEdu;
-                } else if(authCode == 'INCOME') {
-                  authIcon = ICON.authAsset;
-                } else if(authCode == 'ASSET') {
-                  authIcon = ICON.authAsset;
-                } else if(authCode == 'SNS') {
-                  authIcon = ICON.authAsset;
-                } else if(authCode == 'VEHICLE') {
-                  authIcon = ICON.authAsset;
-                }
-
-                return (
-                  <>
-                    <LinearGradient
-                      colors={['#092032', '#344756']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={_styles.authItem}>
-
-                      <SpaceView>
-                        <SpaceView mb={20} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Image source={authIcon} style={styles.iconSquareSize(16)} />
-                          <SpaceView ml={5}><Text style={_styles.textStyle(18, '#FEE05C', 'SB')}>{item.code_name}</Text></SpaceView>
-                        </SpaceView>
-
-                        <SpaceView>
-                          <Text style={_styles.textStyle(11, '#EEEAEB')} numberOfLines={8}>
-                            {isEmptyData(item?.auth_comment) ? (
-                              <>"{item?.auth_comment}"</>
-                            ) : (
-                              <>"작성한 인증 코멘트가 없습니다."</>
-                            )}
-                          </Text>
-                        </SpaceView>
-                      </SpaceView>
-
-                      <SpaceView viewStyle={{justifyContent: 'center'}}>
-                        <Text style={_styles.textStyle(14, '#FEE05C', 'SB')}>{item?.slogan_name}중견기업 대표</Text>
-                      </SpaceView>
-
-                    </LinearGradient>
-                  </>
-                )
-              })}
-
-            </ScrollView>
           </SpaceView> */}
 
-          {/* ########################################################################################### 인증 목록(가로) */}
+          {/* ########################################################################################### 인증 목록(세로) */}
           <SpaceView>
-            {data?.map((item, index) => {
-              const authCode = item.common_code;
-              let authIcon = ICON.authJob;
+            <LinearGradient
+              colors={['#C2D4F8', '#436AA5', '#36276A']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={{borderRadius: 20}}>
 
-              if(authCode == 'EDU') {
-                authIcon = ICON.authEdu;
-              } else if(authCode == 'INCOME') {
-                authIcon = ICON.authIncome;
-              } else if(authCode == 'ASSET') {
-                authIcon = ICON.authAsset;
-              } else if(authCode == 'SNS') {
-                authIcon = ICON.authSns;
-              } else if(authCode == 'VEHICLE') {
-                authIcon = ICON.authVehicle;
-              }
+              <ScrollView 
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled
+                style={_styles.authList}>
 
-              return (
-                <>
-                  <LinearGradient
-                    colors={['#565B61', '#565B61']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={_styles.authItemWrap}
-                    key={'auth_'+index}>
+                {dataList?.map((item, index) => {
+                  const authCode = item.common_code;
+                  let authIcon = ICON.jobIcon;
 
-                    <SpaceView viewStyle={_styles.itemSubBg} />
+                  if(authCode == 'EDU') {
+                    authIcon = ICON.eduIcon;
+                  } else if(authCode == 'INCOME') {
+                    authIcon = ICON.incomeIcon;
+                  } else if(authCode == 'ASSET') {
+                    authIcon = ICON.assetIcon;
+                  } else if(authCode == 'SNS') {
+                    authIcon = ICON.snsIcon;
+                  } else if(authCode == 'VEHICLE') {
+                    authIcon = ICON.vehicleIcon;
+                  }
 
-                    <SpaceView>
-                      <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', height: 100, width: '75%'}}>
-                        <SpaceView ml={12} mr={5}>
-                          <Image source={authIcon} style={styles.iconSquareSize(64)} />
+                  return (
+                    <>
+                      <SpaceView viewStyle={_styles.authItem}>
+                        <SpaceView mb={20} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                          <Image source={authIcon} style={styles.iconSquareSize(130)} />
                         </SpaceView>
 
-                        <SpaceView>
-                          <Text style={_styles.textStyle(12, !isEmptyData(item?.auth_comment) ? '#BEC2C8' : '#E5AA6D', 'L')} numberOfLines={3}>
-                            {isEmptyData(item?.comment) ? (
-                              <>"{item?.comment}"</>
+                        <SpaceView mt={15}>
+                          <Text style={styles.fontStyle('B', 12, '#fff')}>{item.code_name}인증</Text>
+                          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Text style={styles.fontStyle('H', 28, '#fff')}>{item?.auth_type_name}</Text>
+                            <SpaceView ml={7} viewStyle={_styles.levelArea}><Text style={styles.fontStyle('SB', 14, '#fff')}>LV.{item?.auth_level}</Text></SpaceView>
+                          </SpaceView>
+                        </SpaceView>
+
+                        <SpaceView mt={25}>
+                          <Text style={styles.fontStyle('B', 15, '#fff')} numberOfLines={8}>
+                            {isEmptyData(item?.auth_comment) ? (
+                              <>{item?.auth_comment}</>
                             ) : (
-                              <>"작성한 인증 코멘트가 없습니다."</>
+                              <>{item?.comment}</>
                             )}
                           </Text>
                         </SpaceView>
                       </SpaceView>
-
-                      {isEmptyData(item?.auth_type_name) && (
-                        <SpaceView viewStyle={_styles.authType}>
-                          <Text style={_styles.sloganText}>{item?.auth_type_name}</Text>
-                        </SpaceView>
-                      )}
-                    </SpaceView>
-
-                  </LinearGradient>
-                </>
-              )
-            })}
+                    </>
+                  )
+                })}
+              </ScrollView>
+            </LinearGradient>
           </SpaceView>
 
         </SpaceView>
@@ -178,86 +115,20 @@ export default function ProfileAuth({ data, isEditBtn, memberData }) {
 ###########################################################################################################
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
-  textStyle: (_fSize:number, _fColor:string, _fType:string) => {
-    let _fontFmaily = 'Pretendard-Regular';
-    if(_fType == 'SB') {
-      _fontFmaily = 'Pretendard-SemiBold';
-    } else if(_fType == 'EB') {
-      _fontFmaily = 'Pretendard-ExtraBold';
-    } else if(_fType == 'B') {
-      _fontFmaily = 'Pretendard-Bold';
-    } else if(_fType == 'L') {
-      _fontFmaily = 'Pretendard-Light';
-    }
-
-    return {
-      fontFamily: _fontFmaily,
-      fontSize: _fSize,
-      color: isEmptyData(_fColor) ? _fColor : '#fff',
-    };
-  },
   authList: {
-    width: width,
     overflow: 'hidden',
-    marginRight: 15,
   },
   authItem: {
-    width: 130,
-    height: 220,
-    borderRadius: 20,
-    paddingVertical: 10,
+    width: width-20,
+    paddingVertical: 35,
     paddingHorizontal: 15,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginRight: 10,
-  },
-  authItemWrap: {
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
-    overflow: 'hidden',
-    minHeight: 90,
-    marginBottom: 10,
-  },
-  itemSubBg: {
-    backgroundColor: '#E3AA71',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    width: 12,
-  },
-  sloganText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 13,
-    color: '#E0AC6E',
-    backgroundColor: '#000208',
-    borderRadius: 8,
-    paddingVertical: 1,
-    paddingHorizontal: 10,
     overflow: 'hidden',
   },
-  modBtn: {
-    /* position: 'absolute',
-    top: 0,
-    right: 0, */
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 10,
+  levelArea: {
+    backgroundColor: '#508FD8',
+    borderRadius: 12,
+    paddingHorizontal: 12,
     paddingVertical: 3,
-    paddingHorizontal: 10,
   },
-  modBtnText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#D5CD9E',
-    marginLeft: 3,
-  },
-  authType: {
-    position: 'absolute',
-    top: 7,
-    right: 7,
-  },
-
 
 });

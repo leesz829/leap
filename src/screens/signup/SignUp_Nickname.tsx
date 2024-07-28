@@ -6,14 +6,13 @@ import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { join_save_profile_nickname, get_member_introduce_guide } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
-import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
 
 
@@ -83,10 +82,6 @@ export const SignUp_Nickname = (props: Props) => {
 			show({ content: '닉네임을 입력해 주세요.' });
 			return;
 		}
-		if(!isEmptyData(comment) || !comment.trim()) {
-			show({ content: '한줄 소개를 입력해 주세요.' });
-			return;
-		}
 
 		if(nickname.length > 12 || special_pattern.test(nickname) == true) {
 			show({ content: '한글, 영문, 숫자 12글자까지 입력할 수 있어요.' });
@@ -101,14 +96,13 @@ export const SignUp_Nickname = (props: Props) => {
       const body = {
         member_seq: memberSeq,
         nickname: nickname,
-        comment: comment,
       };
       try {
         const { success, data } = await join_save_profile_nickname(body);
         if (success) {
           switch (data.result_code) {
             case SUCCESS:
-              navigation.navigate(ROUTES.SIGNUP_ADDINFO, {
+              navigation.navigate(ROUTES.SIGNUP_COMMENT, {
                 memberSeq: memberSeq,
                 gender: gender,
                 mstImgPath: mstImgPath,
@@ -136,90 +130,49 @@ export const SignUp_Nickname = (props: Props) => {
 
   // ############################################################ 최초 실행
 	React.useEffect(() => {
-		getMemberIntro();		
+		getMemberIntro();
 	}, [isFocus]);
 
   return (
     <>
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={_styles.wrap}
-      >
-        <ScrollView>
-          <SpaceView mt={20}>
-            <Text style={_styles.title}>닉네임을 알려 주세요!</Text>
-            <View style={_styles.inputContainer}>
+      <SpaceView viewStyle={_styles.wrap}>
+        <SpaceView>
+          <CommonHeader title="" />
+        </SpaceView>
+
+        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          <SpaceView>
+            <SpaceView mt={50}>
+              <Text style={styles.fontStyle('H', 28, '#fff')}>닉네임 설정하기</Text>
+              <SpaceView mt={10}>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>한글,영문,숫자 포함 12글자 허용</Text>
+              </SpaceView>
+            </SpaceView>
+
+            <SpaceView mt={50}>
               <TextInput
                 value={nickname}
                 onChangeText={(text) => setNickname(text)}
                 autoCapitalize={'none'}
-                style={_styles.textInput}
-                /* placeholder={'닉네임을 입력해 주세요.'}
-                placeholderTextColor={'#989898'} */
+                style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
                 maxLength={12}
-                //caretHidden={true}
+                placeholder={'닉네임을 입력해 주세요.'}
+                placeholderTextColor={'#808080'}
               />
-              <SpaceView mt={10}>
-                <Text style={_styles.validText}><Text>한글 영문 숫자 사용 가능,</Text> <Text>최대 12글자 입력 가능</Text></Text>
-              </SpaceView>
-            </View>
+            </SpaceView>
           </SpaceView>
 
-          <SpaceView mt={80}>
-            <View>
-              <Text style={_styles.commentText}>반가워요. <Text style={{color: '#F3E270'}}>닉네임</Text>님.{'\n'}간단한 한줄소개를{'\n'}부탁드려요.</Text>
-            </View>
-            <View style={_styles.commentInputCont}>
-              <TextInput
-                value={comment}
-                onChangeText={(text) => setComment(text)}
-                //multiline={true}
-                autoCapitalize={'none'}
-                style={_styles.commentInput}
-                placeholder='프로필 사진에 공개되는 한줄소개 입력'
-                placeholderTextColor={'#FFFDEC'}
-                maxLength={50}
-                caretHidden={true}
-              />
-            </View>
+          <SpaceView viewStyle={_styles.bottomWrap}>
+            <TouchableOpacity 
+              disabled={!nickname}
+              onPress={() => { saveFn(); }}
+              style={_styles.nextBtnWrap(nickname)}>
+              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+            </TouchableOpacity>
           </SpaceView>
-
-          <SpaceView mt={120}>
-            <CommonBtn
-              value={'간편 소개 작성하기'}
-              type={'reNewId'}
-              fontSize={16}
-              fontFamily={'Pretendard-Bold'}
-              borderRadius={5}
-              onPress={() => {
-                /* navigation.navigate(ROUTES.SIGNUP_ADDINFO, {
-                  memberSeq: memberSeq,
-                  gender: gender,
-                  mstImgPath: mstImgPath,
-                }); */
-
-                saveFn();
-              }}
-            />
-          </SpaceView>
-
-          <SpaceView mt={20}>
-            <CommonBtn
-              value={'이전으로'}
-              type={'reNewGoBack'}
-              isGradient={false}
-              fontFamily={'Pretendard-Light'}
-              fontSize={14}
-              borderRadius={5}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          </SpaceView>
-        </ScrollView>
-      </LinearGradient>      
+        </SpaceView>
+      </SpaceView>
     </>
   );
 };
@@ -233,57 +186,32 @@ export const SignUp_Nickname = (props: Props) => {
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
   wrap: {
+    flex: 1,
     minHeight: height,
-    padding: 30,
+    backgroundColor: '#000000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
   },
-  title: {
-    fontSize: 30,
-    fontFamily: 'Pretendard-Bold',
-    color: '#D5CD9E',
+  bottomWrap: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
-  inputContainer: {
+  nextBtnWrap: (isOn:boolean) => {
+		return {
+			backgroundColor: isOn ? '#1F5AFB' : '#808080',
+      borderRadius: 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+    };
+	},
+  textInputStyle: {
     width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  textInput: {
-    width: '100%',
-    height: 40,
-    backgroundColor: '#445561',
-    /* borderColor: '#FFFDEC',
-    borderWidth: 1, */
-    borderRadius: 50,
-    color: '#F3E270',
-    textAlign: 'center',
-    fontFamily: 'Pretendard-Light',
-  },
-  validText: {
-    fontFamily: 'Pretendard-Light',
-    color: '#D5CD9E',
-    fontSize: 12,
-  },
-  commentText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 32,
-    color: '#D5CD9E',
-  },
-  commentInputCont: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  commentInput: {
-    width: '100%',
-    height: 60,
-    backgroundColor: '#445561',
-    /* borderWidth: 1,
-    borderColor: '#FFFDEC', */
-    borderRadius: 5,
-    color: '#FFFDEC',
-    textAlign: 'center',
-    fontFamily: 'Pretendard-Light',
-    fontSize: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
+    padding: 0,
+    paddingBottom: 5,
+    paddingTop: 5,
   },
 });

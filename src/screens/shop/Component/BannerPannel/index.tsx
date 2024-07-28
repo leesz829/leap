@@ -123,7 +123,7 @@ const _styles = StyleSheet.create({
     marginTop: 15,
   },
   repectGrade: {
-    fontFamily: 'MinSans-Bold',
+    fontFamily: 'SUITE-Bold',
     color: '#000000',
     marginRight: 10,
     marginLeft: 2,

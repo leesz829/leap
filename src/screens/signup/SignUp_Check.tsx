@@ -6,7 +6,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { usePopup } from 'Context';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData, calculateAge } from 'utils/functions';
@@ -59,65 +59,83 @@ export const SignUp_Check = (props: Props) => {
 
   return (
     <>
-      <ScrollView>
-        <LinearGradient
-          colors={['#3D4348', '#1A1E1C']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={_styles.signUpContainer}
-        >
-          <SpaceView viewStyle={{paddingHorizontal:16, marginTop: 50}}>
-            <Text style={_styles.signUpText}><Text style={_styles.memberInfoText}>{mobile}</Text>로 인증된 회원님의 성함은 <Text style={_styles.memberInfoText}>{name}</Text> <Text style={_styles.memberInfoText}>만 {age}세 {gender === 'M' ? '남자' : '여자'}</Text> 이시군요!</Text>
-            <Text style={[_styles.signUpText, {marginTop: 20}]}>입력된 회원 정보가{'\n'}맞으신가요?</Text>
-          
-          <SpaceView mt={160}>
-            <CommonBtn
-              value={'네, 맞아요!'}
-              type={'reNewId'}
-              borderRadius={5}
-              onPress={() => {
-                goNext();
-              }}
-            />
+      <SpaceView viewStyle={_styles.wrap}>
+        <SpaceView>
+          <CommonHeader title="" />
+        </SpaceView>
+
+        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          <SpaceView>
+            <SpaceView mt={50}>
+              <Text style={styles.fontStyle('H', 28, '#fff')}>입력된 회원 정보가{'\n'}맞으신가요?</Text>
+            </SpaceView>
+
+            <SpaceView mt={50} viewStyle={_styles.contentWrap}>
+              <SpaceView viewStyle={_styles.itemWrap}>
+                <Text style={styles.fontStyle('B', 14, '#808080')}>이름</Text>
+                <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>{name}</Text></SpaceView>
+              </SpaceView>
+              <SpaceView viewStyle={_styles.itemWrap}>
+                <Text style={styles.fontStyle('B', 14, '#808080')}>나이/성별</Text>
+                <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>만 {age}세/{gender === 'M' ? '남자' : '여자'}</Text></SpaceView>
+              </SpaceView>
+              <SpaceView viewStyle={_styles.itemWrap}>
+                <Text style={styles.fontStyle('B', 14, '#808080')}>전화번호</Text>
+                <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>{mobile}</Text></SpaceView>
+              </SpaceView>
+            </SpaceView>
           </SpaceView>
-          <SpaceView mt={20}>
-            <CommonBtn
-              value={'처음으로'}
-              type={'reNewGoBack'}
-              isGradient={false}
-              fontFamily={'Pretendard-Light'}
-              fontSize={14}
-              borderRadius={5}
-              onPress={() => {
-                navigation.navigate(ROUTES.LOGIN);
-              }}
-            />
+
+          <SpaceView viewStyle={_styles.bottomWrap}>
+            <TouchableOpacity
+              onPress={() => { goNext(); }}
+              style={_styles.nextBtnWrap(true)}>
+              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+            </TouchableOpacity>
           </SpaceView>
-          </SpaceView>
-        </LinearGradient>
-      </ScrollView>
+        </SpaceView>
+      </SpaceView>
     </>
   );
 };
 
 
 const _styles = StyleSheet.create({
-  signUpContainer: {
+  wrap: {
+    flex: 1,
     minHeight: height,
-    paddingTop: 60,
-    paddingLeft: 16,
-    paddingRight: 16,
-    flexGrow: 1,
+    backgroundColor: '#000000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
+  },
+  contentWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  signUpText: {
-    fontSize: 30,
-    lineHeight: 40,
-    color: '#D5CD9E',
-    fontFamily: 'Pretendard-Medium'
+  itemWrap: {
+    alignItems: 'center',
+    paddingHorizontal: 8,
   },
-  memberInfoText: {
-    fontSize: 30,
-    color: '#F3E270',
+  textWrap: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
+    paddingBottom: 5,
+    paddingHorizontal: 8,
   },
+  bottomWrap: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  nextBtnWrap: (isOn:boolean) => {
+		return {
+			backgroundColor: isOn ? '#1F5AFB' : '#808080',
+      borderRadius: 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+    };
+	},
 });

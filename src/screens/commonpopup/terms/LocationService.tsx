@@ -33,31 +33,31 @@ export default function LocationService({ modalRef, callBackFunc }: Props) {
 		<Modalize
 			ref={modalRef}
 			handleStyle={modalStyle.modalHandleStyle}
-			modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}
+			modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, backgroundColor: '#1B1633'}}
 			adjustToContentHeight={false}
 			modalHeight={height - 150}
 			FooterComponent={
-				<SpaceView viewStyle={[styles.rowStyle]}>
-					<TouchableOpacity onPress={() => { modalClose(false); }} style={_styles.btnArea('#333B41')}>
-						<Text style={_styles.btnText('#D5CD9E')}>취소</Text>
+				<SpaceView pl={20} pr={20}>
+					<TouchableOpacity onPress={() => { modalClose(true); }} style={_styles.btnArea('#44B6E5')}>
+						<Text style={styles.fontStyle('B', 18, '#fff')}>동의하기</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => { modalClose(true); }} style={_styles.btnArea('#FFDD00')}>
-						<Text style={_styles.btnText('#3D4348')}>동의 후 닫기</Text>
+					<TouchableOpacity onPress={() => { modalClose(false); }} style={_styles.btnArea('#333B41')}>
+						<Text style={styles.fontStyle('B', 18, '#fff')}>닫기</Text>
 					</TouchableOpacity>
 				</SpaceView>
 			}
 			HeaderComponent={
 				<SpaceView viewStyle={_styles.titleArea}>
-					<Text style={_styles.titleText}>위치기반 서비스 이용약관</Text>
-					{/* <TouchableOpacity onPress={() => { modalClose(false); }} hitSlop={commonStyle.hipSlop15}>
-						<Image source={ICON.xBtn2} style={styles.iconSize24} />
-					</TouchableOpacity> */}
+					<SpaceView mb={50} viewStyle={layoutStyle.alignCenter}>
+						<Image source={ICON.popupDown} style={styles.iconNoSquareSize(37, 7)} />
+					</SpaceView>
+					<Text style={styles.fontStyle('EB', 22, '#fff')}>위치기반 서비스 이용약관</Text>
 				</SpaceView>
 			}
 		>
-			<View style={[modalStyle.modalBody, layoutStyle.flex1, {backgroundColor: '#1A1E1C'}]}>
+			<View style={[modalStyle.modalBody, layoutStyle.flex1, {backgroundColor: '#1B1633'}]}>
 				<SpaceView mb={24} viewStyle={{ width: width - 32 }}>
-					<CommonText type={'h5'} textStyle={_styles.contentText}>
+					<Text style={styles.fontStyle('B', 11, '#fff')}>
 						여러분의 개인정보를 원활한 리프(Leap) 서비스(이하 ‘회사 서비스’)의 제공을 
 						위해 여러분이 동의한 목적과 범위 내에서만 이용합니다. 회사는 여러분의 동의나 법률의 특별한 규정 등 개인정보 보호법에 해당하지 
 						않는 경우 여러분의 개인정보를 절대 제삼자에게 제공하지 않습니다.{'\n'}
@@ -258,7 +258,7 @@ export default function LocationService({ modalRef, callBackFunc }: Props) {
 						{'\n'}
 						{'\n'}
 						본 개인정보 취급방침은 2022년 11월 28일부터 적용됩니다.
-					</CommonText>
+					</Text>
 				</SpaceView>
 			</View>
 		</Modalize>
@@ -272,36 +272,20 @@ const _styles = StyleSheet.create({
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
 		overflow: 'hidden',
-		backgroundColor:'#1A1E1C',
-		//flexDirection: 'row',
-		//justifyContent: 'space-between',
-		paddingVertical: 15,
+		backgroundColor:'#1B1633',
+		paddingVertical: 20,
 		paddingHorizontal: 10,
-	},
-	titleText: {
-		fontFamily: 'Pretendard-Regular',
-		fontSize: 18,
-		color: '#D5CD9E',
-		textAlign: 'center',
-	},
-	contentText: {
-		color: '#D5CD9E',
 	},
 	btnArea: (bg:number) => {
 		return {
-			width: '50%',
-			height: 48,
+			width: '100%',
+			height: 45,
 			backgroundColor: bg,
 			alignItems: 'center',
 			justifyContent: 'center',
+			borderRadius: 25,
+			marginBottom: 10,
 		}
 	},
-	btnText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-		  fontSize: 16,
-		  color: isEmptyData(cr) ? cr : '#fff',
-		};
-	  },
 
 });

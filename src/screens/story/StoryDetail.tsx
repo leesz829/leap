@@ -12,7 +12,7 @@ import { usePopup } from 'Context';
 import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 import { useDispatch } from 'react-redux';
 import Image from 'react-native-fast-image';
-import { ICON } from 'utils/imageUtils';
+import { ICON, PROFILE_IMAGE } from 'utils/imageUtils';
 import { useUserInfo } from 'hooks/useUserInfo';
 import LinearGradient from 'react-native-linear-gradient';
 import { isEmptyData } from 'utils/functions';
@@ -54,17 +54,9 @@ export default function StoryDetail(props: Props) {
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = React.useState(false); // 로딩 상태 체크
   const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
-  const [isReplyVisible, setIsReplyVisible] = React.useState(false);
   
   const [storyBoardSeq, setStoryBoardSeq] = React.useState(props.route.params.storyBoardSeq);
   const [storyType, setStoryType] = React.useState(isEmptyData(props.route.params.storyType) ? props.route.params.storyType : ''); // 스토리 유형
-
-  // 선택된 댓글 데이터(댓글 등록 모달 적용)
-  const [selectedReplyData, setSelectedReplyData] = React.useState({
-    storyReplySeq: 0,
-    depth: 0,
-    isSecret: false,
-  });
 
   // 스토리 데이터
   const [storyData, setStoryData] = React.useState({
@@ -95,9 +87,99 @@ export default function StoryDetail(props: Props) {
     storyMod_modalizeRef.current?.close();
   };
 
+  // 투표 선택 상태
+  const [selectedVoteSeq, setSelectedVoteSeq] = React.useState(null);
+
+  /* #########################################################################################################
+  ######## 좋아요 관련
+  ######################################################################################################### */
+
+  // 좋아요 modalizeRef
+  const like_modalizeRef = React.useRef<Modalize>(null);
+
+  // 좋아요 팝업 활성화
+  const like_onOpen = () => {
+    like_modalizeRef.current?.openModal('BOARD', storyBoardSeq);
+  };
+
+  // ############################################################################# 게시글 좋아요 저장
+  const storyLikeProc = async (type:string, storyReplySeq:number) => {
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      try {
+        setIsClickable(false);
+        setIsLoading(true);
+  
+        const body = {
+          type: type,
+          story_board_seq: storyBoardSeq,
+          story_reply_seq: storyReplySeq,
+        };
+  
+        const { success, data } = await save_story_like(body);
+        if(success) {
+          switch (data.result_code) {
+            case SUCCESS:
+              getStoryBoard();
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+    }
+  };
+
+  
+  const [replyInfo, setReplyInfo] = useState({});
+
+  const popupStoryReplyActive = (_storyReplySeq:number, _depth:number, replyInfo:{}) => {
+    //setLikeListTypePopup('REPLY');
+    setSelectedReplyData({
+      storyReplySeq: _storyReplySeq,
+      depth: _depth,
+    });
+    setReplyInfo(replyInfo);
+  };
+
+
   /* #########################################################################################################
   ######## 댓글 모달 관련
   ######################################################################################################### */
+  const [isReplyVisible, setIsReplyVisible] = React.useState(false);
+
+  // 댓글 modalizeRef
+  const reply_modalizeRef = React.useRef<Modalize>(null);
+
+  // 댓글 팝업 활성화
+  const reply_onOpen = () => {
+    reply_modalizeRef.current?.openModal(storyBoardSeq, storyData.replyList);
+  };
+
+  {/* <ReplyRegiPopup 
+        isVisible={isReplyVisible} 
+        storyBoardSeq={storyData?.board?.story_board_seq}
+        storyReplySeq={selectedReplyData.storyReplySeq}
+        depth={selectedReplyData.depth}
+        isSecret={selectedReplyData.isSecret}
+        callbackFunc={replyRegiCallback} 
+      /> */}
+
+  // 선택된 댓글 데이터(댓글 등록 모달 적용)
+  const [selectedReplyData, setSelectedReplyData] = React.useState({
+    storyReplySeq: 0,
+    depth: 0,
+    isSecret: false,
+  });
 
   // 댓글 모달 열기
   const replyModalOpen = async (_storyReplySeq:number, _depth:number, _isSecret:boolean) => {
@@ -138,12 +220,14 @@ export default function StoryDetail(props: Props) {
       });
 
     } else {
-      setSelectedReplyData({
+      /* setSelectedReplyData({
         storyReplySeq: _storyReplySeq,
         depth: _depth,
         isSecret: _isSecret,
       });
-      setIsReplyVisible(true);
+      setIsReplyVisible(true); */
+
+      reply_onOpen();
     }
   };
 
@@ -244,6 +328,8 @@ export default function StoryDetail(props: Props) {
 
             if(isEmptyData(data.story?.story_board_seq)) {
 
+              console.log('data selected_vote_seq :::::: ' , data.story?.selected_vote_seq);
+
               // 투표 정보 구성
               let _voteInfo = {};
               if(data?.story?.story_type == 'VOTE' && data?.story_vote_list?.length > 1) {
@@ -293,66 +379,6 @@ export default function StoryDetail(props: Props) {
     }
   };
 
-  // ############################################################################# 게시글 좋아요 저장
-  const storyLikeProc = async (type:string, storyReplySeq:number) => {
-
-    // 중복 클릭 방지 설정
-    if(isClickable) {
-      try {
-        setIsClickable(false);
-        setIsLoading(true);
-  
-        const body = {
-          type: type,
-          story_board_seq: storyBoardSeq,
-          story_reply_seq: storyReplySeq,
-        };
-  
-        const { success, data } = await save_story_like(body);
-        if(success) {
-          switch (data.result_code) {
-            case SUCCESS:
-              getStoryBoard();
-              break;
-            default:
-              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-              break;
-          }
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsClickable(true);
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const [likeListPopup, setLikeListPopup] = useState(false);
-  const [likeListTypePopup, setLikeListTypePopup] = useState('');
-  const [replyInfo, setReplyInfo] = useState({});
-
-  const popupStoryBoardActive = () => {
-    setLikeListPopup(true);
-    setLikeListTypePopup('BOARD');
-  };
-
-  const popupStoryReplyActive = (_storyReplySeq:number, _depth:number, replyInfo:{}) => {
-    setLikeListPopup(true);
-    setLikeListTypePopup('REPLY');
-    setSelectedReplyData({
-      storyReplySeq: _storyReplySeq,
-      depth: _depth,
-    });
-    setReplyInfo(replyInfo);
-  };
-
-  const likeListCloseModal = () => {
-    setLikeListPopup(false);
-  };
-
   // ############################################################################# 투표하기 실행
   const voteProc = async (storyVoteSeq:number) => {
 
@@ -360,26 +386,32 @@ export default function StoryDetail(props: Props) {
     if(isClickable) {
       try {
         setIsClickable(false);
-        setIsLoading(true);
-  
-        const body = {
-          story_board_seq: storyBoardSeq,
-          story_vote_seq: storyVoteSeq,
-        };
-  
-        const { success, data } = await save_story_vote_member(body);
-        if(success) {
-          switch (data.result_code) {
-            case SUCCESS:
-              getStoryBoard();
-              break;
-            default:
-              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-              break;
-          }
+
+        if(selectedVoteSeq != storyVoteSeq) {
+          setSelectedVoteSeq(storyVoteSeq);
         } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          setIsLoading(true);
+
+          const body = {
+            story_board_seq: storyBoardSeq,
+            story_vote_seq: storyVoteSeq,
+          };
+    
+          const { success, data } = await save_story_vote_member(body);
+          if(success) {
+            switch (data.result_code) {
+              case SUCCESS:
+                getStoryBoard();
+                break;
+              default:
+                show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+                break;
+            }
+          } else {
+            show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          }
         }
+  
       } catch (error) {
         console.log(error);
       } finally {
@@ -450,6 +482,7 @@ export default function StoryDetail(props: Props) {
 
   // ##################################################################################### 프로필 카드 열람
   const profileCardOpen =  async (memberSeq:number, isSecret:boolean, message:string) => {
+
     // 중복 클릭 방지 설정
     if(isClickable) {
       try {
@@ -550,7 +583,7 @@ export default function StoryDetail(props: Props) {
     const secretYn = item?.secret_yn; // 비밀 여부
 
     // 영역 사이즈 설정
-    let _w = width - 73;
+    let _w = width - 120;
     let depthStyleSize = 0;
 
     if(depth == 2) {
@@ -584,98 +617,123 @@ export default function StoryDetail(props: Props) {
 
     return (
       <>
-        <SpaceView viewStyle={_styles.replyItemWarp}>
-          <SpaceView ml={depthStyleSize} viewStyle={_styles.replyItemTopArea}>
-            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-start'}}>
+        <SpaceView mb={20} viewStyle={{flexDirection: 'row', alignItems: 'flex-start', justifyContent: index%2 == 0 ? 'flex-start' : 'flex-end'}}>
 
-              {/* 썸네일 */}
+          {index%2 == 0 && (
+            <SpaceView mr={15}>
+              <TouchableOpacity 
+                style={_styles.imgCircle}
+                disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyData.board?.story_type == 'SECRET' || isApplySecret}
+                onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); }}
+              >
+                <Image source={applyMsgImg} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
+              </TouchableOpacity>
+              {memberBase?.member_seq === item?.member_seq && (
+                <SpaceView viewStyle={_styles.myReplyChk}>
+                  <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                </SpaceView>
+              )}
+            </SpaceView>
+          )}
+
+          {/* ######################################################################################################## 내용 */}
+          <SpaceView pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
+            <SpaceView viewStyle={{backgroundColor: '#fff', borderRadius: 10, paddingHorizontal: 15, paddingVertical: 10}}>
               <SpaceView>
-                <TouchableOpacity 
-                  style={_styles.imgCircle}
-                  disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyData.board?.story_type == 'SECRET' || isApplySecret}
-                  onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); }}
-                >
-                  <Image source={applyMsgImg} style={_styles.replyImageStyle} resizeMode={'cover'} />
-                </TouchableOpacity>
-                {memberBase?.member_seq === item?.member_seq && (
-                  <SpaceView viewStyle={_styles.myReplyChk}>
-                    <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
-                  </SpaceView>
-                )}
+                <Text style={styles.fontStyle('SB', 10, '#383838')}>{applyNickname}</Text>
               </SpaceView>
-
-              <SpaceView ml={5} pt={3} viewStyle={{flexDirection: 'column', width: _w}}>
-
-                {/* 닉네임, 타임 텍스트 */}
-                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={_styles.replyNickname}>
-                    <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{applyNickname}</Text>{' '}
-                    <Text style={[_styles.replyTimeText, {justifyContent: 'center'}]}>{item.time_text}</Text>     
-                  </Text>
-                  <View>
-                    {secretYn == 'Y' && (<Image source={item.gender == 'W' ? ICON.padlockFemale : ICON.padlockMale} style={{width: 14, height: 14,}} />)}
-                  </View>
-                </SpaceView>
-
-                {/* 댓글 내용 */}
-                <SpaceView mt={6} viewStyle={{ width: width - 90}}>
-                  
-                  <Text style={_styles.replyContents}>
-                    {
-                      (isApplySecret) ? '게시글 작성자에게만 보이는 글입니다.' : (item.del_yn == 'Y') ? '삭제된 댓글입니다.' : item.reply_contents
-                    }
-
-                    {(memberBase?.member_seq === item?.member_seq) && (item.del_yn == 'N') && (
-                      <TouchableOpacity style={{ paddingLeft: 5, }} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
-                        <Text style={_styles.replyTextDel}>삭제</Text>
-                      </TouchableOpacity>
-                    )}
-                  </Text>
-
-
-                </SpaceView>
-
-                {/* 버튼 영역 */}
-                <SpaceView pt={2} mt={10} viewStyle={{alignItems: 'flex-start'}}>
-                  <SpaceView viewStyle={_styles.replyItemEtcWrap}>
-
-                    {/* 답글달기 버튼 */}
-                    {depth == 1 && (
-                      <>
-                        <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth, false); }}>
-                          <Text style={_styles.replyTextStyle}>답글달기</Text>
-                        </TouchableOpacity>
-                      </>
-                    )}
-
-                    {/* 좋아요 버튼 */}
-                    <SpaceView viewStyle={_styles.likeArea}>
-                      <TouchableOpacity 
-                        onPress={() => { likeFunc('REPLY', storyReplySeq); }}
-                        style={{marginRight: 6}} 
-                        hitSlop={commonStyle.hipSlop20}>
-
-                        {(item?.member_like_yn == 'N') ? (
-                          <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
-                        ) : (
-                          <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(14)} />
-                        )}
-                      </TouchableOpacity>
-
-                      <TouchableOpacity 
-                        //disabled={memberBase.member_seq != item?.member_seq}
-                        hitSlop={commonStyle.hipSlop10}
-                        onPress={() => { popupStoryReplyActive(storyReplySeq, depth, item) }}>
-                        <Text style={_styles.replyLikeCntText}>좋아요{item?.like_cnt > 0 && item?.like_cnt + '개'}</Text>
-                      </TouchableOpacity>
-                    </SpaceView>
-
-                  </SpaceView>
-                </SpaceView>
+              <SpaceView mt={5}>
+                <Text style={styles.fontStyle('SB', 12, '#383838')}>{item.reply_contents}</Text>
               </SpaceView>
             </SpaceView>
 
+            <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+              <TouchableOpacity>
+                <Image source={ICON.story_upBtn} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity>
+              <TouchableOpacity style={{marginLeft: 8}}>
+                <Image source={ICON.story_downBtn} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity>
+            </SpaceView>
+
+            {/* 닉네임, 타임 텍스트 */}
+            {/* <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={_styles.replyNickname}>
+                <Text style={_styles.replyNicknameText(storyData.board?.story_type, item.gender)}>{applyNickname}</Text>{' '}
+                <Text style={[_styles.replyTimeText, {justifyContent: 'center'}]}>{item.time_text}</Text>     
+              </Text>
+              <View>
+                {secretYn == 'Y' && (<Image source={item.gender == 'W' ? ICON.padlockFemale : ICON.padlockMale} style={{width: 14, height: 14,}} />)}
+              </View>
+            </SpaceView> */}
+
+            {/* 댓글 내용 */}
+            {/* <SpaceView mt={6} viewStyle={{ width: width - 90}}>
+              
+              <Text style={_styles.replyContents}>
+                {
+                  (isApplySecret) ? '게시글 작성자에게만 보이는 글입니다.' : (item.del_yn == 'Y') ? '삭제된 댓글입니다.' : item.reply_contents
+                }
+
+                {(memberBase?.member_seq === item?.member_seq) && (item.del_yn == 'N') && (
+                  <TouchableOpacity style={{ paddingLeft: 5, }} onPress={() => { replyDelPopupOpen(storyReplySeq); }}>
+                    <Text style={_styles.replyTextDel}>삭제</Text>
+                  </TouchableOpacity>
+                )}
+              </Text>
+            </SpaceView> */}
+
+            {/* 버튼 영역 */}
+            {/* 답글달기 버튼 */}
+            {/* {depth == 1 && (
+              <>
+                <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth, false); }}>
+                  <Text style={_styles.replyTextStyle}>답글달기</Text>
+                </TouchableOpacity>
+              </>
+            )} */}
+
+            {/* 좋아요 버튼 */}
+            {/* <SpaceView viewStyle={_styles.likeArea}>
+              <TouchableOpacity 
+                onPress={() => { likeFunc('REPLY', storyReplySeq); }}
+                style={{marginRight: 6}} 
+                hitSlop={commonStyle.hipSlop20}>
+
+                {(item?.member_like_yn == 'N') ? (
+                  <Image source={ICON.heartOffIcon} style={styles.iconSquareSize(14)} />
+                ) : (
+                  <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(14)} />
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                //disabled={memberBase.member_seq != item?.member_seq}
+                hitSlop={commonStyle.hipSlop10}
+                onPress={() => { popupStoryReplyActive(storyReplySeq, depth, item) }}>
+                <Text style={_styles.replyLikeCntText}>좋아요{item?.like_cnt > 0 && item?.like_cnt + '개'}</Text>
+              </TouchableOpacity>
+            </SpaceView> */}
+
           </SpaceView>
+
+          {index%2 != 0 && (
+            <SpaceView ml={15}>
+              <TouchableOpacity 
+                style={_styles.imgCircle}
+                disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyData.board?.story_type == 'SECRET' || isApplySecret}
+                onPress={() => { profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); }}
+              >
+                <Image source={applyMsgImg} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
+              </TouchableOpacity>
+              {memberBase?.member_seq === item?.member_seq && (
+                <SpaceView viewStyle={_styles.myReplyChk}>
+                  <Image source={gender == 'M' ? ICON.maleIcon : ICON.femaleIcon} style={styles.iconSquareSize(13)} resizeMode={'cover'} />
+                </SpaceView>
+              )}
+            </SpaceView>
+          )}
+
         </SpaceView>
       </>
     );
@@ -706,26 +764,21 @@ export default function StoryDetail(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader 
-        title={(storyData.board?.story_type == 'STORY' ? '스토리' : storyData.board?.story_type == 'VOTE' ? '투표' : '시크릿')}
-        type={'STORY_DETAIL'} 
-        mstImgPath={findSourcePath(storyData.board?.mst_img_path)} 
-        nickname={storyData.board?.nickname}
-        gender={storyData.board?.gender}
-        profileScore={storyData.board?.profile_score}
-        authLevel={storyData.board?.auth_acct_cnt}
-        storyType={storyData.board?.story_type}
-        secretYn={storyData.board?.secret_yn}
-        nicknameModifier={storyData.board?.nickname_modifier}
-        nicknameNoun={storyData.board?.nickname_noun}
-      />
-
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={{minHeight: height}}
-      >
+      <SpaceView pt={30} viewStyle={_styles.wrap}>
+      
+        <CommonHeader 
+          title={(storyData.board?.story_type == 'STORY' ? '스토리' : storyData.board?.story_type == 'VOTE' ? '투표' : '시크릿')}
+          type={'STORY_DETAIL'} 
+          mstImgPath={findSourcePath(storyData.board?.mst_img_path)} 
+          nickname={storyData.board?.nickname}
+          gender={storyData.board?.gender}
+          profileScore={storyData.board?.profile_score}
+          authLevel={storyData.board?.auth_acct_cnt}
+          storyType={storyData.board?.story_type}
+          secretYn={storyData.board?.secret_yn}
+          nicknameModifier={storyData.board?.nickname_modifier}
+          nicknameNoun={storyData.board?.nickname_noun}
+        />
 
         <ScrollView
           style={{marginBottom: 120}}
@@ -743,11 +796,11 @@ export default function StoryDetail(props: Props) {
           }
         >
 
-          <SpaceView mb={20}>
+          <SpaceView mb={20} pl={10} pr={10}>
 
             {/* ###################################################################################### 이미지 영역 */}
             <SpaceView>
-              <View style={_styles.pagingContainer}>
+              {/* <View style={_styles.pagingContainer}>
                 {storyData.board?.story_type == 'VOTE' ? (
                   <>
                     {storyData.voteList?.map((item, index) => {
@@ -769,7 +822,7 @@ export default function StoryDetail(props: Props) {
                     })}
                   </>
                 )}
-              </View>
+              </View> */}
 
               <FlatList
                 ref={imgRef}
@@ -780,105 +833,186 @@ export default function StoryDetail(props: Props) {
                 horizontal
                 pagingEnabled
               />
-
-              {/* ###################################################################################### 투표 선택 영역 */}
-              {storyData.board?.story_type == 'VOTE' && (
-                <>
-                  <SpaceView viewStyle={{position: 'absolute', bottom: 20, left: 0, right: 0, zIndex: 1,}}>
-
-                    {/* 투표 선택 알림글 */}
-                    {isEmptyData(storyData.board?.vote_time_text) && (
-                      <>
-                        <SpaceView pl={20} mb={5} viewStyle={{width: '100%',}}>
-                          <Text style={_styles.voteDescText}>투표 후에도 선택을 바꿀 수 있습니다.&nbsp;
-                              <Text style={_styles.voteTimeText}>{storyData.board?.vote_time_text}</Text>
-                          </Text>
-                        </SpaceView>
-                      </>
-                    )}
-
-                    <SpaceView viewStyle={_styles.voteSelectArea}>
-                      {storyData.voteList?.length > 1 && (
-                        <SpaceView mb={20} viewStyle={_styles.voteArea}>
-
-                          {/* ########################## 투표 이미지 영역 1 */}
-                          <TouchableOpacity 
-                            disabled={storyData.voteList[0]?.vote_yn == 'Y' || storyData?.voteInfo?.isVoteEnd}
-                            onPress={() => { voteProc(storyData.voteList[0]?.story_vote_seq) }}
-                            style={_styles.voteImgArea(0)}
-                          >
-                            <SpaceView viewStyle={_styles.voteImgStyle('#FFFFFF')}>
-                              <Image source={findSourcePath(storyData.voteList[0]?.file_path)} style={styles.iconSquareSize(85)} resizeMode={'cover'} />
-                            </SpaceView>
-
-                            {/* 선택한 투표 표시 */}
-                            {storyData.voteList[0]?.vote_yn == 'Y' &&
-                              <Image source={ICON.chatRed} style={[styles.iconSquareSize(25), {position: 'absolute', top: 0, right: -3, zIndex: 1}]} />
-                            }
-
-                            {/* 투표 갯수 */}
-                            <SpaceView viewStyle={_styles.voteMmbrCntArea(storyData?.voteInfo?.isVoteEnd, storyData?.voteInfo?.isVoteDraw, storyData?.voteInfo?.voteWinIdx == 1)}>
-                              <Text style={_styles.votePickText}>
-                                {storyData?.voteInfo?.isVoteEnd && !storyData?.voteInfo?.isVoteDraw && storyData?.voteInfo?.voteWinIdx == 1 ? 'PICK' : storyData.voteList[0]?.vote_member_cnt + '표'}
-                              </Text>
-                            </SpaceView>
-                          </TouchableOpacity>
-
-                          {/* ########################## 투표 이미지 영역 2 */}
-                          <TouchableOpacity
-                            disabled={storyData.voteList[1]?.vote_yn == 'Y' || storyData?.voteInfo?.isVoteEnd}
-                            onPress={() => { voteProc(storyData.voteList[1]?.story_vote_seq) }}
-                            style={_styles.voteImgArea(1)}
-                          >
-                            <SpaceView viewStyle={_styles.voteImgStyle('#5A707F')}>
-                              <Image source={findSourcePath(storyData.voteList[1]?.file_path)} style={styles.iconSquareSize(85)} resizeMode={'cover'} />
-                            </SpaceView>
-
-                            {/* 선택한 투표 표시 */}
-                            {storyData.voteList[1]?.vote_yn == 'Y' &&
-                              <Image source={ICON.chatRed} style={[styles.iconSquareSize(25), {position: 'absolute', top: 0, right: -3, zIndex: 1}]} />
-                            }
-
-                            {/* 투표 갯수 */}
-                            <SpaceView viewStyle={_styles.voteMmbrCntArea(storyData?.voteInfo?.isVoteEnd, storyData?.voteInfo?.isVoteDraw, storyData?.voteInfo?.voteWinIdx == 2)}>
-                              <Text style={_styles.votePickText}>
-                                {storyData?.voteInfo?.isVoteEnd && !storyData?.voteInfo?.isVoteDraw && storyData?.voteInfo?.voteWinIdx == 2 ? 'PICK' : storyData.voteList[1]?.vote_member_cnt + '표'}
-                              </Text>
-                            </SpaceView>
-                          </TouchableOpacity>
-
-                          {/* ########################## 투표 명 */}
-                          <SpaceView>
-                            <SpaceView mb={13} viewStyle={_styles.voteNameArea(0)}>
-                              <Text style={_styles.voteNameText('#000000')}>{storyData.voteList[0]?.vote_name}</Text>
-                            </SpaceView>
-
-                            <SpaceView viewStyle={_styles.voteNameArea(1)}>
-                              <Text style={_styles.voteNameText('#FFFFFF')}>{storyData.voteList[1]?.vote_name}</Text>
-                            </SpaceView>
-                          </SpaceView>
-
-                          {/* ########################## VS OR END 표기 */}
-                          <SpaceView viewStyle={_styles.voteVsArea}>
-                            <Text style={_styles.voteVsText}>{storyData?.voteInfo?.isVoteEnd ? 'END' : 'VS'}</Text>
-                          </SpaceView>
-
-                        </SpaceView>
-                      )}
-                    </SpaceView>
-                  </SpaceView>
-
-                  {/* 투표 dim 처리 */}
-                  <LinearGradient
-                    colors={['rgba(255,255,255,0.1)', '#ffffff']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                    style={_styles.voteDimArea} />                  
-                </>
-              )}
             </SpaceView>
 
-            
+            {/* ###################################################################################### 내용 영역 */}
+            <SpaceView mt={8} pb={25} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#BCBCBC'}}>
+              <SpaceView>
+                <Text style={styles.fontStyle('SB', 14, '#CBCBCB')}>{storyData.board?.contents}</Text>
+              </SpaceView>
+
+              <SpaceView mt={15} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <SpaceView>
+                  <Text style={styles.fontStyle('SB', 12, '#ABA99A')}>{storyData.board?.time_text}</Text>
+                </SpaceView>
+                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+
+                    {/* 좋아요 버튼 */}
+                    <TouchableOpacity 
+                      onPress={() => { storyLikeProc('BOARD', 0); }} 
+                      hitSlop={commonStyle.hipSlop20}>
+                      <Image source={storyData.board?.member_like_yn == 'N' ? ICON.story_heartWhite : ICON.story_heartWhiteFill} style={styles.iconSquareSize(20)} />
+                    </TouchableOpacity>
+
+                    {/* 좋아요 갯수 버튼 */}
+                    <TouchableOpacity 
+                      hitSlop={commonStyle.hipSlop10}
+                      style={{marginLeft: 5}}
+                      onPress={() => { like_onOpen(); }}>
+                      <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(storyData.board?.like_cnt) ? storyData.board?.like_cnt + '개' : '0개'}</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+
+                  <SpaceView>
+
+                    {/* 댓글 버튼 */}
+                    <TouchableOpacity 
+                      style={{flexDirection: 'row', alignItems: 'center', marginLeft: 20}} 
+                      onPress={() => { replyModalOpen(0, 0, false); }}>
+                      <Image source={ICON.story_replyWhite} style={styles.iconSquareSize(19)} />
+                      <SpaceView ml={5}><Text style={styles.fontStyle('B', 16, '#fff')}>{storyData.replyList?.length + '개'}</Text></SpaceView>
+                    </TouchableOpacity>
+
+                    {/*  댓글 초이스 노출 문구 */}
+                    {/* <SpaceView viewStyle={_styles.choiceBubbleWrap}>
+                      <SpaceView viewStyle={_styles.choiceBubbleMark} />
+                      <LinearGradient
+                        colors={['#8BC1FF', '#416DFF']}
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 0 }}
+                        style={_styles.choiceBubbleLinear(272)}
+                      >
+                        <SpaceView mr={5} viewStyle={{flexDirection: 'row', backgroundColor: '#000000', borderRadius: 25, paddingHorizontal: 5, paddingVertical: 2}}>
+                          <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
+                          <SpaceView ml={2}><Text style={styles.fontStyle('R', 9, '#fff')}>5개</Text></SpaceView>
+                        </SpaceView>
+                        <Text style={styles.fontStyle('SB', 10, '#fff')}>
+                          댓글을 남기고 큐브 보상을 받을 수 있어요.(60분 남음)
+                        </Text>
+                      </LinearGradient>
+                    </SpaceView> */}
+
+                  </SpaceView>
+                </SpaceView>
+              </SpaceView>
+            </SpaceView>
+
+            {/* ###################################################################################### 투표 노출 영역 */}
+            {storyData.board?.story_type == 'VOTE' && (
+              <>
+                <SpaceView pl={10} pr={10} pt={20} pb={20} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#BCBCBC'}}>
+                  {storyData.voteList?.map((item, index) => {
+                    return (
+                      <SpaceView key={'vote_' + index} viewStyle={_styles.voteItemWrap}>
+                        <Text style={styles.fontStyle('SB', 12, '#fff')}>{item.vote_name}</Text>
+                        <TouchableOpacity 
+                          style={_styles.voteSelectedBtn}
+                          disabled={storyData?.voteInfo?.isVoteEnd || !isEmptyData(storyData?.voteInfo?.selected_vote_seq) || memberBase?.member_seq != storyData.board?.member_seq}
+                          onPress={() => { voteProc(item?.story_vote_seq) }}>
+
+                          {/* 투표 마감 또는 투표 선택한 경우 투표 갯수 표시 */}
+                          {(storyData?.voteInfo?.isVoteEnd || !isEmptyData(storyData?.voteInfo?.selected_vote_seq) || memberBase?.member_seq != storyData.board?.member_seq) ? (
+                            <>
+                              <Text style={styles.fontStyle('SB', 12, (item?.vote_yn == 'Y' ? '#46F66F' : '#FF516F'))}>{item.vote_member_cnt}표</Text>
+                            </>
+                          ) : (
+                            <>
+                              {selectedVoteSeq == item?.story_vote_seq && (
+                                <SpaceView viewStyle={_styles.voteSelectedActive}>
+                                  <LinearGradient
+                                    colors={['#8BC1FF', '#416DFF']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={{paddingVertical: 5, paddingHorizontal: 7, borderRadius: 13, alignItems: 'center'}}
+                                  >
+                                    <Text style={styles.fontStyle('SB', 10, '#fff')}>한 번 더 눌러 주세요!</Text>
+                                  </LinearGradient>
+                                  <SpaceView viewStyle={_styles.triangleMark} />
+                                </SpaceView>
+                              )}
+                              <Text style={styles.fontStyle('SB', 12, (selectedVoteSeq == item?.story_vote_seq ? '#46F66F' : '#fff'))}>
+                                {selectedVoteSeq == item?.story_vote_seq ? '투표' : '선택'}
+                              </Text>
+                            </>
+                          )}
+                        </TouchableOpacity>
+                      </SpaceView>
+                    )
+                  })}
+                </SpaceView>
+              </>
+            )}
+
+            {/* ###################################################################################### 릴레이 노출 영역 */}
+            <SpaceView pt={20} pb={20}>
+              <FlatList
+                contentContainerStyle={_styles.replyListWrap}
+                data={storyData.replyList}
+                keyExtractor={(item) => item.story_reply_seq.toString()}
+                renderItem={({ item, index }) => {
+                  return (
+                    <View key={'reply_' + index}>
+                      <ReplyRender 
+                        item={item} 
+                        index={index} 
+                        likeFunc={storyLikeProc} 
+                        replyModalOpenFunc={replyModalOpen}
+                      />
+                    </View>
+                  )
+                }}
+              />
+            </SpaceView>
+
+
+
+
+
+            {/* ###################################################################################### 태그 영역 */}
+            <SpaceView mt={30}>
+              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={ICON.story_tag} style={styles.iconSquareSize(20)} />
+                <SpaceView ml={5}><Text style={styles.fontStyle('B', 16, '#fff')}>태그</Text></SpaceView>
+              </SpaceView>
+              <SpaceView mt={10} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                <SpaceView viewStyle={_styles.tagItemWrap}>
+                  <Text style={styles.fontStyle('SB', 12, '#000000')}>OTT뭐볼까?</Text>
+                </SpaceView>
+                <SpaceView viewStyle={_styles.tagItemWrap}>
+                  <Text style={styles.fontStyle('SB', 12, '#000000')}>직장</Text>
+                </SpaceView>
+                <SpaceView viewStyle={_styles.tagItemWrap}>
+                  <Text style={styles.fontStyle('SB', 12, '#000000')}>걱정</Text>
+                </SpaceView>
+                <SpaceView viewStyle={_styles.tagItemWrap}>
+                  <Text style={styles.fontStyle('SB', 12, '#000000')}>앱스쿼드이야기</Text>
+                </SpaceView>
+              </SpaceView>
+            </SpaceView>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <SpaceView mb={200}></SpaceView>
+
+
 
             {/* ###################################################################################### 버튼 영역 */}
             <SpaceView mt={20}>
@@ -886,11 +1020,10 @@ export default function StoryDetail(props: Props) {
                 <SpaceView viewStyle={{width: '100%', height: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
                   {/* ################################################################################################# 작성자 정보 영역 */}
-                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  {/* <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                     {(storyData.board?.secret_yn == 'Y' || storyData.board?.story_type == 'SECRET') ? (
                       <TouchableOpacity
                         disabled={memberBase.gender === storyData.board?.gender || memberBase?.member_seq === storyData.board?.member_seq}
-                        //onPress={() => { secretPropfilePopupOpen(); }}
                         onPress={() => { profileCardOpenPopup(storyData.board?.member_seq, storyData.board?.open_cnt, true); }} 
                       >
                         <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 14)}>
@@ -908,41 +1041,32 @@ export default function StoryDetail(props: Props) {
 
                         <SpaceView viewStyle={{flexDirection: 'column'}}>
 
-                          {memberBase?.member_seq != 905 && (
-                            <>
-                              {/* 베스트 인상, 인증 레벨 */}
-                                <>
-                                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                    {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5)) && (
-                                      <SpaceView mr={5} viewStyle={{ borderTopRightRadius: 7, backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
-                                        <Text style={_styles.scoreText}>LV {storyData.board?.auth_acct_cnt}</Text>
-                                      </SpaceView>
-                                    )}
-                                    {memberBase?.best_face &&
-                                      <SpaceView viewStyle={{ borderTopRightRadius: 7, backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
-                                        <Text style={_styles.scoreText}>#{memberBase?.best_face}</Text>
-                                      </SpaceView>
-                                    }
-                                  </SpaceView>
-                                </>
-                              
-                            </>
-                          )}
+                          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                            {((isEmptyData(storyData.board?.auth_acct_cnt) && storyData.board?.auth_acct_cnt >= 5)) && (
+                              <SpaceView mr={5} viewStyle={{ borderTopRightRadius: 7, backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
+                                <Text style={_styles.scoreText}>LV {storyData.board?.auth_acct_cnt}</Text>
+                              </SpaceView>
+                            )}
+                            {memberBase?.best_face &&
+                              <SpaceView viewStyle={{ borderTopRightRadius: 7, backgroundColor: '#FFDD00', paddingHorizontal: 5, paddingVertical: 2 }}>
+                                <Text style={_styles.scoreText}>#{memberBase?.best_face}</Text>
+                              </SpaceView>
+                            }
+                          </SpaceView>
 
-                          {/* 닉네임 */}
                           <SpaceView mt={3}>
                             <Text style={_styles.nicknameText(storyData.board?.story_type == 'SECRET' || storyData.board?.secret_yn == 'Y', storyData.board?.gender, 12)}>{storyData.board?.nickname}</Text>
                           </SpaceView>
                         </SpaceView>
                       </>
                     )}
-                  </SpaceView>
+                  </SpaceView> */}
 
                   {/* ################################################################################################# 버튼 영역 */}
                   <SpaceView viewStyle={{flexDirection: 'row', position: 'absolute', top: 0, right: 0,}}>
 
                     {/* 좋아요 버튼 */}
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                       onPress={() => { storyLikeProc('BOARD', 0); }} 
                       hitSlop={commonStyle.hipSlop20}>
 
@@ -951,36 +1075,30 @@ export default function StoryDetail(props: Props) {
                       ) : (
                         <Image source={ICON.heartOnIcon} style={styles.iconSquareSize(20)} />
                       )}
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     {/* 비밀 댓글 버튼 */}
-                    {(memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.story_type != 'SECRET') && (
+                    {/* {(memberBase?.member_seq != storyData.board?.member_seq && storyData.board?.story_type != 'SECRET') && (
                       <TouchableOpacity style={{marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, true); }}>
                         <Image source={ICON.speechDotline} style={styles.iconSquareSize(20)} />
                       </TouchableOpacity>
-                    )}
+                    )} */}
 
                     {/* 일반 댓글 버튼 */}
-                    <TouchableOpacity style={{flexDirection: 'row', marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, false); }}>
+                    {/* <TouchableOpacity style={{flexDirection: 'row', marginLeft: 12}} onPress={() => { replyModalOpen(0, 0, false); }}>
                       <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     
                     {/* 메뉴바 버튼 */}
-                    {(memberBase?.member_seq == storyData.board?.member_seq) && (
+                    {/* {(memberBase?.member_seq == storyData.board?.member_seq) && (
                       <TouchableOpacity onPress={() => { storyMod_onOpen(); }} style={{flexDirection:'row', alignItems: 'center', marginLeft: 12}}>
                         <View style={[_styles.ivoryDot, {marginRight: 3}]}></View>
                         <View style={[_styles.ivoryDot, {marginRight: 3}]}></View>
                         <View style={_styles.ivoryDot}></View>
                       </TouchableOpacity>
-                    )}
+                    )} */}
                   </SpaceView>
                 </SpaceView>
-              </SpaceView>
-
-              {/* ###################################################################################### 내용 영역 */}
-              <SpaceView mt={8} pl={20} pr={20} pb={15} viewStyle={{borderBottomWidth: 1, borderBottomColor: '#eee'}}>
-                <Text style={_styles.contentsText}>{storyData.board?.contents}</Text>
-                <Text style={_styles.timeText}>{storyData.board?.time_text}</Text>
               </SpaceView>
 
               {/* ###################################################################################### 댓글 영역 */}
@@ -989,17 +1107,7 @@ export default function StoryDetail(props: Props) {
                     <Image source={ICON.reply} style={styles.iconSquareSize(21)} />
                   </TouchableOpacity> */}
 
-                <SpaceView mt={15} mb={10} viewStyle={{flexDirection:'row'}}>
-                    <Text style={_styles.replyLengthText}>댓글{storyData.replyList?.length + '개'}</Text>
-                    <TouchableOpacity 
-                      hitSlop={commonStyle.hipSlop10}
-                      style={{marginLeft: 15}}
-                      onPress={() => { popupStoryBoardActive(); }}>
-                      <Text style={_styles.likeCntText}>좋아요{isEmptyData(storyData.board?.like_cnt) ? storyData.board?.like_cnt + '개' : '0개'}</Text>
-                    </TouchableOpacity>  
-                </SpaceView>
-
-                <FlatList
+                {/* <FlatList
                   contentContainerStyle={_styles.replyListWrap}
                   data={storyData.replyList}
                   keyExtractor={(item) => item.story_reply_seq.toString()}
@@ -1015,37 +1123,46 @@ export default function StoryDetail(props: Props) {
                       </View>
                     )
                   }}
-                />
+                /> */}
               </SpaceView>
             </SpaceView>
           </SpaceView>
         </ScrollView>
-      </LinearGradient>
+      </SpaceView>
 
       {/* ##################################################################################
                 댓글 입력 팝업
       ################################################################################## */}
-      
-      <ReplyRegiPopup 
+      {/* <ReplyRegiPopup 
         isVisible={isReplyVisible} 
         storyBoardSeq={storyData?.board?.story_board_seq}
         storyReplySeq={selectedReplyData.storyReplySeq}
         depth={selectedReplyData.depth}
         isSecret={selectedReplyData.isSecret}
         callbackFunc={replyRegiCallback} 
+      /> */}
+
+      <ReplyRegiPopup 
+        ref={reply_modalizeRef}
+        profileOpenFn={profileCardOpen}
       />
 
       {/* ##################################################################################
                 좋아요 목록 팝업
       ################################################################################## */}
-      <LikeListPopup
-        isVisible={likeListPopup}
-        closeModal={likeListCloseModal}
+      {/* <LikeListPopup
+        _ref={like_modalizeRef}
+        closeModal={like_onClose}
         type={likeListTypePopup}
         _storyBoardSeq={props.route.params.storyBoardSeq}
         storyReplyData={selectedReplyData}
         replyInfo={replyInfo}
         profileOpenFn={profileCardOpenPopup}
+      /> */}
+
+      <LikeListPopup
+        ref={like_modalizeRef}
+        profileOpenFn={profileCardOpen}
       />
 
       {/* ###############################################
@@ -1095,9 +1212,11 @@ export default function StoryDetail(props: Props) {
       //url = findSourcePathLocal(item?.file_path);
     };
 
+    url = PROFILE_IMAGE.womanTmp1;
+
     return (
       <>
-        <SpaceView pl={15} pr={15}>
+        <SpaceView>
           {storyData.board?.story_type == 'STORY' || storyData.board?.story_type == 'SECRET' ? (
             <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
           ) : (
@@ -1115,6 +1234,8 @@ export default function StoryDetail(props: Props) {
 };
 
 
+
+
 {/* #######################################################################################################
 ###########################################################################################################
 ##################### Style 영역
@@ -1122,79 +1243,16 @@ export default function StoryDetail(props: Props) {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
-
-  titleText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 20,
-    color: '#000',
-  },
-  imgArea: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  imgItem: {
-    backgroundColor: 'rgba(155, 165, 242, 0.12)',
-    marginHorizontal: 4,
-    marginVertical: 5,
-    borderRadius: 20,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
+  wrap: {
+    minHeight: height,
+    backgroundColor: '#000'
   },
   imageStyle: {
     flex: 1,
-    width: width - 30,
-    height: width * 1.3,
-  },
-  btnArea: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  regiBtn: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    //width: 200,
-  },
-  regiBtnText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#555555',
-  },
-  pagingContainer: {
-    position: 'absolute',
-    zIndex: 100,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    bottom: width * 1.3 - 30,
-    left: 0,
-    right: 0,
-  },
-  pagingDotStyle: (isOn:boolean) => {
-    return {
-      backgroundColor: isOn ? '#FFDD00' : '#34447A',
-      width: 25,
-      height: 3,
-    };
-  },
-  dotContainerStyle: {
-    backgroundColor: '#000',
-  },
-  activeDot: {
-    backgroundColor: 'white',
-  },
-  contentsText: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#E1DFD1',
-  },
-  timeText: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#ABA99A',
-    marginTop: 10,
+    width: width - 20,
+    height: width * 1,
+    borderRadius: 5,
+    overflow: 'hidden',
   },
   replyEtcArea: {
     flexDirection: 'row',
@@ -1206,264 +1264,14 @@ const _styles = StyleSheet.create({
     //flexWrap: 'nowrap',
     //marginHorizontal: 5,
   },
-  replyItemWarp: {
-    marginBottom: 20,
-  },
-  replyItemTopArea: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  replyImageStyle: {
-    width: 40,
-    height: 40,
-  },
-  replyNickname: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 12,
-    color: '#D5CD9E',
-    marginRight: 5,
-  },
-  replyContents: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#E1DFD1',
-  }, 
-  replyTextDel: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#FFF6BE',
-  },
-  replyNicknameText: (storyType:string, gender:string) => {
-    let clr = '#D5CD9E';
-
-    // if(storyType == 'SECRET') {
-    //   if(gender == 'M') {
-    //     clr = '#7986EE';
-    //   } else {
-    //     clr = '#FE0456';
-    //   }
-    // }
-
-    return {
-      color: clr,
-    };
-  },
-  replyTimeText: {
-    fontFamily: 'Pretendard-Light',
-    color: '#ABA99A',
-    fontSize: 12,
-  },
-  replyItemEtcWrap: {
-    width: '93%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  replyTextStyle: {
-    fontFamily: 'Pretendard-Light',
-    color: '#FFF6BE',
-    fontSize: 12,
-  },
-  replyLengthText: {
-    fontFamily: 'Pretendard-Light',
-    color: '#D5CD9E',
-    fontSize: 12,
-    marginLeft: 1,
-  },
-  likeCntText: {
-    fontFamily: 'Pretendard-Light',
-    color: '#D5CD9E',
-    fontSize: 12,
-  },
-  replyLikeCntText: {
-    fontFamily: 'Pretendard-Light',
-    color: '#FFF6BE',
-    fontSize: 12,
-    marginLeft: 2,
-  },
-  likeArea: {
-    flexDirection: 'row',
-  },
-  nicknameText: (isSecret:boolean, gender:string, _frSize:number) => {
-    let clr = '#D5CD9E';
-    // if(isSecret) {
-    //   if(gender == 'M') {
-    //     clr = '#7986EE';
-    //   } else {
-    //     clr = '#FE0456';
-    //   }
-    // }
-
-    return {
-      fontFamily: 'Pretendard-Bold',
-      fontSize: _frSize,
-      color: clr,
-    };
-  },
   imgCircle: {
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: '#FFDD00',
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     overflow: 'hidden',
-    borderRadius: 50,
-    marginRight: 5,
-  },
-  scoreText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 11,
-    color: '#FFF',
-  },
-  voteArea:  {
-    width: width,
-    height: 95,
-    alignItems: 'center',
-  },
-  voteSelectArea: {
-    flexWrap: 'wrap',
-    position: 'relative',
-    flex:1,
-  },
-  voteVsArea: {
-    width: 55,
-    paddingVertical: 3,
-    backgroundColor: '#333B41',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{translateX: -27.5}, {translateY: -12}],
-    zIndex: 2,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  voteVsText: {
-    color: '#FFF',
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 12,
-  },
-  voteImgStyle: (bdcr:string) => {
-    return {
-      borderWidth: 4,
-      borderRadius: 70,
-      borderColor: bdcr,
-      overflow: 'hidden',
-    };
-  },
-  voteImgArea: (idx:number) => {
-    return {
-      position: 'absolute',
-      zIndex: 5,
-      left: idx == 0 ? 15 : undefined,
-      right: idx == 1 ? 15 : undefined,
-      flexDirection: 'column',
-      alignItems: 'center',
-    };
-  },
-  voteNameArea: (orderSeq:number) => {
-    return {
-      backgroundColor: orderSeq == 0 ? '#FFF' : '#7A85EE',
-      width: width - 130,
-      height: 40,
-      /* position: 'absolute',
-      top: orderSeq == 0 ? 0.5 : 50,
-      left: orderSeq == 0 ? 10 : -width + 100, */
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1,
-    };
-  },
-  voteNameText: (cr:string) => {
-    return {
-      color: cr,
-      fontFamily: 'Pretendard-Light',
-      fontSize: 11,
-      paddingHorizontal: 40,
-    };
-  },
-  voteDescArea: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  voteDescText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 12,
-    color: '#333B41',
-    textAlign: 'center',
-  },
-  voteTimeText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 12,
-    color: '#FF0060',
-    marginLeft: 3,
-  },
-  voteBtn: {
-    marginHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 15,
-  },
-  mstImgStyle: {
-    width: 40,
-    height: 40,
-  },
-  voteMmbrCntArea: (isVoteEnd:boolean, isVoteDraw:boolean, isWin:boolean) => {
-
-    let bgColor = '#FFDD00';
-    if(isVoteEnd && !isVoteDraw) {
-      if(isWin) {
-        bgColor = '#32F9E4';
-      } else {
-        bgColor = '#333B41';
-      }
-    };
-
-    return {
-      width: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 3,
-      backgroundColor: bgColor,
-      paddingVertical: 2,
-      paddingHorizontal: 5,
-      borderRadius: 30,
-      marginTop: -10,
-    };
-  },
-  votePickText: {
-    color: '#FFF',
-    fontSize: 10,
-    fontFamily: 'Pretendard-Regular',
-  },
-  votePickImg: {
-    zIndex: 1,
-    width: width - 215,
-    height: 180,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    overflow: 'hidden',
-  },
-  voteCntText: {
-    color: '#FFF',
-    fontSize: 10,
-    fontFamily: 'Pretendard-Regular',
-  },
-  voteDimArea: {
-    position: 'absolute',
-    bottom: 15,
-    left: 0,
-    right: 0,
-    height: 250,
-    marginHorizontal: 15,
-  },
-  ivoryDot: {
-    width: 4,
-    height: 4,
-    backgroundColor: '#FFF6BE',
     borderRadius: 50,
   },
   myReplyChk: {
@@ -1495,4 +1303,91 @@ const _styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+
+
+
+
+
+
+
+
+
+  tagItemWrap: {
+    backgroundColor: '#CBCBCB',
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    height: 30,
+    justifyContent: 'center',
+    marginRight: 5,
+    marginBottom: 5,
+  },
+  voteItemWrap: {
+    backgroundColor: '#3E11F5',
+    borderRadius: 38,
+    paddingVertical: 7,
+    paddingHorizontal: 15,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  voteSelectedBtn: {
+    backgroundColor: '#000000',
+    borderRadius: 25,
+    minWidth: 50,
+    paddingVertical: 5,
+    alignItems: 'center',
+  },
+  voteSelectedActive: {
+    position: 'absolute',
+    top: -25,
+    right: 0,
+    width: 100,
+  },
+  triangleMark: {
+    marginTop: 0,
+    marginLeft: 68,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderLeftWidth: 7,
+    borderRightWidth: 7,
+    borderBottomWidth: 7,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#416DFF',
+    transform: [{ rotate: '180deg' }],
+  },
+  choiceBubbleWrap: {
+    position: 'absolute',
+    bottom: -40,
+    right: 0,
+    alignItems: 'flex-end',
+  },
+  choiceBubbleLinear: (width:number) => {
+    return {
+      width: width,
+      paddingVertical: 5,
+      paddingHorizontal: 7,
+      borderRadius: 13,
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    };
+  },
+  choiceBubbleMark: {
+    marginTop: 0,
+    marginRight: 18,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderLeftWidth: 7,
+    borderRightWidth: 7,
+    borderBottomWidth: 7,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#8BC1FF',
+    transform: [{ rotate: '0deg' }],
+  },
+
 });

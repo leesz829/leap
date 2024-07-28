@@ -310,8 +310,8 @@ function PreFetcher(props) {
   )
 }
 
-//export default withIAPContext(App)
-export default codePush(codePushOptions)(withIAPContext(App));
+export default withIAPContext(App)
+//export default codePush(codePushOptions)(withIAPContext(App));
 
 
 

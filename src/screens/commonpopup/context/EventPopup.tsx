@@ -239,17 +239,17 @@ const _styles = StyleSheet.create({
   },
 
   liveTxt01: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 19,
     color: '#000000',
   },
   liveTxt02: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     color: '#262626',
   },
   liveTxt03: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 12,
     color: '#8E8E8E',
   },
@@ -275,7 +275,7 @@ const _styles = StyleSheet.create({
     }
   },
   eventTitText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 22,
     color: '#9283A4'
   },

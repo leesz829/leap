@@ -189,7 +189,8 @@ export const ChatDetail = (props: Props) => {
       // 채팅방 조회
       getChatRoomList();
 
-      webSocket.current = new WebSocket(`ws://192.168.1.13:9915/ws/chat`);
+      //webSocket.current = new WebSocket(`ws://192.168.1.13:9915/ws/chat`);
+      webSocket.current = new WebSocket(`ws://221.146.13.175:9915/ws/chat`);
 
       webSocket.current.onopen = e => {
         console.log('Connected to the server');
@@ -318,7 +319,7 @@ export const ChatDetail = (props: Props) => {
 
   return (
     <>
-      <CommonHeader title={'채팅'} type={'CHAT_DETAIL'} callbackFunc={report_onOpen} />
+      {/* <CommonHeader title={'채팅'} type={'CHAT_DETAIL'} callbackFunc={report_onOpen} /> */}
 
       <LinearGradient
         colors={['#3D4348', '#1A1E1C']}

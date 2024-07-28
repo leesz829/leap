@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   nameText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 19,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   copyText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',

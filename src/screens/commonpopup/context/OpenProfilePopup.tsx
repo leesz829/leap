@@ -139,13 +139,13 @@ const _styles = StyleSheet.create({
     flexDirection: 'column',
   },
   infoText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 13,
     textAlign: 'center',
     color: '#646464',
   },
   infoSubText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 12,
     color: '#625AD1',
     marginLeft: 1,

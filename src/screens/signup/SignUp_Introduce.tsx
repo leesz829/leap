@@ -178,8 +178,67 @@ export const SignUp_Introduce = (props : Props) => {
 
 	return (
 		<>
+			<SpaceView viewStyle={_styles.wrap}>
+        <SpaceView>
+          <CommonHeader title="" />
+        </SpaceView>
+
+        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          <SpaceView>
+            <SpaceView mt={50}>
+              <Text style={styles.fontStyle('H', 28, '#fff')}>추가 정보(인터뷰)</Text>
+              <SpaceView mt={10}>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>리프의 친구들에게{'\n'}{nickname}님의 생각을 남겨 보세요.</Text>
+              </SpaceView>
+            </SpaceView>
+
+						<ScrollView showsVerticalScrollIndicator={false} style={{height: height-330}}>
+							<SpaceView mt={50} mb={20}>
+								{interviewList.map((item, index) => {
+									return isEmptyData(item?.common_code) && (
+										<>
+											<SpaceView mb={15}>
+												<SpaceView mb={10}>
+													<Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
+												</SpaceView>
+												<TextInput
+													defaultValue={item?.answer}
+													onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+													autoCapitalize={'none'}
+													multiline={true}
+													style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#fff')]}
+													placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
+													placeholderTextColor={'#FFFDEC'}
+													maxLength={200}
+													caretHidden={true}
+												/>
+											</SpaceView>
+										</>
+									)
+								})}
+							</SpaceView>
+						</ScrollView>
+
+						<SpaceView mt={15} viewStyle={_styles.bottomWrap}>
+							<TouchableOpacity 
+								//disabled={!comment}
+								onPress={() => { 
+									saveFn();
+								}}
+								style={_styles.nextBtnWrap(true)}>
+								<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+								<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+							</TouchableOpacity>
+						</SpaceView>
+
+					</SpaceView>
+				</SpaceView>
+			</SpaceView>
+
+
+
 			
-				<LinearGradient
+				{/* <LinearGradient
 					colors={['#3D4348', '#1A1E1C']}
 					start={{ x: 0, y: 0 }}
 					end={{ x: 0, y: 1 }}
@@ -277,7 +336,7 @@ export const SignUp_Introduce = (props : Props) => {
 						</SpaceView>
 					</SpaceView>
 
-				</LinearGradient>
+				</LinearGradient> */}
 			
 		</>
 	);
@@ -292,39 +351,42 @@ export const SignUp_Introduce = (props : Props) => {
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
-		minHeight: height,
-		padding: 30,
-	},
-	title: {
-		fontSize: 30,
-		fontFamily: 'Pretendard-Bold',
-		color: '#D5CD9E',
+		flex: 1,
+    minHeight: height,
+    backgroundColor: '#000000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
 	},
 	textInputBox: (_hegiht: number) => {
 		return {
 			width: '100%',
 			height: _hegiht,
-			backgroundColor: '#445561',
-			borderRadius: 5,
+			backgroundColor: '#808080',
+			borderRadius: 10,
 			textAlign: 'center',
-			fontFamily: 'Pretendard-Light',
-			color: '#FFFDEC',
 		};
-	  },
-	introduceText: {
-		fontFamily: 'Pretendard-Regular',
-		color: '#FFDD00',
-		marginBottom: 10,
 	},
-	countText: {
-		marginLeft: 3,
-		fontFamily: 'Pretendard-Regular',
-		fontSize: 12,
-		color: '#fff',
-		textAlign: 'right',
+	bottomWrap: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  nextBtnWrap: (isOn:boolean) => {
+		return {
+			backgroundColor: isOn ? '#1F5AFB' : '#fff',
+      borderRadius: 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+    };
 	},
-	btnArea: {
-
-	},
+  textInputStyle: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
+    padding: 0,
+    paddingBottom: 5,
+    paddingTop: 5,
+  },
 
 });

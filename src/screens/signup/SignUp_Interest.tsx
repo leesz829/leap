@@ -17,7 +17,7 @@ import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 import { isEmptyData } from 'utils/functions';
-import LinearGradient from 'react-native-linear-gradient';
+import InterestRegiPopup from 'component/member/InterestRegiPopup';
 
 
 
@@ -50,8 +50,12 @@ export const SignUp_Interest = (props : Props) => {
 
 	// ############################################################## 관심사 등록 팝업 관련
 	const int_modalizeRef = useRef<Modalize>(null);
-	const int_onOpen = () => { int_modalizeRef.current?.open(); };
-	const int_onClose = () => {	int_modalizeRef.current?.close(); };
+	const int_onOpen = () => { 
+		int_modalizeRef.current?.openModal(intList, checkIntList);
+	};
+	const int_onClose = () => {	
+		int_modalizeRef.current?.closeModal(); 
+	};
 
 	// 관심사 목록
 	const [intList, setIntList] = React.useState([]);
@@ -64,6 +68,15 @@ export const SignUp_Interest = (props : Props) => {
 		int_modalizeRef.current?.close();
 	};
 
+	// 관심사 등록 콜백 함수
+	const intCallbackFn = async (list:any) => {
+		console.log('list ::::::: ' , list);
+
+		//saveFn(list);
+		setCheckIntList(list);
+		int_onClose();
+	};
+
 	// ############################################################ 회원 소개 정보 조회
 	const getMemberIntro = async() => {
 		const body = {
@@ -74,7 +87,6 @@ export const SignUp_Interest = (props : Props) => {
 			if(success) {
 				switch (data.result_code) {
 				case SUCCESS:
-
 					setIntList(data.int_list);
 		
 					let setList = new Array();
@@ -103,8 +115,8 @@ export const SignUp_Interest = (props : Props) => {
 	};
 
 	// ############################################################################# 저장 함수
-	const saveFn = async () => {
-		if(checkIntList.length < 1){
+	const saveFn = async (chkList:any) => {
+		if(!isEmptyData(checkIntList) || checkIntList.length < 1){
 			show({ content: '관심사를 입력해 주세요.' });
 			return;
 		}
@@ -119,36 +131,37 @@ export const SignUp_Interest = (props : Props) => {
 				interest_list: checkIntList,
 				join_status: 'INTEREST',
 			};
+			
 			try {
-			const { success, data } = await join_save_profile_add(body);
-			if (success) {
-				switch (data.result_code) {
-					case SUCCESS:
-						navigation.navigate(ROUTES.SIGNUP_INTRODUCE, {
-							memberSeq: memberSeq,
-							gender: gender,
-							mstImgPath: mstImgPath,
-							nickname: nickname,
-						});
+				const { success, data } = await join_save_profile_add(body);
+				if (success) {
+					switch (data.result_code) {
+						case SUCCESS:
+							navigation.navigate(ROUTES.SIGNUP_INTRODUCE, {
+								memberSeq: memberSeq,
+								gender: gender,
+								mstImgPath: mstImgPath,
+								nickname: nickname,
+							});
+							break;
+						default:
+							show({
+								content: '오류입니다. 관리자에게 문의해주세요.',
+								confirmCallback: function () {},
+							});
 						break;
-					default:
-						show({
+					}
+				} else {
+					show({
 						content: '오류입니다. 관리자에게 문의해주세요.',
 						confirmCallback: function () {},
-						});
-					break;
+					});
 				}
-			} else {
-				show({
-				content: '오류입니다. 관리자에게 문의해주세요.',
-				confirmCallback: function () {},
-				});
-			}
 			} catch (error) {
-			console.log(error);
+				console.log(error);
 			} finally {
-			setIsClickable(true);
-			setIsLoading(false);
+				setIsClickable(true);
+				setIsLoading(false);
 			};
 		}
 	};
@@ -160,13 +173,72 @@ export const SignUp_Interest = (props : Props) => {
 
 	return (
 		<>
-			<LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 0, y: 1 }}
-				style={_styles.wrap}
-			>
-				<ScrollView showsVerticalScrollIndicator={false}>
+			<SpaceView viewStyle={_styles.wrap}>
+				<SpaceView>
+          <CommonHeader title="" />
+        </SpaceView>
+
+				<SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          <SpaceView>
+            <SpaceView mt={50} mb={50}>
+              <Text style={styles.fontStyle('H', 28, '#fff')}>추가 정보(관심사)</Text>
+							<SpaceView mt={10}>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>나와 비슷한 성향을 가진 친구를 찾기 위해{'\n'}관심사와 인터뷰 내용을 작성해 주세요.</Text>
+              </SpaceView>
+            </SpaceView>
+
+						<ScrollView showsVerticalScrollIndicator={false} style={{height: height-350}}>
+							<SpaceView mb={20}>
+								{intList.map((i, n) => {
+									//let list:any;
+									const list = checkIntList.filter(item => item.group_code === i.group_code);
+
+									return list.length > 0 && (
+										<>
+											<SpaceView mb={30}>
+												<SpaceView viewStyle={layoutStyle.rowStart}>
+													<Image source={ICON.int_lifestyle} style={styles.iconSquareSize(15)} />
+													<SpaceView ml={5}><Text style={styles.fontStyle('B', 14, '#fff')}>{i.group_code_name}</Text></SpaceView>
+												</SpaceView>
+
+												<SpaceView mt={20} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
+													{list.map((i2, n2) => {
+														return isEmptyData(i2.code_name) && (
+															<SpaceView key={n2 + 'reg'} mr={5} mb={10} viewStyle={_styles.interestItemWrap}>
+																<Text style={styles.fontStyle('B', 14, '#fff')}>{i2.code_name}</Text>
+															</SpaceView>
+														);
+													})}
+												</SpaceView>
+											</SpaceView>
+										</>
+									);
+								})}
+							</SpaceView>
+						</ScrollView>
+
+						<SpaceView viewStyle={_styles.bottomWrap}>
+							<TouchableOpacity 
+								onPress={() => { int_onOpen(); }}
+								style={[_styles.nextBtnWrap(false), {marginRight: 10}]}>
+								<Text style={styles.fontStyle('B', 16, '#000000')}>관심사 추가/삭제</Text>
+							</TouchableOpacity>
+							<TouchableOpacity 
+								//disabled={!comment}
+								onPress={() => { 
+									saveFn();
+								}}
+								style={_styles.nextBtnWrap(true)}>
+								<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+								<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+							</TouchableOpacity>
+						</SpaceView>
+
+					</SpaceView>
+				</SpaceView>
+
+
+				{/* <ScrollView showsVerticalScrollIndicator={false}>
 					<SpaceView mt={20}>
 						<Text style={_styles.title}>관심사 등록하기</Text>
 						<Text style={_styles.subTitle}>나와 관심사를 공유할 수 있는 사람을 찾을 수 있어요.</Text>
@@ -182,11 +254,6 @@ export const SignUp_Interest = (props : Props) => {
 						{checkIntList.map((i, index) => {
 							return isEmptyData(i.code_name) && (
 								<SpaceView mr={5} key={index + 'reg'}>
-									{/* <TouchableOpacity style={[styles.interestBox, styles.boxActive]}>
-										<CommonText color={ColorType.blue697A}>
-											{i.code_name}
-										</CommonText>
-									</TouchableOpacity> */}
 									<TouchableOpacity disabled={true} style={_styles.interBox}>
 										<Text style={_styles.interText}>{i.code_name}</Text>
 									</TouchableOpacity>
@@ -194,52 +261,7 @@ export const SignUp_Interest = (props : Props) => {
 							);
 						})}
 
-						{/* <TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>캠핑</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>캠핑</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>동네 산책</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>반려견과 함께</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>인스타그램</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>캠핑</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity>
-						<TouchableOpacity style={_styles.interBox}><Text style={_styles.interText}>집에서 영화보기</Text></TouchableOpacity> */}
 					</SpaceView>
-
-					{/* <SpaceView mb={40} mt={25} viewStyle={_styles.rowStyle}>
-						{intList.map((item, index) => (
-							<SpaceView mb={20} key={item.list[index].group_code + '_' + index}>
-								{item.list.map((i, idx) => {
-									let tmpCommonCode = '';
-									let tmpCnt = 0;
-
-									for (let j = 0; j < checkIntList.length; j++) {
-										if(checkIntList[j].common_code == i.common_code){
-										tmpCommonCode = i.common_code;
-										tmpCnt = j;
-										break;
-										}
-									}
-									return (
-										<SpaceView key={i.common_code}>
-											<TouchableOpacity style={[_styles.interestBox, i.common_code === tmpCommonCode && _styles.interestActive]}
-												onPress={() => {
-												if(i.common_code === tmpCommonCode){
-													setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
-												} else {
-													setCheckIntList(intValue => [...intValue, i])
-												}
-											}}>
-												<CommonText color={'#697AE6'}>
-													{i.code_name}
-												</CommonText>
-											</TouchableOpacity>
-										</SpaceView>
-									);
-								})}	
-							</SpaceView>
-						))}
-					</SpaceView> */}
 
 					<SpaceView mt={205}>
 						<CommonBtn
@@ -267,103 +289,18 @@ export const SignUp_Interest = (props : Props) => {
 							}}
 						/>
 					</SpaceView>
-				</ScrollView>
-			</LinearGradient>
+				</ScrollView> */}
+			</SpaceView>
 
 
 			{/* #############################################################################
 											관심사 설정 팝업
 			############################################################################# */}
+			<InterestRegiPopup
+        ref={int_modalizeRef}
+				callbackFunc={intCallbackFn}
+      />
 
-			<Modalize
-				ref={int_modalizeRef}
-				adjustToContentHeight = {false}
-				handleStyle={modalStyle.modalHandleStyle}
-				modalStyle={[modalStyle.modalContainer, {backgroundColor: '#333B41'}]}
-				modalHeight={height - 150}
-				FooterComponent={
-					<>
-						<SpaceView viewStyle={{paddingHorizontal: 20}}>
-							<SpaceView>
-								<CommonBtn	value={'저장(' + checkIntList.length + '/20)'} 
-											type={'reNewId'}
-											borderRadius={5}
-											onPress={int_confirm}/>
-							</SpaceView>
-							<SpaceView mt={10}>
-								<CommonBtn	value={'취소'} 
-								type={'reNewGoBack'}
-								borderRadius={5}
-								onPress={int_onClose}/>
-							</SpaceView>
-						</SpaceView>
-					</>
-				}
-				HeaderComponent={
-					<>
-						<View style={[modalStyle.modalHeaderContainer, {paddingHorizontal: 20}]}>
-							<CommonText textStyle={_styles.modalTitle} fontWeight={'700'} type={'h4'}>
-								관심사 선택(최대 20개)
-							</CommonText>
-							{/* <TouchableOpacity onPress={int_onClose}>
-								<Image source={ICON.xBtn2} style={styles.iconSize18} />
-							</TouchableOpacity> */}
-						</View>
-					</>
-				} >	
-
-				<View style={[modalStyle.modalBody]}>
-					{intList.map((item, index) => (
-						<SpaceView mt={20} mb={10} key={item.group_code + '_' + index}>
-							<SpaceView mb={16}>
-								<CommonText textStyle={_styles.groupCodeName} fontWeight={'700'}>{item.group_code_name}</CommonText>
-							</SpaceView>
-
-							<View style={[_styles.rowStyle]}>
-								{item.list.map((i, idx) => {
-									let tmpCommonCode = '';
-									let tmpCnt = 0;
-	
-									for (let j = 0; j < checkIntList.length; j++) {
-										if(checkIntList[j].common_code == i.common_code){
-											tmpCommonCode = i.common_code
-											tmpCnt = j;
-											break;
-										}
-									}
-
-									return (
-										<SpaceView key={i.common_code} mr={5}>
-											<TouchableOpacity 
-												style={[_styles.interestBox, i.common_code === tmpCommonCode && styles.boxActive]}
-												onPress={() => {
-													console.log('checkIntList.length :::: ' , checkIntList.length);
-
-													if(checkIntList.length > 19 && i.common_code !== tmpCommonCode) {
-
-													} else {
-														if(i.common_code === tmpCommonCode){
-															setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
-														} else {
-															setCheckIntList(intValue => [...intValue, i])
-														}
-													}
-												}}
-											>
-												<CommonText
-													fontWeight={'500'}
-													color={ColorType.goldD5CD} >
-													{i.code_name}
-												</CommonText>
-											</TouchableOpacity>
-										</SpaceView>
-									)
-								})}	
-							</View>
-						</SpaceView>
-					))}
-				</View>
-			</Modalize>
 		</>
 	);
 };
@@ -377,82 +314,40 @@ export const SignUp_Interest = (props : Props) => {
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
-		minHeight: height,
-		padding: 30,
+		flex: 1,
+    minHeight: height,
+    backgroundColor: '#000000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
 	},
-	title: {
-		fontSize: 30,
-		fontFamily: 'Pretendard-Bold',
-		color: '#D5CD9E',
-	},
-	subTitle: {
-		fontSize: 12,
-		fontFamily: 'Pretendard-Bold',
-		color: '#D5CD9E',
-	},
-	regiBtn: {
-		width: '100%',
-		height: 50,
-		backgroundColor: '#FFF',
-		borderRadius: 10,
-		marginTop: 30,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-	regiBtnText: {
-		fontFamily: 'Pretendard-Bold',
-		fontSize: 16,
-		color: '#D5CD9E',
-	},
-	interBox: {
-		padding: 10,
-		borderRadius: 5,
-		marginRight: 8,
-		marginTop: 10,
+	interestItemWrap: {
+		backgroundColor: '#808080',
+		borderRadius: 25,
+		borderColor: '#40E0D0',
 		borderWidth: 1,
-		borderColor: '#D5CD9E',
+		paddingHorizontal: 18,
+		paddingVertical: 10,
 	},
-	interText: {
-		color: '#D5CD9E',
-		fontFamily: 'Pretendard-SemiBold',
+	bottomWrap: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  nextBtnWrap: (isOn:boolean) => {
+		return {
+			backgroundColor: isOn ? '#1F5AFB' : '#fff',
+      borderRadius: 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+    };
 	},
-	interestActive: {
-		height: 40,
-		borderRadius: 8,
-		borderWidth: 2,
-		borderColor: '#697AE6',
-		backgroundColor: '#FFF',
-		alignItems: 'center',
-		justifyContent: 'center',
-		marginBottom: 5,
-		marginRight: 5,
-		paddingHorizontal: 10,
-	}, 
-	interestBox: {
-		height: 40,
-		borderRadius: 8,
-		borderWidth: 1,
-		borderColor: '#D5CD9E',
-		alignItems: 'center',
-		justifyContent: 'center',
-		marginBottom: 5,
-		paddingHorizontal: 15,
-	},
-	modalTitle: {
-		color: '#F3E270',
-		fontFamily: 'Pretendard-SemiBold',
-		fontSize: 20,
-	},
-	groupCodeName: {
-		fontFamily: 'Pretendard-Bold',
-		fontSize: 19,
-		color: '#F3E270',
-	},
-	rowStyle : {
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-	},
-	boxActive: {
-		backgroundColor: '#FFF',
-	},
+  textInputStyle: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
+    padding: 0,
+    paddingBottom: 5,
+    paddingTop: 5,
+  },
 });

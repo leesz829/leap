@@ -288,76 +288,70 @@ export const Approval = (props: Props) => {
 
   return (
     <>
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={_styles.wrap}
-      >
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <SpaceView mt={20} pl={30} pr={30} pt={80}>
-            <Image source={IMAGE.logoLeapTit03} style={{width: 110, height: 28.3, marginBottom: 5}} />
-            <Text style={_styles.title}>가입 심사 진행중</Text>
-            <View style={{marginTop: 10}}>
-              <Text style={_styles.subTitle}>심사 기간은 1 ~ 3일이며,{'\n'}<Text style={{fontSize: 16}}>결과는 PUSH 메세지로 전송됩니다.</Text></Text>
-            </View>
+      <SpaceView viewStyle={_styles.wrap}>
+        <SpaceView>
+          <Image source={ICON.join_bg} style={styles.iconNoSquareSize('100%', '100%')} />
+        </SpaceView>
+
+        <ScrollView horizontal={false} showsVerticalScrollIndicator={false} style={_styles.bodyWrap}>
+
+          {/* ############################################################### 타이틀 */}
+          <SpaceView mt={65}>
+            <SpaceView>
+              <Text style={[styles.fontStyle('H', 22, '#fff'), {textAlign: 'center'}]}>LEAP</Text>
+            </SpaceView>
+            <SpaceView mt={45}>
+              <Text style={[styles.fontStyle('H', 28, '#fff'), {textAlign: 'left'}]}>가입 심사 진행 중</Text>
+            </SpaceView>
+            <SpaceView mt={15}>
+              <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'left'}]}>심사 기간은 1~3일이며, 결과는 PUSH로 메시지로 전송됩니다.</Text>
+            </SpaceView>
           </SpaceView>
 
-          <SpaceView viewStyle={_styles.imgContainer}>
-              <Image
-                resizeMode="cover"
-                resizeMethod="scale"
-                style={_styles.profileImg}
-                source={findSourcePath(apprData.mstImgPath)}
-              />
+          <SpaceView mt={70} viewStyle={layoutStyle.alignCenter}>
+            <Image
+              resizeMode="cover"
+              resizeMethod="scale"
+              style={[styles.iconSquareSize(120), _styles.imgWrap]}
+              //source={findSourcePath(apprData.mstImgPath)}
+              source={IMAGE.storySecretFemale}
+            />
           </SpaceView>
 
           {(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) && (
-            <>
-              <SpaceView mt={330} pl={30} pr={30}>
-                <View style={_styles.refNoticeContainer}>
-                  <Image source={ICON.commentRed} style={styles.iconSize16} />
-                  <Text style={_styles.refNoticeText}>반려사유 안내</Text>
-                </View>
-                <View style={_styles.refuseBox}>
-                  <Text style={_styles.refBoxText}>가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요.{'\n'}"프로필 수정하기" 누르고 반려 내용을 확인해주세요.</Text>
-                </View>
+            <SpaceView mt={40} pl={13} pr={13}>
+              <SpaceView viewStyle={layoutStyle.rowStart}>
+                <Image source={ICON.join_exclamation} style={styles.iconSquareSize(17)} />
+                <SpaceView ml={5}>
+                  <Text style={styles.fontStyle('B', 14, '#fff')}>반려 사유 안내</Text>
+                </SpaceView>
               </SpaceView>
-            </>
+              <SpaceView mt={10} viewStyle={_styles.refuseWrap}>
+                <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>반려 사유 안내{'\n'}반려 사유 안내{'\n'}반려 사유 안내{'\n'}반려 사유 안내{'\n'}반려 사유 안내{'\n'}</Text>
+              </SpaceView>
+            </SpaceView>
           )}
 
-          {/* {(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) && (
-            <>
-              <SpaceView mt={30}>
-                <View style={_styles.refNoticeContainer}>
-                  <Image source={ICON.commentRed} style={styles.iconSize16} />
-                  <Text style={_styles.refNoticeText}>반려사유 안내</Text>
-                </View>
-                <View style={_styles.refuseBox}>
-                  <Text style={_styles.refBoxText}>가입 기준에 맞지 않거나 증빙 자료가 불충분한 대상이 있어요. '프로필 수정하기' 누르고 반려 내용을 확인해주세요.</Text>
-                </View>
-              </SpaceView>
-            </>
-          )} */}
-
-          <SpaceView mt={(apprData.refuseImgCnt > 0 || (apprData.refuseAuthCnt > 0)) ? 0 : 450} pl={30} pr={30} viewStyle={_styles.btnContainer}>
-            <TouchableOpacity style={_styles.exitBtnContainer} onPress={() => { exitBtn(); }}>
-              <Text style={_styles.exitBtn}>가입철회</Text>
+          <SpaceView mt={30} viewStyle={layoutStyle.alignCenter}>
+            <TouchableOpacity style={_styles.modBtnWrap} onPress={() => { modifyBtn(); }}>
+              <Text style={[styles.fontStyle('B', 20, '#fff'), {textAlign: 'center'}]}>프로필 수정하기</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={_styles.modBtnContainer} onPress={() => { modifyBtn(); }}>
-              <Text style={_styles.modBtn}>프로필 수정하기</Text>
+            <TouchableOpacity style={_styles.cancelBtnWrap} onPress={() => { exitBtn(); }}>
+              <Text style={[styles.fontStyle('B', 20, '#fff'), {textAlign: 'center'}]}>가입철회</Text>
             </TouchableOpacity>
           </SpaceView>
 
-          <LinearGradient
-            colors={['#092032', '#344756']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={_styles.container}
-          />
+          <SpaceView mt={20} mb={50}>
+            <Text style={[styles.fontStyle('SB', 10, '#CBCBCB'), {textAlign: 'center'}]}>
+              리프(LEAP)는 회원가입 절차에 직업 또는 학력 등의  인증이 필요합니다.{'\n'}
+              이는 피싱, 폭력으로부터 안전한 SNS 환경을 제공하기 위한 목적으로 활용됩니다.{'\n'}
+              제공받은 소중한 개인정보는 인증 과정동안 암호화 처리되어 관리되며 인증 심사{'\n'}
+              종료 후 인증 심사 이력만 남고 개인 정보는 모두 삭제됩니다.
+            </Text>
+          </SpaceView>
 
         </ScrollView>
-      </LinearGradient>      
+      </SpaceView>
     </>
   );
 };
@@ -368,101 +362,40 @@ export const Approval = (props: Props) => {
 ##################### Style 영역
 ###########################################################################################################
 ####################################################################################################### */}
-
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,
 	},
-  container:{
+  bodyWrap: {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '100%',
-    minHeight: height,
-    zIndex: -1,
-    opacity: 0.8,
+    right: 0,
+    zIndex: 1,
+    paddingHorizontal: 10,
+    height: height,
   },
-	title: {
-		fontSize: 40,
-		fontFamily: 'Pretendard-Bold',
-		color: '#D5CD9E',
-	},
-  subTitle: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 19,
-    color: '#E1DFD1',
+  imgWrap: {
+    borderRadius: 60,
   },
-  imgContainer: {
-    position: 'absolute',
-    top: 80,
-    right: 30,
-    width: 270,
-    height: 450,
-    borderRadius: 50,
-    backgroundColor: '#FFF',
-    overflow: 'hidden',
-    zIndex: -2,
-  },
-  profileImg: {
-    width: 270,
-    height: 450,
-  },
-  refNoticeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  refNoticeText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 15,
-    marginLeft: 5,
-    color: '#FF4D29',
-  },
-  refuseBox: {
-    width: '100%',
-    backgroundColor: '#445561',
-    borderRadius: 10,
-    marginTop: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 13,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  refBoxText: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#FFFDEC',
-    textAlign: 'center',
-  },
-  btnContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    marginTop: 44,
-  },
-  modBtnContainer: {
-    width: '62%',
-    height: 40,
-    backgroundColor: '#FFDD00',
-    justifyContent: 'center',
-    alignItems: 'center',
+  refuseWrap: {
+    borderWidth: 1,
+    borderColor: 'rgba(203,203,203,0.5)',
     borderRadius: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 19,
   },
-  modBtn: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: '#3D4348',
+  modBtnWrap: {
+    backgroundColor: '#1F5AFB',
+    borderRadius: 25,
+    paddingVertical: 13,
+    width: 280,
+    marginBottom: 10,
   },
-  exitBtnContainer: {
-    width: '35%',
-    height: 40,
-    backgroundColor: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-  },
-  exitBtn: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: '#FF4D29',
+  cancelBtnWrap: {
+    backgroundColor: '#000000',
+    borderRadius: 25,
+    paddingVertical: 13,
+    width: 280,
   },
 });

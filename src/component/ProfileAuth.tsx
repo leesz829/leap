@@ -306,7 +306,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 19,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -338,7 +338,7 @@ const _styles = StyleSheet.create({
   },
   levelText: {
     // opacity: 0.83,
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -347,7 +347,7 @@ const _styles = StyleSheet.create({
     color: '#000000',
   },
   whiteText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 10,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -388,7 +388,7 @@ const _styles = StyleSheet.create({
   },
   certificateItemTextOn: {
     marginLeft: 5,
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 15,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -399,7 +399,7 @@ const _styles = StyleSheet.create({
   },
   certificateItemTextOff: {
     marginLeft: 5,
-    fontFamily: 'AppleSDGothicNeoR00',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 15,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -461,7 +461,7 @@ const _styles = StyleSheet.create({
     height: 71,
   },
   authTit: {
-    fontFamily: 'AppleSDGothicNeoH00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
     backgroundColor: '#7986EE',
     color: '#fff',
@@ -471,7 +471,7 @@ const _styles = StyleSheet.create({
     overflow: 'hidden',
   },
   authText: {
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
     fontSize: 11,
     color: '#7986EE',
     paddingHorizontal: 35,
@@ -486,14 +486,14 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   authIntroText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 11,
     color: '#B1B3C7',
     textAlign: 'center',
     paddingHorizontal: 35,
   },
   authIntroTextInput: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 11,
     color: '#A3A3A3',
     textAlign: 'center',
@@ -512,7 +512,7 @@ const _styles = StyleSheet.create({
     };
   },
   authIndicatorText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 10,
     color: '#FFFFFF',
     marginRight: 7,
@@ -536,7 +536,7 @@ const _styles = StyleSheet.create({
     marginTop: 3,
   },
   gageText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
     color: '#8A8DA4',
   },
@@ -563,7 +563,7 @@ const _styles = StyleSheet.create({
   scoreText: {
     backgroundColor: '#151515',
     color: ColorType.white,
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 10,
     paddingHorizontal: 4,
     paddingVertical: 1,

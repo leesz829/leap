@@ -26,14 +26,11 @@ import { myProfile } from 'redux/reducers/authReducer';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import ProfileAuth from 'component/ProfileAuth';
 import { formatNowDate, isEmptyData} from 'utils/functions';
-import VisualImage from 'component/match/VisualImage';
-import ProfileActive from 'component/match/ProfileActive';
 import InterviewRender from 'component/match/InterviewRender';
 import InterestRender from 'component/match/InterestRender';
 import InterestSendPopup from 'screens/commonpopup/match/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
-import AuthPickRender from 'component/match/AuthPickRender';
 import LinearGradient from 'react-native-linear-gradient';
 
 

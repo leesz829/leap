@@ -5,6 +5,7 @@ import { EventPopup } from 'screens/commonpopup/context/EventPopup';
 import { ResponsivePopup } from 'screens/commonpopup/context/ResponsivePopup';
 import { PromotionPopup } from 'screens/commonpopup/context/PromotionPopup';
 import { OpenProfilePopup } from 'screens/commonpopup/context/OpenProfilePopup';
+import { SelectPopup } from 'screens/commonpopup/context/SelectPopup';
 
 export const PopupContext = createContext({} as any);
 
@@ -22,10 +23,9 @@ interface PopupContextProps {
   guideNexBtnExpoYn: string | undefined; // 가이드 팝업 그만보기 버튼 노출 여부
   btnExpYn: string | undefined; // 버튼 노출 여부
   eventType: string | undefined; // 이벤트 팝업 유형
-  eventPopupList: any | undefined; // 이벤트 목록
   etcCallback: Function | undefined; // 기타 콜백 함수
   popupDuration: any | undefined; // 팝업 지속 시간
-  prodList: any | undefined; // 상품 목록
+  dataList: any | undefined; // 데이터 목록
   passType: string | undefined; // 패스 종류
   passAmt: string | undefined; // 패스 금액
   isCross: boolean | undefined; // 교차 여부
@@ -49,10 +49,9 @@ export const PopupProvider = ({ children }: any) => {
     guideNexBtnExpoYn: '',
     btnExpYn: '',
     eventType: '',
-    eventPopupList: [],
     etcCallback: undefined,
     popupDuration: undefined,
-    prodList: [],
+    dataList: [],
     passType: '',
     passAmt: '',
     isCross: false,
@@ -91,10 +90,9 @@ export const PopupProvider = ({ children }: any) => {
       guideNexBtnExpoYn: '',
       btnExpYn: '',
       eventType: '',
-      eventPopupList: [],
       etcCallback: undefined,
       popupDuration: undefined,
-      prodList: [],
+      dataList: [],
       passType: '',
       passAmt: '',
       isCross: false,
@@ -120,7 +118,7 @@ export const PopupProvider = ({ children }: any) => {
           setPopupVIsible={setVisible}
           confirmCallbackFunc={contents.confirmCallback}
           eventType={contents.eventType}
-          eventPopupList={contents.eventPopupList}
+          eventPopupList={contents.dataList}
           etcCallbackFunc={contents.etcCallback}
         />
       ) : contents.type == 'RESPONSIVE' ? (
@@ -136,7 +134,7 @@ export const PopupProvider = ({ children }: any) => {
           popupVisible={visible}
           setPopupVIsible={setVisible}
           confirmCallbackFunc={contents.confirmCallback}
-          prodList={contents.prodList}
+          prodList={contents.dataList}
           etcCallbackFunc={contents.etcCallback}
         />
       ) : contents.type == 'OPEN' ? (
@@ -147,6 +145,15 @@ export const PopupProvider = ({ children }: any) => {
           cancelCallbackFunc={contents.cancelCallback}
           passAmt={contents.passAmt}
           passType={contents.passType}
+        />
+      ) : contents.type == 'SELECT' ? (
+        <SelectPopup
+          popupVisible={!contents.isCross ? visible : visibleCross}
+          setPopupVIsible={setVisible}
+          title={contents.title}
+          dataList={contents.dataList}
+          confirmCallbackFunc={contents.confirmCallback}
+          cancelCallbackFunc={contents.cancelCallback}
         />
       ) : (
         <BasePopup

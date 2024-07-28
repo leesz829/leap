@@ -231,7 +231,7 @@ const styles = (props: Props) => {
       fontSize: props.fontSize ? props.fontSize : 16,
       lineHeight: 26,
       color: textColor,
-      fontFamily: props.fontFamily ? props.fontFamily : 'AppleSDGothicNeoM00',
+      fontFamily: props.fontFamily ? props.fontFamily : 'Pretendard-Medium',
     },
     iconStyle: {
       width: 16,

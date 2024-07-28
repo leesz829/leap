@@ -112,10 +112,14 @@ import {
   GET_MEMBER_INTEREST,
   SAVE_MEMBER_INTEREST,
   JOIN_SAVE_PROFILE_NICKNAME,
+  JOIN_SAVE_PROFILE_MESSAGE,
   JOIN_SAVE_PROFILE_INTRODUCE,
   GET_CHAT_ROOM_LIST,
   CHAT_ROOM_INFO,
   CHAT_EXIT,
+  SOCIAL_REWARD_PASS_ADD,
+  GET_MEMBER_ADD_CODE,
+  SAVE_PROFILE_INFO,
 } from './route';
 
 /* ========================================================================================================
@@ -327,6 +331,16 @@ export async function join_save_profile_nickname(body: {
   return send(JOIN_SAVE_PROFILE_NICKNAME, 'POST', { ...body, push_token }, false, false);
 }
 
+// 회원가입시 프로필 메시지를 저장한다.
+export async function join_save_profile_message(body: {
+  member_seq: number;
+  comment: string;
+  introduce_comment: string;
+}) {
+  const push_token = await AsyncStorage.getItem(FCM_TOKEN);
+  return send(JOIN_SAVE_PROFILE_MESSAGE, 'POST', { ...body, push_token }, false, false);
+}
+
 // 회원가입시 프로필 소개를 저장한다.
 export async function join_save_profile_introduce(body: {
   member_seq: number;
@@ -391,7 +405,6 @@ export async function get_member_storage(body: {
 }
 // 회원의 선호이성 정보를 저장한다.
 export async function update_prefference(body: {
-  ideal_type_seq: number;
   want_local1: string;
   want_local2: string;
   want_age_min: string;
@@ -405,6 +418,13 @@ export async function update_prefference(body: {
   want_person1: string;
   want_person2: string;
   want_person3: string;
+  want_height_min: string;
+  want_height_max: string;
+  want_body: string;
+  want_mbti: string;
+  want_religion: string;
+  want_drink: string;
+  want_smoking: string;
 }) {
   return send(UPDATE_PREFERENCE, 'POST', body, true, false);
 }
@@ -551,7 +571,6 @@ export async function report_check_user_confirm(body: {
 
 // 회원의 소개 정보를 저장한다.
 export async function save_member_introduce(body: {
-  comment: string;
   business: string;
   job: string;
   height: string;
@@ -561,7 +580,6 @@ export async function save_member_introduce(body: {
   smoking: string;
   interest_list: any;
   interview_list: any;
-  introduce_comment: string;
   mbti_type: string;
   prefer_local1: string;
   prefer_local2: string;
@@ -598,6 +616,13 @@ export async function delete_member_image(body: {
   member_img_seq: number;
 }) {
   return send(DELETE_MEMBER_IMAGE, 'POST', body, true, false);
+}
+
+// 회원 소셜 등급 보상 패스를 적립한다.
+export async function social_reward_pass_add(body: {
+  pointCode: string;
+}) {
+  return send(SOCIAL_REWARD_PASS_ADD, 'POST', body, true, false);
 }
 
 
@@ -672,6 +697,15 @@ export async function save_member_interest(body: {
   interest_list: any;
 }) {
   return send(SAVE_MEMBER_INTEREST, 'POST', body, true, false);
+};
+
+// 회원 프로필 정보를 저장한다.
+export async function save_profile_info(body: {
+  img_list: any;
+  comment: string;
+  introduce_comment: string;
+}) {
+  return send(SAVE_PROFILE_INFO, 'POST', body, true, false);
 };
 
 
@@ -818,6 +852,7 @@ export async function purchase_product(params: {
   purchase_token: string,
   quantity: string,
   transaction_id: string,
+  useYn: string,
 }) {
   const {
     device_gubun,
@@ -834,6 +869,7 @@ export async function purchase_product(params: {
     purchase_token,
     quantity,
     transaction_id,
+    useYn,
   } = params;
   //const receiptDataJson = JSON.parse(receiptData);
 
@@ -853,6 +889,7 @@ export async function purchase_product(params: {
     purchase_token: purchase_token,
     quantity: quantity,
     transaction_id: transaction_id,
+    useYn: useYn,
   };
 
   return send(ORDER, 'POST', body, true, false);
@@ -1008,6 +1045,11 @@ export async function get_common_code(body: { group_code: string }) {
 // #### 공통코드 목록을 조회한다.
 export async function get_common_code_list(body: { group_code: string }) {
   return send(COMMON_CODE_LIST, 'POST', body, false, false);
+}
+
+// #### 공통코드 목록을 조회한다.
+export async function get_member_add_code() {
+  return send(GET_MEMBER_ADD_CODE, 'POST', undefined, true, false);
 }
 
 // #### 최근소식 목록을 조회한다.

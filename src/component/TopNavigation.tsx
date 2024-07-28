@@ -224,7 +224,7 @@ const _styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 32,
     color: Color.grayAAAA,
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
   },
   tabTextActive: {
     color: Color.primary,
@@ -257,7 +257,7 @@ const _styles = StyleSheet.create({
     fontSize: 11,
     color: 'rgb(84, 84 , 86)',
     fontWeight: 'bold',
-    fontFamily: 'AppleSDGothicNeoEB00',
+    fontFamily: 'Pretendard-ExtraBold',
   },
   limitedIcon: {
     width: 100,
@@ -287,7 +287,7 @@ const _styles = StyleSheet.create({
   },
   tooltipAreaText: {
     fontSize: 10,
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     color: ColorType.white,
     paddingHorizontal: 8,
     paddingVertical: 5,
@@ -305,7 +305,7 @@ const _styles = StyleSheet.create({
     }
 
     return {
-      fontFamily: 'MinSans-Bold',
+      fontFamily: 'SUITE-Bold',
       fontSize: 25,
       color: _color,
       //borderBottomWidth: isOn ? 2 : 0,
@@ -335,7 +335,7 @@ const _styles = StyleSheet.create({
   },
   notiGrade: {
     fontSize: 9,
-    fontFamily: 'MinSans-Bold',
+    fontFamily: 'SUITE-Bold',
     color: '#000',
   },
   notiText: {

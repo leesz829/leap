@@ -3,7 +3,7 @@ import CommonHeader from 'component/CommonHeader';
 import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet, Dimensions, Text } from 'react-native';
+import { ScrollView, View, Modal, TouchableOpacity, Alert, StyleSheet, Dimensions, Text, TextInput } from 'react-native';
 import * as React from 'react';
 import { CommonBtn } from 'component/CommonBtn';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
@@ -52,7 +52,22 @@ export const Profile = (props: Props) => {
     memberBase?.phone_number
   );
   const [recommender, setRecommender] = React.useState<any>(memberBase?.recommender);
+
+
+  // 닉네임 변경 유형
+  const [nicknameModType, setNicknameModType] = React.useState<any>('NONE');
+  const [isNicknameEdit, setIsNicknameEdit] = React.useState<any>(false);
   
+  const nicknameModActive = async (type:string) => {
+    if(type == 'NONE') {
+      setNickname(memberBase?.nickname);
+      setIsNicknameEdit(false);
+    } else if(type == 'MOD') {
+      setIsNicknameEdit(true);
+    }
+
+    setNicknameModType(type);
+  };
 
   // ###################################################################### 닉네임 저장 버튼
   const btnSaveNickName = async () => {
@@ -251,47 +266,38 @@ export const Profile = (props: Props) => {
 
   return (
     <>
-      <CommonHeader title={'계정 관리'} />
+      <SpaceView viewStyle={_styles.wrap}>
+        <CommonHeader title="계정 관리" />
 
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={_styles.wrap}
-      >
-        <ScrollView>
-          <View>
-            <SpaceView viewStyle={_styles.profileContents} mb={40}>
-              <CommonInput
-                label={'계정'}
-                value={emailId}
-                disabled={true}
-                borderBottomType={'none'}
-              />
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
+          <SpaceView mb={30}>
+            <SpaceView viewStyle={_styles.inputWrap}>
+              <SpaceView>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>계정</Text>
+                <SpaceView mt={2}>
+                  <TextInput
+                    value={emailId}
+                    editable={false}
+                    autoCapitalize={'none'}
+                    style={_styles.textInputBox(20)}
+                  />
+                </SpaceView>
+              </SpaceView>
             </SpaceView>
-
-            <SpaceView viewStyle={_styles.profileContents} mb={40}>
-
-              <View style={{width: (width) / 1.45}}>
-                <CommonInput
-                  label={'전화번호'}
-                  placeholder=""
-                  value={phoneNumber}
-                  borderBottomType={'none'}
-                  disabled={true} />
-              </View>
-
-              <View style={[_styles.modfyHpBtn]}>
-                <CommonBtn 
-                  value={'변경'} 
-                  type={'reNewId'} 
-                  color={'#445561'}
-                  fontFamily={'Pretendard-SemiBold'}
-                  height={35} 
-                  width={70} 
-                  fontSize={14}
-                  borderRadius={5}
-                  marginBottom={10}
+            <SpaceView viewStyle={_styles.inputWrap}>
+              <SpaceView>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>전화번호</Text>
+                <SpaceView mt={2}>
+                  <TextInput
+                    value={phoneNumber}
+                    editable={false}
+                    autoCapitalize={'none'}
+                    style={_styles.textInputBox(20)}
+                  />
+                </SpaceView>
+              </SpaceView>
+              <SpaceView>
+                <TouchableOpacity 
                   onPress={() => {
                     navigation.navigate({
                       name : 'NiceAuth',
@@ -299,164 +305,74 @@ export const Profile = (props: Props) => {
                         type : 'HP_MODFY'
                       }
                     });
-                  }} />
-              </View>
+                  }}
+                  style={_styles.btnWrap('#46F66F', 70, 5)}>
+                  <Text style={styles.fontStyle('B', 14, '#fff')}>변경</Text>
+                </TouchableOpacity>
+              </SpaceView>
             </SpaceView>
-
-            <SpaceView viewStyle={_styles.profileContents} mb={40}>
-
-              <View style={{width: (width) / 1.45}}>
-                <CommonInput
-                  label={'닉네임'}
-                  placeholder=""
-                  value={nickname}
-                  onChangeText={(nickname) => setNickname(nickname)}
-                  borderBottomType={'none'}
-                  rightPen={false}
-                  maxLength={20}
-                />
-              </View>
-              <View style={[_styles.modfyHpBtn]}>
-                <CommonBtn 
-                  value={'저장'} 
-                  type={'reNewId'} 
-                  color={'#445561'}
-                  fontFamily={'Pretendard-SemiBold'}fontFamily={'Pretendard-SemiBold'}
-                  height={35} 
-                  width={70} 
-                  fontSize={14}
-                  borderRadius={5}
-                  marginBottom={10}
-                  onPress={() => {
-                    btnSaveNickName();
-                  }} />
-              </View>
-            </SpaceView>
-
-            {/* <SpaceView viewStyle={_styles.profileContents} mb={40}>
-              <CommonInput
-                label={'이름'}
-                borderBottomType={'none'}
-                placeholder=""
-                value={name}
-                disabled={true}
-              />
-            </SpaceView> */}
-
-            {/* <SpaceView viewStyle={_styles.profileContents} mb={40}>
-              <View style={styles.halfItemLeft}>
-                <CommonInput
-                  label={'성별'}
-                  placeholder=""
-                  borderBottomType={'none'}
-                  value={gender == 'M' ? '남자' : '여자'}
-                  disabled={true}
-                />
-              </View>
-
-              <View style={styles.halfItemRight}>
-                <CommonInput
-                  label={'나이'}
-                  placeholder=""
-                  borderBottomType={'none'}
-                  value={age}
-                  disabled={true}
-                />
-              </View>
-            </SpaceView> */}
-
-            {/* <SpaceView viewStyle={_styles.profileContents} mb={40}>
-              <View style={{width: (width) / 1.45}}>
-                <CommonInput
-                  label={'추천인'}
-                  placeholder="추천인의 닉네임을 입력해주세요."
-                  placeholderTextColor={'#c6ccd3'}
-                  value={recommender}
-                  borderBottomType={'none'}
-                  onChangeText={(recommender) => setRecommender(recommender)}
-                  rightPen={false}
-                  disabled={memberBase?.recommender?true:false}
-                />
-              </View>
-              {
-                memberBase?.recommender ?
-                <View style={[_styles.modfyHpBtn]}>
-                  <CommonBtn 
-                    value={'저장'} 
-                    type={'gray3'} 
-                    height={40} 
-                    width={70} 
-                    fontSize={14}
-                    borderRadius={5}
-                    onPress={() => {}} />
-                </View>
-              : <View style={[_styles.modfyHpBtn]}>
-                  <CommonBtn 
-                    value={'저장'} 
-                    type={'reNewId'} 
-                    color={'#445561'}
-                    height={35} 
-                    width={70} 
-                    fontSize={14}
-                    marginBottom={10}
-                    borderRadius={5}
-                    onPress={() => {
-                      btnSaveRecommender();
-                    }} />
-                </View>
-              }
-            </SpaceView> */}
-
-            {/* <SpaceView pl={20} pr={20} mt={7} mb={40}>
-              <Text style={_styles.recomDesc}>TIP.혜택 내용은 "최근소식"의 이벤트 안내를 확인해주세요.</Text>
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.profileContents} mb={40}>
-                  <CommonInput 
-                    label={'회사명'}
-                    borderBottomType={'none'}
-                    placeholder="" />
-            </SpaceView>
-
-            <SpaceView viewStyle={_styles.profileContents} mb={40}>
-                  <CommonInput 
-                    label={'계정 ID'}
-                    placeholder="heighten@kakao.com"
-                    borderBottomType={'none'}
-                    rightPen={true} />
-            </SpaceView> */}
-
-          </View>
-
-          <SpaceView mb={40} mt={20} viewStyle={commonStyle.paddingHorizontal20}>
-            {/* <SpaceView mb={10}>
-              <CommonBtn value={'개인정보 변경 및 관리'} type={'reNewGoBack'} borderRadius={5} onPress={btnChangePassword} />
-            </SpaceView> */}
-
-            <SpaceView>
-              <CommonBtn value={'휴면회원 전환하기'} type={'reNewGoBack'} borderRadius={5} onPress={btnMemberSleep} />
+            <SpaceView viewStyle={_styles.inputWrap}>
+              <SpaceView viewStyle={{width: '50%'}}>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>닉네임</Text>
+                <SpaceView mt={2}>
+                  <TextInput
+                    value={nickname}
+                    onChangeText={(nickname) => setNickname(nickname)}
+                    autoCapitalize={'none'}
+                    style={_styles.textInputBox(20)}
+                    placeholder={'닉네임을 입력하세요.'}
+                    placeholderTextColor={'#606060'}
+                    maxLength={20}
+                    editable={isNicknameEdit}
+                    //caretHidden={true}
+                  />
+                </SpaceView>
+              </SpaceView>
+              <SpaceView>
+                {nicknameModType == 'NONE' && (
+                  <TouchableOpacity 
+                    onPress={() => { nicknameModActive('MOD'); }}
+                    style={_styles.btnWrap('#44B6E5', 70, 5)}>
+                    <Text style={styles.fontStyle('B', 14, '#fff')}>수정</Text>
+                  </TouchableOpacity>
+                )}
+                {nicknameModType == 'MOD' && (
+                  <SpaceView viewStyle={layoutStyle.rowCenter}>
+                    <TouchableOpacity 
+                      onPress={() => { nicknameModActive('NONE'); }}
+                      style={[_styles.btnWrap('#FF516F', 70, 5), {marginRight: 8}]}>
+                      <Text style={styles.fontStyle('B', 14, '#fff')}>취소</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      onPress={() => { btnSaveNickName(); }}
+                      disabled={memberBase?.nickname == nickname}
+                      style={_styles.btnWrap(memberBase?.nickname == nickname ? '#808080' : '#46F66F', 70, 5)}>
+                      <Text style={styles.fontStyle('B', 14, '#fff')}>저장</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                )}
+              </SpaceView>
             </SpaceView>
           </SpaceView>
 
-          {/* <SpaceView mb={70} viewStyle={layoutStyle.rowBetween}> */}
-
-            {/* <View >
-              <CommonBtn 
-                value={'저장'} 
-                type={'primary'}
-                width={width/2}
-                borderRadius={1}
-                onPress={btnSave} />
-            </View> */}
-          {/* </SpaceView> */}
-
+          <SpaceView>
+            <SpaceView mb={10}>
+              <TouchableOpacity onPress={btnChangePassword} style={_styles.btnWrap('#44B6E5')}>
+                <Text style={styles.fontStyle('B', 12, '#fff')}>개인정보 변경 및 관리</Text>
+              </TouchableOpacity>
+            </SpaceView>
+            <SpaceView mb={10}>
+              <TouchableOpacity onPress={btnMemberSleep} style={_styles.btnWrap('#44B6E5')}>
+                <Text style={styles.fontStyle('B', 12, '#fff')}>휴면회원 전환하기</Text>
+              </TouchableOpacity>
+            </SpaceView>
+            <SpaceView>
+              <TouchableOpacity onPress={logout} style={_styles.btnWrap('#44B6E5')}>
+                <Text style={styles.fontStyle('B', 12, '#fff')}>로그아웃</Text>
+              </TouchableOpacity>
+            </SpaceView>
+          </SpaceView>
         </ScrollView>
-      </LinearGradient>
-
-      <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0,}}>
-        <TouchableOpacity style={_styles.logoutBtn} onPress={logout}>
-          <Text style={_styles.logoutText}>로그아웃</Text>
-        </TouchableOpacity>
       </SpaceView>
     </>
   );
@@ -465,32 +381,42 @@ export const Profile = (props: Props) => {
 const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
-    paddingTop: 24,
-    //justifyContent: 'space-between',
+    backgroundColor: '#16112A',
+    paddingHorizontal: 10,
+    paddingTop: 30,
   },
-  profileContents: {
-    paddingHorizontal: 20,
-    borderBottomWidth:1,
-    borderBottomColor: '#D5CD9E',
-    flexDirection: 'row', 
-    alignItems: 'flex-end',
+  btnWrap: (_color: string, _width: number, _pv: number) => {
+		return {
+			backgroundColor: _color,
+      borderRadius: 25,
+      alignItems: 'center',
+      paddingVertical: isEmptyData(_pv) ? _pv : 13,
+      width: isEmptyData(_width) ? _width : '100%',
+    };
+	},
+  inputWrap: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#fff',
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginBottom: 10,
+    height: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
-  recomDesc: {
-    fontSize: 13,
-    fontFamily: 'Pretendard-Regular',
-    color: '#E1DFD1',
-  },
-  logoutBtn: {
-    width: '100%',
-    backgroundColor: '#262626',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 13,
-  },
-  logoutText:  {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 18,
-    color: '#FFF',
-  },
+  textInputBox: (_hegiht: number) => {
+		return {
+			width: '100%',
+			height: _hegiht,
+			textAlign: 'left',
+			fontFamily: 'Pretendard-SemiBold',
+      fontSize: 11,
+			color: '#606060',
+      padding: 0,
+      margin: 0,
+    };
+	},
+
 });

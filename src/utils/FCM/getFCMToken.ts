@@ -38,6 +38,7 @@ export default async function getFCMToken() {
   // 신규 토큰 생성 함수
   const registerTokenRefreshListener = () => {
     messaging().onTokenRefresh((token) => {
+      console.log('token :::::::: ' , token);
       saveTokenToStorage(token);
     });
   };
@@ -72,6 +73,7 @@ export default async function getFCMToken() {
 
   await messaging().registerDeviceForRemoteMessages();
   let fcmToken = await messaging().getToken();
+  console.log('fcmToken ::::::: ' , fcmToken);
 
   if(fcmToken) {
     saveTokenToStorage(fcmToken);

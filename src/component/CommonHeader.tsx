@@ -95,7 +95,7 @@ function CommonHeader({
 
   return (
     <>
-      <SpaceView viewStyle={{backgroundColor: '#3D4348'}}>
+      <SpaceView>
         {isLogoType ? (
           <>
             <View style={{ ..._styles.headerLogoContainer}}>
@@ -112,12 +112,28 @@ function CommonHeader({
                 style={_styles.backContainer}
                 /* hitSlop={commonStyle.hipSlop20} */
               >
-                <Image source={backIcon || ICON.arrowLeftBrown} style={styles.iconSquareSize(24)} resizeMode={'contain'} />
+                <Image source={backIcon || ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
               </TouchableOpacity>
 
               {/* 제목 */}
               <SpaceView viewStyle={{width: width}}>
-                {isEmptyData(mstImgPath) ? (
+
+                {type == 'STORY_DETAIL' ? (
+                  <>
+                    <SpaceView ml={60} viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+                      <Image source={ICON.story_regTmp} style={styles.iconSquareSize(35)} />
+                      <SpaceView ml={10}><Text style={styles.fontStyle('B', 12, '#fff')}>{nicknameModifier}{'\n'}{nicknameNoun}</Text></SpaceView>
+                    </SpaceView>
+                  </>
+                ) : (
+                  <>
+                    <SpaceView viewStyle={{alignItems: 'center', justifyContent: 'center'}}>
+                      <Text style={styles.fontStyle('H', 26, '#fff')}>{title}</Text>
+                    </SpaceView>
+                  </>
+                )}
+
+                {/* {isEmptyData(mstImgPath) ? (
                   <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                     <SpaceView viewStyle={_styles.mstImgArea}>
                       {title == '시크릿' || secretYn == 'Y' ?
@@ -125,18 +141,17 @@ function CommonHeader({
                       :
                         <Image source={mstImgPath} style={_styles.mstImgStyle} />
                       }
-                      
                     </SpaceView>
                     {title == '스토리' && secretYn == 'Y' ?
-                      <Text style={_styles.nicknameText}>{nicknameModifier} {nicknameNoun}</Text>
+                      <Text style={styles.fontStyle('B', 12, '#fff')}>{nicknameModifier} {nicknameNoun}</Text>
                     :
-                      <Text style={_styles.nicknameText}>{nickname}</Text>
+                      <Text style={styles.fontStyle('B', 12, '#fff')}>{nickname}</Text>
                     }
                     
                   </SpaceView>
                 ) : (
                   <Text style={_styles.titleStyle}>{title}</Text>
-                )}
+                )} */}
               </SpaceView>
 
               <SpaceView viewStyle={_styles.btnContainer}>
@@ -144,7 +159,7 @@ function CommonHeader({
                   <>
                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                       <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
-                        <Text style={_styles.regiText}>등록</Text>
+                        <Text style={styles.fontStyle('B', 16, '#46F66F')}>다음</Text>
                       </TouchableOpacity>
                     </SpaceView>
                   </>
@@ -152,9 +167,7 @@ function CommonHeader({
                   <>
                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                       <TouchableOpacity style={[layoutStyle.row]} onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
-                        <View style={_styles.dot} />
-                        <View style={[_styles.dot, {marginHorizontal: 2}]} />
-                        <View style={_styles.dot} />
+                        <Image source={ICON.declaration} style={styles.iconSquareSize(28)} />
                       </TouchableOpacity>
                     </SpaceView>
                   </>  
@@ -190,7 +203,7 @@ const _styles = StyleSheet.create({
   backContainer: {
     position: 'absolute',
     top: 0,
-    left: 13,
+    left: 0,
     height: 56,
     justifyContent: 'center',
     zIndex: 1,
@@ -223,12 +236,6 @@ const _styles = StyleSheet.create({
     height: 32,
     borderRadius: 50,
     overflow: 'hidden',
-  },
-  nicknameText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 20,
-    color: '#D5CD9E',
-    marginLeft: 7,
   },
   scoreText: {
     fontFamily: 'Pretendard-Medium',

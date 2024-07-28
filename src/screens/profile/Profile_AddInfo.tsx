@@ -1,22 +1,16 @@
 import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
-import { CommonInput } from 'component/CommonInput';
 import SpaceView from 'component/SpaceView';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text, TextInput } from 'react-native';
 import * as React from 'react';
-import { CommonBtn } from 'component/CommonBtn';
-import { CommonText } from 'component/CommonText';
-import { CommonTextarea } from 'component/CommonTextarea';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp } from '@types';
 import { useDispatch } from 'react-redux';
 import { STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { useProfileImg } from 'hooks/useProfileImg';
-import { get_common_code, update_additional, get_member_introduce, save_member_introduce } from 'api/models';
+import { get_member_interest, save_member_interest } from 'api/models';
 import { usePopup } from 'Context';
-import { Color } from 'assets/styles/Color';
 import { Modalize } from 'react-native-modalize';
 import { SUCCESS } from 'constants/reusltcode';
 import { isEmptyData } from 'utils/functions';
@@ -25,6 +19,7 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
 import RNPickerSelect from 'react-native-picker-select';
 import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
+import InterestRegiPopup from 'component/member/InterestRegiPopup';
 
 
 /* ################################################################################################################
@@ -41,107 +36,75 @@ interface Props {
 const { width, height } = Dimensions.get('window');
 
 export const Profile_AddInfo = (props: Props) => {
-  	const navigation = useNavigation<ScreenNavigationProp>();
-  	const dispatch = useDispatch();
+  const navigation = useNavigation<ScreenNavigationProp>();
+  const dispatch = useDispatch();
 
-  	const { show } = usePopup();  // 공통 팝업
+  const { show } = usePopup();  // 공통 팝업
 	const isFocus = useIsFocused();
 	const [isLoading, setIsLoading] = React.useState(false); // 로딩 여부
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
-  	const memberBase = useUserInfo(); // 회원 기본정보
-  	const mbrProfileImgList = useProfileImg(); // 회원 프로필 이미지 목록
+  const memberBase = useUserInfo(); // 회원 기본정보
 
-  	// 추가 정보 데이터
-	const [addData, setAddData] = React.useState({
-		height: '', // 키
-		business: '', // 직업1
-		job: '', // 직업2
-		form_body: '', // 체형
-		religion: '', // 종교
-		drinking: '', // 음주
-		smoking: '', // 흡연
-		introduceComment: '', // 자기소개
-		mbti_type: '', // MBTI
-		prefer_local1: '', // 선호 활동 지역1
-		prefer_local2: '', // 선호 활동 지역2
-	});
+	// 현재 탭
+	const [currentTab, setCurrentTab] = React.useState('INTEREST');
 
-	// 공통 코드 목록 데이터
-	const [codeData, setCodeData] = React.useState({
-		busiCdList: [],
-		localCdList: [],
-		manBodyCdList: [],
-		womanBodyCdList: [],
-		religionCdList: [],
-		drinkCdList: [],
-		smokeCdList: [],
-		mbtiCdList: [],
-	});
+	// 인터뷰 목록
+	const [interviewList, setInterviewList] = React.useState([]);
 
-	// ############################################################ 업종 그룹 코드 목록
-  	const busiGrpCdList = [
-		{ label: '일반', value: 'JOB_00' },
-		{ label: '공군/군사', value: 'JOB_01' },
-		{ label: '교육/지식/연구', value: 'JOB_02' },
-		{ label: '경영/사무', value: 'JOB_03' },
-		{ label: '기획/통계', value: 'JOB_04' },
-		{ label: '건설/전기', value: 'JOB_05' },
-		{ label: '금융/회계', value: 'JOB_06' },
-		{ label: '기계/기술', value: 'JOB_07' },
-		{ label: '보험/부동산', value: 'JOB_08' },
-		{ label: '생활', value: 'JOB_09' },
-		{ label: '식음료/여가/오락', value: 'JOB_10' },
-		{ label: '법률/행정', value: 'JOB_11' },
-		{ label: '생산/제조/가공', value: 'JOB_12' },
-		{ label: '영업/판매/관리', value: 'JOB_13' },
-		{ label: '운송/유통', value: 'JOB_14' },
-		{ label: '예체능/예술/디자인', value: 'JOB_15' },
-		{ label: '의료/건강', value: 'JOB_16' },
-		{ label: '인터넷/IT', value: 'JOB_17' },
-		{ label: '미디어', value: 'JOB_18' },
-		{ label: '기타', value: 'JOB_19' },
-	];
+	// 관심사 목록
+	const [intList, setIntList] = React.useState([]);
 
-  	// 직업 그룹 코드 목록
-  	const [jobCdList, setJobCdList] = React.useState([{ label: '', value: '' }]);
+	// 관심사 체크 목록
+	const [checkIntList, setCheckIntList] = React.useState([{code_name: "", common_code: "", interest_seq: ""}]);
 
-  	// 직업 코드 콜백 함수
-	const busiCdCallbackFn = (value: string) => {
-		if(addData.business != value) {
-		setAddData({...addData, business: value});
-		getCommonCodeList(value);
+	// ############################################################## 관심사 등록 팝업 관련
+	const int_modalizeRef = React.useRef<Modalize>(null);
+	const int_onOpen = () => { 
+		int_modalizeRef.current?.openModal(intList, checkIntList);
+	};
+	const int_onClose = () => {	
+		int_modalizeRef.current?.closeModal(); 
+	};
+
+	// 관심사 등록 콜백 함수
+	const intCallbackFn = async (list:any) => {
+		console.log('list ::::::: ' , list);
+
+		//saveFn(list);
+		setCheckIntList(list);
+		int_onClose();
+
+		if(list.length > 0) {
+			saveFn(list);
 		}
 	};
 
-  	// ############################################################ 직업, 지역 코드 목록 조회 함수
-	const getCommonCodeList = async (value: string) => {
-		const isType = /JOB/.test(value);
-		const body = {
-			group_code: value,
-		};
+	// ############################################################ 관심사 정보 조회
+	const getInterest = async() => {
+		const body = {};
 		try {
-			setIsLoading(true);
-			const { success, data } = await get_common_code(body);
-
+			const { success, data } = await get_member_interest(body);
 			if(success) {
 				switch (data.result_code) {
-					case SUCCESS:
-						let dataList = new Array();
-						data.code_list?.map(({group_code, common_code, code_name,}: {group_code: any; common_code: any; code_name: any;}) => {
-							let dataMap = { label: code_name, value: common_code };
-							dataList.push(dataMap);
-						});
-						if(isType) {
-							setJobCdList(dataList);
-						} else {
-							//setBLocalCdList(dataList);
-						}
-					
-						break;
-					default:
-						show({content: '오류입니다. 관리자에게 문의해주세요.' });
-						break;
+          case SUCCESS:
+            setIntList(data?.interest_list);
+      
+            let setList = new Array();
+            data?.interest_list.map((item, index) => {
+              item.list.map((obj, idx) => {
+                if(obj.interest_seq != null) {
+                  setList.push(obj);
+                };
+              });
+            });
+
+						console.log('setList :::::: ' , setList);
+					  setCheckIntList(setList);
+					  break;
+				  default:
+  					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+					  break;
 				}
 			} else {
 				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -149,375 +112,195 @@ export const Profile_AddInfo = (props: Props) => {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			setIsLoading(false);
+			
 		}
-
 	};
 
-  	// ############################################################ 회원 소개 정보 조회 함수
-  	const getMemberIntro = async (group_code: string) => {
-		const body = {
-      		group_code: group_code
-    	};
-    	try {
-      		setIsLoading(true);
-      		const { success, data } = await get_member_introduce(body);
-      		if(success) {
-	        	switch (data.result_code) {
-          			case SUCCESS:
-            
-            			setAddData({
-							height: data?.member_add?.height,
-							business: data?.member_add?.business,
-							job: data?.member_add?.job,
-							form_body: data?.member_add?.form_body,
-							religion: data?.member_add?.religion,
-							drinking: data?.member_add?.drinking,
-							smoking: data?.member_add?.smoking,
-							introduceComment: data?.member_add?.introduce_comment,
-							mbti_type: data?.member_add?.mbti_type,
-							prefer_local1: data?.member_add?.prefer_local1,
-							prefer_local2: data?.member_add?.prefer_local2,
-						});
+	// ############################################################################# 저장 함수
+	const saveFn = async (list:any) => {
+		console.log('list :::::::: ' , list);
 
-            			let dataList = new Array();
-            			data?.code_list?.map(({ group_code, common_code, code_name }: { group_code: any; common_code: any; code_name: any; }) => {
-                			let dataMap = { label: code_name, value: common_code };
-                			dataList.push(dataMap);
-	            		});
-            			setJobCdList(dataList); // 직업 코드 목록
+		if(list.length < 1){
+			show({ content: '관심사를 입력해 주세요.' });
+			return;
+		};
 
+		// 중복 클릭 방지 설정
+		if(isClickable) {
+			setIsClickable(false);
+			setIsLoading(true);
 
-						setCodeData({
-							busiCdList: [],
-							localCdList: data?.local_code_list,
-							manBodyCdList: data?.man_body_code_list,
-							womanBodyCdList: data?.woman_body_code_list,
-							religionCdList: data?.religion_code_list,
-							drinkCdList: data?.drink_code_list,
-							smokeCdList: data?.smoke_code_list,
-							mbtiCdList: data?.mbti_code_list,
-						});
-
-						console.log('data?.mbti_code_list :::: ' , data?.mbti_code_list);
-
-          
-          			break;
-        			default:
-          				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-          				break;
-        		}
-      		} else {
-        		show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-      		}
-    	} catch (error) {
-      		console.log(error);
-    	} finally {
-      		setIsLoading(false);
-    	}
-  	};
-
-  	// ############################################################ 내 소개하기 저장
-  	const saveFn = async () => {
-
-    	// 중복 클릭 방지 설정
-    	if(isClickable) {
-      		setIsClickable(false);
-      		setIsLoading(true);
-
-      		try {
-        		const body = {
-					business: addData.business,
-					job: addData.job,
-					height: addData.height,
-					form_body: addData.form_body,
-					religion: addData.religion,
-					drinking: addData.drinking,
-					smoking: addData.smoking,
-					introduce_comment: addData.introduceComment,
-					mbti_type: addData.mbti_type,
-					prefer_local1: addData.prefer_local1,
-					prefer_local2: addData.prefer_local2,
-        		};
-
-        		const { success, data } = await save_member_introduce(body);
-        		if(success) {
-          			switch (data.result_code) {
-          				case SUCCESS:
-
-							// 갱신된 회원 기본 정보 저장
-							//dispatch(setPartialPrincipal({ mbr_base : data.mbr_base }));
-
-							show({ type: 'RESPONSIVE', content: '내 소개 정보가 저장되었습니다.' });
-
-							/* navigation.navigate(STACK.TAB, {
-							screen: 'Roby',
-							}); */
-
-							navigation.goBack();
-							
-							break;
-          				default:
-            				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-            				break;
-          			}
-        		} else {
-          			show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-        		}
-      		} catch (error) {
-				console.log(error);
+			const body = {
+				//interest_list: checkIntList,
+				interest_list: list,
+			};
+			try {
+        const { success, data } = await save_member_interest(body);
+        if (success) {
+          switch (data.result_code) {
+            case SUCCESS:
+							show({ type: 'RESPONSIVE', content: '관심사가 저장되었습니다.' });
+							getInterest();
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+			} catch (error) {
+			  console.log(error);
 			} finally {
-				setIsClickable(true);
-				setIsLoading(false);
-			}
-    	}
-  	};
+			  setIsClickable(true);
+			  setIsLoading(false);
+			};
+		}
+	};
 
-  	// 첫 렌더링 때 실행
-  	React.useEffect(() => {
-	    if(isFocus) {
-	      	getMemberIntro(memberBase.business);
 
-			//if (memberBase.business != '') {
-				//getJobCodeList(memberBase.business);
-				//getMemberIntroduce(memberBase.business);
-			//}
-    	}
-  	}, [isFocus]);
 
-  	return (
-    	<>
-      		{isLoading && <CommonLoading />}
 
-      		<LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 0, y: 1 }}
-				style={_styles.wrap}
-			>
-				<ScrollView showsVerticalScrollIndicator={false} style={{height: height - 250, marginBottom: 10}}>
-					<SpaceView>
-						<SpaceView mt={10} viewStyle={_styles.titleContainer}>
-							<Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.addInfoImg} />
-							<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{memberBase.nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
-						</SpaceView>
 
-						{/* ##################################################################################################################
-						###### 필수 정보
-						################################################################################################################## */}
-						<SpaceView mt={30}>
-							<View>
-								<Text style={_styles.essentialTitle}>필수 정보</Text>
-							</View>
-							<View style={_styles.underline}></View>
-							<View style={_styles.essentialOption}>
+	const onTabActive = async (value:string) => {
+		setCurrentTab(value);
+	};
 
-								{/* ############################################################################# 키 */}
-								<View style={_styles.option}>
-									<Text style={_styles.optionTitle}>키(cm)</Text>
-									{/* <TextInput maxLength={3} style={_styles.optionSelect}/> */}
+	// 첫 렌더링 때 실행
+  React.useEffect(() => {
+		if(isFocus) {
+	  	getInterest();
+    }
+  }, [isFocus]);
 
-									<TextInput
-										value={addData.height}
-										onChangeText={(text) => setAddData({...addData, height: text})}
-										keyboardType="number-pad"
-										autoCapitalize={'none'}
-										style={_styles.optionText}
-										maxLength={3}
-									/>
-								</View>
+  return (
+		<>
+			{isLoading && <CommonLoading />}
 
-								{/* ############################################################################# 직업 */}
-								<View style={_styles.option}>
-									<Text style={_styles.optionTitle}>직업</Text>
-									<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
-										<RNPickerSelect
-											placeholder={{label: '선택', value: ''}}
-											style={{
-												inputIOS: {
-													...pickerSelectStyles.inputIOS,
-													width: 120,
-												},
-												inputAndroid: {
-													...pickerSelectStyles.inputAndroid,
-													width: 120,
-												},
-											}}
-											useNativeAndroidPickerStyle={false}
-											onValueChange={busiCdCallbackFn}
-											value={addData.business}
-											items={busiGrpCdList}
-										/>
-										<RNPickerSelect
-											placeholder={{label: '선택', value: ''}}
-											style={{
-												inputIOS: {
-													...pickerSelectStyles.inputIOS,
-													width: 120,
-												},
-												inputAndroid: {
-													...pickerSelectStyles.inputAndroid,
-													width: 120,
-												},
-											}}
-											useNativeAndroidPickerStyle={false}
-											onValueChange={(value) => setAddData({...addData, job: value})}
-											value={addData.job}
-											items={jobCdList}
-										/>
-									</View>
-								</View>
-
-								{/* ############################################################################# 체형 */}
-								<View style={_styles.option}>
-									<Text style={_styles.optionTitle}>체형</Text>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={pickerSelectStyles}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, form_body: value})}
-										value={addData.form_body}
-										items={memberBase.gender == 'M' ? codeData.manBodyCdList : codeData.womanBodyCdList}
-									/>
-								</View>
-							</View>
-						</SpaceView>
-
-						{/* ##################################################################################################################
-						###### 선택 정보
-						################################################################################################################## */}
-						<SpaceView mt={20} mb={10}>
-							<View>
-								<Text style={_styles.choiceTitle}>선택 정보</Text>
-							</View>
-							<View style={_styles.underline}></View>
-							<View>
-
-								{/* ############################################################################# MBTI */}
-								<View style={_styles.option}>
-									<Text style={_styles.optionTitle}>MBTI</Text>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={pickerSelectStyles}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, mbti_type: value})}
-										value={addData.mbti_type}
-										items={codeData.mbtiCdList}
-									/>
-								</View>
-
-								{/* ############################################################################# 선호지역 */}
-								<View style={_styles.option}>
-									<Text style={_styles.optionTitle}>선호지역</Text>
-									<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
-										<RNPickerSelect
-											placeholder={{label: '선택', value: ''}}
-											style={{
-												inputIOS: {
-													...pickerSelectStyles.inputIOS,
-													width: 120,
-												},
-												inputAndroid: {
-													...pickerSelectStyles.inputAndroid,
-													width: 120,
-												},
-											}}
-											useNativeAndroidPickerStyle={false}
-											onValueChange={(value) => setAddData({...addData, prefer_local1: value})}
-											value={addData.prefer_local1}
-											items={codeData.localCdList}
-										/>
-										<RNPickerSelect
-											placeholder={{label: '선택', value: ''}}
-											style={{
-												inputIOS: {
-													...pickerSelectStyles.inputIOS,
-													width: 120,
-												},
-												inputAndroid: {
-													...pickerSelectStyles.inputAndroid,
-													width: 120,
-												},
-											}}
-											useNativeAndroidPickerStyle={false}
-											onValueChange={(value) => setAddData({...addData, prefer_local2: value})}
-											value={addData.prefer_local2}
-											items={codeData.localCdList}
-										/>
-									</View>
-								</View>
-
-								{/* ############################################################################# 종교 */}
-								<View style={_styles.option}>
-									<Text style={_styles.optionTitle}>종교</Text>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={pickerSelectStyles}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, religion: value})}
-										value={addData.religion}
-										items={codeData.religionCdList}
-									/>
-								</View>
-
-								{/* ############################################################################# 음주 */}
-								<View style={_styles.option}>
-									<Text style={_styles.optionTitle}>음주</Text>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={pickerSelectStyles}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, drinking: value})}
-										value={addData.drinking}
-										items={codeData.drinkCdList}
-									/>
-								</View>
-								<View style={_styles.option}>
-									<Text style={_styles.optionTitle}>흡연</Text>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={pickerSelectStyles}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, smoking: value})}
-										value={addData.smoking}
-										items={codeData.smokeCdList}
-									/>
-								</View>
-							</View>
-						</SpaceView>
-						
-					</SpaceView>
-				</ScrollView>
-
-				<SpaceView mb={Platform.OS == 'ios' ? 60 : 10}>
-					<SpaceView>
-						<CommonBtn
-							value={'저장하기'}
-							type={'reNewId'}
-							fontSize={16}
-							fontFamily={'Pretendard-Bold'}
-							borderRadius={5}
-							onPress={() => {
-								saveFn();
-							}}
-						/>
-					</SpaceView>
-
-					<SpaceView mt={8}>
-						<CommonBtn
-							value={'이전으로'}
-							type={'reNewGoBack'}
-							isGradient={false}
-							fontFamily={'Pretendard-Light'}
-							fontSize={14}
-							borderRadius={5}
-							onPress={() => {
-								navigation.goBack();
-							}}
-						/>
-					</SpaceView>
+			<SpaceView viewStyle={_styles.wrap}>
+				<SpaceView pl={10} pr={10}>
+					<CommonHeader title="추가 정보" />
 				</SpaceView>
-			</LinearGradient>
+
+				<SpaceView mt={30} viewStyle={layoutStyle.rowBetween}>
+					<TouchableOpacity 
+						style={_styles.tabItemWrap(currentTab == 'INTEREST')}
+						onPress={() => { onTabActive('INTEREST'); }}
+						activeOpacity={0.5}>
+						<Text style={styles.fontStyle('EB', 20, currentTab == 'INTEREST' ? '#46F66F' : '#808080')}>관심사</Text>
+					</TouchableOpacity>
+					<TouchableOpacity 
+						style={_styles.tabItemWrap(currentTab == 'INTERVIEW')}
+						onPress={() => { onTabActive('INTERVIEW'); }}
+						activeOpacity={0.5}>
+						<Text style={styles.fontStyle('EB', 20, currentTab == 'INTERVIEW' ? '#46F66F' : '#808080')}>인터뷰</Text>
+					</TouchableOpacity>
+				</SpaceView>
+
+				<SpaceView>
+
+					{/* 관심사 */}
+					{currentTab == 'INTEREST' && (
+						<SpaceView>
+							<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingBottom: 15, marginTop: 30, height: height-300}}>
+								<SpaceView pl={10} pr={10}>
+									<SpaceView>
+										<SpaceView viewStyle={layoutStyle.rowStart}>
+											<Image source={ICON.int_lifestyle} style={styles.iconSquareSize(15)} />
+											<SpaceView ml={3}><Text style={styles.fontStyle('EB', 16, '#fff')}>라이프 스타일</Text></SpaceView>
+										</SpaceView>
+										<SpaceView mt={20} viewStyle={_styles.interestListWrap}>
+											{checkIntList.map((i, index) => {
+												return isEmptyData(i.code_name) && (
+													<SpaceView key={index + 'reg'} mr={5} mb={10} viewStyle={_styles.interestItemWrap}>
+														<Text style={styles.fontStyle('B', 14, '#fff')}>{i.code_name}</Text>
+													</SpaceView>
+												);
+											})}
+										</SpaceView>
+									</SpaceView>
+								</SpaceView>
+							</ScrollView>
+							<TouchableOpacity
+								style={_styles.interestAddBtn}
+								onPress={() => {
+									int_onOpen();
+								}}>
+								<Text style={styles.fontStyle('B', 12, '#fff')}>관심사 추가/삭제</Text>
+							</TouchableOpacity>
+						</SpaceView>
+					)}
+
+					{/* 인터뷰 */}
+					{currentTab == 'INTERVIEW' && (
+						<SpaceView pl={10} pr={10}>
+							<SpaceView mt={25}>
+								<Text style={styles.fontStyle('EB', 20, '#fff')}>리프의 친구들에게{'\n'}{memberBase.nickname}님의 생각을 남겨 보세요.</Text>
+							</SpaceView>
+							<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, marginTop: 25, height: height-280}}>
+
+								{/* {selectList.map((item, index) => {
+								
+									return item?.isEssential && (
+										<>
+											<SpaceView mb={10}>
+												<TouchableOpacity 
+													style={_styles.itemWrap}
+													onPress={() => { popupOpen(item); }}>
+													<Text style={styles.fontStyle('EB', 16, '#fff')}>{item?.name}</Text>
+													<SpaceView viewStyle={layoutStyle.rowCenter}>
+														<Text style={styles.fontStyle('EB', 16, '#fff')}>{item?.vName}</Text>
+														<SpaceView ml={10}><Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(11, 18)} /></SpaceView>
+													</SpaceView>
+												</TouchableOpacity>
+											</SpaceView>
+										</>
+									);
+								})} */}
+
+
+								<SpaceView>
+									<LinearGradient
+										colors={['rgba(203,239,255,0.3)', 'rgba(113,143,156,0.3)', 'rgba(122,154,183,0.3)']}
+										start={{ x: 0.1, y: 0 }}
+										end={{ x: 0.8, y: 0.8 }}
+										style={_styles.interviewItemWrap}
+									>
+										<SpaceView>
+											<Text style={styles.fontStyle('B', 14, '#fff')}>가장 선호하는 첫 만남 소개팅 장소는 어디인가요? 
+											EX)아늑한 카페, 숨겨진 맛집, 분위기 좋은 술집, 영화관 OR 미술관</Text>
+										</SpaceView>
+										<SpaceView mt={30} viewStyle={_styles.interviewAnswerWrap}>
+											<Text style={styles.fontStyle('SB', 12, '#C4B6AA')}>
+											리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고 라이브도 잊지 마시고 서로 평점 테러 좀 하지 마세요. 제발 리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고.리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고 라이브도 잊지 마시고 서로 평점 테러 좀 하지 마세요. 제발 리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고.인터뷰 답변 글자 제한수는 임시로 300글자
+											제한수 변경은 테스트 후 재결정.
+											</Text>
+										</SpaceView>
+										<SpaceView mt={10} viewStyle={_styles.interviewBtnWrap}>
+											<TouchableOpacity style={_styles.interviewCancelBtn}>
+												<Text style={styles.fontStyle('B', 16, '#fff')}>취소</Text>
+											</TouchableOpacity>
+											<TouchableOpacity style={_styles.interviewSaveBtn}>
+												<Text style={styles.fontStyle('B', 16, '#fff')}>저장</Text>
+											</TouchableOpacity>
+										</SpaceView>
+									</LinearGradient>
+								</SpaceView>
+							</ScrollView>
+						</SpaceView>
+					)}
+					
+				</SpaceView>
+			</SpaceView>
+
+
+			{/* #############################################################################
+											관심사 설정 팝업
+			############################################################################# */}
+			<InterestRegiPopup
+        ref={int_modalizeRef}
+				callbackFunc={intCallbackFn}
+      />
 		</>
 	);
 };
@@ -532,107 +315,70 @@ export const Profile_AddInfo = (props: Props) => {
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,
-		padding: 30,
+    backgroundColor: '#13111C',
+    paddingTop: 30,
 	},
-	titleContainer: {
+	tabItemWrap: (isOn:boolean) => {
+		return {
+			width: '50%',
+			alignItems: 'center',
+			borderBottomWidth: 2,
+			borderBottomColor: isOn ? '#46F66F' : '#808080',
+			paddingBottom: 5,
+    };
+	},
+	interestListWrap: {
 		flexDirection: 'row',
-		alignItems: 'flex-end',
+		flexWrap: 'wrap',
 	},
-	title: {
-		fontSize: 30,
-		fontFamily: 'Pretendard-Bold',
-		color: '#D5CD9E',
+	interestItemWrap: {
+		backgroundColor: '#808080',
+		borderRadius: 25,
+		borderColor: '#40E0D0',
+		borderWidth: 1,
+		paddingHorizontal: 18,
+		paddingVertical: 10,
 	},
-	addInfoImg: {
-		width: 110,
-		height: 160,
-		borderWidth: 2,
-		borderColor: '#D5CD9E',
-		borderRadius: 5,
-		backgroundColor: '#FFF',
-    marginRight: 10,
-	},
-	essentialCont : {
-
-	},
-	essentialTitle: {
-		fontFamily: 'Pretendard-SemiBold',
-		color: '#D5CD9E',
-		fontSize: 20,
-	},
-	essentialOption: {
-
-	},
-	choiceCont: {
-
-	},
-	choiceTitle: {
-		fontFamily: 'Pretendard-SemiBold',
-		color: '#D5CD9E',
-		fontSize: 20,
-	},
-	choiceOption: {
-
-	},
-	underline: {
-		width: '100%',
-		height: 1,
-		backgroundColor: '#D5CD9E',
-		marginTop: 10,
-	},
-	option: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
+	interestAddBtn: {
+		backgroundColor: '#44B6E5',
+		borderRadius: 25,
 		alignItems: 'center',
-		marginTop: 10,
+		marginHorizontal: 10,
+		paddingVertical: 10,
+		marginTop: 30,
 	},
-	optionTitle: {
-		fontFamily: 'Pretendard-Regular',
-		color: '#F3E270',
+	interviewItemWrap: {
+		borderRadius: 10,
+		paddingHorizontal: 13,
+		paddingTop: 30,
+		paddingBottom: 10,
+		marginBottom: 25,
 	},
-	optionText: {
-		fontFamily: 'Pretendard-Light',
-		fontSize: 14,
-		color: '#F3E270',
-		textAlign: 'center',
-		width: 120,
-		height: 30,
-		backgroundColor:'#445561',
-		borderRadius: 50,
-		justifyContent: 'center',
-		padding: 0,
+	interviewAnswerWrap: {
+		backgroundColor: '#fff',
+		borderRadius: 10,
+		paddingHorizontal: 13,
+		paddingVertical: 10,
 	},
-	optionSelect: {
-		width: 100,
-		height: 40,
-		backgroundColor:'#445561',
-		borderRadius: 50,
-		textAlign: 'center',
-		color: '#F3E270',
-		justifyContent: 'center',
+	interviewBtnWrap: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
 	},
+	interviewCancelBtn: {
+		backgroundColor: '#FF516F',
+		borderRadius: 25,
+		width: 95,
+		paddingVertical: 5,
+		alignItems: 'center',
+		marginRight: 10,
+	},
+	interviewSaveBtn: {
+		backgroundColor: '#46F66F',
+		borderRadius: 25,
+		width: 95,
+		paddingVertical: 5,
+		alignItems: 'center',
+	},
+
 
 });
-
-const pickerSelectStyles = StyleSheet.create({
-	inputIOS: {
-		width: 120,
-		height: 30,
-		backgroundColor:'#445561',
-		borderRadius: 50,
-		textAlign: 'center',
-		color: '#F3E270',
-		justifyContent: 'center',
-	},
-	inputAndroid: {
-		width: 120,
-		backgroundColor:'#445561',
-		borderRadius: 50,
-		textAlign: 'center',
-		justifyContent: 'center',
-		padding: 0,
-		fontFamily: 'Pretendard-Light',
-		fontSize: 12,
-		color: '#F3E270',
-	},
-  });

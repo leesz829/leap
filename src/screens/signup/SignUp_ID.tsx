@@ -4,10 +4,7 @@ import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { Color } from 'assets/styles/Color';
 import { commonStyle, styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import axios from 'axios';
-import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
-import { CommonInput } from 'component/CommonInput';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
@@ -18,7 +15,6 @@ import { SUCCESS, MEMBER_EMAIL_DUP } from 'constants/reusltcode';
 import { regist_member_base_info } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
-import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -90,73 +86,44 @@ export const SignUp_ID = (props: Props) => {
 
   return (
     <>
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={_styles.signUpContainer}
-      >
-        <ScrollView>
-          <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
-            <CommonText textStyle={_styles.title}>
-              아이디로 사용하실{'\n'}이메일을 입력해주세요.
-            </CommonText>
-          </SpaceView>
+      <SpaceView viewStyle={_styles.wrap}>
+        <SpaceView>
+          <CommonHeader title="" />
+        </SpaceView>
 
-          <SpaceView mt={80} viewStyle={[_styles.container]}>
-            <SpaceView mb={10}>
-              <Text style={_styles.emailPwdText}>이메일</Text>
+        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          <SpaceView>
+            <SpaceView mt={50}>
+              <Text style={styles.fontStyle('H', 28, '#fff')}>아이디로 사용 하실{'\n'}이메일을 입력해 주세요.</Text>
+              <SpaceView mt={10}>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>비밀번호를 잃어 버리신 경우 이메일로 안내가 됩니다.{'\n'}실제로 사용하는 이메일을 입력해 주세요.</Text>
+              </SpaceView>
             </SpaceView>
-            <SpaceView mb={10} viewStyle={[commonStyle.width100]}>
+
+            <SpaceView mt={50}>
               <TextInput
                 value={emailId}
                 onChangeText={(text) => setEmailId(text)}
                 autoCapitalize={'none'}
-                style={_styles.textInputStyle}
+                style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
                 maxLength={50}
-              />
-
-              {emailId?.length > 0 && (
-                <TouchableOpacity 
-                  style={_styles.removeTextBtn}
-                  onPress={() => { setEmailId(''); }}
-                >
-                  <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-                </TouchableOpacity>
-              )}
-            </SpaceView>
-
-            <View style={{width: '100%'}}>
-              <Text style={_styles.noticeText}>실제 사용하시는 이메일을 입력해주세요.</Text>
-            </View>
-
-            <SpaceView mt={235}>
-              <CommonBtn
-                value={'비밀번호 만들기'}
-                type={'reNewId'}
-                borderRadius={5}
-                onPress={() => {
-                  emailValidChk();
-                  //goNext();
-                }}
-              />
-            </SpaceView>
-            <SpaceView mt={20}>
-              <CommonBtn
-                value={'이전으로'}
-                type={'reNewGoBack'}
-                isGradient={false}
-                fontFamily={'Pretendard-Light'}
-                fontSize={14}
-                borderRadius={5}
-                onPress={() => {
-                  navigation.goBack();
-                }}
+                placeholder={'이메일을 입력해 주세요.'}
+                placeholderTextColor={'#808080'}
               />
             </SpaceView>
           </SpaceView>
-        </ScrollView>
-      </LinearGradient>
+
+          <SpaceView viewStyle={_styles.bottomWrap}>
+            <TouchableOpacity 
+              disabled={!emailId}
+              onPress={() => { emailValidChk(); }}
+              style={_styles.nextBtnWrap(emailId)}>
+              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+            </TouchableOpacity>
+          </SpaceView>
+        </SpaceView>
+      </SpaceView>
     </>
   );
 };
@@ -169,47 +136,42 @@ export const SignUp_ID = (props: Props) => {
 ###########################################################################################################
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
-  signUpContainer: {
-    minHeight: height,
-    paddingTop: 60,
-    paddingLeft: 16,
-    paddingRight: 16,
-    flexGrow: 1,
-  },
-  container: {
-    paddingTop: 24,
-    paddingHorizontal: 16,
+  wrap: {
     flex: 1,
+    minHeight: height,
+    backgroundColor: '#000000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
   },
-  title: {
-    fontFamily: 'Pretendard-Bold',
-    color: '#D5CD9E',
-    fontSize: 30,
-    lineHeight: 35,
-    marginBottom: 15,
+  itemWrap: {
+    alignItems: 'center',
+    paddingHorizontal: 8,
   },
-  emailPwdText: {
-    fontFamily: 'Pretendard-Bold',
-    color: '#F3E270',
-    fontSize: 14,
-  },
-  noticeText: {
-    fontFamily: 'Pretendard-Light',
-    color: '#D5CD9E',
-    fontSize: 12,
-  },
-  removeTextBtn: {
-    position: 'absolute',
-    bottom: 10,
-    right: 0,
-  },
-  textInputStyle: {
+  textWrap: {
     borderBottomWidth: 1,
-    borderBottomColor: '#F3E270',
+    borderBottomColor: '#A8A8A8',
+    paddingBottom: 5,
+    paddingHorizontal: 8,
+  },
+  bottomWrap: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  nextBtnWrap: (isOn:boolean) => {
+		return {
+			backgroundColor: isOn ? '#1F5AFB' : '#808080',
+      borderRadius: 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+    };
+	},
+  textInputStyle: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
     padding: 0,
-    color: '#F3E270',
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
     paddingBottom: 5,
     paddingTop: 5,
   },

@@ -7,16 +7,14 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import SpaceView from 'component/SpaceView';
-import { CommonText } from 'component/CommonText';
 import { ICON } from 'utils/imageUtils';
-import { Color } from 'assets/styles/Color';
 import { get_board_list, board_detail_view } from 'api/models';
 import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
-import { CommonBtn } from 'component/CommonBtn';
 import { STACK, ROUTES } from 'constants/routes';
-import LinearGradient from 'react-native-linear-gradient';
 import { useUserInfo } from 'hooks/useUserInfo';
+import BoardDetailPopup from 'screens/commonpopup/BoardDetailPopup';
+import { Modalize } from 'react-native-modalize';
 
 
 /* ################################################################################################################
@@ -45,12 +43,33 @@ export const Board = (props: Props) => {
 
 	const [activeIndex, setActiveIndex] = useState(-1);
 
-	// 이용약관 이동
+	const [detailData, setDetailData] = useState({
+		title: '',
+		content: '',
+	});
+
+
+	// 상세 팝업 Ref
+  const detail_modalizeRef = React.useRef<Modalize>(null);
+
+  // 상세 팝업 활성화
+  const detailModalOpen = () => {
+    detail_modalizeRef?.current?.open();
+  };
+
+	// 상세 팝업 닫기
+	const detailModalClose = React.useCallback(async (type:string) => {
+    detail_modalizeRef?.current?.close();
+  }, []);
+
+	// 게시글 상세 이동
 	const onPressBoardDetail = async (item:any) => {
-		navigation.navigate(STACK.COMMON, {
-			screen: ROUTES.BOARD_DETAIL,
-			params : item
-		});
+		setDetailData({
+			title: item.title,
+			content: item.content,
+		})
+
+		detailModalOpen();
 	};
 
 	// 토글
@@ -139,23 +158,49 @@ export const Board = (props: Props) => {
 		<>
 			{isLoading && <CommonLoading />}
 
-			<CommonHeader title={'새소식'} />
-			
-			<LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 0, y: 1 }}
-				style={{minHeight: height}}
-			>		
-				<ScrollView showsVerticalScrollIndicator={false}>
+			<SpaceView viewStyle={_styles.wrap}>
+        <CommonHeader title="새소식" />
 
-					<SpaceView mt={30} mb={150}>
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
+					<SpaceView>
 						{noticeList.map((item, index) => {
 
-							return (memberBase?.member_seq != 905 || (memberBase?.member_seq == 905 && (item.board_seq == 63 || item.board_seq == 82))) && (
+							let iconSrc = ICON.boardEvent;
+
+							if(item.board_type == 'RECENT_NEWS') {
+								if(item.board_sub_type == 'NOTICE') {
+									iconSrc = ICON.boardNotice;
+								} else if(item.board_sub_type == 'GUIDE') {
+									iconSrc = ICON.boardGuide;
+								}
+							}
+
+							return (
 								<>
-									<SpaceView mb={10} key={item.board_seq} viewStyle={_styles.rowContainer}>
-										<TouchableOpacity
+									<SpaceView mb={23} key={item.board_seq} viewStyle={_styles.rowContainer}>
+										<SpaceView viewStyle={{flex: 0.15}}>
+											<Image source={iconSrc} style={styles.iconSquareSize(38)} />
+										</SpaceView>
+										<SpaceView pb={15} viewStyle={{flex: 0.85, borderBottomWidth: 1, borderBottomColor: '#617494'}}>
+											<SpaceView>
+												<Text style={styles.fontStyle('SB', 11, '#fff')}>{item.title}</Text>
+											</SpaceView>
+											<SpaceView mt={20} viewStyle={layoutStyle.rowBetween}>
+												<Text style={styles.fontStyle('R', 10, '#888888')}>{item.reg_dt}</Text>
+												<TouchableOpacity
+													style={_styles.btnDetail()}
+													activeOpacity={0.3}
+													onPress={() => (
+														onPressBoardDetail(item)
+														//sstoggleAccordion(item);
+													)}
+												>
+													<Text style={styles.fontStyle('SB', 10, '#fff')}>보기</Text>
+												</TouchableOpacity>
+											</SpaceView>
+										</SpaceView>
+
+										{/* <TouchableOpacity
 											style={_styles.inner}
 											activeOpacity={0.3}
 											onPress={() => (
@@ -186,18 +231,24 @@ export const Board = (props: Props) => {
 											</View>
 
 											<View style={[_styles.iconContainer, activeIndex === item.board_seq && _styles.activeIcon]}>
-												{/* <Image source={ICON.arrBottom} style={_styles.iconStyle} /> */}
 												<Image source={ICON.circleArrow} style={styles.iconSize18} />
 											</View>
-										</TouchableOpacity>
+										</TouchableOpacity> */}
 									</SpaceView>
 								</>
 							)
 						})}
 					</SpaceView>
-
 				</ScrollView>
-			</LinearGradient>
+			</SpaceView>
+
+
+			{/* ################################################################################### 게시글 상세 팝업 */}
+			<BoardDetailPopup modalRef={detail_modalizeRef} closeFunc={detailModalClose} data={detailData} />
+
+
+
+
 		</>
 	);
 };
@@ -205,98 +256,26 @@ export const Board = (props: Props) => {
 
 
 const _styles = StyleSheet.create({
-	iconContainer: {
-	  	position: 'absolute',
-		top: '45%',
-	  	right: 0,
-	  	// transform: [{ rotate: '360deg' }],
-		transform: [{ rotate: '270deg' }],
-	},
-	activeIcon: {
-	  	// transform: [{ rotate: '180deg' }],
-	},
-	inner: {
-	  	width: '100%',
+	wrap: {
+		minHeight: height,
+    backgroundColor: '#16112A',
+    paddingHorizontal: 10,
+    paddingTop: 30,
 	},
 	rowContainer: {
-	 	flexDirection: 'row',
-	  	justifyContent: 'space-between',
-		paddingHorizontal: 25,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
 	},
-	iconStyle: {
-	  	width: 18,
-	  	height: 10,
-	},
-	titleContainer: {
-	  	borderBottomWidth: 1,
-	  	borderColor: '#E1DFD1',
-	  	//borderRadius: 15,
-	  	//paddingHorizontal: 15,
-	  	paddingVertical: 15,
-	},
-	titleText: {
-		paddingRight: 35,
-	},
-	active: {
-	  	borderBottomWidth: 0,
-	  	borderBottomLeftRadius: 0,
-	  	borderBottomRightRadius: 0,
-	},
-	descContainer: {
-		//padding: 16,
-		paddingHorizontal: 10,
-		paddingBottom: 20,
-		borderWidth: 1,
-		borderTopWidth: 0,
-		borderColor: Color.grayEBE,
-		borderBottomLeftRadius: 15,
-		borderBottomRightRadius: 15,
-	},
-	descText: {
-		paddingHorizontal: 15,
-		paddingVertical: 20,
-	},
-	dateText: {
-		textAlign: 'right',
-		paddingHorizontal: 15,
-		marginTop: 5,
-	},
-	newArea: {
-		position: 'absolute',
-		top: -10,
-		left: 0,
-		backgroundColor: '#000',
-		borderRadius: 20,
-		paddingHorizontal: 8,
-		paddingVertical: 2,
-	},
-	newText: {
-		fontFamily: 'AppleSDGothicNeoM00',
-		fontSize: 12,
-		color: '#fff',
-	},
-	iconType: (color:string) => {
+	btnDetail: (color:string) => {
 		return {
-			width: 50,
-			fontFamily: 'Pretendard-Medium',
-			fontSize: 10,
-			color: '#3D4348',
-			backgroundColor: color,
-			textAlign: 'center',
-			borderRadius: Platform.OS == 'android' ? 10 : 7,
-			marginRight: 5,
-			overflow: 'hidden',
-			paddingVertical: 2,
+			borderRadius: 25,
+			backgroundColor: '#44B6E5',
+			paddingHorizontal: 25,
+			paddingVertical: 4,
 		};
 	},
-	newIcon: {
-		position: 'absolute',
-		top: 9,
-		left: -7,
-		width: 5,
-		height: 5,
-		backgroundColor: '#FF4D29',
-		borderRadius: 30,
-		overflow: 'hidden',
-	},
-  });
+
+
+
+
+});

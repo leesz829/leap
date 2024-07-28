@@ -26,8 +26,11 @@ import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonLoading } from 'component/CommonLoading';
 import { CommonInput } from 'component/CommonInput';
 import { VoteEndRadioBox } from 'component/story/VoteEndRadioBox';
+import { KeywordDropDown } from 'component/story/KeywordDropDown';
 import { CommonBtn } from 'component/CommonBtn';
 import { myProfile } from 'redux/reducers/authReducer';
+import RNPickerSelect from 'react-native-picker-select';
+
 
 
 /* ################################################################################################################
@@ -46,7 +49,6 @@ export default function StoryEdit(props: Props) {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
-
   const memberBase = useUserInfo(); // 회원 기본 데이터
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 체크
@@ -54,7 +56,6 @@ export default function StoryEdit(props: Props) {
   const inputRef = React.useRef();
 
   const [title, setTitle] = useState(''); // 제목
-
   const [isSecret, setIsSecret] = useState(false); // 비밀 여부
   
   const [storyBoardSeq, setStoryBoardSeq] = useState(props.route.params.storyBoardSeq);
@@ -71,6 +72,20 @@ export default function StoryEdit(props: Props) {
     voteEndYn: props.route.params.voteEndYn,
   });
 
+  const [keywordValue, setKeywordValue] = useState(null); // 키워드 값
+  const [typeValue, setTypeValue] = useState('BASE'); // 타입 값
+  const [isPromptUse, setIsPromptUse] = useState(false); // 프롬트 사용 여부
+  const [typeChoiceValue, setTypeChoiceValue] = useState(null); // 타입 - 초이스 값
+
+  const [themaValue, setThemaValue] = useState(null); // 테마 값
+  const [emaotionValue, setEmotionValue] = useState(null); // 감정 값
+  const [loggValue, setLoggValue] = useState(null); // 로그 그룹핑 값
+
+  const [voteTypeValue, setVoteTypeValue] = useState(null); // 투표 유형 값
+
+  const [voteOptionList, setVoteOptionList] = useState([]);
+
+
   const [inputVoteName01, setInputVoteName01] = useState('');
   const [inputVoteName02, setInputVoteName02] = useState('');
   const [inputVoteFileData01, setInputVoteFileData01] = useState('');
@@ -78,8 +93,6 @@ export default function StoryEdit(props: Props) {
 
   // 투표 데이터
   const [voteData, setVoteData] = useState({
-    /* voteImgData01: { vote_seq: '', imgPath: '', delYn: '' },
-    voteImgData02: { vote_seq: '', imgPath: '', delYn: '' }, */
     voteSeq01: null,
     voteSeq02: null,
     voteName01: '',
@@ -97,33 +110,164 @@ export default function StoryEdit(props: Props) {
 
   // 투표 마감기한 유형
   const [voteEndTypeList, setVoteEndTypeList] = useState([
-    {label: '1시간', value: 'HOURS_1'},
     {label: '6시간', value: 'HOURS_6'},
     {label: '12시간', value: 'HOURS_12'},
     {label: '1일', value: 'DAY_1'},
+    {label: '2일', value: 'DAY_2'},
     {label: '3일', value: 'DAY_3'},
   ]);
+
+  // 키워드 목록
+  const [keywordList, setKeywordList] = useState([
+    {label: '나들이 명소', value: 'KW01'},
+    {label: 'OTT 뭐볼까?', value: 'KW02'},
+    {label: '이력서/면접', value: 'KW03'},
+  ]);
+
+  // 타입 목록
+  const [typeList, setTypeList] = useState([
+    {label: '기본', value: 'BASE'},
+    {label: '초이스픽', value: 'CHOICE'},
+    {label: '릴레이', value: 'RELAY'},
+    {label: '투표', value: 'VOTE'},
+  ]);
+
+  // 타입 초이스 목록
+  const [typeChoiceList, setTypeChoiceList] = useState([
+    {label: '12시간 후 닫힘', value: '12_HOUR', price: 'FREE'},
+    {label: '1일 후 닫힘', value: '1_DAY', price: '1'},
+    {label: '2일 후 닫힘', value: '2_DAY', price: '2'},
+    {label: '3일 후 닫힘', value: '3_DAY', price: '3'},
+  ]);
+
+  // 프롬트 목록
+  const [promptList, setPromptList] = useState([
+    {label: '테마', value: 'THEMA', selectedValue: {}},
+    {label: '감정', value: 'EMOTION', selectedValue: {}},
+    {label: '로그 그룹핑', value: 'LOGG', selectedValue: {}},
+  ]);
+
+  // 테마 목록
+  const [themaList, setThemaList] = useState([
+    {label: '테마1', value: 'THEMA1'},
+    {label: '테마2', value: 'THEMA2'},
+    {label: '테마3', value: 'THEMA3'},
+  ]);
+
+  // 감정 목록
+  const [emotionList, setEmotionList] = useState([
+    {label: '감정1', value: 'EMOTION1'},
+    {label: '감정2', value: 'EMOTION2'},
+    {label: '감정3', value: 'EMOTION3'},
+  ]);
+
+  // 로그 그룹핑 목록
+  const [logList, setLogList] = useState([
+    {label: '로그 그룹핑1', value: 'LOGG1'},
+    {label: '로그 그룹핑2', value: 'LOGG2'},
+    {label: '로그 그룹핑3', value: 'LOGG3'},
+  ]);
+
+  // 키워드 선택
+  const fnKeywordSelect = () => {
+    show({
+      type: 'SELECT',
+      title: '키워드 선택',
+      dataList: keywordList,
+      confirmCallback: async function(data:any) {
+        setKeywordValue(data);
+      },
+    });
+  };
+
+  // 타입 선택
+  const fnTypeSelect = (value:any) => {
+    setTypeValue(value);
+  };
+
+  // 프롬트 사용 선택
+  const fnPromptSelect = (item:any) => {
+    let list;
+    if(item.value == 'THEMA') {
+      list = themaList;
+    } else if(item.value == 'EMOTION') {
+      list = emotionList;
+    } else if(item.value == 'LOGG') {
+      list = logList;
+    }
+
+    show({
+      type: 'SELECT',
+      title: item.label + ' 선택',
+      dataList: list,
+      confirmCallback: async function(data:any) {
+        setPromptList((prev) =>
+          prev.map((_item: any) =>
+            _item.value === item.value ? { ..._item, selectedValue: data } : _item
+          )
+        );
+      },
+    });
+  };
+
+  // 초이스 선택
+  const fnTypeChoiceSelect = (item:any) => {
+    setTypeChoiceValue(item);
+  };
+
+  // 투표 유형 선택
+  const fnVoteTypeSelect = () => {
+    show({
+      type: 'SELECT',
+      title: '투표 유형 선택',
+      dataList: voteEndTypeList,
+      confirmCallback: async function(data:any) {
+        setVoteTypeValue(data);
+      },
+    });    
+  };
+
+  // 투표 선택지 추가
+  const fnVoteOptionAdd = () => {
+    const optionData = {
+      idx: voteOptionList.length+1,
+      value: '',
+    };
+
+    setVoteOptionList([...voteOptionList, optionData]);
+  };
+
+  // 투표 선택지 삭제
+  const fnVoteOptionDel = () => {
+    setVoteOptionList(voteOptionList.slice(0, -1));
+  };
+
+  // 투표 선택지 입력 핸들러
+  const voteOptionHandler = (idx: any, text: any) => {
+    setVoteOptionList((prev:any) => prev.map((item: any) => item.idx === idx ? { ...item, value: text } : item));
+  };
+
+  // 타입 값 변경 useEffect
+  React.useEffect(() => {
+    if(typeValue == 'CHOICE') {
+      setTypeChoiceValue(typeChoiceList[0]);
+    }
+  }, [typeValue]);
+
+
+
+
+
+
+
+
+
 
   // 투표 종료 유형 콜백 함수
   const voteEndTypeCallbackFn = (value: string) => {
     setStoryData({...storyData, voteEndType: value});
   };
 
-  // ################################################################ 프로필 이미지 파일 콜백 함수
-  const fileCallBack1 = async (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 1 };
-    imageDataApply(data);
-  };
-
-  const fileCallBack2 = async (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 2 };
-    imageDataApply(data);
-  };
-
-  const fileCallBack3 = async (uri: any, base64: string) => {
-    let data = { file_uri: uri, file_base64: base64, order_seq: 3 };
-    imageDataApply(data);
-  };
 
   const voteFileCallBack01 = async (uri: any, base64: string, i: number) => {
     setInputVoteFileData01(base64);
@@ -133,20 +277,7 @@ export default function StoryEdit(props: Props) {
     setInputVoteFileData02(base64);
   };
 
-  // ################################################################ 이미지 데이터 적용
-  const imageDataApply = async (data:any) => {
-    setImageList((prev) => {
-      const dupChk = prev.some(item => item.order_seq === data.order_seq);
-      if (!dupChk) {
-          return [...prev, data];
-      } else {
-          return prev.map((item) => item.order_seq === data.order_seq 
-              ? { ...item, uri: data.file_uri, file_base64: data.file_base64 }
-              : item
-          );
-      }
-    });
-  };
+
 
   // ############################################################ 프로필 감추기 팝업 활성화
   const hideProfilePopupOpen = async () => {
@@ -183,73 +314,6 @@ export default function StoryEdit(props: Props) {
     }
   };
 
-  // ############################################################################# 사진 변경/삭제 팝업
-  const imgDel_modalizeRef = useRef<Modalize>(null);
-
-  const imgDel_onOpen = (imgSeq: any, orderSeq: any, type: string) => {
-    setIsDelImgData({
-      img_seq: imgSeq,
-      order_seq: orderSeq,
-      type: type,
-    });
-    imgDel_modalizeRef.current?.open();
-  };
-  const imgDel_onClose = () => {
-    imgDel_modalizeRef.current?.close();
-  };
-
-  // ############################################################################# 사진삭제 컨트롤 변수
-  const [isDelImgData, setIsDelImgData] = React.useState<any>({
-    img_seq: '',
-    order_seq: '',
-    type: '',
-  });
-
-  // ############################################################################# 사진 삭제
-  const imgDelProc = () => {
-
-    if(isDelImgData.type == 'STORY') {
-      if(isDelImgData.order_seq == '1') {
-        setImgData({
-          ...imgData,
-          orgImgUrl01: { ...imgData.orgImgUrl01, delYn: 'Y' },
-        });
-      }
-      if(isDelImgData.order_seq == '2') {
-        setImgData({
-          ...imgData,
-          orgImgUrl02: { ...imgData.orgImgUrl02, delYn: 'Y' },
-        });
-      }
-      if(isDelImgData.order_seq == '3') {
-        setImgData({
-          ...imgData,
-          orgImgUrl03: { ...imgData.orgImgUrl03, delYn: 'Y' },
-        });
-      }
-    } else if(isDelImgData.type == 'VOTE') {
-      if(isDelImgData.order_seq == '1') {
-        setVoteData({...voteData, voteImgUrl01: ''});
-      } else if(isDelImgData.order_seq == '2') {
-        setVoteData({...voteData, voteImgUrl02: ''});
-      }
-    }    
-
-    let delArr = imgDelSeqStr;
-    if (!isEmptyData(delArr)) {
-      delArr = isDelImgData.img_seq;
-    } else {
-      delArr = delArr + ',' + isDelImgData.img_seq;
-    }
-
-    setImgDelSeqStr(delArr);
-    imgDel_onClose();
-  };
-
-  // ############################################################################# 사진 수정
-  const imgModProc = () => {
-
-  };
 
   // ############################################################################# 스토리 등록
   const storyRegister = async () => {
@@ -485,20 +549,7 @@ export default function StoryEdit(props: Props) {
     }
   };
 
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-
-  const tab = (type) => {
-    if(type == 'STORY') {
-      setCurrentIndex(0);
-      storyData.storyType = 'STORY';
-    }else if(type == 'VOTE') {
-      setCurrentIndex(1);
-      storyData.storyType = 'VOTE';
-    }else if(type == 'SECRET') {
-      setCurrentIndex(2);
-      storyData.storyType = 'SECRET';
-    }
-  };
+  
 
   /* ##################################################################################################################################
   ################## 초기 실행 함수
@@ -516,19 +567,261 @@ export default function StoryEdit(props: Props) {
   return (
     <>
       {isLoading && <CommonLoading />}
+
+      <SpaceView pt={30} viewStyle={_styles.wrap}>
+        <CommonHeader 
+          type={'STORY_REGI'}
+          title={'새글등록'}
+          callbackFunc={storyRegister} />
+
+        <SpaceView pl={10} pr={10} mt={35}>
+
+          {/* ##############################################################################################################
+          ##### 키워드 선택 영역
+          ############################################################################################################## */}
+          <SpaceView viewStyle={_styles.keywordWrap}>
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', flex: 0.25}}>
+              <Text style={styles.fontStyle('B', 14, '#fff')}>키워드 선택</Text>
+            </SpaceView>
+            <TouchableOpacity 
+              onPress={fnKeywordSelect} 
+              style={_styles.keywordSelectWrap}>
+              <SpaceView><Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>{!isEmptyData(keywordValue?.label) && '게시글을 등록할 채널 키워드를 선택해주세요.'}</Text></SpaceView>
+              <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{keywordValue?.label}</Text></SpaceView>
+                <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
+              </SpaceView>
+            </TouchableOpacity>
+            {/* <KeywordDropDown /> */}
+          </SpaceView>
+
+          {/* ##############################################################################################################
+          ##### 타입 선택 영역
+          ############################################################################################################## */}
+          <SpaceView viewStyle={_styles.typeWrap}>
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image source={ICON.story_calculator} style={styles.iconSquareSize(16)} />
+              <SpaceView ml={8} mr={10}><Text style={styles.fontStyle('B', 14, '#fff')}>타입</Text></SpaceView>
+              <Text style={styles.fontStyle('B', 10, '#CBCBCB')}>함께 참여할 수 있는 다양한 타입의 게시글이 준비되어 있습니다.</Text>
+            </SpaceView>
+            <SpaceView mt={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+              {typeList.map((item, index) => {
+                return (
+                  <>
+                    <TouchableOpacity 
+                      key={item.value}
+                      //disabled={isEmptyData(props.route.params.storyBoardSeq)} 
+                      onPress={() => (fnTypeSelect(item.value))} 
+                      style={_styles.typeItemWrap(typeValue == item.value)}>
+
+                      <Text style={_styles.typeItemText(typeValue == item.value)}>{item.label}</Text>
+                    </TouchableOpacity>
+                  </>
+                )
+              })}
+            </SpaceView>
+
+            {typeValue != 'BASE' && (
+              <>
+                <SpaceView mt={20}>
+                  <SpaceView>
+                    <Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>
+                    {typeValue == 'CHOICE' && (
+                      <>
+                        전문성 있는 답변이 필요하신가요? 리프에도 도움을 줄 수 있는 분이 계실 거예요.{'\n'}
+                        질문 기간 동안 도움이 된 댓글 1개를 채택해 주세요.
+                      </>
+                    )}
+                    {typeValue == 'RELAY' && (
+                      <>
+                        사람들의 생각이 궁금한가요? 팔로워 또는 팔로잉 회원을 지명해 보세요.{'\n'}
+                        참여자가 늘어날수록 모두에게 지급되는 보상도 커집니다.
+                      </>
+                    )}
+                    {typeValue == 'VOTE' && (
+                      <>
+                        최대 5가지 선택지에 대한 투표를 진행할 수 있습니다.
+                      </>
+                    )}
+                      
+                    </Text>
+                  </SpaceView>
+                  <SpaceView mt={20}>
+                    {typeValue == 'CHOICE' && (
+                      <SpaceView>
+                        {typeChoiceList.map((item, index) => {
+                          return (
+                            <>
+                              <TouchableOpacity
+                                onPress={() => (fnTypeChoiceSelect(item))} 
+                                style={_styles.typeBaseItemWrap(item.value == typeChoiceValue?.value)}
+                                activeOpacity={0.8}>
+                                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                  <SpaceView viewStyle={{width:16}}>
+                                    {item.value == typeChoiceValue?.value && <Image source={ICON.story_promptYGreen} style={styles.iconSquareSize(16)} /> }
+                                  </SpaceView>
+                                  <SpaceView ml={5}><Text style={styles.fontStyle('SB', 12, '#fff')}>{item.label}</Text></SpaceView>
+                                </SpaceView>
+                                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                  <Text style={styles.fontStyle('SB', 12, item.value == typeChoiceValue?.value ? '#fff' : '#808080')}>{item.price}</Text>
+                                  <SpaceView ml={5}><Image source={ICON.cube} style={styles.iconSquareSize(19)} /></SpaceView>
+                                </SpaceView>
+                              </TouchableOpacity>
+                            </>
+                          )
+                        })}
+                      </SpaceView>
+                    )}
+
+                    {typeValue == 'RELAY' && (
+                      <SpaceView>
+                        <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center'}}>
+                          <LinearGradient
+                            colors={['#8BAAFF', '#2CDEA1']}
+                            start={{ x: 0, y: 1 }}
+                            end={{ x: 1, y: 0 }}
+                            style={_styles.typeRelayTrgtBtn}
+                          >
+                            <Image source={ICON.story_people} style={styles.iconSquareSize(16)} />
+                            <SpaceView ml={5}><Text style={styles.fontStyle('SB', 12, '#fff')}>대상자 선택</Text></SpaceView>
+                          </LinearGradient>
+                        </TouchableOpacity>
+
+                        <SpaceView mt={20} viewStyle={_styles.typeRelayWrap}>
+                          <SpaceView viewStyle={_styles.typeRelayCube}><Image source={ICON.cube} style={styles.iconSquareSize(20)} /></SpaceView>
+                          <SpaceView mt={10}>
+                            <Text style={[styles.fontStyle('SB', 10, '#CBCBCB'), {textAlign: 'center'}]}>최초 작성자 포함 릴레이 참여자 5명 이상부터 큐브  제공되며,{'\n'}30명 참여 시 인당 30개까지 지급!</Text>
+                          </SpaceView>
+                        </SpaceView>
+                      </SpaceView>
+                    )}
+
+                    {/* 투표 */}
+                    {typeValue == 'VOTE' && (
+                      <SpaceView>
+                        <TouchableOpacity 
+                          onPress={() => (fnVoteTypeSelect())}
+                          style={_styles.selectItemWrap}>
+
+                          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
+                            <Image source={isEmptyData(voteTypeValue?.value) ? ICON.story_promptYGreen : ICON.story_promptNRed} style={styles.iconSquareSize(16)} />
+                            <SpaceView ml={8}><Text style={styles.fontStyle('B', 14, '#fff')}>투표기간</Text></SpaceView>
+                          </SpaceView>
+
+                          <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                            <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{voteTypeValue?.label || '선택'}</Text></SpaceView>
+                            <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
+                          </SpaceView>
+                        </TouchableOpacity>
+
+                        <SpaceView mt={20}>
+                          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                            <TouchableOpacity onPress={() => (fnVoteOptionAdd())}>
+                              <Image source={ICON.story_plusCircle} style={styles.iconSquareSize(28)} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => (fnVoteOptionDel())} style={{marginLeft: 10}}>
+                              <Image source={ICON.story_minusCircle} style={styles.iconSquareSize(28)} />
+                            </TouchableOpacity>
+                          </SpaceView>
+                          <SpaceView mt={10}>
+
+                            {voteOptionList.map((item, index) => {
+                              return (
+                                <>
+                                  <SpaceView mb={10} viewStyle={_styles.voteItemWrap}>
+                                    <SpaceView ml={3} mb={-2}>
+                                      <Text style={styles.fontStyle('SB', 12, '#fff')}>선택지</Text>
+                                    </SpaceView>
+                                    <TextInput
+                                      //value={voteData[`voteName0${i+1}`]}
+                                      //value={item.value}
+                                      defaultValue={item?.value}
+                                      //onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
+                                      onChangeText={(text) => voteOptionHandler(item?.idx, text)}
+                                      multiline={false}
+                                      autoCapitalize="none"
+                                      style={_styles.voteItemInput}
+                                      //editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
+                                      secureTextEntry={false}
+                                      maxLength={100}
+                                      numberOfLines={1}
+                                      placeholder={'내용을 입력해 주세요.'}
+                                      placeholderTextColor={'#606060'}
+                                    />
+                                  </SpaceView>
+                                </>
+                              )
+                            })}
+                          </SpaceView>
+                        </SpaceView>
+                      </SpaceView>
+                    )}
+                  </SpaceView>
+                </SpaceView>
+              </>
+            )}
+          </SpaceView>
+
+          {/* ##############################################################################################################
+          ##### 프롬프트 사용 설정 영역
+          ############################################################################################################## */}
+          <SpaceView viewStyle={_styles.promptWrap}>
+            <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={styles.fontStyle('B', 14, '#fff')}>프롬트 사용</Text>
+                <SpaceView ml={10}><Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>내 이야기의 로그를 남길 수 있습니다.</Text></SpaceView>
+              </SpaceView>
+              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity style={_styles.promptBtn(!isPromptUse)} onPress={() => (setIsPromptUse(false))}>
+                  <Image source={ICON.story_promptN} style={styles.iconSquareSize(20)} />
+                </TouchableOpacity>
+                <TouchableOpacity style={[_styles.promptBtn(isPromptUse), {marginLeft: 10}]} onPress={() => (setIsPromptUse(true))}>
+                  <Image source={ICON.story_promptY} style={styles.iconSquareSize(20)} />
+                </TouchableOpacity>
+              </SpaceView>
+            </SpaceView>
+
+            {isPromptUse && (
+              <SpaceView mt={20}>
+                {promptList.map((item, index) => {
+                  return (
+                    <>
+                      <SpaceView mb={10} viewStyle={_styles.selectItemWrap}>
+                        <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
+                          <Image source={isEmptyData(item?.selectedValue?.value) ? ICON.story_promptYGreen : ICON.story_promptNRed} style={styles.iconSquareSize(16)} />
+                          <SpaceView ml={8}><Text style={styles.fontStyle('B', 14, '#fff')}>{item.label}</Text></SpaceView>
+                        </SpaceView>
+                        <SpaceView>
+                          {/* <KeywordDropDown /> */}
+                          <TouchableOpacity 
+                            onPress={() => (fnPromptSelect(item))}
+                            style={_styles.keywordSelectWrap}>
+                            <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                              <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{item?.selectedValue?.label || '선택'}</Text></SpaceView>
+                              <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
+                            </SpaceView>
+                          </TouchableOpacity>
+                        </SpaceView>
+                      </SpaceView>
+                    </>
+                  )
+                })}
+              </SpaceView>
+            )}
+          </SpaceView>
+
+        </SpaceView>
+      </SpaceView>
+
+      <SpaceView mt={300}></SpaceView>
       
-      <LinearGradient
+      {/* <LinearGradient
           colors={['#333B41', '#545454']}
           start={{ x: 0, y: 1 }}
           end={{ x: 0, y: 0 }}
           style={_styles.tabContainer}
         >
          
-        <CommonHeader 
-          type={'STORY_REGI'}
-          title={title}
-          callbackFunc={storyRegister} />
-
         {!isEmptyData(props.route.params.storyBoardSeq) && (
           <SpaceView mb={10} viewStyle={_styles.tabArea}>
             <TouchableOpacity disabled={isEmptyData(props.route.params.storyBoardSeq)} onPress={() => (tab('STORY'))}>
@@ -542,7 +835,7 @@ export default function StoryEdit(props: Props) {
             </TouchableOpacity>     
           </SpaceView>
         )}
-      </LinearGradient>
+      </LinearGradient> */}
       
 
       <KeyboardAvoidingView
@@ -577,25 +870,6 @@ export default function StoryEdit(props: Props) {
               </SpaceView>
 
               {/* ##############################################################################################################
-              ##### 대표 이미지 설정 영역(스토리, 시크릿)
-              ############################################################################################################## */}
-              {(storyData.storyType == 'STORY' || storyData.storyType == 'SECRET') && (
-                <>
-                  <SpaceView mb={25} viewStyle={_styles.imgArea}>
-                    {[0,1,2].map((i, index) => {
-                      return (
-                        <>
-                          {index == 0 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack1} storyType={storyData.storyType} /> }
-                          {index == 1 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack2} storyType={storyData.storyType} /> }
-                          {index == 2 && <ImageRenderItem index={index} _imgData={imgData.orgImgUrl03} delFn={imgDel_onOpen} fileCallBackFn={fileCallBack3} storyType={storyData.storyType} /> }
-                        </>
-                      )
-                    })}
-                  </SpaceView>
-                </>
-              )}
-
-              {/* ##############################################################################################################
               ##### 투표 설정 영역(투표형)
               ############################################################################################################## */}
               {storyData.storyType == 'VOTE' && (
@@ -619,10 +893,10 @@ export default function StoryEdit(props: Props) {
                                   numberOfLines={1}
                                 />
 
-                                <SpaceView viewStyle={_styles.voteImgArea}>
+                                {/* <SpaceView viewStyle={_styles.voteImgArea}>
                                   {index == 0 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl01} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack01} storyType={storyData.storyType} />}
                                   {index == 1 && <VoteImageRenderItem index={index} _imgData={voteData.voteImgUrl02} delFn={imgDel_onOpen} fileCallBackFn={voteFileCallBack02} storyType={storyData.storyType} />}
-                                </SpaceView>
+                                </SpaceView> */}
                               </SpaceView>
                             </>
                           )
@@ -632,7 +906,7 @@ export default function StoryEdit(props: Props) {
                   </SpaceView>
 
                   {/* ############### 투표 마감기한 입력 영역 */}
-                  <SpaceView mb={25}>
+                  {/* <SpaceView mb={25}>
                     <SpaceView mb={20}>
                       <Text style={_styles.subTitleText}>투표 마감기한을 선택해 주세요.</Text>
                     </SpaceView>
@@ -645,7 +919,7 @@ export default function StoryEdit(props: Props) {
                         isModfy={isEmptyData(storyBoardSeq) ? false : true}
                       />
                     </SpaceView>
-                  </SpaceView>
+                  </SpaceView> */}
                 </>
               )}
 
@@ -717,37 +991,6 @@ export default function StoryEdit(props: Props) {
         </LinearGradient>
       </KeyboardAvoidingView>
 
-      {/* ###############################################
-							사진 변경/삭제 팝업
-			############################################### */}
-      <Modalize
-        ref={imgDel_modalizeRef}
-        adjustToContentHeight={true}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={[modalStyle.modalContainer]} >
-
-        <View style={modalStyle.modalHeaderContainer}>
-          <CommonText fontWeight={'700'} type={'h3'}>
-            사진 삭제
-          </CommonText>
-          <TouchableOpacity onPress={imgDel_onClose} hitSlop={commonStyle.hipSlop20}>
-            <Image source={ICON.xBtn2} style={styles.iconSize20} />
-          </TouchableOpacity>
-        </View>
-
-        <View style={[modalStyle.modalBody, layoutStyle.flex1]}>
-          {/* <SpaceView>
-            <CommonBtn value={'사진 변경'} type={'primary2'} borderRadius={12} onPress={imgModProc} />
-          </SpaceView> */}
-          <SpaceView mt={10}>
-            <CommonBtn value={'사진 삭제'} type={'primary2'} borderRadius={12} onPress={imgDelProc} />
-          </SpaceView>
-        </View>
-
-        <TouchableOpacity style={_styles.modalCloseText} onPress={imgDel_onClose} hitSlop={commonStyle.hipSlop20}>
-          <Text style={{color: '#fff', fontFamily: 'Pretendard-Bold', fontSize: 16}}>확인</Text>
-        </TouchableOpacity>
-      </Modalize>
     </>
   );
 
@@ -835,6 +1078,10 @@ function VoteImageRenderItem ({ index, _imgData, delFn, fileCallBackFn, storyTyp
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
+  wrap: {
+    minHeight: height,
+    backgroundColor: '#000',
+  },
   tabArea: {
     backgroundColor: '#292F33',
     width: '50%',
@@ -854,10 +1101,7 @@ const _styles = StyleSheet.create({
     //height: 100,
   },
   tabText: {
-    fontFamily: 'MinSans-Bold',
-  },
-  wrap: {
-    minHeight: height,
+    fontFamily: 'SUITE-Bold',
   },
   titleText: {
     fontFamily: 'Pretendard-Medium',
@@ -1019,4 +1263,143 @@ const _styles = StyleSheet.create({
       overflow: 'hidden',
     };
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  keywordWrap: {
+    borderTopWidth: 1,
+    borderTopColor: '#BCBCBC',
+    paddingHorizontal: 10,
+    paddingVertical: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  keywordSelectWrap: {
+    flex: 0.85,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  typeWrap: {
+    borderTopWidth: 1,
+    borderTopColor: '#BCBCBC',
+    paddingHorizontal: 10,
+    paddingVertical: 25,
+  },
+  typeItemWrap: (isOn:boolean) => {
+    return {
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      backgroundColor: isOn ? '#fff' : 'transparent',
+      borderRadius: 15,
+    }
+  },
+  typeItemText: (isOn:boolean) => {
+    return {
+      fontFamily: 'SUITE-SemiBold',
+      fontSize: 14,
+      color: isOn ? '#8BAAFF' : '#808080',
+    }
+  },
+  typeBaseItemWrap: (isOn:boolean) => {
+    return {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      borderWidth: 1,
+      borderColor: isOn ? '#fff' : '#606060',
+      borderRadius: 25,
+      overflow: 'hidden',
+      paddingHorizontal: 10,
+      height: 30,
+      marginBottom: 8,
+    }
+  },
+  typeRelayTrgtBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 25,
+    paddingHorizontal: 13,
+    height: 30,
+  },
+  typeRelayWrap: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#808080',
+    borderRadius: 10,
+    paddingVertical: 10,
+  },
+  typeRelayCube: {
+    backgroundColor: '#181A41',
+    borderRadius: 50,
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  promptWrap: {
+    borderTopWidth: 1,
+    borderTopColor: '#BCBCBC',
+    borderBottomWidth: 1,
+    borderBottomColor: '#BCBCBC',
+    paddingHorizontal: 10,
+    paddingVertical: 25,
+  },
+  promptBtn: (isOn:boolean) => {
+    return {
+      backgroundColor: isOn ? '#46F66F' : '#808080',
+      borderRadius: 50,
+      paddingHorizontal: 5,
+      paddingVertical: 5,
+    }
+  },
+  selectItemWrap: {
+    borderWidth: 1,
+    borderColor: '#606060',
+    borderRadius: 10,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 50,
+    paddingHorizontal: 10,
+  },
+  voteSetBtn: {
+    backgroundColor: '#808080',
+    borderRadius: 50,
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+  },
+  voteItemWrap: {
+    borderWidth: 1,
+    borderColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    height: 50,
+  },
+  voteItemInput: {
+    fontFamily: 'SUITE-SemiBold',
+    fontSize: 11,
+    color: '#fff',
+    textAlign: 'left',
+  },
+  
+
+
 });

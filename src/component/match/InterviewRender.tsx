@@ -2,76 +2,61 @@ import { layoutStyle, styles } from 'assets/styles/Styles';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View, Text, Platform, ScrollView } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View, Text, Platform, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color } from 'assets/styles/Color';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmptyData } from 'utils/functions';
 import { ICON } from 'utils/imageUtils';
 import { STACK, ROUTES } from 'constants/routes';
+import LinearGradient from 'react-native-linear-gradient';
 
-export default function InterviewRender({ title, isEdit, dataList }) {
+const { width } = Dimensions.get('window');
+
+export default function InterviewRender({ nickname, isEdit, dataList }) {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   return (
     <>
       {isEmptyData(dataList) && dataList.length > 0 && (
         <SpaceView>
-          <SpaceView mb={15} viewStyle={{alignItems: 'center'}}>
-            <SpaceView viewStyle={{flexDirection: 'row'}}>
-              <View style={{zIndex:1}}>
-                <Text style={_styles.titText}>{title}</Text>
-              </View>
-              <View style={_styles.titUnderline} />
-            </SpaceView>
+          <SpaceView mb={15}>
+            <Text style={styles.fontStyle('EB', 20, '#fff')}>인터뷰</Text>
+            <SpaceView mt={15}><Text style={styles.fontStyle('B', 12, '#CBCBCB')}>{nickname}님의 생각이 궁금하시다면 필독해주세요.</Text></SpaceView>
           </SpaceView>
 
-          {(isEmptyData(isEdit) && isEdit) && (
-            <SpaceView viewStyle={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-              <TouchableOpacity
-                onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
-                style={_styles.modBtn} 
-              >
-                <Image source={ICON.squarePen} style={styles.iconSize16} />
-                <Text style={_styles.modBtnText}>수정</Text>
-              </TouchableOpacity>
-            </SpaceView>
-          )}
+          <SpaceView>
+            <ScrollView 
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={_styles.listArea}>
 
-          <SpaceView mt={10} viewStyle={{alignItems:'flex-start', justifyContent: 'flex-start'}}>
-            {dataList.map((e, index) => {
+              {dataList?.map((item, index) => {
+                let isExp = true;
 
-              let isExp = true;
+                if(!isEdit && !isEmptyData(item.answer)) {
+                  isExp = false;
+                }
 
-              if(!isEdit && !isEmptyData(e.answer)) {
-                isExp = false;
-              }
+                return isEmptyData(item.answer) && (
+                  <LinearGradient
+                    colors={['rgba(203,239,255,0.3)', 'rgba(113,143,156,0.3)', 'rgba(122,154,183,0.3)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0.3, y: 0.2 }}
+                    style={_styles.listItem}>
 
-              return isExp && (e.common_code == 'INTER_00' || e.common_code == 'INTER_02' || e.common_code == 'INTER_04' || e.common_code == 'INTER_12' || e.common_code == 'INTER_17') && (
-                <SpaceView key={'interview_' + index} mb={40} viewStyle={_styles.contentItemContainer}>
-                  <SpaceView>
-                    <SpaceView mb={10} viewStyle={_styles.questionRow}>
-                      <Text style={_styles.questionText}>Q. {e?.code_name}</Text>
+                    <SpaceView>
+                      <Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
                     </SpaceView>
 
-                    <SpaceView viewStyle={_styles.answerRow}>
-                      <Text style={_styles.answerText(isEmptyData(e?.answer) ? '#F3E270' : '#ABA99A')}>"{isEmptyData(e?.answer) ? e?.answer : '답변을 등록해 주세요.'}"</Text>
+                    <SpaceView mt={30} viewStyle={_styles.answerWrap}>
+                      <Text style={styles.fontStyle('B', 14, '#C4B6AA')}>{item.answer}</Text>
                     </SpaceView>
-                  </SpaceView>
 
-                  {/* {(isEmptyData(isEditBtn) && isEditBtn) && (
-                    <TouchableOpacity
-                      onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTRODUCE }); }}
-                      style={_styles.modBtn} 
-                      key={index}
-                    >
-                      <Image source={ICON.squarePen} style={styles.iconSize16} />
-                      <Text style={_styles.modBtnText}>수정</Text>
-                    </TouchableOpacity>
-                  )} */}
-                </SpaceView>
-              )
-            })}
+                  </LinearGradient>
+                )
+              })}
+            </ScrollView>
           </SpaceView>
         </SpaceView>
       )}
@@ -165,4 +150,29 @@ const _styles = StyleSheet.create({
     color: '#D5CD9E',
     marginLeft: 3,
   },
+
+
+
+
+
+
+  listArea: {
+
+  },
+  listItem: {
+    width: width - 150,
+    height: 300,
+    borderRadius: 10,
+    marginRight: 20,
+    paddingHorizontal: 13,
+    paddingVertical: 27,
+  },
+  answerWrap: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    height: 150,
+    paddingHorizontal: 11,
+    paddingVertical: 13,
+  },
+
 });

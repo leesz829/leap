@@ -94,7 +94,6 @@ const styles = (props: Props) => {
     labelStyle: {
       fontSize: 17,
       lineHeight: 23,
-      //fontFamily: 'AppleSDGothicNeoB00',
       //color: Color.balck333333,
       fontFamily: 'Pretendard-SemiBold',
       color: '#D5CD9E',
@@ -112,7 +111,6 @@ const styles = (props: Props) => {
       padding: 0,
       paddingVertical: 5,
       margin: 0,
-      //fontFamily: 'AppleSDGothicNeoB00',
       fontFamily: 'Pretendard-Light',
       color: '#E1DFD1',
     },

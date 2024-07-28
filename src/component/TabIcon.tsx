@@ -6,6 +6,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import { CommaFormat, isEmptyData } from 'utils/functions';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withDelay, Easing, withRepeat, withSequence } from 'react-native-reanimated';
 import SpaceView from './SpaceView';
+import { styles } from 'assets/styles/Styles';
 
 
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
@@ -55,6 +56,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
   };
 
   switch (name) {
+
     case 'Roby': {
       const mbrProfileImgList = useProfileImg();
       const masterProfileImg = mbrProfileImgList.filter((e, i) => i == 0);
@@ -62,13 +64,16 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       if(masterProfileImg.length > 0) {
         return (
           <>
-            <View>
+            <SpaceView viewStyle={_style.navItemWrap}>
               <Image style={_style.imgSize(isFocused)} source={findSourcePath(masterProfileImg[0].img_file_path)} />
+              <SpaceView mt={5}>
+                <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>마이홈</Text>
+              </SpaceView>
 
               {isEmptyData(memberBase?.new_board_cnt) && memberBase?.new_board_cnt > 0 && (
                 <View style={_style.newIcon} />
               )}
-            </View>
+            </SpaceView>
           </>
         )
       } else {
@@ -79,21 +84,48 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
         }
       };
     }
+    case 'Contents': {
+      return (
+        <>
+          <SpaceView viewStyle={_style.navItemWrap}>
+            <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navContentsOn : ICON.navContents} />
+            <SpaceView mt={5}>
+              <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>친구찾기</Text>
+            </SpaceView>
+          </SpaceView>
+        </>
+      )
+    }
+    case 'Story': {
+      return (
+        <>
+          <SpaceView viewStyle={_style.navItemWrap}>
+            <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navStoryOn : ICON.navStory} />
+            <SpaceView mt={5}>
+              <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>스토리</Text>
+            </SpaceView>
+          </SpaceView>
+        </>
+      )
+    }
     case 'Storage': {
       return (
         <>
-          <View>
-            <Image style={_style.iconSize} source={isFocused ? ICON.profileYellow : ICON.profileGray} />
+          <SpaceView viewStyle={_style.navItemWrap}>
+            <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navStorageOn : ICON.navStorage} />
+            <SpaceView mt={5}>
+              <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>보관함</Text>
+            </SpaceView>
 
             {/* {isEmptyData(memberBase?.new_match_cnt) && memberBase?.new_match_cnt > 0 && (
               <View style={_style.newIcon} />
             )} */}
 
-            {isEmptyData(memberBase?.new_match_cnt) && memberBase?.msg_cnt > 0 &&
+            {/* {isEmptyData(memberBase?.new_match_cnt) && memberBase?.msg_cnt > 0 &&
               <View style={_style.iconArea}><Text style={_style.countText}>{memberBase?.new_match_cnt}</Text></View>
-            }
+            } */}
 
-            {isEmptyData(memberBase?.storageRecMsgCd) && (
+            {/* {isEmptyData(memberBase?.storageRecMsgCd) && (
               <Animated.View style={[_style.storageLimitArea, storageDescStyle]}>
 
                 {memberBase?.storageRecMsgCd == 'STR_REC_01' && (  
@@ -136,16 +168,14 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
                   <View style={_style.storageLimitTextArea(140)}><Text style={_style.storageText}>누군가 내 프로필을 보고 있어요.</Text></View>
                 )}
 
-                {/* <View style={_style.storageLimitTextArea(205)}><Text style={_style.storageText}>아직 열어보지 못 한 관심 5 / 10 / 15 / 30개가 있어요.</Text></View> */}
-
                 <View style={_style.storageTriangle}></View>
               </Animated.View>
-            )}
-          </View>
+            )} */}
+          </SpaceView>
         </>
       );
     }
-    case 'Message': {
+    /* case 'Message': {
       return (
         <>
           <SpaceView>
@@ -159,18 +189,20 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           </SpaceView>
         </>
       );
-    }
+    } */
     case 'Cashshop': {
       return (
         <>
-          <View style={{width:28}}>
-            {isFocused ? <Image style={_style.iconSize} source={ICON.cartYellow} /> :
-              <Image style={_style.iconSize} source={ICON.cartGray} />
-            }
+          <SpaceView viewStyle={_style.navItemWrap}>
+            <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navShopOn : ICON.navShop} />
+            <SpaceView mt={5}>
+              <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>상점</Text>
+            </SpaceView>
 
-            {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
+            {/* {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&
               <View style={_style.shopIconArea}><Text style={_style.newText}>NEW</Text></View>
-            }
+            } */}
+
             {/* {memberBase?.gender == 'W' && (
               <>
                 <Animated.View style={[_style.shopLimitArea, shopDescStyle]}>
@@ -182,7 +214,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
                 </Animated.View>
               </>
             )} */}
-          </View>
+          </SpaceView>
         </>
       )
     }
@@ -201,11 +233,11 @@ const _style = StyleSheet.create({
   },
   imgSize: (isOn: boolean) => {
     return {
-      width: 28,
-      height: 28,
+      width: 26,
+      height: 26,
       borderRadius: 20,
-      //borderWidth: 2,
-      //borderColor: isOn ? '#7C79E7' : '#707070',
+      borderWidth: 1,
+      borderColor: isOn ? '#46F66F' : '#707070',
       overflow: 'hidden',
     };
   },
@@ -213,17 +245,6 @@ const _style = StyleSheet.create({
     position: 'absolute',
     top: 12,
     right: -13,
-  },
-  countText: {
-    backgroundColor: '#FFF',
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 10,
-    color: '#FFDD00',
-    borderRadius: 8,
-    width: 25,
-    textAlign: 'center',
-    paddingVertical: 1,
-    overflow: 'hidden',
   },
   shopIconArea: {
     position: 'absolute',
@@ -247,25 +268,7 @@ const _style = StyleSheet.create({
     paddingLeft: Platform.OS == 'android' ?  0 : 5,
     
   },
-  newText: {
-    backgroundColor: '#FF7E8C',
-    fontFamily: 'AppleSDGothicNeoEB00',
-    fontSize: 10,
-    color: '#fff',
-    borderRadius: 9,
-    //paddingHorizontal: 6,
-    paddingVertical: 1,
-    overflow: 'hidden',
-    width: 34,
-    textAlign: 'center',
-  },
-  limitText: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 9,
-    color: '#FFF',
-    textAlign: 'center',
-    paddingHorizontal: 2,
-  },
+  
   triangle: {
     marginTop: -1,
     marginRight: 40,
@@ -319,12 +322,52 @@ const _style = StyleSheet.create({
     borderBottomColor: '#7F67FF',
     transform: [{ rotate: '180deg' }],
   },
-  storageText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+  navItemWrap: {
+    alignItems: 'center',
+  },
+
+
+
+
+
+
+
+  /* countText: {
+    backgroundColor: '#FFF',
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 10,
+    color: '#FFDD00',
+    borderRadius: 8,
+    width: 25,
+    textAlign: 'center',
+    paddingVertical: 1,
+    overflow: 'hidden',
+  },
+  newText: {
+    backgroundColor: '#FF7E8C',
+    fontFamily: 'Pretendard-ExtraBold',
+    fontSize: 10,
+    color: '#fff',
+    borderRadius: 9,
+    //paddingHorizontal: 6,
+    paddingVertical: 1,
+    overflow: 'hidden',
+    width: 34,
+    textAlign: 'center',
+  },
+  limitText: {
+    fontFamily: 'Pretendard-Medium',
     fontSize: 9,
     color: '#FFF',
     textAlign: 'center',
+    paddingHorizontal: 2,
   },
+  storageText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 9,
+    color: '#FFF',
+    textAlign: 'center',
+  }, */
 
 
 });

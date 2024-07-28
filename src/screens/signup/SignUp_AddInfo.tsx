@@ -4,12 +4,12 @@ import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions } from 'react-native';
+import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions, Modal } from 'react-native';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { usePopup } from 'Context';
 import { regist_introduce, get_member_introduce_guide, get_common_code_list, join_save_profile_add } from 'api/models';
-import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
+import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 import { isEmptyData } from 'utils/functions';
@@ -59,6 +59,22 @@ export const SignUp_AddInfo = (props : Props) => {
 		prefer_local1: '', // 선호 활동 지역1
 		prefer_local2: '', // 선호 활동 지역2
 	});
+
+	const [isModalVisible, setIsModalVIsible] = React.useState(false); // 모달 visible 여부
+
+	/* ############################################################################# 선택 팝업 함수 관련 */
+	const openSelectPopup = () => {
+    setIsModalVIsible(true);
+  };
+
+  const closeSelectPopup = () => {
+    setIsModalVIsible(false);
+  };
+
+	const heightList = [];
+  for (let i = 150; i <= 200; i++) {
+    heightList.push({ name: i.toString() + 'cm', value: i });
+  }
 
 	// 공통 코드 목록 데이터
 	const [codeData, setCodeData] = React.useState({
@@ -272,26 +288,72 @@ export const SignUp_AddInfo = (props : Props) => {
 
 	// 첫 렌더링 때 실행
 	React.useEffect(() => {
-		getMemberIntro();
+		if(isFocus) {
+			getMemberIntro();
+		}
 	}, [isFocus]);
 
 	return (
 		<>
-			<LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 0, y: 1 }}
-				style={_styles.wrap}
-			>
-				<ScrollView showsVerticalScrollIndicator={false} style={{height: height-200}}>
+			<SpaceView viewStyle={_styles.wrap}>
+				<SpaceView>
+          <CommonHeader title="" />
+        </SpaceView>
+
+				<SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          <SpaceView>
+            <SpaceView mt={50} mb={50}>
+              <Text style={styles.fontStyle('H', 28, '#fff')}>내 소개 정보</Text>
+            </SpaceView>
+
+						<ScrollView showsVerticalScrollIndicator={false} style={{height: height-330}}>
+							<SpaceView>
+								<Text style={styles.fontStyle('EB', 16, '#fff')}>필수 소개</Text>
+								<SpaceView>
+									<SpaceView mt={15}>
+										<TouchableOpacity 
+											style={_styles.itemWrap}
+											onPress={() => { openSelectPopup(); }}>
+											<Text style={styles.fontStyle('EB', 16, '#fff')}>키(cm)</Text>
+											<SpaceView viewStyle={layoutStyle.rowCenter}>
+												<Text style={styles.fontStyle('EB', 16, '#fff')}>172</Text>
+												<SpaceView ml={10}><Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(11, 18)} /></SpaceView>
+											</SpaceView>
+										</TouchableOpacity>
+									</SpaceView>
+								</SpaceView>
+							</SpaceView>
+
+						</ScrollView>
+
+						<SpaceView viewStyle={_styles.bottomWrap}>
+							<TouchableOpacity 
+								//disabled={!comment}
+								onPress={() => { 
+									//saveFn();
+
+									navigation.navigate(ROUTES.SIGNUP_INTEREST, {
+										memberSeq: memberSeq,
+										gender: gender,
+										nickname: nickname,
+									});
+								}}
+								style={_styles.nextBtnWrap(true)}>
+								<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+								<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+							</TouchableOpacity>
+						</SpaceView>
+					</SpaceView>
+				</SpaceView>
+
+
+
+				{/* <ScrollView showsVerticalScrollIndicator={false} style={{height: height-200}}>
 					<SpaceView viewStyle={_styles.titleContainer}>
 						<Image source={findSourcePath(mstImgPath)} style={_styles.addInfoImg} />
 						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
 					</SpaceView>
 
-					{/* ##################################################################################################################
-					###### 필수 정보
-					################################################################################################################## */}
 					<SpaceView mt={30}>
 						<View>
 							<Text style={_styles.essentialTitle}>필수 정보</Text>
@@ -299,10 +361,8 @@ export const SignUp_AddInfo = (props : Props) => {
 						<View style={_styles.underline}></View>
 						<View style={_styles.essentialOption}>
 
-							{/* ############################################################################# 키 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>키(cm)</Text>
-								{/* <TextInput maxLength={3} style={_styles.optionSelect}/> */}
 
 								<TextInput
 									value={addData.height}
@@ -314,7 +374,6 @@ export const SignUp_AddInfo = (props : Props) => {
 								/>
 							</View>
 
-							{/* ############################################################################# 직업 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>직업</Text>
 								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
@@ -355,7 +414,6 @@ export const SignUp_AddInfo = (props : Props) => {
 								</View>
 							</View>
 
-							{/* ############################################################################# 체형 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>체형</Text>
 								<RNPickerSelect
@@ -370,9 +428,6 @@ export const SignUp_AddInfo = (props : Props) => {
 						</View>
 					</SpaceView>
 
-					{/* ##################################################################################################################
-					###### 선택 정보
-					################################################################################################################## */}
 					<SpaceView mt={20}>
 						<View>
 							<Text style={_styles.choiceTitle}>선택 정보</Text>
@@ -380,7 +435,6 @@ export const SignUp_AddInfo = (props : Props) => {
 						<View style={_styles.underline}></View>
 						<View>
 
-							{/* ############################################################################# MBTI */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>MBTI</Text>
 								<RNPickerSelect
@@ -393,7 +447,6 @@ export const SignUp_AddInfo = (props : Props) => {
 								/>
 							</View>
 
-							{/* ############################################################################# 선호지역 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>선호지역</Text>
 								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
@@ -434,7 +487,6 @@ export const SignUp_AddInfo = (props : Props) => {
 								</View>
 							</View>
 
-							{/* ############################################################################# 종교 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>종교</Text>
 								<RNPickerSelect
@@ -447,7 +499,6 @@ export const SignUp_AddInfo = (props : Props) => {
 								/>
 							</View>
 
-							{/* ############################################################################# 음주 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>음주</Text>
 								<RNPickerSelect
@@ -460,7 +511,6 @@ export const SignUp_AddInfo = (props : Props) => {
 								/>
 							</View>
 
-							{/* ############################################################################# 흡연 */}
 							<View style={_styles.option}>
 								<Text style={_styles.optionTitle}>흡연</Text>
 								<RNPickerSelect
@@ -503,9 +553,57 @@ export const SignUp_AddInfo = (props : Props) => {
 							}}
 						/>
 					</SpaceView>
-				</SpaceView>
+				</SpaceView> */}
 
-			</LinearGradient>
+			</SpaceView>
+
+			<Modal visible={isModalVisible} transparent={true}>
+        <View style={modalStyle.modalBackground}>
+          <View style={[modalStyle.modalStyle1]}>
+            <SpaceView viewStyle={_styles.modalWrap}>
+              <SpaceView mb={20}>
+                <Text style={styles.fontStyle('H', 26, '#000000')}>키(cm)</Text>
+              </SpaceView>
+
+              <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+                <SpaceView mt={20} pl={15} pr={15} viewStyle={{height: 250, paddingVertical: 15}}>
+                  <LinearGradient
+                    colors={['rgba(255, 255, 255, 0.8)', 'transparent']}
+                    style={_styles.topGradient}
+                  />
+                  <FlatList
+                    data={heightList}
+                    keyExtractor={item => item?.value}
+                    numColumns={2}
+                    columnWrapperStyle={{flex: 1, justifyContent: 'space-between'}}
+                    renderItem={({ item, index }) => (
+                      <TouchableOpacity style={_styles.heightItemWrap} activeOpacity={0.5}>
+                        <Text style={[styles.fontStyle('B', 12, '#44B6E5'), {textAlign: 'center'}]}>{item?.name}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                  <LinearGradient
+                    colors={['transparent', 'rgba(255, 255, 255, 0.8)']}
+                    style={_styles.bottomGradient}
+                  />
+                </SpaceView>
+
+                <SpaceView mt={10} mb={15} viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                  <TouchableOpacity style={_styles.confirmBtn}>
+                    <Text style={styles.fontStyle('B', 16, '#fff')}>확인</Text>
+                  </TouchableOpacity>
+                </SpaceView>
+              </ScrollView>
+            </SpaceView>
+
+            <SpaceView viewStyle={_styles.cancelWrap}>
+              <TouchableOpacity onPress={() => closeSelectPopup()}>
+                <Text style={styles.fontStyle('EB', 16, '#ffffff')}>여기 터치하고 닫기</Text>
+              </TouchableOpacity>
+            </SpaceView>
+          </View>
+        </View>
+      </Modal>
 		</>
 	);
 };
@@ -519,107 +617,91 @@ export const SignUp_AddInfo = (props : Props) => {
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
-		minHeight: height,
-		padding: 30,
+		flex: 1,
+    minHeight: height,
+    backgroundColor: '#000000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
 	},
-	titleContainer: {
-		flexDirection: 'row',
-		alignItems: 'flex-end',
+	bottomWrap: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  nextBtnWrap: (isOn:boolean) => {
+		return {
+			backgroundColor: isOn ? '#1F5AFB' : '#808080',
+      borderRadius: 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+    };
 	},
-	title: {
-		fontSize: 30,
-		fontFamily: 'Pretendard-Bold',
-		color: '#D5CD9E',
-	},
-	addInfoImg: {
-		width: 110,
-		height: 160,
-		borderWidth: 2,
-		borderColor: '#D5CD9E',
-		borderRadius: 5,
-		backgroundColor: '#FFF',
-		marginRight: 10,
-	},
-	essentialCont : {
+  textInputStyle: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
+    padding: 0,
+    paddingBottom: 5,
+    paddingTop: 5,
+  },
+	itemWrap: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 45,
+    paddingHorizontal: 15,
+  },
+	modalWrap: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+    paddingTop: 35,
+    paddingBottom: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  confirmBtn: {
+    backgroundColor: '#46F66F',
+    borderRadius: 25,
+    width: 100,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelWrap: {
+    position: 'absolute',
+    bottom: -40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+	heightItemWrap: {
+    borderWidth: 1,
+    borderColor: '#44B6E5',
+    borderRadius: 15,
+    width: '48.8%',
+    paddingVertical: 5,
+    marginBottom: 5,
+  },
+  topGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 10, // 그라데이션 높이를 조정하세요
+    zIndex: 1,
+  },
+  bottomGradient: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 10, // 그라데이션 높이를 조정하세요
+    zIndex: 1,
+  },
 
-	},
-	essentialTitle: {
-		fontFamily: 'Pretendard-SemiBold',
-		color: '#D5CD9E',
-		fontSize: 20,
-	},
-	essentialOption: {
 
-	},
-	choiceCont: {
-
-	},
-	choiceTitle: {
-		fontFamily: 'Pretendard-SemiBold',
-		color: '#D5CD9E',
-		fontSize: 20,
-	},
-	choiceOption: {
-
-	},
-	underline: {
-		width: '100%',
-		height: 1,
-		backgroundColor: '#D5CD9E',
-		marginTop: 10,
-	},
-	option: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		marginTop: 10,
-	},
-	optionTitle: {
-		fontFamily: 'Pretendard-Regular',
-		color: '#F3E270',
-	},
-	optionText: {
-		fontFamily: 'Pretendard-Light',
-		fontSize: 14,
-		color: '#F3E270',
-		textAlign: 'center',
-		width: 120,
-		height: 30,
-		backgroundColor:'#445561',
-		borderRadius: 50,
-		justifyContent: 'center',
-		padding: 0,
-	},
-	optionSelect: {
-		width: 100,
-		height: 40,
-		backgroundColor:'#445561',
-		borderRadius: 50,
-		textAlign: 'center',
-		color: '#F3E270',
-		justifyContent: 'center',
-	},
 });
-
-const pickerSelectStyles = StyleSheet.create({
-	inputIOS: {
-		width: 120,
-		height: 30,
-		backgroundColor:'#445561',
-		borderRadius: 50,
-		textAlign: 'center',
-		color: '#F3E270',
-		justifyContent: 'center',
-	},
-	inputAndroid: {
-		width: 120,
-		backgroundColor:'#445561',
-		borderRadius: 50,
-		textAlign: 'center',
-		justifyContent: 'center',
-		padding: 0,
-		fontFamily: 'Pretendard-Light',
-		fontSize: 12,
-		color: '#F3E270',
-	},
-  });

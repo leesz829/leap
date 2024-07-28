@@ -399,7 +399,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   topTitleText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 14,
     color: '#7B7B7B',
     marginLeft: 5,
@@ -438,7 +438,7 @@ const _styles = StyleSheet.create({
   },
   bottomAuthText: (isOn: boolean) => {
     return {
-      fontFamily: 'AppleSDGothicNeoB00',
+      fontFamily: 'Pretendard-Bold',
       fontSize: 10,
       color: '#fff',
       backgroundColor: isOn ? '#7986EE' : '#B1B3C7',

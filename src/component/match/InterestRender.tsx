@@ -23,50 +23,38 @@ export default function InterestRender({ memberData, isEditBtn, interestList }) 
       {(interestList.length > 0) ? (
 
         <SpaceView>
-          <LinearGradient
-            colors={['#F1B10E', '#EEC80C']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={_styles.introWrap}
-          >
-            <SpaceView mb={20}>
-              <SpaceView mb={5}>
-                <SpaceView mb={8} viewStyle={_styles.titArea}>
-                  <Text style={_styles.titText}>{memberData?.nickname}님의 관심사</Text>
-                </SpaceView>
-                <SpaceView>
-                  <Text style={_styles.titDescText}>공통 관심사가 있다면 관심을 보내보면 어때요?</Text>
+          <SpaceView mb={10}>
+            <SpaceView mb={5}>
+              <SpaceView mb={8}><Text style={styles.fontStyle('EB', 20, '#fff')}>{memberData?.nickname}님의 관심사</Text></SpaceView>
+              <SpaceView><Text style={styles.fontStyle('B', 14, '#fff')}>함께 공유할 수 있는 관심사가 있으신가요?</Text></SpaceView>
+            </SpaceView>
+          </SpaceView>
+
+          {/* {(isEmptyData(isEditBtn) && isEditBtn) && (
+            <TouchableOpacity 
+              onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTEREST }); }} 
+              style={_styles.modBtn}>
+              <Image source={ICON.squarePen} style={styles.iconSize16} />
+              <Text style={_styles.modBtnText}>수정</Text>
+            </TouchableOpacity>
+          )} */}
+
+          <SpaceView>
+            {interestList.length > 0 &&
+              <SpaceView viewStyle={_styles.interestWrap}>
+                <SpaceView mt={8} viewStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                  {interestList.map((item, index) => {
+                    const isOn = item.dup_chk == 0 ? false : true;
+                    return (
+                      <View key={index} style={_styles.interestItem(isOn)}>
+                        <Text style={styles.fontStyle('B', 14, '#fff')}>{item.code_name}</Text>
+                      </View>
+                    );
+                  })}
                 </SpaceView>
               </SpaceView>
-            </SpaceView>
-
-            {(isEmptyData(isEditBtn) && isEditBtn) && (
-              <TouchableOpacity 
-                onPress={() => { navigation.navigate(STACK.COMMON, { screen: ROUTES.PROFILE_INTEREST }); }} 
-                style={_styles.modBtn}>
-                <Image source={ICON.squarePen} style={styles.iconSize16} />
-                <Text style={_styles.modBtnText}>수정</Text>
-              </TouchableOpacity>
-            )}
-
-            <SpaceView>
-              {interestList.length > 0 &&
-                <SpaceView viewStyle={_styles.interestWrap}>
-                  <SpaceView mt={8} viewStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                    {interestList.map((item, index) => {
-                      const isOn = item.dup_chk == 0 ? false : true;
-                      return (
-                        <View key={index} style={_styles.interestItem(isOn)}>
-                          <Text style={_styles.interestText(isOn)}>{item.code_name}</Text>
-                        </View>
-                      );
-                    })}
-                  </SpaceView>
-                </SpaceView>
-              }
-            </SpaceView>
-            
-          </LinearGradient>          
+            }
+          </SpaceView>
         </SpaceView>
       ) : (
         <>
@@ -93,43 +81,20 @@ const _styles = StyleSheet.create({
     paddingVertical: 15,
     justifyContent: 'space-between',
   },
-  titArea: {
-    flexDirection: 'row',
-  },
-  titText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: '#4A4846',
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    backgroundColor: '#FFF8CC',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  titDescText : {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 12,
-    color: '#FFF8CC',
-  },
   interestWrap: {
     
   },
   interestItem: (isOn) => {
     return {
       borderRadius: 20,
-      backgroundColor: '#FFFFFF',
+      borderWidth: 1,
+      borderColor: isOn ? '#FF3838' : '#434635',
+      backgroundColor: '#434635',
       paddingHorizontal: 10,
       paddingVertical: 5,
       marginRight: 5,
-      marginBottom: 3,
+      marginBottom: 8,
       overflow: 'hidden',
-    };
-  },
-  interestText: (isOn) => {
-    return {
-      fontFamily: 'Pretendard-Regular',
-      fontSize: 14,
-      color: isOn ? '#08D2F2' : '#D5CD9E',
     };
   },
   modBtn: {
@@ -142,11 +107,5 @@ const _styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 3,
     paddingHorizontal: 10,
-  },
-  modBtnText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#D5CD9E',
-    marginLeft: 3,
   },
 });

@@ -15,6 +15,7 @@ export const ROUTES = {
   SIGNUP_PASSWORD: 'SignUp_Password',
   SIGNUP_IMAGE: 'SignUp_Image',
   SIGNUP_NICKNAME: 'SignUp_Nickname',
+  SIGNUP_COMMENT: 'SignUp_Comment',
   SIGNUP_ADDINFO: 'SignUp_AddInfo',
   SIGNUP_INTEREST: 'SignUp_Interest',
   SIGNUP_INTRODUCE: 'SignUp_Introduce',

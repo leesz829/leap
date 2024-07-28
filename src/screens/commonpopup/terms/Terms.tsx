@@ -32,31 +32,31 @@ export default function Terms({ modalRef, callBackFunc }: Props) {
 			<Modalize
 				ref={modalRef}
 				handleStyle={modalStyle.modalHandleStyle}
-				modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}
+				modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, backgroundColor: '#1B1633'}}
 				adjustToContentHeight={false}
 				modalHeight={height - 150}
 				FooterComponent={
-					<SpaceView viewStyle={[styles.rowStyle]}>
-						<TouchableOpacity onPress={() => { modalClose(false); }} style={_styles.btnArea('#333B41')}>
-							<Text style={_styles.btnText('#D5CD9E')}>취소</Text>
+					<SpaceView pl={20} pr={20}>
+						<TouchableOpacity onPress={() => { modalClose(true); }} style={_styles.btnArea('#44B6E5')}>
+							<Text style={styles.fontStyle('B', 18, '#fff')}>동의하기</Text>
 						</TouchableOpacity>
-						<TouchableOpacity onPress={() => { modalClose(true); }} style={_styles.btnArea('#FFDD00')}>
-							<Text style={_styles.btnText('#3D4348')}>동의 후 닫기</Text>
+						<TouchableOpacity onPress={() => { modalClose(false); }} style={_styles.btnArea('#333B41')}>
+							<Text style={styles.fontStyle('B', 18, '#fff')}>닫기</Text>
 						</TouchableOpacity>
 					</SpaceView>
 				}
 				HeaderComponent={
 					<SpaceView viewStyle={_styles.titleArea}>
-						<Text style={_styles.titleText}>(필수)이용약관</Text>
-						{/* <TouchableOpacity onPress={() => { modalClose(false); }} hitSlop={commonStyle.hipSlop15}>
-							<Image source={ICON.xBtn2} style={styles.iconSize24} />
-						</TouchableOpacity> */}
+						<SpaceView mb={50} viewStyle={layoutStyle.alignCenter}>
+							<Image source={ICON.popupDown} style={styles.iconNoSquareSize(37, 7)} />
+						</SpaceView>
+						<Text style={styles.fontStyle('EB', 22, '#fff')}>서비스 이용약관(필수)</Text>
 					</SpaceView>
 				}
 			>
-				<View style={[modalStyle.modalBody, layoutStyle.flex1, {backgroundColor: '#1A1E1C'}]}>
+				<View style={[modalStyle.modalBody, layoutStyle.flex1, {backgroundColor: '#1B1633'}]}>
 					<SpaceView mb={24} viewStyle={{ width: width - 32 }}>
-						<CommonText type={'h5'} textStyle={_styles.contentText}>
+						<Text style={styles.fontStyle('B', 11, '#fff')}>
 							1. 목적{'\n'}
 							{'\n'}이 약관은 검증형 프리미엄 데이팅 앱 리프 (이하 ”서비스“)
 							이용과 관련하여 회사와 이용자의 사용 시 권리와 의무, 책임 사항 등 기타 필요한 제반 사항을
@@ -640,7 +640,7 @@ export default function Terms({ modalRef, callBackFunc }: Props) {
 							정한 절차에 따른 법원을 관할법원으로 합니다.{'\n'}
 							{'\n'}
 							회사와 이용자간에 제기된 소송에는 대한민국 법을 적용합니다.
-						</CommonText>
+						</Text>
 					</SpaceView>
 				</View>
 			</Modalize>		
@@ -654,36 +654,20 @@ const _styles = StyleSheet.create({
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
 		overflow: 'hidden',
-		backgroundColor:'#1A1E1C',
-		//flexDirection: 'row',
-		//justifyContent: 'space-between',
-		paddingVertical: 15,
+		backgroundColor:'#1B1633',
+		paddingVertical: 20,
 		paddingHorizontal: 10,
-	},
-	titleText: {
-		fontFamily: 'Pretendard-Regular',
-		fontSize: 18,
-		color: '#D5CD9E',
-		textAlign: 'center',
-	},
-	contentText: {
-		color: '#D5CD9E',
 	},
 	btnArea: (bg:number) => {
 		return {
-			width: '50%',
-			height: 48,
+			width: '100%',
+			height: 45,
 			backgroundColor: bg,
 			alignItems: 'center',
 			justifyContent: 'center',
+			borderRadius: 25,
+			marginBottom: 10,
 		}
 	},
-	btnText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-		  fontSize: 16,
-		  color: isEmptyData(cr) ? cr : '#fff',
-		};
-	  },
 
 });

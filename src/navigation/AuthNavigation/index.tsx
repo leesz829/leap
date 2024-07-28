@@ -10,13 +10,13 @@ import { SignUp_ID } from 'screens/signup/SignUp_ID';
 import { SignUp_Password } from 'screens/signup/SignUp_Password';
 import { SignUp_Image } from 'screens/signup/SignUp_Image';
 import { SignUp_Nickname } from 'screens/signup/SignUp_Nickname';
+import { SignUp_Comment } from 'screens/signup/SignUp_Comment';
 import { SignUp_AddInfo } from 'screens/signup/SignUp_AddInfo';
 import { SignUp_Interest } from 'screens/signup/SignUp_Interest';
 import { SignUp_Introduce } from 'screens/signup/SignUp_Introduce';
 import { SignUp_Auth } from 'screens/signup/SignUp_Auth';
 import { Approval } from 'screens/signup/Approval';
 
-import { Title00 } from 'screens/title';
 import { ROUTES } from 'constants/routes';
 
 const AuthStack = createStackNavigator();
@@ -28,12 +28,12 @@ export default function AuthNavigation() {
       screenOptions={{ headerShown: false }}
     >
       <AuthStack.Screen name={ROUTES.LOGIN} component={Login} />
-      <AuthStack.Screen name={ROUTES.TITLE00} component={Title00} />
       <AuthStack.Screen name={ROUTES.SIGNUP_CHECK} component={SignUp_Check} />
       <AuthStack.Screen name={ROUTES.SIGNUP_ID} component={SignUp_ID} />
       <AuthStack.Screen name={ROUTES.SIGNUP_PASSWORD} component={SignUp_Password} />
       <AuthStack.Screen name={ROUTES.SIGNUP_IMAGE} component={SignUp_Image} />
       <AuthStack.Screen name={ROUTES.SIGNUP_NICKNAME} component={SignUp_Nickname} />
+      <AuthStack.Screen name={ROUTES.SIGNUP_COMMENT} component={SignUp_Comment} />
       <AuthStack.Screen name={ROUTES.SIGNUP_ADDINFO} component={SignUp_AddInfo} />
       <AuthStack.Screen name={ROUTES.SIGNUP_INTEREST} component={SignUp_Interest} />
       <AuthStack.Screen name={ROUTES.SIGNUP_INTRODUCE} component={SignUp_Introduce} />

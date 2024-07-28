@@ -179,7 +179,7 @@ const _styles = StyleSheet.create({
 	},
 	authBadgeText: (status: string) => {
 		return {
-			fontFamily: 'AppleSDGothicNeoEB00',
+			fontFamily: 'Pretendard-ExtraBold',
 			fontSize: 10,
 			fontWeight: 'normal',
 			fontStyle: 'normal',

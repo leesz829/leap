@@ -5,7 +5,6 @@ import SpaceView from 'component/SpaceView';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect, useRef } from 'react';
-import { CommonSelect } from 'component/CommonSelect';
 import { CommonBtn } from 'component/CommonBtn';
 import { CommonText } from 'component/CommonText';
 import { CommonTextarea } from 'component/CommonTextarea';

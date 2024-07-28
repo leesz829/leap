@@ -1,7 +1,7 @@
 import { Color } from 'assets/styles/Color';
 import CommonHeader from 'component/CommonHeader';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform, FlatList } from 'react-native';
 import { findSourcePath, ICON, IMAGE } from 'utils/imageUtils';
 import { SectionGrid } from 'react-native-super-grid';
 import RespectCard from '../Component/BannerPannel';
@@ -44,11 +44,15 @@ const DATA = [
 ];
 
 
+const { width, height } = Dimensions.get('window');
+
 export default function MileageShop() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
   const me = useUserInfo();
+
+  const [prodList, setProdList] = useState([]);
 
   const [brandList, setBrandList] = useState([
     /* {brand_seq: 0, brand_name: 'ALL', img_file_path: null}, */
@@ -57,6 +61,8 @@ export default function MileageShop() {
   ]);
 
   const [currentBrandSeq, setCurrentBrandSeq] = useState(0);
+
+  const [currentBrandIndex, setCurrentBrandIndex] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -142,10 +148,11 @@ export default function MileageShop() {
         // 재고 상품 목록 조회
         const { success: sp, data: pd } = await get_product_list();
         if (sp) {
-          console.log('pd?.prod_list :::::: ' , pd?.prod_list.length);
+          //console.log('pd?.prod_list :::::: ' , pd?.real_prod_list.length);
           setData(pd?.prod_list);
 
-          let _brandList = [{brand_seq: 0, brand_name: 'ALL', img_file_path: null}];
+          let _prodList = [];
+          let _brandList = [{brand_seq: 0, brand_name: '전체보기', img_file_path: null, prod_list: pd?.real_prod_list}];
           pd?.brand_list.forEach(e => {
             _brandList.push(e);
           });
@@ -173,10 +180,14 @@ export default function MileageShop() {
     // return () => clearInterval(timer);
   }, [tab]);
 
-  const onPressTab = (brandSeq:any) => {
+  const onPressTab = (idx:any) => {
     //setIsLoading(true);
     //setTab(value);
-    setCurrentBrandSeq(brandSeq);
+    //setCurrentBrandSeq(brandSeq);
+    console.log('idx ::::::  ' ,idx);
+    setCurrentBrandIndex(idx);
+
+    //console.log('brand ::::: ', brandList[currentBrandIndex].prod_list.length);
   };
 
   // ######################################################### 주문내역 이동
@@ -188,10 +199,93 @@ export default function MileageShop() {
     <>
       {isLoading && <CommonLoading />}
 
-      {(me?.respect_grade !== 'DIAMOND' && me?.respect_grade !== 'PLATINUM') ? 
+      <LinearGradient
+        colors={['#390D1D', '#390D1D']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.wrap}>
+
+        {/* ################################################################################################# 상단 버튼 영역 */}
+        <SpaceView mt={40} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <TouchableOpacity onPress={() => (navigation.goBack())}>
+            <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} />
+          </TouchableOpacity>
+
+          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+            <Image source={ICON.shop_rpCard} style={styles.iconNoSquareSize(25, 17)} />
+            <SpaceView ml={5} mb={4}><Text style={styles.fontStyle('EB', 16, '#FFFF5D')}>{CommaFormat(me?.mileage_point)}</Text></SpaceView>
+          </SpaceView>
+          
+          <TouchableOpacity onPress={onPressLimitShop}>
+            <Image source={ICON.shop_order} style={styles.iconSquareSize(35)} />
+          </TouchableOpacity>
+        </SpaceView>
+
+        <SpaceView>
+          {/* ################################################################################################# RP Store 정보 */}
+          <SpaceView>
+            <MileageInfo data={me} />
+          </SpaceView>
+
+          {/* ################################################################################################# 브랜드 영역 */}
+          <SpaceView mt={30}>
+            <SpaceView mb={10}>
+              <Text style={styles.fontStyle('EB', 20, '#fff')}>브랜드</Text>
+            </SpaceView>
+            <SpaceView>
+              <RenderCategory onPressTab={onPressTab} tabList={brandList} />
+            </SpaceView>
+          </SpaceView>
+        </SpaceView>
+
+        {/* <ListHeaderComponent onPressTab={onPressTab} tabList={brandList} /> */}
+
+        {/* ################################################################################################# 기프티콘 영역 */}
+        <SpaceView mt={20}>
+          <SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+            <Text style={styles.fontStyle('EB', 20, '#fff')}>기프티콘</Text>
+            <SpaceView viewStyle={{flexDirection: 'row'}}>
+              <TouchableOpacity>
+                <Image source={ICON.orderIcon} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity>
+              <TouchableOpacity style={{marginLeft: 10}}>
+                <Image source={ICON.settingIcon} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity>
+            </SpaceView>
+          </SpaceView>
+
+          <SpaceView /* mb={height-20} */ viewStyle={{height: height-500}}>
+            {brandList[currentBrandIndex]?.prod_list?.length > 0 && (
+              <>
+                <FlatList
+                  //ref={dataRef}
+                  data={brandList[currentBrandIndex]?.prod_list}
+                  keyExtractor={(item, index) => index.toString()}
+                  //numColumns={1} // 2열로 설정
+                  //contentContainerStyle={{justifyContent: 'space-between'}}
+                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={false}
+                  renderItem={({ item, index }) => {
+
+                    return (
+                      <RenderItem type={tab.value} item={item} index={index} callFn={purchaseCallFn} memberData={me} />
+                    )
+                  }}
+                />
+              </>
+            )}
+          </SpaceView>
+        </SpaceView>
+
+      </LinearGradient>
+
+
+
+
+      {/* {(me?.respect_grade !== 'DIAMOND' && me?.respect_grade !== 'PLATINUM') ? 
         <SpaceView viewStyle={_styles.floatWrapper}>
           <LinearGradient
-            colors={['#A2A2A2', '#606060']}
+            colors={['#390D1D', '#390D1D']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{borderRadius: 10,  paddingVertical: 10}}>
@@ -237,51 +331,8 @@ export default function MileageShop() {
           </LinearGradient>
         </SpaceView>
       :
-        <SpaceView viewStyle={ _styles.header}>
-          <SpaceView viewStyle={_styles.headerTitleArea}>
-            <Text style={_styles.headerTitle}>RP Store</Text>
-          </SpaceView>
-          <SpaceView viewStyle={[layoutStyle.row]}>
-            <TouchableOpacity style={_styles.orderHistBtn} onPress={onPressLimitShop}>
-              <Text style={_styles.orderHistText}>주문내역</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={_styles.exitBtn} onPress={() => (navigation.goBack())}>
-              <Text style={_styles.exitText}>나가기</Text>
-            </TouchableOpacity>
-          </SpaceView>
-        </SpaceView>
-      }
       
-
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={_styles.root}>
-
-        <ListHeaderComponent onPressTab={onPressTab} tabList={brandList} />
-
-        <SectionGrid
-          itemDimension={tab.value == 'gifticon' ? (Dimensions.get('window').width -75) / 2 : Dimensions.get('window').width - 37}
-          sections={data}
-          fixed={true}
-          stickySectionHeadersEnabled={false}
-          // 상시판매 프로세스 적용으로 인해 삭제
-          // renderSectionHeader={renderSectionHeader}
-          renderItem={(props) => {
-            //console.log('props : ', JSON.stringify(props));
-            const { item, index, rowIndex } = props;
-            //console.log('item ::::: ' , item);
-            return (
-              <>
-                {(!isLoading && (currentBrandSeq == 0 || currentBrandSeq == item?.brand_seq)) && (
-                  <RenderItem type={tab.value} item={item} callFn={purchaseCallFn} memberData={me} />
-                )}
-              </>
-            )
-          }}
-        />
-      </LinearGradient>
+      } */}
     </>
   );
 }
@@ -332,33 +383,29 @@ const RenderCategory = ({ onPressTab, tabList }) => {
       horizontal={true}
       showsVerticalScrollIndicator={false}
     >
-      {/* {prodData?.map((item, index) => (
-        console.log('itemL:::::::', item.data)
-      ))} */}
-
       {tabList?.map((item, index) => {
 
+        let bgColor = '#000';
+        let imgPath = ICON.shop_brandAll;
+
+        if(item?.brand_name == '네이버') {
+          bgColor = '#00C73C';
+        } else if(item?.brand_name == '스타벅스') {
+          bgColor = '#006F3F';
+        }
+
+        if(isEmptyData(item?.img_file_path)) {
+          imgPath = findSourcePath(item?.img_file_path);
+        }
+
         return (
-          <SpaceView key={'brand_'+index} mr={10}>
-            <TouchableOpacity onPress={() => onPressTab(item?.brand_seq)}>
-              {/* <Text>{item?.brand_name}</Text> */}
+          <SpaceView key={'brand_'+index} mr={5} viewStyle={[_styles.brandItemWrap, {backgroundColor: bgColor}]}>
+            <TouchableOpacity 
+              onPress={() => onPressTab(index)}
+              style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
 
-              {item?.brand_seq == 0 ? (
-                <SpaceView viewStyle={_styles.brandAllLogo}>
-                  <Text style={_styles.brandAllLogoText}>ALL</Text>
-                </SpaceView>
-
-              ) : (
-                <>
-                  {isEmptyData(item?.img_file_path) ? (
-                    <Image source={findSourcePath(item?.img_file_path)} style={styles.iconSquareSize(75)} />
-                  ) : (
-                    <View style={{width: 75, height: 75, borderRadius: 50, backgroundColor: '#D5CD9E', alignItems: 'center', justifyContent: 'center'}}>
-                      <Text style={_styles.brandAllLogoText}>{item?.brand_name}</Text>
-                    </View>
-                  )}
-                </>
-              )}
+              <Image source={imgPath} style={styles.iconSquareSize(30)} />
+              <Text style={styles.fontStyle('SB', 10, '#fff')}>{item?.brand_name}</Text>
             </TouchableOpacity>
           </SpaceView>
         );
@@ -399,18 +446,20 @@ function ListHeaderComponent({ onPressTab, tabList }) {
   return (
     <SpaceView>
       <SpaceView>
-        <SpaceView mt={5} viewStyle={{ paddingHorizontal: 20}}>
+        <SpaceView mt={5}>
           {/* <RespectCard /> */}
           <MileageInfo data={me} />
         </SpaceView>
       </SpaceView>
       <SpaceView viewStyle={_styles.categoriesContainer}>
-        <SpaceView mb={10}>
+        <SpaceView mb={10} pr={15} pl={15}>
           <Text style={_styles.allBrandText}>ALL BRAND</Text>
         </SpaceView>
-        <RenderCategory onPressTab={onPressTab} tabList={tabList} />
-        <SpaceView mt={20} viewStyle={{borderBottomColor: '#D5CD9E', borderBottomWidth: 1}}>
-          <Text style={[_styles.allBrandText, {marginBottom: 5}]}>GIFTICON</Text>
+        <SpaceView pr={15} pl={15}>
+          <RenderCategory onPressTab={onPressTab} tabList={tabList} />
+        </SpaceView>
+        <SpaceView mt={20} pb={5} viewStyle={{borderBottomColor: '#D5CD9E', borderBottomWidth: 1, paddingHorizontal: 15}}>
+          <Text style={[_styles.allBrandText]}>GIFTICON</Text>
         </SpaceView>
       </SpaceView>
     </SpaceView>
@@ -418,7 +467,7 @@ function ListHeaderComponent({ onPressTab, tabList }) {
 }
 
 // ######################################################################### 상품 아이템 렌더링
-const RenderItem = ({ item, type, callFn, memberData }) => {  
+const RenderItem = ({ type, item, index, callFn, memberData }) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [targetItem, setTargetItem] = useState(null);
@@ -513,7 +562,7 @@ const RenderItem = ({ item, type, callFn, memberData }) => {
     <>
       {/* boutique : 경매 상품 목록,  gifticon : 기프티콘 재고 상품 목록 */}
       {type == 'boutique' ? (
-        <View style={_styles.renderItem02}>
+        <SpaceView viewStyle={_styles.renderItem02}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => 
             console.log('item ::: ' , item)
             // onPressItem(item)
@@ -556,50 +605,69 @@ const RenderItem = ({ item, type, callFn, memberData }) => {
               </SpaceView>
 
               <Text style={_styles.remainText}>{remainTime}</Text>
-            </View>        
+            </View>
           </TouchableOpacity>
-        </View>
+        </SpaceView>
 
       ) : (
-
-        <TouchableOpacity 
-          activeOpacity={0.8} 
-          style={_styles.renderItem} 
-          onPress={() => onPressItem(item)}
-          disabled={memberData?.respect_grade != 'PLATINUM' && memberData?.respect_grade != 'DIAMOND'}
-        >
-          <View style={{ flexDirection: 'column' }}>
-
-            <SpaceView viewStyle={_styles.thumbArea}>
-              <View style={_styles.rpArea}>
-                <Text style={_styles.priceText(11)}>{type === 'gifticon' ? CommaFormat(item?.buy_price) : CommaFormat(item?.now_buy_price)} RP</Text>
-              </View>
-              <Image style={_styles.logoArea} source={ICON.naverLogo} />
-              <Image style={_styles.thumb} source={imagePath} resizeMode={'cover'} />
+        <>
+          <TouchableOpacity 
+            activeOpacity={0.8} 
+            style={[_styles.renderItemStyle]} 
+            onPress={() => onPressItem(item)}
+            disabled={memberData?.respect_grade != 'PLATINUM' && memberData?.respect_grade != 'DIAMOND'}
+          >
+            <SpaceView viewStyle={_styles.prodImgWrap}>
+              <Image source={imagePath} style={styles.iconSquareSize(84)} resizeMode={'cover'} />
             </SpaceView>
 
-            <View style={{ paddingHorizontal: 3 }}>
-              {/* <Text style={_styles.brandName}>{item?.brand_name}</Text> */}
-              <Text style={_styles.productName(type)}>{item?.prod_name}</Text>
-
+            <SpaceView viewStyle={_styles.prodContentWrap}>
               <SpaceView>
-
-                <View style={_styles.textContainer}>
-                    {
-                      item.prod_cnt > 0 ?
-                        <Text style={_styles.hintText}>{item.prod_cnt}개 남음 ({item.buy_cnt}/{item.base_buy_sanction_cnt}구매가능)</Text> :
-                        <Text style={_styles.soldOutText}>품절</Text>
-                    }
-                    
-                    {/* <Text style={styles.hintText}>6/2 열림</Text> */}
-                    <Text style={_styles.priceText(12)}></Text>
-                  </View>
+                <Text style={styles.fontStyle('EB', 14, '#fff')}>{item?.prod_name}</Text>
               </SpaceView>
-            </View>
+              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between'}}>
+                <SpaceView>
+                  {item.prod_cnt > 0 ? (
+                    <Text style={styles.fontStyle('SB', 10, '#fff')}>{item.prod_cnt}개 남음 ({item.buy_cnt}/{item.base_buy_sanction_cnt}구매가능)</Text>
+                  ) : (
+                    <Text style={styles.fontStyle('SB', 10, '#FF2476')}>품절</Text>
+                  )}
+                </SpaceView>
+                <SpaceView viewStyle={_styles.rpPriceWrap}>
+                  <Text style={styles.fontStyle('EB', 12, '#FFFF5D')}>{type === 'gifticon' ? CommaFormat(item?.buy_price) : CommaFormat(item?.now_buy_price)} RP</Text>
+                </SpaceView>
+              </SpaceView>
+            </SpaceView>
 
-            <Text style={_styles.remainText}>{remainTime}</Text>
-          </View>
-        </TouchableOpacity>
+            {/* <View style={{ flexDirection: 'column' }}>
+
+              <SpaceView viewStyle={_styles.thumbArea}>
+                <View style={_styles.rpArea}>
+                  <Text style={_styles.priceText(11)}>{type === 'gifticon' ? CommaFormat(item?.buy_price) : CommaFormat(item?.now_buy_price)} RP</Text>
+                </View>
+                <Image style={_styles.thumb} source={imagePath} resizeMode={'cover'} />
+              </SpaceView>
+
+              <SpaceView mt={3} viewStyle={{ paddingHorizontal: 3 }}>
+                <Text style={_styles.productName(type)}>{item?.prod_name}</Text>
+
+                <SpaceView>
+                  <View style={_styles.textContainer}>
+                      {item.prod_cnt > 0 ? (
+                        <Text style={_styles.hintText}>{item.prod_cnt}개 남음 ({item.buy_cnt}/{item.base_buy_sanction_cnt}구매가능)</Text>
+                      ) : (
+                        <Text style={_styles.soldOutText}>품절</Text>
+                      )}
+                      
+                      <Text style={_styles.priceText(12)}></Text>
+                    </View>
+                </SpaceView>
+              </SpaceView>
+
+              <Text style={_styles.remainText}>{remainTime}</Text>
+            </View> */}
+          </TouchableOpacity>
+        </>
       )}
 
       {/* ####################### 상품 팝업 */}
@@ -639,6 +707,15 @@ const renderSectionHeader = (props) => {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
+  wrap: {
+    minHeight: height,
+    paddingHorizontal: 10,
+  },
+
+
+
+
+
   header: {
     height: 56,
     paddingHorizontal: 20,
@@ -654,7 +731,7 @@ const _styles = StyleSheet.create({
     borderRadius: 30,
   },
   headerTitle: {
-    fontFamily: 'MinSans-Bold',
+    fontFamily: 'SUITE-Bold',
     fontSize: 20,
     color: '#F1D30E',
   },
@@ -690,7 +767,7 @@ const _styles = StyleSheet.create({
     //flexDirection: `row`,
     //alignItems: `center`,
     //justifyContent: 'flex-start',
-    paddingHorizontal: 20,
+    //paddingHorizontal: 15,
   },
   allBrandText: {
     fontFamily: 'Pretendard-SemiBold',
@@ -715,17 +792,26 @@ const _styles = StyleSheet.create({
       textAlign: 'center',
     };
   },
-  renderItem: {
-    width: (Dimensions.get('window').width - 75) / 2,
-    flex: 1,
-    flexWrap: 'wrap',
+  renderItemStyle: {
+    //width: (Dimensions.get('window').width - 54),
+    width: '100%',
+    height: 95,
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 10,
+    flexDirection: 'row',
   },
   renderItem02: {
-    position: 'relative',
+    /* flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5, */
+
+    //position: 'relative',
     //flexWrap: 'wrap',
     //padding: 25,
     backgroundColor: 'white',
-    width: Dimensions.get('window').width - 37,
+    width: Dimensions.get('window').width,
     height: (Dimensions.get('window').width) / 2.6,
     borderRadius: 5,
     shadowColor: '#000',
@@ -776,8 +862,8 @@ const _styles = StyleSheet.create({
     zIndex: 10,
   },
   thumb: {
-    width: (Dimensions.get('window').width - 75) / 2,
-    height: (Dimensions.get('window').width - 75) / 2,
+    width: (Dimensions.get('window').width - 45) / 2,
+    height: (Dimensions.get('window').width - 45) / 2,
     borderRadius: 5,
     backgroundColor: '#445561',
     borderWidth: 1,
@@ -910,8 +996,8 @@ const _styles = StyleSheet.create({
 
 floatWrapper: {
   width: '100%',
-  backgroundColor: '#3D4348',
-  paddingHorizontal: 20,
+  backgroundColor: '#390D1D',
+  paddingHorizontal: 15,
   paddingTop: 20,
 },
 rpStoreBtn: {
@@ -928,7 +1014,7 @@ respectLine: {
   marginTop: 10,
 },
 repectGrade: {
-  fontFamily: 'MinSans-Bold',
+  fontFamily: 'SUITE-Bold',
   color: '#000000',
   marginRight: 10,
   marginLeft: 2,
@@ -995,6 +1081,35 @@ rpDescText: {
   fontSize: 10,
   color: '#D5CD9E',
 },
+
+
+  brandItemWrap: {
+    width: 100,
+    height: 55,
+    borderRadius: 10,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  prodImgWrap: {
+    backgroundColor: '#CDE8E3',
+    flex: 0.3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  prodContentWrap: {
+    backgroundColor: '#383838',
+    flex: 0.7,
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  rpPriceWrap: {
+    backgroundColor: '#44B6E5',
+    borderRadius: 17,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+  },
+
 });
 
 const categories = [

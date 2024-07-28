@@ -264,7 +264,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   noticeText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 11,
     color: '#FFFFFF',
     marginLeft: 2,
@@ -280,7 +280,7 @@ const _styles = StyleSheet.create({
     width: width - 180,
   },
   noticeTit: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 13,
     color: '#FFFFFF',
     marginBottom: 3,
@@ -288,7 +288,7 @@ const _styles = StyleSheet.create({
     marginRight: 40,
   },
   noticeDesc: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
     color: '#FFFFFF',
     minHeight: 30,
@@ -306,7 +306,7 @@ const _styles = StyleSheet.create({
     zIndex: 1,
   },
   indecatorText: {
-    fontFamily: 'AppleSDGothicNeoM00',
+    fontFamily: 'Pretendard-Medium',
     fontSize: 10,
     color: '#FFFFFF',
     textAlign: 'center',
@@ -327,7 +327,7 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   closeBtnText: {
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 12,
     color: '#707070',
   },

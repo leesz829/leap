@@ -10,7 +10,7 @@ import { Modalize } from 'react-native-modalize';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { usePopup } from 'Context';
-import { join_save_profile_auth, get_member_auth_list } from 'api/models';
+import { join_save_profile_auth, get_member_auth_list, regist_second_auth } from 'api/models';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
@@ -18,6 +18,7 @@ import { isEmptyData, imagePickerOpen } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
 import { CommonText } from 'component/CommonText';
+import { SecondAuthPopup } from 'screens/commonpopup/SecondAuthPopup';
 
 
 
@@ -47,7 +48,6 @@ export const SignUp_Auth = (props : Props) => {
 
 	const [selectedAuthCode, setSelectedAuthCode] = React.useState('JOB'); // 선택한 인증 코드
 	const [currentAuthCode, setCurrentAuthCode] = React.useState('JOB'); // 현재 인증 코드
-	//const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
 	const [authList, setAuthList] = React.useState([]); // 인증 목록
 
 	const [isMod, setIsMod] = React.useState({status: false}); // 수정 여부
@@ -60,6 +60,27 @@ export const SignUp_Auth = (props : Props) => {
 		{ name: 'SNS', code: 'SNS' },
 		{ name: '차량', code: 'VEHICLE' },
 	];
+
+	const detail_modalizeRef = useRef<Modalize>(null);
+  const detail_onOpen = () => {
+		detail_modalizeRef.current?.open();
+    //getMemberSecondDetail('JOB');
+  };
+  const detail_onClose = () => { 
+    detail_modalizeRef.current?.close();
+  };
+
+	const [detailAuthData, setDetailAuthData] = React.useState({
+		auth_code: '',
+		auth_name: '',
+		list: [],
+	});
+
+	// ############################################################################# 인증 탭 클릭 함수
+	const openDetail = async (data:any) => {
+		setDetailAuthData(data);
+		detail_onOpen();
+	};
 
 	// ############################################################################# 인증 탭 클릭 함수
 	const selectedAuthTab = async (_authCode:string) => {
@@ -129,38 +150,88 @@ export const SignUp_Auth = (props : Props) => {
 	  }
 	};
 
+	// ############################################################################# 2차인증 저장 함수
+  const saveSecondAuth = async(type: string, file_list: any, auth_code: string, auth_comment: string) => {
+    setIsLoading(true);
+
+    /* if(file_list.length == 0 && filePathData.filePath01 == '' && filePathData.filePath02 == '' && filePathData.filePath03 == ''){
+      show({ content: '인증 심사를 위한 증빙 자료 이미지를 올려주세요.' });
+      setIsLoading(false);
+       return false;
+    } */
+
+    const body = {
+      member_seq: props.route.params.memberSeq,
+      file_list: file_list,
+      auth_code: auth_code,
+      auth_comment: auth_comment,
+    };
+    try {
+      //const { success, data } = await regist_second_auth(body);
+			const { success, data } = await join_save_profile_auth(body);
+
+      if (success) {
+        if (data.result_code == '0000') {
+          show({
+            content: '심사 요청 되었습니다.' ,
+            confirmCallback: function() {
+              //getMemberProfileSecondAuth();
+							getAuth();
+              /* if(type == 'JOB') { job_onClose(); }
+              else if(type == 'EDU') { edu_onClose(); }
+              else if(type == 'INCOME') { income_onClose(); }
+              else if(type == 'ASSET') { asset_onClose(); }
+              else if(type == 'SNS') { sns_onClose(); }
+              else if(type == 'VEHICLE') { vehicle_onClose(); } */
+							detail_onClose();
+            }
+          });
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
 	// ############################################################################# 인증 저장
 	const saveAuth = async (isTab:boolean, _authCode:any, _authDetailList:any, _authComment:any, _imgDelSeqStr:any) => {
 
 		let isSave = false; // 저장 여부
 
 		// 저장 여부 체크
-		_authDetailList.map((item, index) => {
+		/* _authDetailList.map((item, index) => {
 			const memberAuthDetailSeq = item?.member_auth_detail_seq;
 			if(memberAuthDetailSeq == 0) { isSave = true; }
 		});
 
 		if(isEmptyData(_imgDelSeqStr) || isEmptyData(_authComment)) {
 			isSave = true;
-	  	};
+	  }; */
 
-    	// 중복 클릭 방지 설정
-	  	if(isClickable) {
-      		setIsClickable(false);
-      		setIsLoading(true);
+    // 중복 클릭 방지 설정
+	  if(isClickable) {
+    	setIsClickable(false);
+      setIsLoading(true);
     
-      		const body = {
-        		member_seq: memberSeq,
-        		file_list: _authDetailList,
-        		auth_code:   _authCode,
-        		auth_comment: _authComment,
-        		img_del_seq_str: _imgDelSeqStr,
-      		};
-      		try {
+      const body = {
+      	member_seq: memberSeq,
+				//file_list: _authDetailList,
+				file_list: null,
+				auth_code:   _authCode,
+				//auth_comment: _authComment,
+				auth_comment: null,
+				img_del_seq_str: _imgDelSeqStr,
+      };
+      try {
 
 				if(isSave) {
 					const { success, data } = await join_save_profile_auth(body);
-					if (success) {
+					if(success) {
 						switch (data.result_code) {
 							case SUCCESS:
 								if(isTab == false) {
@@ -186,13 +257,13 @@ export const SignUp_Auth = (props : Props) => {
 					}
 				}
 
-      		} catch (error) {
-        		console.log(error);
-      		} finally {
-        		setIsClickable(true);
-        		setIsLoading(false);
-      		};
-	  	}
+      } catch (error) {
+      	console.log(error);
+      } finally {
+      	setIsClickable(true);
+      	setIsLoading(false);
+      };
+	  }
 	};
 
 	// ############################################################ 최초 실행
@@ -202,10 +273,111 @@ export const SignUp_Auth = (props : Props) => {
 
 	return (
 		<>
+			<SpaceView viewStyle={_styles.wrap}>
+        <SpaceView>
+          <CommonHeader title="" />
+        </SpaceView>
+
+        <SpaceView viewStyle={{justifyContent: 'space-between'}}>
+          <SpaceView>
+            <SpaceView mt={50} mb={50}>
+              <Text style={styles.fontStyle('H', 28, '#fff')}>멤버십 인증 관리</Text>
+              <SpaceView mt={10}>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>회원 간 안전한 커뮤니티 환경을 위해{'\n'}최소 1개의 직업/학력 인증은 필수입니다. </Text>
+              </SpaceView>
+            </SpaceView>
+
+						<ScrollView showsVerticalScrollIndicator={false} style={{height: height-360}}>
+							<SpaceView mb={30}>
+								<SpaceView mb={10}>
+									<Text style={styles.fontStyle('B', 20, '#fff')}>필수 인증</Text>
+								</SpaceView>
+								<SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+									{authList.map((item, index) => {
+										return (item?.common_code == 'JOB' || item?.common_code == 'EDU') && (
+											<>
+												<AuthItemRender key={item?.common_code} data={item} detailOpenFn={openDetail}  />
+											</>
+										);
+									})}
+								</SpaceView>
+							</SpaceView>
+							<SpaceView>
+								<SpaceView mb={10}>
+									<Text style={styles.fontStyle('B', 20, '#fff')}>선택 인증</Text>
+								</SpaceView>
+								<SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+									{authList.map((item, index) => {
+										return (item?.common_code == 'ASSET' || item?.common_code == 'SNS' || item?.common_code == 'INCOME') && (
+											<>
+												<AuthItemRender key={item?.common_code} data={item} detailOpenFn={openDetail}  />
+											</>
+										);
+									})}
+								</SpaceView>
+							</SpaceView>
+						</ScrollView>
+
+						{/* <SpaceView mt={20}>
+							<FlatList
+								data={authList}
+								keyExtractor={item => item?.common_code}
+								numColumns={2}
+								columnWrapperStyle={{flex: 1, justifyContent: 'space-between'}}
+								style={{height: height-330}}
+								renderItem={({ item, index }) => (
+									<AuthItemRender key={item?.common_code} data={item} detailOpenFn={null}  />
+								)}
+							/>
+						</SpaceView> */}
+
+						<SpaceView mt={15} viewStyle={_styles.bottomWrap}>
+							<TouchableOpacity 
+								//disabled={!comment}
+								onPress={() => { 
+									saveFn();
+								}}
+								style={_styles.nextBtnWrap(true)}>
+								<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+								<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+							</TouchableOpacity>
+						</SpaceView>
+					</SpaceView>
+				</SpaceView>
+			</SpaceView>
+
+
+			{/* #############################################################################################################
+			######### 상세 팝업 영역
+			############################################################################################################# */}
+			<Modalize
+				ref={detail_modalizeRef}
+				adjustToContentHeight = {false}
+				handleStyle={modalStyle.modalHandleStyle}
+				modalStyle={{borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden', backgroundColor: '#1B1633'}} 
+				modalHeight={height - 130}>
+				<SecondAuthPopup
+					modalHeight={height - 130}
+					type={'JOB'}
+					onCloseFn={detail_onClose}
+					saveFn={saveSecondAuth}
+					/* saveFn={saveSecondAuth}
+					filePath01={filePathData.filePath01}
+					filePath02={filePathData.filePath02}
+					filePath03={filePathData.filePath03}
+					auth_status={filePathData.auth_status}
+					auth_comment={filePathData.auth_comment}
+					return_reason={filePathData.return_reason} */
+					isShopComment={true}
+					data={detailAuthData}
+				/>
+			</Modalize>
+
+
 			{/* #############################################################################################################
 			######### 상단 영역
 			############################################################################################################# */}
-			<SpaceView viewStyle={{backgroundColor: '#445561', padding: 30}}>
+			{/* <SpaceView viewStyle={{backgroundColor: '#445561', padding: 30}}>
 				<Text style={_styles.title}>멤버쉽 인증하고{'\n'}내 강점을 드러내기(선택)</Text>
 				<Text style={_styles.subTitle}>
 					아래 가이드를 참고하시고 멤버쉽 인증 자료를 올려 주세요.{'\n'}
@@ -223,12 +395,12 @@ export const SignUp_Auth = (props : Props) => {
 						</TouchableOpacity>
 					))}
 				</ScrollView>
-			</SpaceView>
+			</SpaceView> */}
 
 			{/* #############################################################################################################
 			######### 컨텐츠 영역
 			############################################################################################################# */}
-			{authList.map((item, index) => {
+			{/* {authList.map((item, index) => {
 				return currentAuthCode == item?.common_code && (
 					<AuthRender 
 						key={'auth_item'+index}
@@ -240,10 +412,76 @@ export const SignUp_Auth = (props : Props) => {
 						_saveFn={saveFn}
 					/>
 				)
-			})}
+			})} */}
 		</>
 	);
 };
+
+
+
+{/* #######################################################################################################
+								인증 아이템 렌더링
+####################################################################################################### */}
+const AuthItemRender = React.memo(({ data, detailOpenFn }) => {
+  //const data = dataObj.data;
+
+	let isSmall = true;
+
+  let imgSrc:any = '';
+  let authDesc = '';
+
+  if(data.common_code == 'JOB') {
+    imgSrc = ICON.auth_itemJob;
+    authDesc = '커리어를 확인할 수 있는 명함 또는 증명서를 올려주세요';
+		isSmall = false;
+  } else if(data.common_code == 'EDU') {
+    imgSrc = ICON.auth_itemEdu;
+    authDesc = '대학교/대학원의 재학증명서/졸업증명를 올려주세요.';
+		isSmall = false;
+  } else if(data.common_code == 'INCOME') {
+    imgSrc = ICON.auth_itemIncome;
+    authDesc = '소득 자료를 올려주세요.';
+  } else if(data.common_code == 'ASSET') {
+    imgSrc = ICON.auth_itemAsset;
+    authDesc = '은행에서 발급해주는 잔고 증명서를 올려주세요.';
+  } else if(data.common_code == 'SNS') { 
+    imgSrc = ICON.auth_itemJob;
+    authDesc = '팔로워 수가 충족되는 경우 스크린샷을 올려주세요.';
+  } else if(data.common_code == 'VEHICLE') {
+    imgSrc = ICON.auth_itemJob;
+    authDesc = '차량 등록등 또는 자동차보험가입 증빙 자료를 올려주세요.';
+  }
+
+  return (
+		<>
+			<TouchableOpacity 
+				style={{width: isSmall ? '32%' : '48.8%', marginBottom: 10}}
+				activeOpacity={0.5}
+				onPress={() => {
+					detailOpenFn(data);
+				}} >
+				<LinearGradient
+					colors={['rgba(203,241,255,0.3)', 'rgba(113,147,156,0.3)', 'rgba(122,132,183,0.3)']}
+					start={{ x: 0, y: 0.1 }}
+					end={{ x: 0.4, y: 1 }}
+					style={[_styles.authItemWrap, {height: isSmall ? 120 : 170}]}>
+					<SpaceView><Image source={imgSrc} style={styles.iconSquareSize(isSmall ? 54 : 64)} /></SpaceView>
+					<SpaceView mt={13}><Text style={styles.fontStyle('B', isSmall ? 16 : 18, '#fff')}>{data.code_name} 인증</Text></SpaceView>
+				</LinearGradient>
+			</TouchableOpacity>
+		</>
+  );
+});
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -430,9 +668,9 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 									}
 								</Text>
 								<View style={_styles.uploadBoxContainer}>
-									<AuthImageRender index={0} imgData={authDetailList.length > 0 ? authDetailList[0] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+									{/* <AuthImageRender index={0} imgData={authDetailList.length > 0 ? authDetailList[0] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
 									<AuthImageRender index={1} imgData={authDetailList.length > 1 ? authDetailList[1] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
-									<AuthImageRender index={2} imgData={authDetailList.length > 2 ? authDetailList[2] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} />
+									<AuthImageRender index={2} imgData={authDetailList.length > 2 ? authDetailList[2] : null} imgSelectedFn={imgSelected} mngModalFn={imgMng_onOpen} /> */}
 								</View>
 							</View>
 							<View>
@@ -459,7 +697,7 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 									<Image source={ICON.commentYellow} style={styles.iconSquareSize(16)} />
 									<Text style={_styles.contentsTitle}>심사에 요구되는 증명자료를 올려주세요.</Text>
 								</View>
-								<AuthMaterialRender authCode={_authCode} />
+								{/* <AuthMaterialRender authCode={_authCode} /> */}
 							</View>
 						</View>
 
@@ -536,412 +774,6 @@ function AuthRender({ _data, _selectedAuthCode, _modActiveFn, _setCurrentCode, _
 	);
 };
 
-/* ##########################################################################################
-##### 인증 사진 렌더링
-########################################################################################## */
-function AuthImageRender({ index, imgData, imgSelectedFn, mngModalFn }) {
-	const imgUrl = imgData?.member_auth_detail_seq == 0 ? {uri : imgData?.img_file_path} : findSourcePath(imgData?.img_file_path);
-
-		return (
-		<>
-			{isEmptyData(imgUrl) ? (
-				<>
-					<TouchableOpacity 
-						style={_styles.uploadBox}
-						onPress={() => { mngModalFn(imgData, index+1, imgUrl); }}
-						activeOpacity={0.9}
-					>
-						<Image
-							resizeMode="cover"
-							resizeMethod="scale"
-							style={_styles.authImgStyle}
-							key={imgUrl}
-							source={imgUrl}
-						/>
-					
-					</TouchableOpacity>
-				</>
-			) : (
-				<>
-					<TouchableOpacity 
-						style={_styles.uploadBox}
-						onPress={() => { imgSelectedFn(index, !isEmptyData(imgData)); }}
-						activeOpacity={0.9}
-					>
-						<Image source={ICON.cloudUpload} style={styles.iconSquareSize(32)} />
-					</TouchableOpacity>
-				</>
-			)}
-		</>
-	);
-};
-
-/* ##########################################################################################
-##### 인증 자료 렌더링
-########################################################################################## */
-function AuthMaterialRender({ authCode }) {
-	
-	return (
-		<>
-      {authCode == 'JOB' && (
-        <>
-          <SpaceView mt={20} mb={12}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>직업 심사 기준</CommonText>
-            </View>
-          </SpaceView>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>사기업</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>중소기업, 중견기업, 대기업</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>공무원</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>국내 모든 공무 직종</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>전문직</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>의료인, 법조인, 약사, 수의사, 회계, 세무, 무역, 부동산, 각종 기술사 등</Text>
-          </View>
-          <SpaceView mb={12} mt={20}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>세부 기준</CommonText>
-            </View>
-          </SpaceView>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>사기업</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>사원급, 과장급, 임원급, 대표</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>공무원</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>공무원 급수에 따라 차등하여 레벨 부여</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>전문직</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>운영 내규에 따라 차등하여 레벨 부여</Text>
-          </View>
-
-          <SpaceView mb={12} mt={13}>
-            <View style={styles.dotTextContainer}>
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>※ 개인사업자는 내규에 따라 별도 심사 가능</CommonText>
-            </View>
-          </SpaceView>
-        </>
-      )}
-
-      {authCode == 'EDU' && (
-        <>
-          <SpaceView mt={20} mb={12}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>THE(세계 대학 순위)에서 최근에 발표한 세계대학 순위에{'\n'}기초하여 학력 레벨이 부여됩니다.</CommonText>
-            </View>
-          </SpaceView>
-          <SpaceView mb={12}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>학력 심사 기준</CommonText>
-            </View>
-          </SpaceView>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 5</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 80점 이상</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 4</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 70점 이상</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 3</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 50~70점</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 2</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 30~50점</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 1</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>THE 스코어 기준 30점 미만</Text>
-          </View>
-          <SpaceView mb={12} mt={20}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: 'FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>세부 기준</CommonText>
-            </View>
-          </SpaceView>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>일반</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>학사 -  석사 - 박사에 따라 차등하여 레벨 가산</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>특수</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>의대, 법대, 약대, 교대, 사범대, 예체능 등 별도 레벨 가산</Text>
-          </View>
-
-          <SpaceView mb={12} mt={13}>
-            <View style={styles.dotTextContainer}>
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>※ THE 기준 외 국내외 대학은 내규에 따라 별도 심사 가능</CommonText>
-            </View>
-          </SpaceView>
-        </>
-      )}
-
-      {authCode == 'INCOME' && (
-        <>
-          <SpaceView mt={20}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>근로소득자 : 원청징수영수증 또는 법인 직인이 날인된 연봉 계약서</CommonText>
-            </View>
-          </SpaceView>
-          <SpaceView mt={10}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>법인 및 개인사업자 : 소득금액증명원, 부가가치세증명원</CommonText>
-            </View>
-          </SpaceView>
-          <SpaceView mt={10} mb={12}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>소득 심사 기준(단위: 만원)</CommonText>
-            </View>
-          </SpaceView>
-          <View style={[_styles.rowStyle, _styles.rowHeader]}>
-            <Text style={[_styles.rowTextLeft, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>구분</Text>
-            <Text style={[_styles.rowTextRight, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>연소득</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 1</Text>
-            <Text style={_styles.rowTextRight}>3,000</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 2</Text>
-            <Text style={_styles.rowTextRight}>5,000</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 3</Text>
-            <Text style={_styles.rowTextRight}>7,000</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 4</Text>
-            <Text style={_styles.rowTextRight}>10,000</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 5</Text>
-            <Text style={_styles.rowTextRight}>20,000</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 6</Text>
-            <Text style={_styles.rowTextRight}>50,000</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 7</Text>
-            <Text style={_styles.rowTextRight}>100,000</Text>
-          </View>
-        </>
-      )}
-
-      {authCode == 'ASSET' && 
-        <>
-          <SpaceView mt={20} viewStyle={{width: '96%'}}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>현금 또는 부동산 자산 중 1가지를 선택하여 증빙 자료를 올려주세요. 단, 2가지 모두 충족하시는 경우 한 단계 높은 레벨이 부여됩니다.(최대 7레벨)</CommonText>
-            </View>
-          </SpaceView>
-          <SpaceView mt={10} mb={12}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>자산 심사 기준(단위: 억원)</CommonText>
-            </View>
-          </SpaceView>
-          <View style={[_styles.rowStyle, _styles.rowHeader]}>
-            <Text style={[_styles.rowTextLeft, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>구분</Text>
-            <Text style={[_styles.rowTextCenter, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>현금</Text>
-            <Text style={[_styles.rowTextRight, {color: '#FFDD00', fontFamily: 'Pretendard-SemiBold'}]}>부동산</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 1</Text>
-            <Text style={_styles.rowTextCenter}>1</Text>
-            <Text style={_styles.rowTextRight}>5</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 2</Text>
-            <Text style={_styles.rowTextCenter}>3</Text>
-            <Text style={_styles.rowTextRight}>10</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 3</Text>
-            <Text style={_styles.rowTextCenter}>5</Text>
-            <Text style={_styles.rowTextRight}>20</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 4</Text>
-            <Text style={_styles.rowTextCenter}>10</Text>
-            <Text style={_styles.rowTextRight}>30</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 5</Text>
-            <Text style={_styles.rowTextCenter}>30</Text>
-            <Text style={_styles.rowTextRight}>50</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 6</Text>
-            <Text style={_styles.rowTextCenter}>50</Text>
-            <Text style={_styles.rowTextRight}>100</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextLeft}>LV 7</Text>
-            <Text style={_styles.rowTextCenter}>100</Text>
-            <Text style={_styles.rowTextRight}>200</Text>
-          </View>
-        </>
-      }
-
-      {authCode == 'SNS' && (
-        <>
-          <SpaceView mt={20} mb={12}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>가장 높은 팔로워 수를 보유한 SNS 매체를 기준으로 레벨이 부여됩니다.</CommonText>
-            </View>
-          </SpaceView>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 1</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>500명 이상</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 2</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>1,000명 이상</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 3</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>2.500명 이상</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 4</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>5,000명 이상</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 5</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>1만명 이상</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 6</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>5만명 이상</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('40%')}>LV 7</Text>
-            <Text style={_styles.rowTextHalfRight('60%')}>10만명 이상</Text>
-          </View>
-        </>
-      )}
-
-      {authCode == 'VEHICLE' && (
-        <>
-          <SpaceView mt={20} mb={12} viewStyle={{width: '96%'}}>
-            <View style={styles.dotTextContainer}>
-              <View style={[styles.dot, {backgroundColor: '#FFDD00'}]} />
-              <CommonText
-                color={'#FFDD00'} 
-                fontWeight={'500'}
-                lineHeight={17}
-                type={'h5'}
-                textStyle={{marginTop: 4}}>증빙 자료로 제출한 자동차의 출고가에 따라 레벨이 부여됩니다.</CommonText>
-            </View>
-          </SpaceView>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('20%')}>LV 1</Text>
-            <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 2,000만원 이상의 차량</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('20%')}>LV 2</Text>
-            <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 4,000만원 이상의 차량</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('20%')}>LV 3</Text>
-            <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 7,000만원 이상의 고급 차량</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('20%')}>LV 4</Text>
-            <Text style={_styles.rowTextHalfRight('80%')}>출고가 기준 1억~2억원의 상당의 럭셔리카</Text>
-          </View>
-          <View style={_styles.rowStyle}>
-            <Text style={_styles.rowTextHalfLeft('20%')}>LV 5</Text>
-            <Text style={_styles.rowTextHalfRight('80%')}>슈퍼카 및 하이엔드급 럭셔리 차량</Text>
-          </View>
-        </>
-      )}
-		</>
-	)
-};
-
 
 
 {/* #######################################################################################################
@@ -951,8 +783,11 @@ function AuthMaterialRender({ authCode }) {
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
 	wrap: {
-		minHeight: height,
-		padding: 30,
+		flex: 1,
+    minHeight: height,
+    backgroundColor: '#000000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
 	},
 	title: {
 		fontSize: 30,
@@ -1158,4 +993,45 @@ const _styles = StyleSheet.create({
       paddingVertical: 5,
     };
   },
+
+
+
+
+
+
+
+
+
+	authItemWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(168,220,255,0.3)',
+    borderRadius: 10,
+  },
+	bottomWrap: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  nextBtnWrap: (isOn:boolean) => {
+		return {
+			backgroundColor: isOn ? '#1F5AFB' : '#fff',
+      borderRadius: 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+    };
+	},
+  textInputStyle: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
+    padding: 0,
+    paddingBottom: 5,
+    paddingTop: 5,
+  },
+
+
+
 });

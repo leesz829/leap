@@ -185,7 +185,7 @@ const _styles = StyleSheet.create({
     let vertical = 12;
 
     return {
-      fontFamily: 'AppleSDGothicNeoEB00',
+      fontFamily: 'Pretendard-ExtraBold',
       fontSize: fSize,
       backgroundColor: bgColor,
       color: '#fff',

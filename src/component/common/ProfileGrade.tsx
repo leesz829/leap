@@ -41,7 +41,7 @@ export default function ProfileGrade({ grade, type }) {
 
 const _styles = StyleSheet.create({
   gradeText: {
-    fontFamily: 'MinSans-Bold',
+    fontFamily: 'SUITE-Bold',
     fontSize: 32,
     fontWeight: '800',
     color: '#000000',

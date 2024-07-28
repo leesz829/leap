@@ -21,6 +21,7 @@ import { STACK } from 'constants/routes';
 import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { useUserInfo } from 'hooks/useUserInfo';
 
 
 
@@ -35,9 +36,13 @@ interface Props {
 	
 }
 
+const { width, height } = Dimensions.get('window');
+
 export const CustomerInquiry = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const { show } = usePopup(); // 공통 팝업
+
+	const memberBase = useUserInfo(); // 회원 기본정보
 
 	const [title,    setTitle]    = React.useState('');
 	const [contents, setContents] = React.useState('');
@@ -61,13 +66,17 @@ export const CustomerInquiry = (props : Props) => {
 			setIsClickable(false);
 
 			try {
-				if(title.length < 10 || title.length > 30) {
-					show({ content: '제목은 10~30글자 이내로 입력해 주셔야해요.' });
+				if(contents.length == 0) {
+					show({ content: '내용을 입력해 주세요.' });
 					return;
 				}
+
+				let genderStr = memberBase?.gender == 'M' ? '남' : '여';
+				let titleValue = memberBase?.nickname + '(' + memberBase?.age + '/' + genderStr + ')' + ' / ' + memberBase?.respect_grade + ' / ' + memberBase?.auth_acct_cnt;
 		
 				const body = {
-					title: title,
+					//title: title,
+					title:titleValue,
 					contents: contents
 				};
 
@@ -105,156 +114,64 @@ export const CustomerInquiry = (props : Props) => {
 
 	return (
 		<>
-			<CommonHeader title={'고객문의'} />
+			<SpaceView viewStyle={_styles.wrap}>
+        <CommonHeader title="1:1 문의" />
 
-			<LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 0, y: 1 }}
-				style={_styles.wrap}
-			>
-				<KeyboardAwareScrollView
-					keyboardShouldPersistTaps="always"
-					keyboardOpeningTime={0}
-					alwaysBounceHorizontal={false}
-					alwaysBounceVertical={false}
-					contentInsetAdjustmentBehavior="automatic"
-					showsHorizontalScrollIndicator={false}
-					showsVerticalScrollIndicator={false}
-					automaticallyAdjustContentInsets={false}
-					extraScrollHeight={60}
-					enableOnAndroid>
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
+					<SpaceView>
+						<Text style={styles.fontStyle('EB', 20, '#fff')}>궁금한 점, 불편한 점{'\n'}저희에게 문의하세요 : )</Text>
+					</SpaceView>
+					<SpaceView mt={30} viewStyle={_styles.contentWrap}>
+						<TextInput
+							style={[styles.fontStyle('SB', 12, '#fff'), {height:190}]}
+							value={contents}
+							onChangeText={(contents) => setContents(contents)}
+							placeholder={'여기에 내용을 입력하기. '}
+							placeholderTextColor={'#D5CD9E'}
+							maxLength={500}
+							autoCapitalize={'none'}
+							textAlignVertical={'top'}
+							multiline={true}
+							caretHidden={true}
+							// exceedCharCountColor={'#990606'}
+						/>
+					</SpaceView>
 
-					<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-						<ScrollView>
-							<SpaceView>
-								<View style={layoutStyle.alignStart}>
-									<CommonText	type={'h4'}	textStyle={_styles.mainTitleText}>궁금한점, 불편한점{'\n'}저희에게 문의주세요 :)</CommonText>
-								</View>
-							</SpaceView>
-							
-							<SpaceView mt={20}>
-								<SpaceView viewStyle={_styles.titleArea}>
-									<TextInput
-										style={_styles.titleText}
-										value={title}
-										onChangeText={(title) => setTitle(title)}
-										placeholder={'문의 제목'}
-										placeholderTextColor={'#D5CD9E'}
-										maxLength={30}
-									/>
-								</SpaceView>
-
-								<SpaceView mb={15} mt={15} viewStyle={_styles.contentsArea}>
-									<TextInput
-										style={_styles.contentsText}
-										value={contents}
-										onChangeText={(contents) => setContents(contents)}
-										placeholder={'문의 내용'}
-										placeholderTextColor={'#D5CD9E'}
-										maxLength={240}
-										autoCapitalize={'none'}
-										multiline={true}
-										caretHidden={true}
-										// exceedCharCountColor={'#990606'}
-									/>
-								</SpaceView>
-
-								<SpaceView mb={16}>
-									<CommonBtn
-										value={'문의하기'}
-										type={'reNewId'}
-										borderRadius={5}
-										onPress={() => {
-											insertCustomerInquiry();
-										}}
-									/>
-								</SpaceView>
-
-								{/* <SpaceView mb={45}>
-									<View style={_styles.bottomArea}>
-									<CommonText type={'h3'} textStyle={_styles.bottomText}>등록해주신 문의내용은 관리자 확인 후 우편함으로 답변드립니다.</CommonText>
-									</View>
-								</SpaceView> */}
-							</SpaceView>
-						</ScrollView>
-					</TouchableWithoutFeedback>
-				</KeyboardAwareScrollView>
-			</LinearGradient>
+					<SpaceView mt={45}>
+						<TouchableOpacity 
+							style={_styles.btnWrap}
+							onPress={() => {
+								insertCustomerInquiry();
+							}}>
+							<Text style={styles.fontStyle('B', 14, '#fff')}>문의 전송</Text>
+						</TouchableOpacity>
+					</SpaceView>
+				</ScrollView>
+			</SpaceView>
 		</>
 	);
 };
-const { width, height } = Dimensions.get('window');
+
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,
-		padding: 15,
+    backgroundColor: '#16112A',
+    paddingHorizontal: 10,
+    paddingTop: 30,
 	},
-	mainTitleText: {
-		width: 250,
-		height: 61,
-		fontFamily: 'Pretendard-Bold',
-		fontSize: 23,
-		lineHeight: 30,
-		color: '#D5CD9E',
+	contentWrap: {
+		backgroundColor: 'rgba(141,141,141,0.5)',
+		borderRadius: 14,
+		paddingHorizontal: 10,
+		paddingVertical: 5,
 	},
-  titleArea: {
-    backgroundColor: '#445561',
-    borderRadius: 5,
-    padding: 15,
-  },
-  titleText: {
-    fontFamily: 'Pretendard-Medium',
-    color: '#D5CD9E',
-  },
-  contentsArea: {
-    backgroundColor: '#445561',
-    borderRadius: 5,
-    padding: 15,
-  },
-  contentsText: {
-    fontFamily: 'Pretendard-Medium',
-    color: '#E1DFD1',
-    height: 150,
-  },
-	// bottomArea: {
-	// 	paddingHorizontal: 5,
-	// 	paddingVertical: 15,
-	// 	borderRadius: 20,
-	// },
-	// bottomText: {
-	// 	fontFamily: 'Pretendard-Medium',
-	// 	fontSize: 13,
-	// 	color: '#E1DFD1',
-	// },
-});
+	btnWrap: {
+		backgroundColor: '#46F66F',
+		borderRadius: 25,
+		alignItems: 'center',
+		paddingVertical: 10,
+	},
 
-const modalStyleProduct = StyleSheet.create({
-	modal: {
-	  flex: 1,
-	  margin: 0,
-	  justifyContent: 'flex-end',
-	},
-	close: {
-	  width: 19.5,
-	  height: 19.5,
-	},
-	infoContainer: {
-	  flex: 1,
-	  backgroundColor: 'white',
-	  marginTop: 13
-	},
-	rowBetween: {
-	  flexDirection: `row`,
-	  alignItems: `center`,
-	  justifyContent: 'space-between',
-	},
-	modalStyle1: {
-		width: width - 32,
-		borderRadius: 16,
-		height: 215,
-		paddingTop: 32,
-		paddingLeft: 16,
-		paddingRight: 16,
-	  },
-  });
+
+
+});

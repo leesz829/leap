@@ -91,11 +91,6 @@ export const styles = StyleSheet.create({
   },
   logo: { width: 141, height: 26, marginBottom: 6 },
   logoMark: { width: 166, height: 37 },
-  logoText: {
-    fontFamily: 'AppleSDGothicNeoB00',
-    fontSize: 25,
-    color: '#393939',
-  },
   logoRenew: { width: 200, height: 180, marginBottom: 228 },
   signImg: { width: 66, height: 66 },
   tmpImg: { width: 250, height: 230, borderRadius: 20 },
@@ -122,20 +117,6 @@ export const styles = StyleSheet.create({
   },
   whiteBack: { backgroundColor: 'white' },
   hasFloatingBtnContainer: { paddingBottom: 80, backgroundColor: 'white' },
-  inputTextStyle: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 14,
-    lineHeight: 22,
-    color: Color.black2222,
-  },
-  inputTextStyle_type02: {
-    fontFamily: 'AppleSDGothicNeoM00',
-    fontSize: 14,
-    lineHeight: 22,
-    width: width - 150,
-    color: Color.black0000dd,
-    flexShrink: 1,
-  },
   bottomBtnContainer: {
     width: width - 32,
     position: 'absolute',
@@ -224,6 +205,12 @@ export const styles = StyleSheet.create({
       height: size,
     };
   },
+  iconNoSquareSize: (_w: number, _h: number) => {
+    return {
+      width: _w,
+      height: _h,
+    };
+  },
   arrowIcon: {
     width: 20,
     height: 36,
@@ -269,8 +256,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dot: {
-    width: 4,
-    height: 4,
+    width: 2,
+    height: 2,
     borderRadius: 20,
     backgroundColor: Color.gray8888,
     marginRight: 4,
@@ -416,7 +403,7 @@ export const styles = StyleSheet.create({
   profileTmpImg: {
     width: 160,
     height: 160,
-    borderRadius: 80,
+    borderRadius: 15,
   },
   profilePenContainer: {
     position: 'absolute',
@@ -529,13 +516,6 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 50,
   },
-  searchInput: {
-    padding: 0,
-    margin: 0,
-    fontSize: 13,
-    fontFamily: 'AppleSDGothicNeoR00',
-    color: Color.black2222,
-  },
   textContainer: {
     padding: 24,
     alignItems: 'center',
@@ -543,20 +523,22 @@ export const styles = StyleSheet.create({
     backgroundColor: Color.grayF8F8,
   },
   fontStyle: (type:string, size:number, color:string) => {
-    let f_type = 'Pretendard-Regular';
+    let f_type = 'SUITE-Regular';
 
     if(type == 'L') {
-      f_type = 'Pretendard-Light';
+      f_type = 'SUITE-Light';
     } else if(type == 'M') {
-      f_type = 'Pretendard-Medium';
+      f_type = 'SUITE-Medium';
     } else if(type == 'R') {
-      f_type = 'Pretendard-Regular';
+      f_type = 'SUITE-Regular';
     } else if(type == 'B') {
-      f_type = 'Pretendard-Bold';
+      f_type = 'SUITE-Bold';
     } else if(type == 'SB') {
-      f_type = 'Pretendard-SemiBold';
+      f_type = 'SUITE-SemiBold';
     } else if(type == 'EB') {
-      f_type = 'Pretendard-ExtraBold';
+      f_type = 'SUITE-ExtraBold';
+    } else if(type == 'H') {
+      f_type = 'SUITE-Heavy';
     }
 
     return {
@@ -592,6 +574,16 @@ export const layoutStyle = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  rowStart: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  rowEnd: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   textCenter: { textAlign: 'center' },
   textLeft: { textAlign: 'left' },

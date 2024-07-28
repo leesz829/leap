@@ -27,6 +27,7 @@ import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
 import { layoutStyle, styles } from 'assets/styles/Styles';
 import { ProfileDrawingPopup } from 'screens/commonpopup/ProfileDrawingPopup';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const { width, height } = Dimensions.get('window');
 
@@ -215,29 +216,36 @@ export default function Inventory() {
   function ListHeaderComponent() {
     return (
       <>
-        <SpaceView mt={15} mb={60} viewStyle={{width: '100%', alignItems: 'center'}}>
-          <View style={_styles.categoriesContainer}>
+        <SpaceView mt={15} viewStyle={_styles.tabWrap}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {categories?.map((item) => (
               <TouchableOpacity
-                activeOpacity={0.8}
+                activeOpacity={0.5}
                 onPress={() => onPressTab(item)}
+                style={{marginRight: 10, alignItems: 'center'}}
               >
-                <Image source={item.value == tab.value ? item.imgActive : item.imgUnactive} style={_styles.categoryBtn(item.value)} />         
+                <Image source={item.value == tab.value ? item.imgActive : item.imgUnactive} style={styles.iconSquareSize(60)} />
+                <SpaceView mt={6}><Text style={styles.fontStyle('B', 12, (item.value == tab.value ? '#46F66F' : '#808080'))}>{item.label}</Text></SpaceView>
               </TouchableOpacity>
             ))}
-          </View>
+          </ScrollView>
         </SpaceView>
-        <SpaceView mb={15} pt={15} viewStyle={_styles.passAllBtnArea}>
-          <TouchableOpacity onPress={() => usePassItemAll()}>
-            <Text style={_styles.passAllBtnText(isPassHold)}>큐브 한번에 받기</Text>
+
+        <SpaceView pl={10} pr={10}>
+          <SpaceView viewStyle={{borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.5)', width: '100%'}} />
+        </SpaceView>
+
+        <SpaceView mb={15} pt={15} pl={10} pr={10} viewStyle={_styles.passAllBtnArea}>
+          <TouchableOpacity onPress={() => usePassItemAll()} style={_styles.passAllBtn}>
+            {/* <Text style={_styles.passAllBtnText(isPassHold)}>한번에 받기</Text> */}
+            <Text style={styles.fontStyle('B', 12, '#fff')}>한번에 받기</Text>
           </TouchableOpacity>
         </SpaceView>
-        <SpaceView viewStyle={{borderWidth: 1, borderColor: '#D1D1D1'}}></SpaceView>
       </>
     )
   };
 
-  function renderItem({ item, index }) {
+  function ItemRender({ item, index }) {
     const isNew = (typeof item.connect_date == 'undefined' || item.connect_date == null || item.connect_date < item.reg_dt) ? true : false;
 
     let itemImg;
@@ -257,8 +265,8 @@ export default function Inventory() {
     }
 
     return (
-      <View style={_styles.renderItem}>
-        <View style={{ flexDirection: 'row' }}>
+      <SpaceView mb={10} viewStyle={_styles.itemWrap}>
+        
           {/* <View style={_styles.thumb}>
             <Image source={findSourcePath(item?.file_path + item?.file_name)} style={{width: '100%', height: '100%'}} resizeMode='cover' />
             {item?.item_qty > 0 && (
@@ -288,38 +296,64 @@ export default function Inventory() {
 
           </View> */}
 
-          <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyBetween, {width: '100%'}]}>
-            <SpaceView viewStyle={{width: '72%'}}>
-              <Text style={_styles.title}>{item?.cate_name}</Text>
-              <Text style={_styles.infoText}>{item?.cate_desc}</Text>
-              {isNew &&
-                <SpaceView viewStyle={_styles.cyanDot} />
-              }
+        <SpaceView viewStyle={[layoutStyle.row, layoutStyle.alignCenter, layoutStyle.justifyBetween]}>
+          <SpaceView viewStyle={{flexDirection: 'row', flex: 2}}>
+
+            {/* 아이템 이미지 */}
+            <SpaceView>
+              <Image source={ICON.shop_productMega} style={styles.iconSquareSize(45)} />
             </SpaceView>
-            <SpaceView viewStyle={_styles.buttonWrapper}>
-              <SpaceView viewStyle={_styles.buttonImgArea}>
-                <Image source={itemImg} style={itemType == 'Cube' ? _styles.cubeListImg : _styles.itemListImg} />
+
+            {/* 내용 */}
+            <SpaceView ml={5} viewStyle={{flex: 0.93}}>
+              <SpaceView mb={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <SpaceView mr={5} viewStyle={{backgroundColor: '#000000', borderRadius: 3, paddingHorizontal: 5, paddingVertical: 3}}>
+                  <Text style={styles.fontStyle('SB', 9, '#fff')}>3일남음</Text>
+                </SpaceView>
+                <Text style={styles.fontStyle('EB', 12, '#383838')}>{item?.cate_name}</Text>
               </SpaceView>
-              <TouchableOpacity
-                style={_styles.button(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}
-                disabled={item?.use_yn == 'Y' || item?.be_in_use_yn == 'Y'}
-                onPress={() => {useItem(item);}} >
-                <Text style={_styles.buttonText(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}>
-                  {item?.use_yn == 'N' && item?.be_in_use_yn == 'N' && '획득하기'}
-                  {item?.use_yn == 'N' && item?.be_in_use_yn == 'Y' && item?.subscription_end_day + '일 후 열림'}
-                  {item?.use_yn == 'Y' && '사용중('+ item?.subscription_end_day +'일남음)'}
-                </Text>
-              </TouchableOpacity>
+              <SpaceView>
+                <Text numberOfLines={2} style={styles.fontStyle('SB', 10, '#383838')}>{item?.cate_desc}</Text>
+              </SpaceView>
             </SpaceView>
           </SpaceView>
-        </View>
-      </View>
+
+          <SpaceView>
+            <TouchableOpacity
+              //style={_styles.button(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}
+              disabled={item?.use_yn == 'Y' || item?.be_in_use_yn == 'Y'}
+              onPress={() => {useItem(item);}} >
+              <Image source={ICON.shop_download} style={styles.iconSquareSize(38)} />
+              {/* <Text style={_styles.buttonText(item?.use_yn == 'N' && item?.be_in_use_yn == 'N')}>
+                {item?.use_yn == 'N' && item?.be_in_use_yn == 'N' && '획득하기'}
+                {item?.use_yn == 'N' && item?.be_in_use_yn == 'Y' && item?.subscription_end_day + '일 후 열림'}
+                {item?.use_yn == 'Y' && '사용중('+ item?.subscription_end_day +'일남음)'}
+              </Text> */}
+            </TouchableOpacity>
+          </SpaceView>
+
+
+          {/* <SpaceView viewStyle={{width: '72%'}}>
+            <Text style={_styles.title}>{item?.cate_name}</Text>
+            <Text style={_styles.infoText}>{item?.cate_desc}</Text>
+            {isNew &&
+              <SpaceView viewStyle={_styles.cyanDot} />
+            }
+          </SpaceView> */}
+          {/* <SpaceView viewStyle={_styles.buttonWrapper}>
+            <SpaceView viewStyle={_styles.buttonImgArea}>
+              <Image source={itemImg} style={itemType == 'Cube' ? _styles.cubeListImg : _styles.itemListImg} />
+            </SpaceView>
+          </SpaceView> */}
+        </SpaceView>
+      </SpaceView>
     )
   };
 
   const renderItemEmpty = () => (
     <View style={_styles.noInvenArea}>
-      <Text style={_styles.noInvenText}>보관 중인 아이템이 없습니다.</Text>
+      <Image source={ICON.shop_inventoryNoimg} style={styles.iconNoSquareSize(250, 167)} />
+      <Text style={styles.fontStyle('EB', 20, '#fff')}>보관 중인 아이템이 없습니다.</Text>
     </View>
   );
 
@@ -327,30 +361,27 @@ export default function Inventory() {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title="선물함" />
+      <SpaceView viewStyle={_styles.wrap}>
+        <SpaceView mt={40}>
+          <CommonHeader title="아이템" />
+        </SpaceView>
 
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={_styles.wrap}
-      >
+        <ListHeaderComponent />
 
-      <FlatList
-        style={_styles.root}
-        data={data}
-        ListHeaderComponent={ListHeaderComponent}
-        ListEmptyComponent={renderItemEmpty}
-        renderItem={renderItem}
-      />
+        <FlatList
+          style={_styles.root}
+          data={data}
+          //ListHeaderComponent={ListHeaderComponent}
+          ListEmptyComponent={renderItemEmpty}
+          renderItem={ItemRender}
+        />
 
-      </LinearGradient>
-
-      <ProfileDrawingPopup
-        popupVisible={isProfileDrawingVisible}
-        setPopupVIsible={setIsProfileDrawingVisible}
-        item={profileDrawingData}
-      />
+        <ProfileDrawingPopup
+          popupVisible={isProfileDrawingVisible}
+          setPopupVIsible={setIsProfileDrawingVisible}
+          item={profileDrawingData}
+        />
+      </SpaceView>
     </>
   );
 }
@@ -366,123 +397,22 @@ export default function Inventory() {
 const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
+    backgroundColor: '#130C1D',
   },
   root: {
     flex: 1,
-    marginBottom: 150,
+    marginBottom: 50,
   },
-  categoriesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#292F33',
-    borderRadius: 20,
-    width: '70%',
-    paddingHorizontal: 15,
-  },
-  categoryBtn: (type: string) => {
-    return {
-      width: type == 'ALL' ? 25 : 40,
-      height: type == 'ALL' ? 25 : 40,
-      marginTop: type == 'ALL' ? 0 : 5,
-    };
-  },
-  renderItem: {
-    width: `100%`,
+  itemWrap: {
+    marginHorizontal: 10,
+    borderRadius: 10,
     paddingVertical: 15,
-    borderBottomColor: '#707070',
-    borderBottomWidth: 1,
-    paddingHorizontal: 16,
-  },
-  title: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 15,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#D5CD9E',
-  },
-  infoText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 13,
-    fontWeight: 'normal',
-    textAlign: 'left',
-    color: '#939393',
-    marginTop: 5,
-  },
-  buttonWrapper: {
-    width: '25%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonImgArea: {
-    width: 60,
-    height: 60,
-    borderWidth: 1,
-    borderColor: '#32F9E4',
-    borderRadius: 50,
-    backgroundColor: '#292F33',
-    marginBottom: 5,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: (used) => {
-    return {
-      width: 90,
-      height: 29,
-      borderRadius: 5,
-      backgroundColor: used ? '#FFDD00' : '#f2f2f2',
-      flexDirection: `row`,
-      alignItems: `center`,
-      justifyContent: `center`,
-    };
-  },
-  buttonText: (used) => {
-    return {
-      fontSize: 11,
-      fontFamily: 'Pretendard-SemiBold',
-      letterSpacing: 0,
-      textAlign: 'left',
-      color: used ? '#3D4348' : '#b5b5b5',
-    };
-  },
-  cubeListImg: {
-    width: 40,
-    height: 40,
-  },
-  itemListImg: {
-    width: 50,
-    height: 50,
-    marginTop: 5,
+    paddingHorizontal: 15,
+    backgroundColor: '#fff',
   },
   passAllBtnArea: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-  },
-  passAllBtnText: (type:boolean) => {
-    return {
-      fontFamily: 'Pretendard-SemiBold',
-      fontSize: 11,
-      color: type ? '#3D4348' : '#ABA99A',
-      textAlign: 'center',
-      paddingVertical: 7,
-      backgroundColor: type ? '#FFDD00' : '#E1DFD1',
-      borderRadius: 5,
-      paddingHorizontal: 10,
-      overflow: 'hidden',
-      marginRight: 20,
-    };
-  },
-  cyanDot: {
-    position: 'absolute',
-    left: -5,
-    top: -8,
-    backgroundColor: '#32F9E4',
-    width: 8,
-    height: 8,
-    borderRadius: 50,
   },
   noInvenArea: {
     height: height * 0.5,
@@ -494,73 +424,59 @@ const _styles = StyleSheet.create({
     fontSize: 16,
     color: '#445561',
   },
-  
-  // thumb: {
-  //   width: '30%',
-  //   height: ((Dimensions.get('window').width - 32) * 8 * 0.3) / 11,
-  //   borderRadius: 5,
-  //   backgroundColor: '#d1d1d1',
-  //   borderWidth: 1,
-  //   borderColor: '#e0e0e0',
-  // },
-  // qtyArea: {
-  //   position: 'absolute',
-  //   bottom: 4,
-  //   right: 4,
-  //   borderRadius: 7,
-  //   overflow: 'hidden',
-  // },
-  // qtyText: (type:string) => {
-  //   return {
-  //     fontFamily: 'AppleSDGothicNeoM00',
-  //     fontSize: 12,
-  //     textAlign: 'left',
-  //     color: type == 'KEEP_MINUTE' ? '#FFC100' : '#FFF',
-  //     paddingHorizontal: 6,
-  //     paddingVertical: 1,
-  //     zIndex: 1,
-  //   };
-  // },
-  // iconArea: {
-  //   position: 'absolute',
-  //   top: 4,
-  //   left: 5,
-  // },
-  // newText: {
-  //   backgroundColor: '#FF7E8C',
-  //   fontFamily: 'AppleSDGothicNeoEB00',
-  //   fontSize: 11,
-  //   color: ColorType.white,
-  //   borderRadius: 8,
-  //   paddingHorizontal: 6,
-  //   paddingVertical: 2,
-  //   overflow: 'hidden',
-  // },
+
+
+
+  tabWrap: {
+    width: '100%',
+    alignItems: 'center',
+    paddingBottom: 20,
+    marginHorizontal: 10,
+  },
+  passAllBtn: {
+    backgroundColor: '#44B6E5',
+    borderRadius: 5,
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+  },
+
 });
 
 const categories = [
   {
     label: '전체',
     value: 'ALL',
-    imgActive: ICON.dotCyan,
-    imgUnactive: ICON.dotGray,
+    imgActive: ICON.shop_tabAllOn,
+    imgUnactive: ICON.shop_tabAllOff,
   },
   {
-    label: '패스',
+    label: '큐브',
     value: 'PASS',
-    imgActive: ICON.polygonGreen,
-    imgUnactive: ICON.polygonGray,
+    imgActive: ICON.shop_tabCubeOn,
+    imgUnactive: ICON.shop_tabCubeOff,
   },
   {
-    label: '부스팅',
-    value: 'SUBSCRIPTION',
-    imgActive: ICON.drinkCyan,
-    imgUnactive: ICON.drinkGray,
+    label: '메가큐브',
+    value: 'MEGACUBE',
+    imgActive: ICON.shop_tabMegaOn,
+    imgUnactive: ICON.shop_tabMegaOff,
   },
   {
-    label: '뽑기권',
+    label: '프로필카드',
     value: 'PROFILE_DRAWING',
-    imgActive: ICON.cardCyan,
-    imgUnactive: ICON.cardGray,
+    imgActive: ICON.shop_tabCardOn,
+    imgUnactive: ICON.shop_tabCardOff,
+  },
+  {
+    label: '부스트',
+    value: 'BOOST',
+    imgActive: ICON.shop_tabBoostOn,
+    imgUnactive: ICON.shop_tabBoostOff,
+  },
+  {
+    label: '패키지상품',
+    value: 'PACKAGE',
+    imgActive: ICON.shop_tabPackageOn,
+    imgUnactive: ICON.shop_tabPackageOff,
   },
 ];

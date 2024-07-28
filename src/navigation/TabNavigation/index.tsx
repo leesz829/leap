@@ -12,10 +12,12 @@ import { Storage } from 'screens/storage';
 import { Message } from 'screens/message';
 
 import CustomTab from '../CustomTab';
-import Matching from 'screens/matching';
 import MatchingList from 'screens/matching/list';
 
+import { Contents } from 'screens/contents';
+
 import { Story } from 'screens/story';
+
 
 const Tab = createBottomTabNavigator<BottomParamList>();
 const Stack = createStackNavigator();
@@ -24,7 +26,7 @@ const BottomNavigation = () => {
   return (
     <Tab.Navigator
       backBehavior={'history'}
-      initialRouteName={'MatchingList'}
+      initialRouteName={'Roby'}
       tabBar={(props) => <CustomTab {...props} />}
     >
       <Tab.Screen
@@ -37,6 +39,25 @@ const BottomNavigation = () => {
         }}
       />
       <Tab.Screen
+        name="Contents"
+        component={Contents}
+        options={{
+          tabBarLabel: '콘텐츠',
+          headerShown: false,
+          tabBarShowLabel: true,
+        }}
+      />
+      <Tab.Screen
+        name="Story"
+        component={Story}
+        options={{
+          tabBarLabel: '스토리',
+          headerShown: false,
+          tabBarShowLabel: true,
+          unmountOnBlur: true,
+        }}
+      />
+      <Tab.Screen
         name="Storage"
         component={Storage}
         options={{
@@ -46,7 +67,7 @@ const BottomNavigation = () => {
           unmountOnBlur: true,
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Message"
         component={Message}
         options={{
@@ -55,15 +76,15 @@ const BottomNavigation = () => {
           tabBarShowLabel: true,
           unmountOnBlur: true,
         }}
-        /* listeners={({ navigation }) => ({
+        listeners={({ navigation }) => ({
           tabPress: (e) => {
             e.preventDefault();
             show({ title: '알림', content: '준비중입니다.' });
             //busiUtils.goStoragePage(navigation);
             // Alert.alert('알림', '준비중입니다.', [{ text: '확인' }]);
           },
-        })} */
-      />
+        })}
+      /> */}
       <Tab.Screen
         name="Cashshop"
         component={Shop}
@@ -92,13 +113,6 @@ const BottomNavigation = () => {
         }}
       />
       <Stack.Screen
-        name="Matching"
-        component={Matching}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="MatchingList"
         component={MatchingList}
         options={{
@@ -112,13 +126,13 @@ const BottomNavigation = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Story"
         component={Story}
         options={{
           headerShown: false,
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

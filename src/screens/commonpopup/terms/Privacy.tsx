@@ -30,37 +30,33 @@ export default function Privacy({ modalRef, callBackFunc }: Props) {
 	
 	return (
 		<Modalize
-        	ref={modalRef}
-        	handleStyle={modalStyle.modalHandleStyle}
-        	modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}
-        	adjustToContentHeight={false}
-        	modalHeight={height - 150}
-        	FooterComponent={
-				<SpaceView viewStyle={[styles.rowStyle]}>
+			ref={modalRef}
+			handleStyle={modalStyle.modalHandleStyle}
+			modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, backgroundColor: '#1B1633'}}
+			adjustToContentHeight={false}
+			modalHeight={height - 150}
+			FooterComponent={
+				<SpaceView pl={20} pr={20}>
+					<TouchableOpacity onPress={() => { modalClose(true); }} style={_styles.btnArea('#44B6E5')}>
+						<Text style={styles.fontStyle('B', 18, '#fff')}>동의하기</Text>
+					</TouchableOpacity>
 					<TouchableOpacity onPress={() => { modalClose(false); }} style={_styles.btnArea('#333B41')}>
-						<Text style={_styles.btnText('#D5CD9E')}>취소</Text>
-					</TouchableOpacity>
-					<TouchableOpacity onPress={() => { modalClose(true); }} style={_styles.btnArea('#FFDD00')}>
-						<Text style={_styles.btnText('#3D4348')}>동의 후 닫기</Text>
+						<Text style={styles.fontStyle('B', 18, '#fff')}>닫기</Text>
 					</TouchableOpacity>
 				</SpaceView>
-        	}
-        	HeaderComponent={
+			}
+			HeaderComponent={
 				<SpaceView viewStyle={_styles.titleArea}>
-					<Text style={_styles.titleText}>개인정보 취급방침</Text>
-					{/* <TouchableOpacity onPress={() => { modalClose(false); }} hitSlop={commonStyle.hipSlop15}>
-						<Image source={ICON.xBtn2} style={styles.iconSize24} />
-					</TouchableOpacity> */}
+					<SpaceView mb={50} viewStyle={layoutStyle.alignCenter}>
+						<Image source={ICON.popupDown} style={styles.iconNoSquareSize(37, 7)} />
+					</SpaceView>
+					<Text style={styles.fontStyle('EB', 22, '#fff')}>개인정보 취급방침</Text>
 				</SpaceView>
-        	}
-      	>
-			<View style={[modalStyle.modalBody, layoutStyle.flex1, {backgroundColor: '#1A1E1C'}]}>
-	          	{/* <SpaceView mb={24}>
-						<CommonDatePicker />
-					</SpaceView> */}
-
-        		<SpaceView mb={24} viewStyle={{ width: width - 32 }}>
-					<CommonText type={'h5'} textStyle={_styles.contentText}>
+			}
+		>
+			<View style={[modalStyle.modalBody, layoutStyle.flex1, {backgroundColor: '#1B1633'}]}>
+        <SpaceView mb={24} viewStyle={{ width: width - 32 }}>
+					<Text style={styles.fontStyle('B', 11, '#fff')}>
 						리프 서비스(이하 ‘서비스’)는 개인정보 보호법 제30조에 의거, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등 정보통신 서비스제공자가 준수하여야 할 관련 법령상의 개인정보보호 규정을 준수하며, 회사는 관계 법령에서 규정하고 있는 책임과 의무를 준수하고 실천하기 위해 최선의 노력을 하고 있습니다.
 						{'\n'}{'\n'}
 						회사의 개인정보 취급방침은 다음과 같은 내용을 담고 있습니다.
@@ -190,10 +186,10 @@ export default function Privacy({ modalRef, callBackFunc }: Props) {
 						- 전화번호 : 182{'\n'}
 						- 홈페이지 : https://ecrm.cyber.go.kr
 
-					</CommonText>
-        		</SpaceView>
-    		</View>
-      	</Modalize>
+					</Text>
+      	</SpaceView>
+    	</View>
+    </Modalize>
 	);
 };
 
@@ -204,38 +200,19 @@ const _styles = StyleSheet.create({
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
 		overflow: 'hidden',
-		backgroundColor:'#1A1E1C',
-		//flexDirection: 'row',
-		//justifyContent: 'space-between',
-		paddingVertical: 15,
+		backgroundColor:'#1B1633',
+		paddingVertical: 20,
 		paddingHorizontal: 10,
-	},
-	titleText: {
-		fontFamily: 'Pretendard-Regular',
-		fontSize: 18,
-		color: '#D5CD9E',
-		textAlign: 'center',
-	},
-	contentText: {
-		color: '#D5CD9E',
 	},
 	btnArea: (bg:number) => {
 		return {
-			width: '50%',
-			height: 48,
+			width: '100%',
+			height: 45,
 			backgroundColor: bg,
 			alignItems: 'center',
 			justifyContent: 'center',
+			borderRadius: 25,
+			marginBottom: 10,
 		}
-	},
-	btnText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-		  fontSize: 16,
-		  color: isEmptyData(cr) ? cr : '#fff',
-		};
-	},
-	textBold: {
-		fontFamily: 'Pretendard-ExtraBold',
 	},
 });

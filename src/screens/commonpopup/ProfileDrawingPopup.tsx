@@ -9,7 +9,7 @@ import { isEmptyData } from 'utils/functions';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
 import { CommonBtn } from 'component/CommonBtn';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { get_common_code_list, use_item } from 'api/models';
 import { usePopup } from 'Context'
 import { ROUTES, STACK } from 'constants/routes';
@@ -169,10 +169,22 @@ export const ProfileDrawingPopup = (props: Props) => {
   };
 
   React.useEffect(() => {
+    /* console.log('props :::::: ' , props);
     setPdDataList([]);
     setSelectedData('');
-		getCommonCodeList();
+		getCommonCodeList(); */
 	}, [props]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setPdDataList([]);
+      setSelectedData('');
+      //getCommonCodeList();
+
+      return () => {
+      };
+    }, []),
+  );
 
   return (
     <>

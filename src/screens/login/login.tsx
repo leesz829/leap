@@ -164,6 +164,8 @@ export const Login = () => {
         if(isEmptyData(data.mbr_base)) {
           const memberStatus = data.mbr_base.status;
 
+          console.log('memberStatus :::: ' , memberStatus);
+
           if (memberStatus == 'PROCEED' || memberStatus == 'APPROVAL') {
             goJoinPage(data.mbr_base);
           } else {
@@ -228,6 +230,20 @@ export const Login = () => {
                   { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
                   { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
                   { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_COMMENT, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                ],
+              })
+            );
+          } else if (joinStatus == 'MESSAGE') {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [
+                  { name: ROUTES.LOGIN },
+                  { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
+                  { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
+                  { name: ROUTES.SIGNUP_NICKNAME, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
+                  { name: ROUTES.SIGNUP_COMMENT, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
                   { name: ROUTES.SIGNUP_ADDINFO, params: { memberSeq: memberSeq, gender: mbr_base.gender, mstImgPath: mbr_base.mstImgPath, nickname: mbr_base.nickname }},
                 ],
               })
@@ -364,173 +380,173 @@ export const Login = () => {
 
   return (
     <>    
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={_styles.loginContainer}
-      >
-        <ScrollView>
-          <SpaceView mt={60} mb={30} viewStyle={[_styles.container]}>
+      <SpaceView viewStyle={_styles.wrap}>
 
-            {/* ############################################################### 타이틀 */}
-            <SpaceView mb={80} pl={20} pr={20}>
-              {/* <SpaceView viewStyle={_styles.logoDescArea}>
-                <Text style={_styles.logoDesc}>Limeeted Edition Amuse Play</Text>
-              </SpaceView> */}
-              <SpaceView viewStyle={{alignItems: 'center'}}>
-                {/* <Image source={IMAGE.logoLeapTmon} style={{width: '100%', height: 90}} /> */}
-                <Image source={IMAGE.logoLeapTit02} style={{width: 320, height: 134}} resizeMode={'cover'} />
-              </SpaceView>
-            </SpaceView>
+        <SpaceView>
+          <Image source={ICON.join_bg} style={styles.iconNoSquareSize('100%', '100%')} />
+        </SpaceView>
 
-            {/* ############################################################### 텍스트 입력 */}
-            <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15, commonStyle.mt10]}>
+        <SpaceView viewStyle={_styles.bodyWrap}>
+          {/* <ScrollView horizontal={false}> */}
+            <SpaceView viewStyle={{justifyContent: 'space-between', height: height-50}}>
 
-              <SpaceView mb={30} viewStyle={{width: '100%'}}>
-                <SpaceView mb={10}>
-                  <Text style={_styles.emailPwdText}>이메일</Text>
-                </SpaceView>
+              {/* ############################################################### 타이틀 */}
+              <SpaceView mt={65}>
                 <SpaceView>
-                  <TextInput
-                    value={id}
-                    onChangeText={(text) => setId(text)}
-                    autoCapitalize={'none'}
-                    style={_styles.textInputStyle}
-                    maxLength={50}
-                    hitSlop={commonStyle.hipSlop25}
-                  />
-
-                  {id.length > 0 && (
-                    <TouchableOpacity 
-                      style={_styles.removeTextBtn}
-                      onPress={() => { setId(''); }}
-                      hitSlop={commonStyle.hipSlop20}>
-                      <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-                    </TouchableOpacity>
-                  )}
+                  <Text style={[styles.fontStyle('H', 22, '#fff'), {textAlign: 'center'}]}>LEAP</Text>
+                </SpaceView>
+                <SpaceView mt={45}>
+                  <Text style={[styles.fontStyle('B', 28, '#fff'), {textAlign: 'center'}]}>오늘 하루,{'\n'}편안한 리프를 취하세요.</Text>
                 </SpaceView>
               </SpaceView>
 
-              <SpaceView viewStyle={{width: '100%'}}>
-                <SpaceView mb={10}>
-                  <Text style={_styles.emailPwdText}>비밀번호</Text>
+              <SpaceView>
+                {/* ############################################################### 입력 영역 */}
+                <SpaceView mt={50} pl={25} pr={25}>
+                  <SpaceView>
+                    <Text style={styles.fontStyle('EB', 15, '#fff')}>아이디(이메일)</Text>
+                    <SpaceView>
+                      <TextInput
+                        value={id}
+                        onChangeText={(text) => setId(text)}
+                        autoCapitalize={'none'}
+                        style={_styles.textInputStyle}
+                        maxLength={50}
+                        hitSlop={commonStyle.hipSlop25}
+                      />
+                    </SpaceView>
+                  </SpaceView>
+                  <SpaceView mt={25}>
+                    <Text style={styles.fontStyle('EB', 15, '#fff')}>비밀번호</Text>
+                    <SpaceView>
+                      <TextInput
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
+                        autoCapitalize={'none'}
+                        style={_styles.textInputStyle}
+                        maxLength={30}
+                        secureTextEntry={true}
+                      />
+                    </SpaceView>
+                  </SpaceView>
                 </SpaceView>
-                <SpaceView>
-                  <TextInput
-                    value={password}
-                    onChangeText={(text) => setPassword(text)}
-                    autoCapitalize={'none'}
-                    style={_styles.textInputStyle}
-                    maxLength={30}
-                    secureTextEntry={true}
-                  />
 
-                  {password.length > 0 && (
+                {/* ############################################################### 버튼 영역 */}
+                <SpaceView mt={40}>
+                  <SpaceView viewStyle={layoutStyle.alignCenter}>
                     <TouchableOpacity
-                      style={_styles.removeTextBtn}
-                      onPress={() => { setPassword(''); }} 
-                      hitSlop={commonStyle.hipSlop20}>
-                      <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                      style={_styles.loginBtn}
+                      onPress={() => {
+                        if (id == '') {
+                          return show({ content: '아이디를 입력해 주세요.' });
+                        }
+                        if (password == '') {
+                          return show({ content: '비밀번호를 입력해 주세요.' });
+                        }
+                        
+                        loginProc(false);
+                        //dispatch(loginReduce(id, password));
+                      }}>
+                      <Text style={styles.fontStyle('B', 18, '#fff')}>로그인</Text>
                     </TouchableOpacity>
-                  )}
+
+                    <TouchableOpacity
+                      style={_styles.joinBtn}
+                      onPress={() => { joinProc(); }}>
+                      <Text style={styles.fontStyle('B', 18, '#fff')}>회원가입</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={_styles.joinBtn}
+                      onPress={() => {
+                        navigation.navigate('SearchIdAndPwd');
+                      }}>
+                      <Text style={styles.fontStyle('B', 18, '#fff')}>아이디/비밀번호 찾기</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </SpaceView>
+
+                <SpaceView mt={50}>
+                  <Text style={[styles.fontStyle('SB', 10, '#CBCBCB'), {textAlign: 'center'}]}>
+                    리프(LEAP)는 회원가입 절차에 직업 또는 학력 등의  인증이 필요합니다.{'\n'}
+                    이는 피싱, 폭력으로부터 안전한 SNS 환경을 제공하기 위한 목적으로 활용됩니다.{'\n'}
+                    제공받은 소중한 개인정보는 인증 과정동안 암호화 처리되어 관리되며 인증 심사{'\n'}
+                    종료 후 인증 심사 이력만 남고 개인 정보는 모두 삭제됩니다.</Text>
                 </SpaceView>
 
               </SpaceView>
 
-              <View style={_styles.saveLogInfoContainer}>
-                <TouchableOpacity
-                  style={_styles.checkWrap}
-                  onPress={() => { 
-                    if(activate === false) {
-                      setActivate(true); 
-                    }else {
-                      setActivate(false); 
-                    }
-                  }}
-                >
-                  {/* <View style={[_styles.checkContainer, {backgroundColor: activate === true ? '#F3E270' : 'rgba(0, 0, 0, 0.1)'}]}></View>
-                  <Text style={_styles.saveLogInfoText}>로그인 정보 저장하기</Text> */}
-                </TouchableOpacity>
-              </View>
-            </View>
+              {/* <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15, commonStyle.mt10]}>
 
-            {/* ############################################################### 버튼 */}
-            <SpaceView viewStyle={[commonStyle.paddingHorizontal15]}>
-              {/* {Platform.OS === 'ios' ? (
-                <SpaceView mb={5}>
-                  <CommonBtn value={'애플로그인'} onPress={onAppleButtonPress} />
+                <SpaceView mb={30} viewStyle={{width: '100%'}}>
+                  <SpaceView mb={10}>
+                    <Text style={styles.fontStyle('EB', 16, '#fff')}>아이디(이메일)</Text>
+                  </SpaceView>
+                  <SpaceView>
+                    <TextInput
+                      value={id}
+                      onChangeText={(text) => setId(text)}
+                      autoCapitalize={'none'}
+                      style={_styles.textInputStyle}
+                      maxLength={50}
+                      hitSlop={commonStyle.hipSlop25}
+                    />
+
+                    {id.length > 0 && (
+                      <TouchableOpacity 
+                        style={_styles.removeTextBtn}
+                        onPress={() => { setId(''); }}
+                        hitSlop={commonStyle.hipSlop20}>
+                        <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                      </TouchableOpacity>
+                    )}
+                  </SpaceView>
                 </SpaceView>
-              ) : null}
-              {Platform.OS === 'android' ? (
-                <SpaceView mb={5}>
-                  <CommonBtn value={'구글로그인'} onPress={google_signIn} />
+
+                <SpaceView viewStyle={{width: '100%'}}>
+                  <SpaceView mb={10}>
+                    <Text style={_styles.emailPwdText}>비밀번호</Text>
+                  </SpaceView>
+                  <SpaceView>
+                    <TextInput
+                      value={password}
+                      onChangeText={(text) => setPassword(text)}
+                      autoCapitalize={'none'}
+                      style={_styles.textInputStyle}
+                      maxLength={30}
+                      secureTextEntry={true}
+                    />
+
+                    {password.length > 0 && (
+                      <TouchableOpacity
+                        style={_styles.removeTextBtn}
+                        onPress={() => { setPassword(''); }} 
+                        hitSlop={commonStyle.hipSlop20}>
+                        <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                      </TouchableOpacity>
+                    )}
+                  </SpaceView>
+
                 </SpaceView>
-              ) : null} */}
-              <SpaceView mb={5}>
-                <SpaceView>
-                  <CommonBtn
-                    value={'LOGIN'}
-                    type={'reNewId'}
-                    isGradient={false}
-                    fontFamily={'Pretendard-Bold'}
-                    borderRadius={5}
-                    fontSize={16}
-                    onPress={() => {
-                      if (id == '') {
-                        return show({ content: '아이디를 입력해 주세요.' });
+
+                <View style={_styles.saveLogInfoContainer}>
+                  <TouchableOpacity
+                    style={_styles.checkWrap}
+                    onPress={() => { 
+                      if(activate === false) {
+                        setActivate(true); 
+                      }else {
+                        setActivate(false); 
                       }
-                      if (password == '') {
-                        return show({ content: '비밀번호를 입력해 주세요.' });
-                      }
-                      
-                      loginProc(false);
-                      //dispatch(loginReduce(id, password));
                     }}
-                  />
-                </SpaceView>
-
-                <SpaceView mt={15} mb={8}>
-                  <CommonBtn
-                    value={'아이디/비밀번호 찾기'}
-                    type={'reNewPwd'}
-                    isGradient={false}
-                    fontFamily={'Pretendard-Regular'}
-                    borderRadius={5}
-                    fontSize={16}
-                    onPress={() => {
-                      navigation.navigate('SearchIdAndPwd');
-                    }}
-                  />
-                </SpaceView>
-
-                <SpaceView viewStyle={_styles.joinText}>
-                  <Text style={[_styles.signInText, {color: '#D5CD9E'}]}>계정이 없으신가요?</Text>
-                  <View style={_styles.joinTextLine} />
-                  <TouchableOpacity onPress={() => { joinProc(); }} hitSlop={commonStyle.hipSlop10}>
-                    <Text style={_styles.signInText}>회원가입</Text>
+                  >
                   </TouchableOpacity>
-                </SpaceView>
-
-              </SpaceView>
-
-              {/* <SpaceView mt={45}>
-                <CommonBtn
-                  value={'처음으로'}
-                  type={'reNewGoBack'}
-                  isGradient={false}
-                  fontFamily={'Pretendard-Light'}
-                  fontSize={14}
-                  borderRadius={5}
-                  onPress={() => {
-                    navigation.navigate('Login');
-                  }}
-                />
-              </SpaceView> */}
+                </View>
+              </View> */}
             </SpaceView>
-          </SpaceView>
-        </ScrollView>
-      </LinearGradient>
+          {/* </ScrollView> */}
+        </SpaceView>
+      </SpaceView>
     </>
   );
 };
@@ -594,91 +610,35 @@ export const Login = () => {
 
 
 const _styles = StyleSheet.create({
-  loginContainer: {
+  wrap: {
     minHeight: height,
-    paddingTop: 24,
-    paddingLeft: 16,
-    paddingRight: 16,
-    flexGrow: 1,
+    //flexGrow: 1,
   },
-  loginTitle: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 25,
-    color: '#D5CD9E',
-    //lineHeight: 38,
-  },
-  logoDescArea: {
-    backgroundColor: '#0EE9F1',
-    borderRadius: 50,
-    paddingVertical: 5,
-    width: '70%'
-  },
-  logoDesc: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#FFF',
-    textAlign: 'center',
-  },
-  container: {
-    paddingTop: 5,
-    flex: 1,
-  },
-  emailPwdText: {
-    fontFamily: 'Pretendard-Bold',
-    color: '#F3E270',
-  },
-  saveLogInfoContainer: {
-    width: '100%',
-    marginTop: 10,
-    marginBottom: 20,
-    flexDirection: 'row',
-  },
-  saveLogInfoText: {
-    color: '#F3E270', 
-    fontFamily: 'Pretendard-Light',
-    fontSize: 14,
-    fontWeight: '500',
-    marginLeft: 5,
-  },
-  joinText: {
-    width: '100%',
-    paddingVertical: 15,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  joinTextLine: {
-    borderRightWidth: 1,
-    borderRightColor: '#F3E270',
-    height: 15,
-    marginHorizontal: 10,
-    marginTop: 2,
-  },
-  signInText: {
-    color: '#F3E270',
-    fontFamily: 'Pretendard-Light',
-    fontWeight: '500',
-  },
-  removeTextBtn: {
+  bodyWrap: {
     position: 'absolute',
-    bottom: 10,
+    top: 0,
+    left: 0,
     right: 0,
+    zIndex: 1,
   },
-  checkWrap: {
-    flexDirection: 'row',
+  loginBtn: {
+    borderRadius: 25,
+    backgroundColor: '#1F5AFB',
     alignItems: 'center',
-    marginRight: 5,
+    width: 270,
+    paddingVertical: 12,
   },
-  checkContainer: {
-    width: 12,
-    height: 12,
-    borderWidth: 1,
-    borderRadius: 2,
-    borderColor: '#F3E270',
+  joinBtn: {
+    borderRadius: 25,
+    backgroundColor: '#000000',
     alignItems: 'center',
-    justifyContent: 'center',
+    width: 270,
+    paddingVertical: 12,
+    marginTop: 10,
   },
   textInputStyle: {
     borderBottomWidth: 1,
-    borderBottomColor: '#F3E270',
+    borderBottomColor: '#A8A8A8',
     padding: 0,
     color: '#F3E270',
     fontFamily: 'Pretendard-Bold',
@@ -686,4 +646,6 @@ const _styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
   },
+
+
 });

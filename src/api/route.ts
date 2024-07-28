@@ -30,6 +30,7 @@ export const JOIN_SAVE_PROFILE_IMAGE = '/join/saveProfileImage'
 export const JOIN_SAVE_PROFILE_AUTH = '/join/saveProfileAuth'
 export const JOIN_SAVE_PROFILE_ADD = '/join/saveProfileAdd'
 export const JOIN_SAVE_PROFILE_NICKNAME = '/join/saveProfileNickname'
+export const JOIN_SAVE_PROFILE_MESSAGE = '/join/saveProfileMessage'
 export const JOIN_SAVE_PROFILE_INTRODUCE = '/join/saveProfileIntroduce'
 
 
@@ -68,6 +69,7 @@ export const UPDATE_MEMBER_MASTER_IMAGE = '/member/updateMemberMasterImage'
 export const INSERT_MEMBER_IMAGE = '/member/insertMemberImage'
 export const UPDATE_MEMBER_IMAGE = '/member/updateMemberImage'
 export const DELETE_MEMBER_IMAGE = '/member/deleteMemberImage'
+export const SOCIAL_REWARD_PASS_ADD = '/member/socialRewardPassAdd'
 
 /**
  * PROFILE
@@ -81,6 +83,7 @@ export const GET_MEMBER_INTEREST = '/profile/getMemberInterest';
 export const SAVE_PROFILE_AUTH_COMMENT = '/profile/saveSecondAuthComment';
 export const SAVE_PROFILE_AUTH = '/profile/saveProfileAuth';
 export const SAVE_MEMBER_INTEREST = '/profile/saveMemberInterest';
+export const SAVE_PROFILE_INFO = '/profile/saveProfileInfo';
 
 
 /**
@@ -144,6 +147,7 @@ export const POPUP_EVENT_LIST = '/event/selectPopupEventList';
  */
 export const COMMON_CODE = '/common/selectGroupCodeList';
 export const COMMON_CODE_LIST = '/common/selectCommonCodeList';
+export const GET_MEMBER_ADD_CODE = '/common/getMemberAddCommonCode';
 export const BOARD_LIST = '/board/selectBoardList';
 export const BOARD_DETAIL_VIEW = '/board/boardDetailView';
 export const NICE_AUTH = '/nice/authToken';

@@ -1,5 +1,5 @@
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect, CommonActions } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomParamList, ColorType, ScreenNavigationProp } from '@types';
 import { get_daily_match_list, profile_open, update_additional } from 'api/models';
@@ -23,6 +23,8 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 import SocialGrade from 'component/common/SocialGrade';
 import { iapConnection } from 'utils/initIAP';
+import ListItem from 'component/match/ListItem';
+import { DropDown } from 'component/common/DropDown';
 
 
 
@@ -133,7 +135,7 @@ export default function MatchingList(props: Props) {
         show({
           type: 'EVENT',
           eventType: 'EVENT',
-          eventPopupList: popupList,
+          dataList: popupList,
           confirmCallback: async function(isNextChk) {
             if(isNextChk) {
               // 팝업 종료 일시 Storage 저장
@@ -171,7 +173,7 @@ export default function MatchingList(props: Props) {
   };
 
   // ############################################################ 매칭 상세 이동
-  const goMatchDetail = async (trgtMemberSeq:number) => {
+  const goMatchDetail = useCallback(async (trgtMemberSeq:number) => {
     navigation.navigate(STACK.COMMON, { 
       screen: 'MatchDetail',
       params: {
@@ -179,10 +181,10 @@ export default function MatchingList(props: Props) {
         type: 'OPEN',
       } 
     });
-  };
+  }, []);
 
   // ############################################################ 프로필 열람
-  const profileOpen = async (trgtMemberSeq:number) => {
+  const profileOpen = useCallback(async (trgtMemberSeq:number) => {
     // 중복 클릭 방지 설정
     if(isClickable) {
       try {
@@ -220,7 +222,7 @@ export default function MatchingList(props: Props) {
         setIsLoad(false);
       }
     }
-  };
+  }, []);
 
   // ################################################################ 초기 실행 함수
   React.useEffect(() => {
@@ -280,14 +282,18 @@ export default function MatchingList(props: Props) {
 
   return (
     <>
-      <TopNavigation currentPath={'LEAP'} />
+      {/* <TopNavigation currentPath={'LEAP'} /> */}
 
       <LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
+				colors={['#8080E2', '#44B6E5']}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 0, y: 1 }}
         style={_styles.wrap}
 			>
+
+        <SpaceView mt={30} mb={20} ml={20} mr={20}>
+          <DropDown />
+        </SpaceView>
 
         {!isEmpty ? (
           <>
@@ -300,12 +306,15 @@ export default function MatchingList(props: Props) {
                   const { item, index } = props;
                   return (
                     <>
-                      <MatchRenderItem 
-                        item={item} 
-                        fnDetail={goMatchDetail} 
-                        fnProfileOpen={profileOpen} 
-                        freeOpenCnt={data?.freeOpenCnt} 
-                        respectGrade={memberBase?.respect_grade} />
+                      <ListItem 
+                        //key={item.match_seq} 
+                        item={item}
+                        fnGoDetail={goMatchDetail}
+                        fnProfileOpen={profileOpen}
+                        freeOpenCnt={data?.freeOpenCnt}
+                        respectGrade={memberBase?.respect_grade}
+                        isLastItem={data.matchList.length == index}
+                      />
                     </>
                   )
                 }}
@@ -344,421 +353,10 @@ export default function MatchingList(props: Props) {
                 {/* <Image source={ICON.digitalClock} style={[styles.iconSize40, {marginTop: 25, marginLeft: 5}]} /> */}
               </SpaceView>
             </SpaceView>
-
-            {/* <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'} ]}>
-              <SpaceView mb={50} viewStyle={[layoutStyle.alignCenter]}>
-                <Text style={_styles.emptyText}>
-                  {data.introSecondYn == 'Y' ? (
-                    <>
-                      오늘 소개하여 드린 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>가 마감되었어요.{"\n"}
-                      <Text style={{color: '#7986EE'}}>데일리 뷰</Text>에서 제공해드리는 프로필 카드는 {"\n"}매일 오후3시와 자정에 확인 가능합니다. 🎁
-                    </>
-                  ) : (
-                    <>
-                      오후 3시에 한번 더 제공해드리는{"\n"}
-                      새로운 <Text style={{color: '#7986EE'}}>데일리 뷰</Text>를 확인해 보세요!
-                    </>
-                  )}
-                </Text>
-
-                <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
-                  <Image source={IMAGE.logoIcon03} style={styles.iconSquareSize(230)} />
-                </View>
-
-                <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={styles.iconSquareSize(40)} /></View>
-                <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={styles.iconSquareSize(40)} /></View>
-              </SpaceView>
-            </View> */}
           </>
         )}
 
       </LinearGradient>
-    </>
-  );
-};
-
-/* #####################################################################################################################################
-####### 매칭 아이템 렌더링
-##################################################################################################################################### */
-function MatchRenderItem({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGrade }) {
-  const imgList = item?.img_list; // 이미지 목록
-  const [currentImgIdx, setCurrentImgIdx] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
-  const memberBase = useUserInfo(); // 본인 데이터
-
-  const _renderWidth = width - 40;
-  const _renderHeight = height * 0.73;
-
-  // 이전 이미지
-  const prevImage = async () => {
-    if(currentImgIdx > 0) {
-      setCurrentImgIdx(currentImgIdx-1);
-    }
-  };
-
-  // 다음 이미지
-  const nextImage = async () => {
-    if(currentImgIdx+1 < imgList.length && currentImgIdx < 2) {
-      setCurrentImgIdx(currentImgIdx+1);
-    }
-  };
-
-  // 상세 실행
-  const detailProc = async () => {
-    if(item?.open_yn == 'Y') {
-      fnDetail(item?.member_seq);
-    } else {
-      setIsOpen(true);
-    }
-  };
-
-  // 열람 실행
-  const openProc = async() => {
-    if(item?.open_yn == 'Y') {
-      fnDetail(item?.member_seq);
-    } else {
-      fnProfileOpen(item?.member_seq);
-    }
-  };
-
-  // 열람 취소
-  const openCancel = async() => {
-    setIsOpen(false);
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => {
-        setIsOpen(false);
-      };
-    }, []),
-  );
-
-  return (
-    <>
-      <SpaceView mb={30}>
-        <SpaceView viewStyle={_styles.blindCardShadow}>
-
-          <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
-
-            {/* ############################ 이미지 */}
-            {imgList.length > 0 && (
-              <Image
-                source={findSourcePath(imgList[currentImgIdx].img_file_path)}
-                style={{ width: _renderWidth, height: _renderHeight }}
-                //resizeMode={'cover'}
-              />
-            )}
-
-            {/* ############################ 인디케이터 */}
-            <SpaceView viewStyle={_styles.pagingContainer}>
-              {imgList?.map((i, n) => {
-                return n < 3 && (
-                  <View style={_styles.dotContainerStyle} key={'dot' + n}>
-                    <View style={[_styles.pagingDotStyle, n == currentImgIdx && _styles.activeDot]} />
-                  </View>
-                )
-              })}
-            </SpaceView>
-
-            {/* ############################ 상세 버튼 */}
-            <TouchableOpacity
-              onPress={() => { detailProc(); }}
-              style={{position: 'absolute', bottom: 10, right: 10, zIndex: 2, borderWidth: item?.open_yn == 'Y' ? 1 : 0, borderColor: '#FFDD00', borderRadius: 20}}
-            >
-              <Image source={ICON.blindDetail} style={styles.iconSquareSize(40)} />
-            </TouchableOpacity>
-
-            {/* ############################ 이전 버튼 */}
-            <TouchableOpacity 
-              onPress={() => { prevImage(); }}
-              style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: (width * 0.85) / 2}} />
-
-            {/* ############################ 다음 버튼 */}
-            <TouchableOpacity 
-              onPress={() => { nextImage(); }}
-              style={{position: 'absolute', top: 0, bottom: 0, right: 0, width: (width * 0.85) / 2}} />
-
-            {/* ############################ 리스펙트 등급 표시 */}
-            <SpaceView viewStyle={_styles.gradeArea}>
-              <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
-              <Text style={_styles.gradeText}>{item?.respect_grade}</Text>
-            </SpaceView>
-
-            {/* ############################ 내용 */}
-            <SpaceView viewStyle={_styles.infoArea}>
-              {currentImgIdx == 0 && (
-                <SpaceView pl={30} pr={30} viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-
-                  {/* 거리 */}
-                  <SpaceView mb={5}><Text style={_styles.infoText(14)}>{item.distance}Km</Text></SpaceView>
-
-                  {/* 닉네임, 나이 */}
-                  <SpaceView mb={3}><Text style={_styles.infoText(25)}>{item.nickname}, {item.age}</Text></SpaceView>
-
-                  {/* 한줄소개 */}
-                  <SpaceView ml={25} mr={25}><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>
-
-                </SpaceView>
-              )}
-              {currentImgIdx == 1 && (
-                <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
-                  <SpaceView viewStyle={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-
-                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
-                      <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
-
-                      {/* 인상 수식어 표시 */}
-                      {isEmptyData(item?.face_modifier) && (
-                        <SpaceView ml={8}><Text style={_styles.faceModifierText}>#{item?.face_modifier}</Text></SpaceView>
-                      )}
-                    </SpaceView>
-
-                  </SpaceView>
-                  
-                  {item?.face_list.length > 0 && (
-                    <>
-                      <SpaceView mt={12} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        {item?.face_list?.map((i, n) => {
-                          return isEmptyData(i.face_code_name) && (
-                            <>
-                              <SpaceView key={n} mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
-                                <Text style={_styles.faceText}>#{i.face_code_name}</Text>
-                              </SpaceView>
-                            </>
-                          )
-                        })}
-                      </SpaceView>
-                    </>
-                  )}
-                </SpaceView>
-              )}
-              {currentImgIdx == 2 && (
-                <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
-                  <SpaceView viewStyle={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
-                      <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
-                    </SpaceView>
-                  </SpaceView>
-                
-                  {item?.auth_list.length > 0 && (
-                    <>
-                      <SpaceView mt={12} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        {item?.auth_list?.map((i, n) => {
-                          const authCode = i.common_code;
-                          let authIcon = ICON.authJob;
-
-                          if(authCode == 'EDU') {
-                            authIcon = ICON.authEdu;
-                          } else if(authCode == 'INCOME') {
-                            authIcon = ICON.authAsset;
-                          } else if(authCode == 'ASSET') {
-                            authIcon = ICON.authAsset;
-                          } else if(authCode == 'SNS') {
-                            authIcon = ICON.authAsset;
-                          } else if(authCode == 'VEHICLE') {
-                            authIcon = ICON.authAsset;
-                          }
-
-                          return isEmptyData(i.auth_type_name) && (
-                            <>
-                              <SpaceView key={'auth'+n} mb={7} mr={5} viewStyle={_styles.authItemWrap}>
-                                {/* <Image source={authIcon} style={styles.iconSquareSize(16)} />
-                                <SpaceView ml={8}><Text style={_styles.faceText}>{i.slogan_name}</Text></SpaceView> */}
-
-                                <SpaceView><Text style={_styles.faceText}>#{i.auth_type_name}</Text></SpaceView>
-                              </SpaceView>
-                            </>
-                          )
-                        })}
-                      </SpaceView>
-                    </>
-                  )}
-                </SpaceView>
-              )}
-            </SpaceView>
-
-            {/* ############################### 하단 딤 처리 영역 */}
-            <LinearGradient
-              colors={['rgba(0, 0, 0, 0.0)', 'rgba(0, 0, 0, 0.9)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={_styles.thumnailDimArea} />
-
-            {/* ############################### 열람 블러 영역 */}
-            {isOpen && (
-              <>
-                <BlurView 
-                  style={_styles.blurArea(_renderWidth, _renderHeight)}
-                  blurType='light'
-                  blurAmount={15}
-                />
-
-                <SpaceView viewStyle={_styles.blurArea(_renderWidth, _renderHeight)}>
-                  {freeOpenCnt > 0 ? (
-                    <SpaceView>
-                      <SpaceView viewStyle={_styles.blurDesc}>
-                        <SpaceView mr={5}><SocialGrade grade={respectGrade} sizeType={'SMALL'} /></SpaceView>
-                        <Text style={_styles.blurDescText}>무료 열람 활성화</Text>
-                      </SpaceView>
-
-                      <SpaceView mt={10} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                        <Text style={_styles.blurAddText('#FFDD00')}>{freeOpenCnt}회남음</Text>
-                      </SpaceView>
-                    </SpaceView>
-                  ) : (
-                    <SpaceView>
-                      <SpaceView viewStyle={_styles.blurDesc}>
-                        <Text style={_styles.blurDescText}>큐브를 사용하여 블라인드 카드를 열람합니다.</Text>
-                      </SpaceView>
-
-                      <SpaceView mt={10} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                        <SpaceView mr={3}><Image source={ICON.cubeYCyan} style={styles.iconSquareSize(30)} /></SpaceView>
-                        <Text style={_styles.blurAddText('#32F9E4')}>15</Text>
-                      </SpaceView>
-                    </SpaceView>
-                  )}
-
-                  <SpaceView viewStyle={_styles.bluBtnArea}>
-                    <LinearGradient
-                      colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.5)']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                      style={_styles.bluBtnGradient}>
-                      
-                      <TouchableOpacity style={_styles.bluBtnTouch(true)} onPress={() => { openCancel(); }}>
-                        <Text style={_styles.bluBtnText('#E1DFD1')}>취소</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={_styles.bluBtnTouch(false)} onPress={() => { openProc(); }}>
-                        <Text style={_styles.bluBtnText('#FFDD00')}>열람하기</Text>
-                      </TouchableOpacity>
-                    </LinearGradient>
-                  </SpaceView>
-
-                  <SpaceView viewStyle={_styles.cubeInfoArea}>
-                    <SpaceView mr={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      <SpaceView mr={3}><Image source={ICON.cubeYCyan} style={styles.iconSquareSize(15)} /></SpaceView>
-                      <Text style={_styles.cubeAmtText}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
-                    </SpaceView>
-                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      <SpaceView mr={1}><Image source={ICON.megaCubeCyan} style={styles.iconSquareSize(20)} /></SpaceView>
-                      <Text style={_styles.cubeAmtText}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
-                    </SpaceView>
-                  </SpaceView>
-                </SpaceView>
-              </>
-            )}
-          </SpaceView>
-
-
-          {/* ############################################################ 슬라이드 형식 */}
-          {/* <FlatList
-            contentContainerStyle={{ overflow: 'visible', paddingHorizontal: 20 }}
-            data={imgList}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            decelerationRate="fast"
-            snapToInterval={width * 0.85 + 5}
-            renderItem={({ item: _item, index: _index }) => {
-
-              return _index < 3 && (
-                <TouchableOpacity 
-                  key={_index} 
-                  onPress={() => { fnDetail(item?.member_seq); }}
-                  style={_styles.imgItemWrap}
-                  activeOpacity={0.8} 
-                >
-                  <SpaceView viewStyle={{borderRadius: 20, overflow: 'hidden'}}>
-                    <Image
-                      source={findSourcePath(_item?.img_file_path)}
-                      style={{ flex: 1, width: width * 0.85, height: height * 0.75 }}
-                      resizeMode={'cover'}
-                    />
-
-                    <SpaceView viewStyle={_styles.infoArea}>
-                      {_index == 0 && (
-                        <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-                          <SpaceView mb={5}><Text style={_styles.infoText(14)}>{item.distance}Km</Text></SpaceView>
-                          <SpaceView mb={3}><Text style={_styles.infoText(25)}>{item.nickname}, {item.age}</Text></SpaceView>
-                          <SpaceView><Text style={_styles.infoText(16)}>{item.comment}</Text></SpaceView>
-                        </SpaceView>
-                      )}
-                      {_index == 1 && (
-                        <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
-                          <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
-                            <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
-                          </SpaceView>
-                          <SpaceView viewStyle={{flexDirection: 'row'}}>
-                            {item?.face_list.length > 0 && (
-                              <>
-                                {item?.face_list?.map((i, n) => {
-                                  return isEmptyData(i.face_code_name) && (
-                                    <SpaceView mb={7} mr={5} viewStyle={_styles.faceItemWrap}>
-                                      <Text style={_styles.faceText}>#{i.face_code_name}</Text>
-                                    </SpaceView>
-                                  )
-                                })}
-                              </>
-                            )}
-                          </SpaceView>
-                        </SpaceView>
-                      )}
-                      {_index == 2 && (
-                        <SpaceView ml={15} mr={15} viewStyle={{justifyContent: 'center', alignItems: 'flex-start'}}>
-                          <SpaceView mb={8} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Image source={findSourcePath(imgList[0].img_file_path)} style={_styles.mstImgStyle} />
-                            <SpaceView ml={5}><Text style={_styles.infoText(16)}>{item.nickname}</Text></SpaceView>
-                          </SpaceView>
-                          <SpaceView viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                            {item?.auth_list.length > 0 && (
-                              <>
-                                {item?.auth_list?.map((i, n) => {
-                                  const authCode = i.common_code;
-                                  let authIcon = ICON.authJob;
-
-                                  if(authCode == 'EDU') {
-                                    authIcon = ICON.authEdu;
-                                  } else if(authCode == 'INCOME') {
-                                    authIcon = ICON.authAsset;
-                                  } else if(authCode == 'ASSET') {
-                                    authIcon = ICON.authAsset;
-                                  } else if(authCode == 'SNS') {
-                                    authIcon = ICON.authAsset;
-                                  } else if(authCode == 'VEHICLE') {
-                                    authIcon = ICON.authAsset;
-                                  }
-
-                                  return isEmptyData(i.slogan_name) && (
-                                    <SpaceView mb={7} mr={5} viewStyle={_styles.authItemWrap}>
-                                      <Image source={authIcon} style={styles.iconSquareSize(16)} />
-                                      <SpaceView ml={8}><Text style={_styles.faceText}>{i.slogan_name}</Text></SpaceView>
-                                    </SpaceView>
-                                  )
-                                })}
-                              </>
-                            )}
-                          </SpaceView>
-                        </SpaceView>
-                      )}
-                    </SpaceView>
-
-                    <LinearGradient
-                      colors={['transparent', '#000000']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                      style={_styles.thumnailDimArea} />
-                  </SpaceView>
-                </TouchableOpacity>
-              )
-            }}
-          /> */}
-        </SpaceView>
-      </SpaceView>
     </>
   );
 };
@@ -774,209 +372,5 @@ const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
   },
-  imgItemWrap: {
-    marginHorizontal: 5,
-  },
-  infoArea: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-    paddingVertical: 25,
-  },
-  infoText: (fs:number, cr:string) => {
-    return {
-      fontFamily: 'Pretendard-Regular',
-      fontSize: fs,
-      color: isEmptyData(cr) ? cr : '#fff',
-    };
-  },
-  thumnailDimArea: {
-    position: 'absolute',
-    bottom: -1,
-    left: 0,
-    right: 0,
-    opacity: 0.8,
-    height: height * 0.24,
-  },
-  mstImgStyle: {
-    width: 28,
-    height: 28,
-    borderRadius: 65,
-    overflow: 'hidden',
-  },
-  faceItemWrap: {
-    backgroundColor: 'rgba(135,135,135,0.5)',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-  },
-  faceText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: '#EEEAEB',
-  },
-  authItemWrap: {
-    backgroundColor: 'rgba(135,135,135,0.5)',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    fontFamily: 'Pretendard-Regular',
-    textAlign: 'center',
-    fontSize: 16,
-    lineHeight: 23,
-    minHeight: 50,
-    textAlignVertical: 'center',
-  },
-  blindCardShadow: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-
-    shadowColor: '#000000',   
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 5,
-  },
-  pagingContainer: {
-    position: 'absolute',
-    top: 30,
-    left: 0,
-    right: 10,
-    zIndex: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  pagingDotStyle: {
-    width: 20,
-    height: 2,
-    backgroundColor: '#34447A',
-    borderRadius: 4,
-  },
-  dotContainerStyle: {
-    //marginRight: 2,
-    //marginLeft: 2,
-  },
-  activeDot: {
-    backgroundColor: '#A29552',
-  },
-  faceModifierText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: '#4A4846',
-    backgroundColor: '#FFF8CC',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    overflow: 'hidden',
-  },
-  blurArea: (_width:number, _height:number) => {
-    return {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      width: _width,
-      height: _height,
-      zIndex: 2,
-      alignItems: 'center',
-      alignContent: 'center',
-      justifyContent: 'center',
-    };
-  },
-  blurDesc: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    paddingVertical: 2,
-    paddingHorizontal: 12,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  blurDescText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 12,
-    color: '#D5CD9E',
-  },
-  blurAddText: (cr:string) => {
-    return {
-      fontFamily: 'Pretendard-Medium',
-      fontSize: 23,
-      color: '#32F9E4',
-    };
-  },
-  bluBtnArea: {
-    position: 'absolute',
-    bottom: 40,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 30,
-  },
-  bluBtnGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 18,
-  },
-  bluBtnTouch: (isBorder:boolean) => {
-    return {
-      width: '50%',
-      paddingVertical: 20,
-      borderRightWidth: isBorder ? 1 : 0,
-      borderRightColor: '#64614B',
-    };
-  },
-  bluBtnText: (cr:string) => {
-    return {
-      fontFamily: 'Pretendard-SemiBold',
-      fontSize: 16,
-      color: cr,
-      textAlign: 'center',
-    };
-  },
-  cubeInfoArea: {
-    position: 'absolute',
-    top: 10,
-    right: 20,
-    flexDirection: 'row',
-    zIndex: 2,
-  },
-  cubeAmtText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 12,
-    color: '#32F9E4',
-  },
-  gradeArea: {
-    position: 'absolute',
-    top: 15,
-    right: 15,
-    backgroundColor: '#FFFFFF',
-    borderRadius: Platform.OS == 'ios' ? 8 : 15,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 5,
-  },
-  gradeText:  {
-    fontFamily: 'MinSans-Bold',
-    fontSize: 13,
-    color: '#000000',
-    marginLeft: 3,
-  },
 
 });
-
-

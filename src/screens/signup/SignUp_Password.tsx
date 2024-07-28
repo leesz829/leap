@@ -245,135 +245,66 @@ export const SignUp_Password = (props: Props) => {
 
   return (
     <>
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={_styles.signUpContainer}
-      >
-        <ScrollView>
-          <SpaceView mt={30} mb={20} viewStyle={{paddingHorizontal:16}}>
-            <CommonText textStyle={_styles.title}>
-              사용하실{'\n'}비밀번호를 입력해주세요.
-            </CommonText>
-          </SpaceView>
+      <SpaceView viewStyle={_styles.wrap}>
+        <SpaceView>
+          <CommonHeader title="" />
+        </SpaceView>
 
-          <SpaceView mt={30} mb={30} viewStyle={[_styles.container]}>
-
-            {/* 이메일 */}
-            <SpaceView mb={30}>
-              <SpaceView mb={10}>
-                <Text style={[_styles.emailPwdText, {color: '#D5CD9E'}]}>이메일</Text>
-              </SpaceView>
-              <SpaceView viewStyle={[commonStyle.width100]}>
-                <TextInput
-                  value={emailId}
-                  onChangeText={(text) => setEmailId(text)}
-                  autoCapitalize={'none'}
-                  style={_styles.textInputStyle('#D5CD9E')}
-                  maxLength={50}
-                  editable={false}
-                />
+        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          <SpaceView>
+            <SpaceView mt={50}>
+              <Text style={styles.fontStyle('H', 28, '#fff')}>사용하실{'\n'}비밀번호를 입력해 주세요.</Text>
+              <SpaceView mt={10}>
+                <Text style={styles.fontStyle('SB', 12, '#fff')}>비밀번호는 8글자 이상, 영문포함, 숫자포함, 특수기호 허용</Text>
               </SpaceView>
             </SpaceView>
 
-            {/* 비밀번호 */}
-            <SpaceView mb={30}>
-              <SpaceView mb={10}>
-                <Text style={_styles.emailPwdText}>비밀번호</Text>
-              </SpaceView>
-              <SpaceView viewStyle={[commonStyle.width100]}>
-                <TextInput
+            <SpaceView mt={50} viewStyle={_styles.contentWrap}>
+              <TextInput
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                autoCapitalize={'none'}
+                style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
+                maxLength={20}
+                placeholder={'비밀번호를 입력해 주세요.'}
+                placeholderTextColor={'#808080'}
+                secureTextEntry={true}
+              />
+            </SpaceView>
+            <SpaceView mt={20} viewStyle={_styles.contentWrap}>
+              <TextInput
+                value={passwordChk}
+                onChangeText={(text) => setPasswordChk(text)}
+                autoCapitalize={'none'}
+                style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
+                maxLength={20}
+                placeholder={'비밀번호를 재입력해 주세요.'}
+                placeholderTextColor={'#808080'}
+                secureTextEntry={true}
+              />
+
+                {/* <TextInput
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   autoCapitalize={'none'}
                   style={_styles.textInputStyle('#F3E270')}
                   secureTextEntry={true}
                   maxLength={20}
-                />
-
-                {password.length > 0 && (
-                  <TouchableOpacity 
-                    style={_styles.removeTextBtn}
-                    onPress={() => { setPassword(''); }}>
-                    <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-                  </TouchableOpacity>
-                )}
-              </SpaceView>
-              <View style={{width: '100%'}}>
-                <Text style={_styles.noticeText}><Text style={{color: '#FFDD00'}}>8글자 이상, 20글자 이하</Text>, 영문 포함, <Text style={{color: '#FFDD00'}}>숫자 포함</Text>, 특수기호 포함</Text>
-              </View>
-            </SpaceView>
-
-            {/* 비밀번호 확인 */}
-            <SpaceView>
-              <SpaceView mb={10}>
-                <Text style={_styles.emailPwdText}>비밀번호 확인</Text>
-              </SpaceView>
-              <SpaceView viewStyle={[commonStyle.width100]}>
-                <TextInput
-                  value={passwordChk}
-                  onChangeText={(text) => setPasswordChk(text)}
-                  autoCapitalize={'none'}
-                  style={_styles.textInputStyle('#F3E270')}
-                  secureTextEntry={true}
-                  maxLength={20}
-                />
-
-                {passwordChk.length > 0 && (
-                  <TouchableOpacity 
-                    style={_styles.removeTextBtn}
-                    onPress={() => { setPasswordChk(''); }}>
-                    <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-                  </TouchableOpacity>
-                )}
-              </SpaceView>
-              <View style={{width: '100%'}}>
-                {
-                  passwordChk !== '' && (password !== '' && passwordChk !== '') ? 
-                  (
-                    password === passwordChk
-                      ? <Text style={[_styles.noticeText, {color: '#FFDD00'}]}>비밀번호 일치</Text>
-                      : <Text style={_styles.noticeText}>비밀번호 불일치</Text>
-                  ) 
-                  : <></>
-                }
-              </View>
-            </SpaceView>
-            
-            <SpaceView mt={50}>
-              <CommonBtn
-                value={'프로필 사진 등록하기'}
-                type={'reNewId'}
-                borderRadius={5}
-                onPress={() => {
-                  register();
-                }}
-              />
-            </SpaceView>
-
-            <SpaceView mt={10}>
-              <CommonBtn
-                value={'이전으로'}
-                type={'reNewGoBack'}
-                isGradient={false}
-                fontFamily={'Pretendard-Light'}
-                fontSize={14}
-                borderRadius={5}
-                onPress={() => {
-                  navigation.goBack();
-
-                  if(isEmptyData(memberSeq)) {
-
-                  } else {
-                    
-                  }
-                }}
-              />
+                /> */}
             </SpaceView>
           </SpaceView>
-        </ScrollView>
-      </LinearGradient>
+
+          <SpaceView viewStyle={_styles.bottomWrap}>
+            <TouchableOpacity 
+              disabled={!emailId}
+              onPress={() => { register(); }}
+              style={_styles.nextBtnWrap(isEmptyData(password) && isEmptyData(passwordChk) && password === passwordChk)}>
+              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+            </TouchableOpacity>
+          </SpaceView>
+        </SpaceView>
+      </SpaceView>
     </>
   );
 };
@@ -385,6 +316,52 @@ export const SignUp_Password = (props: Props) => {
 ###########################################################################################################
 ####################################################################################################### */}
 const _styles = StyleSheet.create({
+  wrap: {
+    flex: 1,
+    minHeight: height,
+    backgroundColor: '#000000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
+  },
+  contentWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemWrap: {
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  textWrap: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
+    paddingBottom: 5,
+    paddingHorizontal: 8,
+  },
+  bottomWrap: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  nextBtnWrap: (isOn:boolean) => {
+		return {
+			backgroundColor: isOn ? '#1F5AFB' : '#808080',
+      borderRadius: 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+    };
+	},
+
+
+
+
+
+
+
+
+
+
   signUpContainer: {
     minHeight: height,
     paddingTop: 60,
@@ -420,17 +397,13 @@ const _styles = StyleSheet.create({
     bottom: 10,
     right: 0,
   },
-  textInputStyle: (cr:string) => {
-    return {
-      borderBottomWidth: 1,
-      borderBottomColor: '#F3E270',
-      padding: 0,
-      color: isEmptyData(cr) ? cr : '#F3E270',
-      fontFamily: 'Pretendard-Bold',
-      fontSize: 14,
-      paddingBottom: 5,
-      paddingTop: 5,
-    };
+  textInputStyle: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#A8A8A8',
+    padding: 0,
+    paddingBottom: 5,
+    paddingTop: 5,
   },
 
 });

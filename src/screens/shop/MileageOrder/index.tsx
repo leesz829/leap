@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ScreenNavigationProp } from '@types';
 import { ROUTES, STACK } from 'constants/routes';
 import { useProfileImg } from 'hooks/useProfileImg';
-import { layoutStyle } from 'assets/styles/Styles';
+import { layoutStyle, styles } from 'assets/styles/Styles';
 import { Slider } from '@miblanchard/react-native-slider';
 import MileageInfo from 'component/shop/MileageInfo';
 
@@ -27,7 +27,9 @@ const DATA = [
   },
 ];
 
+const { width, height } = Dimensions.get('window');
 export default function MileageOrder() {
+  const navigation = useNavigation<ScreenNavigationProp>();
   const me = useUserInfo();
   const mbrProfileImgList = useProfileImg();
 
@@ -77,43 +79,74 @@ export default function MileageOrder() {
     <>
       {isLoading && <CommonLoading />}
 
-      <CommonHeader title={'주문 내역'} walletTextStyle={{ color: 'white' }} />
+      {/* <CommonHeader title={'주문 내역'} walletTextStyle={{ color: 'white' }} /> */}
 
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        style={{ minHeight: Dimensions.get('window').height }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        <View style={styles.paddingBox}>
-          <SpaceView mb={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-            <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.profileImg} />
-            <Text style={styles.nameText}>{me?.nickname}</Text>
-          </SpaceView>
-          
-          <MileageInfo data={me} />
-        </View>
+      <ScrollView>
 
-        {orderList.length > 0 ? (
-          <FlatList
-            /* onScroll={handleScroll}
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled={true}
-            horizontal={false} */
-            style={{marginBottom: 180}}
-            data={orderList}
-            renderItem={(data) => <RenderItem data={data} />}
-          />
-        ) : (
-          <>
-            <View style={styles.line} />
+        <LinearGradient
+          colors={['#390D1D', '#390D1D']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={_styles.wrap}>
 
-            <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center', height: 150}}>
-              <Text style={{fontFamily: 'Pretendard-Medium', color: '#D5CD9E'}}>주문 내역이 없습니다.</Text>
+          <SpaceView mt={40} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <TouchableOpacity onPress={() => (navigation.goBack())}>
+              <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} />
+            </TouchableOpacity>
+
+            <SpaceView>
+              <Text style={styles.fontStyle('H', 30, '#fff')}>주문내역</Text>
             </SpaceView>
-          </>
-        )}
-      </LinearGradient>
+            
+            <TouchableOpacity>
+              <Image source={ICON.shop_refresh} style={styles.iconSquareSize(35)} />
+            </TouchableOpacity>
+          </SpaceView>
+
+          <SpaceView mt={35} mb={20}>
+            <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+              <TouchableOpacity>
+                <Image source={ICON.orderIcon} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity>
+              <TouchableOpacity style={{marginLeft: 10}}>
+                <Image source={ICON.settingIcon} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity>
+            </SpaceView>
+          </SpaceView>
+
+          <SpaceView>
+            {/* <View style={_styles.paddingBox}>
+              <SpaceView mb={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+                <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.profileImg} />
+                <Text style={_styles.nameText}>{me?.nickname}</Text>
+              </SpaceView>
+              
+              <MileageInfo data={me} />
+            </View> */}
+
+            {orderList.length > 0 ? (
+              <FlatList
+                /* onScroll={handleScroll}
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled={true}
+                horizontal={false} */
+                style={{marginBottom: 180}}
+                data={orderList}
+                renderItem={(data) => <RenderItem data={data} /> }
+              />
+            ) : (
+              <>
+                <View style={_styles.line} />
+
+                <SpaceView viewStyle={{justifyContent: 'center', alignItems: 'center', height: 150}}>
+                  <Text style={styles.fontStyle('B', 20, '#fff')}>주문 내역이 없습니다.</Text>
+                </SpaceView>
+              </>
+            )}
+          </SpaceView>
+        </LinearGradient>
+        
+      </ScrollView>
     </>
   );
 }
@@ -130,64 +163,78 @@ const RenderItem = ({ data }) => {
 
   return (
     <>
-      <View style={styles.dateTitle}>
-        <Text style={[styles.dateText]}>{dateStr}</Text>
-      </View>
+      <SpaceView>
+        <Text style={[styles.fontStyle('EB', 20, '#fff')]}>{dateStr}</Text>
+      </SpaceView>
 
-      {prodList.map((item, idx) => (
-        <TouchableOpacity
-          key={idx}
-          onPress={() => {
-            if(item.order_type == 'AUCT'){
-              onPressMileageOrder();
-            }
-          }}
-        >
-          <View style={styles.itemBox} key={'order_item_' + idx}>
-            <SpaceView viewStyle={styles.thumbArea}>
-              <ImageBackground source={findSourcePath(item?.file_path + item?.file_name)} style={styles.thumb}>
-                {/* 분기 */}
+      <SpaceView mt={15}>
+        {prodList.map((item, idx) => (
+          <TouchableOpacity
+            key={idx}
+            onPress={() => {
+              if(item.order_type == 'AUCT'){
+                onPressMileageOrder();
+              }
+            }}
+          >
+            <View style={_styles.itemBox} key={'order_item_' + idx}>
+              <SpaceView viewStyle={_styles.thumbArea}>
+                <ImageBackground source={findSourcePath(item?.file_path + item?.file_name)} style={styles.iconSquareSize(60)}>
+                  {/* 분기 */}
 
-                {item.status_code == 'COMPLET' ? (
+                  {/* {item.status_code == 'COMPLET' ? (
+                    <View style={_styles.completeMark}>
+                      <Text style={_styles.completeText}>판매완료</Text>
+                    </View>
+                  ) : null} */}
+
+                  {/* 주문목록 상태 노출 */}
+                  {/* <View style={styles.bidCompleteMark}>
+                    <Text style={styles.bidCompleteText}>입찰완료</Text>
+                  </View>
+                  <View style={styles.readyMark}>
+                    <Text style={styles.readyText}>발송준비</Text>
+                  </View>
                   <View style={styles.completeMark}>
-                    <Text style={styles.completeText}>판매완료</Text>
-                  </View>
-                ) : null}
-
-                {/* 주문목록 상태 노출 */}
-                {/* <View style={styles.bidCompleteMark}>
-                  <Text style={styles.bidCompleteText}>입찰완료</Text>
-                </View>
-                <View style={styles.readyMark}>
-                  <Text style={styles.readyText}>발송준비</Text>
-                </View>
-                <View style={styles.completeMark}>
-                  <Text style={styles.completeText}>배송완료</Text>
-                </View> */}
-                
-              </ImageBackground>
-            </SpaceView>
-
-            <SpaceView viewStyle={styles.brandLogo}>
-                <Image source={ICON.naverLogo} style={{width: 20, height: 20}} />
-            </SpaceView>
-            <View style={styles.itemInfoBox}>
-              <SpaceView viewStyle={styles.priceBox}>
-                <Text style={styles.price}>{CommaFormat(item?.buy_price)}RP</Text>
+                    <Text style={styles.completeText}>배송완료</Text>
+                  </View> */}
+                  
+                </ImageBackground>
               </SpaceView>
-              <Text style={styles.title}>{item.prod_name}</Text>
 
-                {/* 조건부 */}
-                {item.invc_num != null ? (
-                  <View style={styles.copyCode}>
-                    <Text style={styles.copyText}>송장번호 복사</Text>
-                  </View>
-                ) : null}
-                {/* 조건부 */}
+              <SpaceView viewStyle={_styles.brandLogo}>
+                <Image source={ICON.naverLogo} style={styles.iconSquareSize(20)} />
+              </SpaceView>
+
+              <SpaceView pl={10} viewStyle={{flex: 0.8}}>
+                <SpaceView>
+                  <SpaceView viewStyle={_styles.priceBox}>
+                    <Text style={styles.fontStyle('B', 10, '#FFFF5D')}>{CommaFormat(item?.buy_price)}RP</Text>
+                  </SpaceView>
+                  <SpaceView mt={5} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <SpaceView viewStyle={{flex: 0.95}}>
+                      <Text style={styles.fontStyle('SB', 15, '#fff')}>{item.brand_name}</Text>
+                      <SpaceView mt={5}><Text numberOfLines={2} style={styles.fontStyle('SB', 15, '#C4B6AA')}>{item.prod_name}</Text></SpaceView>
+                    </SpaceView>
+                    <SpaceView>
+                      <TouchableOpacity>
+                        <Text style={styles.fontStyle('R', 26, '#fff')}>{'>'}</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </SpaceView>
+                </SpaceView>
+                {/* <View style={_styles.itemInfoBox}>
+                  {item.invc_num != null ? (
+                    <View style={_styles.copyCode}>
+                      <Text style={_styles.copyText}>송장번호 복사</Text>
+                    </View>
+                  ) : null}
+                </View> */}
+              </SpaceView>
             </View>
-          </View>
-        </TouchableOpacity>
-      ))}
+          </TouchableOpacity>
+        ))}
+      </SpaceView>
     </>
   );
 };
@@ -202,55 +249,31 @@ const RenderItem = ({ data }) => {
 ############### Style 영역
 ################################################################################################################ */}
 
-const styles = StyleSheet.create({
-  paddingBox: {
-    paddingHorizontal: 16,
-    //marginTop: 20,
-  },
-  nameText: {
-    //marginTop: 25,
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 24,
-    color: '#FFDD00',
-  },
-  profileImg: {
-    width: 30,
-    height: 30,
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: '#FFDD00',
-    marginRight: 5,
-  },
-  amountText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 32,
-    color: '#32F9E4',
+const _styles = StyleSheet.create({
+  wrap: {
+    minHeight: height,
+    paddingHorizontal: 10,
   },
   line: {
     height: 1,
     backgroundColor: '#ABA99A',
     marginTop: 40,
   },
-  dateText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 24,
-    textAlign: 'left',
-    color: '#F3E270',
-  },
   itemBox: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CFCFCF',
+    paddingBottom: 10,
   },
   thumbArea: {
-    width: Dimensions.get('window').width * 0.2,
-    height: Dimensions.get('window').width * 0.2,
+    width: 65,
+    height: 65,
     borderRadius: 50,
     overflow: 'hidden',
     backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
+    flex: 0.2,
   },
   thumb: {
     width: Dimensions.get('window').width * 0.15,
@@ -262,73 +285,10 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     padding: 7,
   },
-  bidCompleteMark: {
-    width: '50%',
-    borderRadius: 6.5,
-    backgroundColor: '#742dfa',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    padding: 2,
-  },
-  bidCompleteText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 9,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  readyMark: {
-    width: '50%',
-    borderRadius: 6.5,
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#ada9fc',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    padding: 2,
-  },
-  readyText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 7,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ada9fc',
-  },
-  completeMark: {
-    width: '50%',
-    borderRadius: 6.5,
-    backgroundColor: '#f2f2f2',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    padding: 2,
-  },
-  completeText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 7,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#888888',
-  },
-  itemInfoBox: {
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    //width: Dimensions.get('window').width * 0.75 - 48,
-    marginLeft: 10,
-  },
   brandLogo: {
     position: 'absolute',
     left: 15,
-    top: 15,
+    top: 10,
     width: 20,
     height: 20,
     borderRadius: 50,
@@ -336,62 +296,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 14,
-    color: '#D5CD9E',
-    marginTop: 5,
-  },
   priceBox: {
-    backgroundColor: '#FFF',
-    borderRadius: 20,
+    backgroundColor: '#44B6E5',
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-end',
-    paddingVertical: 2,
+    paddingVertical: 4,
     paddingHorizontal: 10,
-  },
-  price: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 11,
-    color: '#32F9E4',
-  },
-  copyCode: {
-    borderRadius: 5,
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#742dfa',
-    padding: 4,
-  },
-  copyText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 9,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0, 
-    textAlign: 'left',
-    color: '#742cf9',
-  },
-  dateTitle: {
-    alignItems: 'flex-end',
-    marginTop: 25,
-    marginRight: 20,
-    marginBottom: 10,
-    borderBottomColor: '#ABA99A',
-    borderBottomWidth: 1,
-    paddingBottom: 5,
-  },
-  itemDescArea: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-  },
-  itemDescText: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#ABA99A',
-    textAlign: 'center',
-    marginTop: 40,
   },
 });

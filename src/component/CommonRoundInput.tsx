@@ -122,6 +122,6 @@ const styles = StyleSheet.create({
     right: 8,
     fontSize: 15,
     color: '#919191',
-    fontFamily: 'AppleSDGothicNeoB00',
+    fontFamily: 'Pretendard-Bold',
   }
 });

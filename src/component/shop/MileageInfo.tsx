@@ -22,8 +22,46 @@ export default function MileageInfo({ data }) {
   return (
     <>
       {(data?.respect_grade == 'PLATINUM' || data?.respect_grade == 'DIAMOND') &&
-        <SpaceView viewStyle={_styles.floatWrapper}>
-          <LinearGradient
+        <SpaceView>
+
+          <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
+            <Image source={ICON.shop_rpBanner} style={styles.iconNoSquareSize(300, 189)} />
+          </SpaceView>
+
+          <SpaceView viewStyle={_styles.rpInfoWrap}>
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+              <Text style={styles.fontStyle('B', 14, '#fff')}>이달 사용 가능한 RP</Text>
+              <SpaceView viewStyle={_styles.gradeWrap}>
+                <Image source={ICON.sparkler} style={styles.iconSquareSize(12)} />
+                <SpaceView ml={2}><Text style={styles.fontStyle('B', 10, '#000000')}>{data?.respect_grade}</Text></SpaceView>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mt={5}>
+              <SpaceView>
+                <SpaceView mb={5} viewStyle={{overflow: 'hidden', borderRadius: 50}}>
+                  <LinearGradient
+                    colors={['#46F66F', '#FFFF5D']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={_styles.gradient(data?.mileage_point / 10000)}>
+                  </LinearGradient>
+                  <Slider
+                    animateTransitions={true}
+                    renderThumbComponent={() => null}
+                    containerStyle={_styles.sliderContainerStyle}
+                    trackStyle={_styles.sliderThumbStyle}
+                    trackClickable={false}
+                    disabled
+                  />
+                </SpaceView>
+                <Text style={[styles.fontStyle('SB', 9, '#FFFF5D'), {textAlign: 'right'}]}>5,500RP 남음</Text>
+              </SpaceView>
+            </SpaceView>
+
+          </SpaceView>
+
+
+          {/* <LinearGradient
             colors={['#7AAEDB', '#608B55']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
@@ -56,7 +94,6 @@ export default function MileageInfo({ data }) {
                 </Text>
                 <Text style={_styles.rpAvailable}>이달 사용 가능한 RP</Text>
 
-                {/* ################################################################################ 이달 사용 RP 영역 */}
                 <SpaceView mt={5}>
                   <SpaceView>
                     <SpaceView viewStyle={{overflow: 'hidden', borderRadius: 50}}>
@@ -85,7 +122,7 @@ export default function MileageInfo({ data }) {
               <Image source={IMAGE.logoLeapTit} style={{width: 60, height: 25}} />
               <Text style={_styles.rpDescText}>RP는 획득 건 별로 60일 동안 보관됩니다.</Text>
             </SpaceView>
-          </LinearGradient>
+          </LinearGradient> */}
         </SpaceView>
       }
     </>
@@ -102,6 +139,34 @@ export default function MileageInfo({ data }) {
 ####################################################################################################### */}
 
 const _styles = StyleSheet.create({
+
+  rpInfoWrap: {
+    paddingHorizontal: 45,
+    marginTop: -20,
+  },
+  gradeWrap: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    paddingVertical: 3,
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
   floatWrapper: {
       width: '100%',
       marginTop:10,
@@ -120,7 +185,7 @@ const _styles = StyleSheet.create({
     marginTop: 10,
   },
   repectGrade: {
-    fontFamily: 'MinSans-Bold',
+    fontFamily: 'SUITE-Bold',
     color: '#000000',
     marginRight: 10,
     marginLeft: 2,
@@ -175,12 +240,12 @@ const _styles = StyleSheet.create({
   sliderContainerStyle: {
     height: 12,
     borderRadius: 50,
-    backgroundColor: '#FFF',
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   sliderThumbStyle: {
     height: 12,
     borderRadius: 50,
-    backgroundColor: '#FFF',
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   rpDescText: {
     fontFamily: 'Pretendard-Light',

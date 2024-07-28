@@ -40,6 +40,7 @@ export type StackParamList = {
   SignUp_Password: undefined;
   SignUp_Image: undefined;
   SignUp_Nickname: undefined;
+  SignUp_Comment: undefined;
   SignUp_AddInfo: undefined;
   SignUp_Interest: undefined;
   SignUp_Introduce: undefined;
@@ -50,7 +51,6 @@ export type StackParamList = {
   SecondAuthPopup: undefined; // 2차 인증 팝업
   ReportPopup: undefined; // 신고하기 팝업
   LivePopup: undefined;
-  Introduce: undefined;
   Board: undefined; // 게시판 메인
   BoardDetail: undefined; // 게시판 상세
   Preference: undefined;
@@ -59,15 +59,6 @@ export type StackParamList = {
     isInterViewMove: boolean;
   };
   SecondAuth: undefined;
-  Profile2: {
-    tgtCode: string;
-  };
-  StorageProfile: {
-    matchSeq: Number;
-    tgtMemberSeq: Number;
-    type: string;
-    matchType: string;
-  };
   ItemMatching: undefined;
   MatchDetail: {
     type: string;
@@ -82,7 +73,7 @@ export type StackParamList = {
     orderSeq: Number;
   };
   TutorialSetting: undefined;
-  MyDailyView: undefined;
+  AlarmSetting: undefined;
   ProfileImageSetting: undefined;
   StoryRegi: undefined;
   StoryEdit: {
@@ -108,10 +99,10 @@ export type BottomParamList = {
     headerType: String;
   };
   Live: undefined;
-  Matching: undefined;
   MatchingList: undefined;
   Shop: undefined;
   Story: undefined;
+  Main: undefined;
 };
 
 export type StackScreenProp = NativeStackNavigationProp<StackParamList>;

@@ -42,7 +42,7 @@ const styles = ({
   lineHeight?: number;
 }) => {
   let fontSize = 16;
-  let fontFamily = 'AppleSDGothicNeoR00';
+  let fontFamily = 'Pretendard-Regular';
 
   switch (type) {
     case 'h2':
@@ -64,24 +64,6 @@ const styles = ({
       fontSize = 10;
       break;
   }
-
-  // switch (fontWeight) {
-  //   case '200':
-  //     fontFamily = 'AppleSDGothicNeoEB00';
-  //     break;
-  //   case '300':
-  //     fontFamily = 'AppleSDGothicNeoT00';
-  //     break;
-  //   case '500':
-  //     fontFamily = 'AppleSDGothicNeoM00';
-  //     break;
-  //   case '600':
-  //     fontFamily = 'AppleSDGothicNeoR00';
-  //     break;
-  //   case '700':
-  //     fontFamily = 'AppleSDGothicNeoB00';
-  //     break;
-  // }
 
   switch (fontWeight) {
     case '200':
