@@ -14,7 +14,7 @@ import storeKey, { JWT_TOKEN } from 'constants/storeKey';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, ScrollView, TouchableOpacity, Text, View, Platform, PermissionsAndroid, StyleSheet, Alert, Linking, TextInput } from 'react-native';
+import { Dimensions, Image, ScrollView, TouchableOpacity, Text, View, Platform, PermissionsAndroid, StyleSheet, Alert, Linking, TextInput, Keyboard } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPrincipal } from 'redux/reducers/authReducer';
 import * as mbrReducer from 'redux/reducers/mbrReducer';
@@ -27,6 +27,8 @@ import VersionCheck from 'react-native-version-check';
 import { isEmptyData } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 import { CommonCheckBox } from 'component/CommonCheckBox';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+
 
 
 
@@ -381,30 +383,109 @@ export const Login = () => {
   return (
     <>    
       <SpaceView viewStyle={_styles.wrap}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <SpaceView>
+            <Image source={ICON.join_bg} style={styles.iconNoSquareSize('100%', '100%')} />
+          </SpaceView>
 
-        <SpaceView>
-          <Image source={ICON.join_bg} style={styles.iconNoSquareSize('100%', '100%')} />
-        </SpaceView>
+          <SpaceView viewStyle={_styles.bodyWrap}>
+            {/* <ScrollView horizontal={false}> */}
+              <SpaceView viewStyle={{justifyContent: 'space-between', height: height-50}}>
 
-        <SpaceView viewStyle={_styles.bodyWrap}>
-          {/* <ScrollView horizontal={false}> */}
-            <SpaceView viewStyle={{justifyContent: 'space-between', height: height-50}}>
-
-              {/* ############################################################### 타이틀 */}
-              <SpaceView mt={65}>
-                <SpaceView>
-                  <Text style={[styles.fontStyle('H', 22, '#fff'), {textAlign: 'center'}]}>LEAP</Text>
-                </SpaceView>
-                <SpaceView mt={45}>
-                  <Text style={[styles.fontStyle('B', 28, '#fff'), {textAlign: 'center'}]}>오늘 하루,{'\n'}편안한 리프를 취하세요.</Text>
-                </SpaceView>
-              </SpaceView>
-
-              <SpaceView>
-                {/* ############################################################### 입력 영역 */}
-                <SpaceView mt={50} pl={25} pr={25}>
+                {/* ############################################################### 타이틀 */}
+                <SpaceView mt={65}>
                   <SpaceView>
-                    <Text style={styles.fontStyle('EB', 15, '#fff')}>아이디(이메일)</Text>
+                    <Text style={[styles.fontStyle('H', 22, '#fff'), {textAlign: 'center'}]}>LEAP</Text>
+                  </SpaceView>
+                  <SpaceView mt={45}>
+                    <Text style={[styles.fontStyle('B', 28, '#fff'), {textAlign: 'center'}]}>오늘 하루,{'\n'}편안한 리프를 취하세요.</Text>
+                  </SpaceView>
+                </SpaceView>
+
+                <SpaceView>
+                  {/* ############################################################### 입력 영역 */}
+                  <SpaceView mt={50} pl={25} pr={25}>
+                    <SpaceView>
+                      <Text style={styles.fontStyle('EB', 15, '#fff')}>아이디(이메일)</Text>
+                      <SpaceView>
+                        <TextInput
+                          value={id}
+                          onChangeText={(text) => setId(text)}
+                          autoCapitalize={'none'}
+                          style={_styles.textInputStyle}
+                          maxLength={50}
+                          hitSlop={commonStyle.hipSlop25}
+                          returnKeyType="done"
+                        />
+                      </SpaceView>
+                    </SpaceView>
+                    <SpaceView mt={25}>
+                      <Text style={styles.fontStyle('EB', 15, '#fff')}>비밀번호</Text>
+                      <SpaceView>
+                        <TextInput
+                          value={password}
+                          onChangeText={(text) => setPassword(text)}
+                          autoCapitalize={'none'}
+                          style={_styles.textInputStyle}
+                          maxLength={30}
+                          secureTextEntry={true}
+                          returnKeyType="done"
+                        />
+                      </SpaceView>
+                    </SpaceView>
+                  </SpaceView>
+
+                  {/* ############################################################### 버튼 영역 */}
+                  <SpaceView mt={40}>
+                    <SpaceView viewStyle={layoutStyle.alignCenter}>
+                      <TouchableOpacity
+                        style={_styles.loginBtn}
+                        onPress={() => {
+                          if (id == '') {
+                            return show({ content: '아이디를 입력해 주세요.' });
+                          }
+                          if (password == '') {
+                            return show({ content: '비밀번호를 입력해 주세요.' });
+                          }
+                          
+                          loginProc(false);
+                          //dispatch(loginReduce(id, password));
+                        }}>
+                        <Text style={styles.fontStyle('B', 18, '#fff')}>로그인</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={_styles.joinBtn}
+                        onPress={() => { joinProc(); }}>
+                        <Text style={styles.fontStyle('B', 18, '#fff')}>회원가입</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={_styles.joinBtn}
+                        onPress={() => {
+                          navigation.navigate('SearchIdAndPwd');
+                        }}>
+                        <Text style={styles.fontStyle('B', 18, '#fff')}>아이디/비밀번호 찾기</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </SpaceView>
+
+                  <SpaceView mt={50}>
+                    <Text style={[styles.fontStyle('SB', 10, '#CBCBCB'), {textAlign: 'center'}]}>
+                      리프(LEAP)는 회원가입 절차에 직업 또는 학력 등의  인증이 필요합니다.{'\n'}
+                      이는 피싱, 폭력으로부터 안전한 SNS 환경을 제공하기 위한 목적으로 활용됩니다.{'\n'}
+                      제공받은 소중한 개인정보는 인증 과정동안 암호화 처리되어 관리되며 인증 심사{'\n'}
+                      종료 후 인증 심사 이력만 남고 개인 정보는 모두 삭제됩니다.</Text>
+                  </SpaceView>
+
+                </SpaceView>
+
+                {/* <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15, commonStyle.mt10]}>
+
+                  <SpaceView mb={30} viewStyle={{width: '100%'}}>
+                    <SpaceView mb={10}>
+                      <Text style={styles.fontStyle('EB', 16, '#fff')}>아이디(이메일)</Text>
+                    </SpaceView>
                     <SpaceView>
                       <TextInput
                         value={id}
@@ -414,10 +495,22 @@ export const Login = () => {
                         maxLength={50}
                         hitSlop={commonStyle.hipSlop25}
                       />
+
+                      {id.length > 0 && (
+                        <TouchableOpacity 
+                          style={_styles.removeTextBtn}
+                          onPress={() => { setId(''); }}
+                          hitSlop={commonStyle.hipSlop20}>
+                          <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                        </TouchableOpacity>
+                      )}
                     </SpaceView>
                   </SpaceView>
-                  <SpaceView mt={25}>
-                    <Text style={styles.fontStyle('EB', 15, '#fff')}>비밀번호</Text>
+
+                  <SpaceView viewStyle={{width: '100%'}}>
+                    <SpaceView mb={10}>
+                      <Text style={_styles.emailPwdText}>비밀번호</Text>
+                    </SpaceView>
                     <SpaceView>
                       <TextInput
                         value={password}
@@ -427,125 +520,40 @@ export const Login = () => {
                         maxLength={30}
                         secureTextEntry={true}
                       />
+
+                      {password.length > 0 && (
+                        <TouchableOpacity
+                          style={_styles.removeTextBtn}
+                          onPress={() => { setPassword(''); }} 
+                          hitSlop={commonStyle.hipSlop20}>
+                          <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
+                        </TouchableOpacity>
+                      )}
                     </SpaceView>
+
                   </SpaceView>
-                </SpaceView>
 
-                {/* ############################################################### 버튼 영역 */}
-                <SpaceView mt={40}>
-                  <SpaceView viewStyle={layoutStyle.alignCenter}>
+                  <View style={_styles.saveLogInfoContainer}>
                     <TouchableOpacity
-                      style={_styles.loginBtn}
-                      onPress={() => {
-                        if (id == '') {
-                          return show({ content: '아이디를 입력해 주세요.' });
+                      style={_styles.checkWrap}
+                      onPress={() => { 
+                        if(activate === false) {
+                          setActivate(true); 
+                        }else {
+                          setActivate(false); 
                         }
-                        if (password == '') {
-                          return show({ content: '비밀번호를 입력해 주세요.' });
-                        }
-                        
-                        loginProc(false);
-                        //dispatch(loginReduce(id, password));
-                      }}>
-                      <Text style={styles.fontStyle('B', 18, '#fff')}>로그인</Text>
+                      }}
+                    >
                     </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={_styles.joinBtn}
-                      onPress={() => { joinProc(); }}>
-                      <Text style={styles.fontStyle('B', 18, '#fff')}>회원가입</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={_styles.joinBtn}
-                      onPress={() => {
-                        navigation.navigate('SearchIdAndPwd');
-                      }}>
-                      <Text style={styles.fontStyle('B', 18, '#fff')}>아이디/비밀번호 찾기</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                </SpaceView>
-
-                <SpaceView mt={50}>
-                  <Text style={[styles.fontStyle('SB', 10, '#CBCBCB'), {textAlign: 'center'}]}>
-                    리프(LEAP)는 회원가입 절차에 직업 또는 학력 등의  인증이 필요합니다.{'\n'}
-                    이는 피싱, 폭력으로부터 안전한 SNS 환경을 제공하기 위한 목적으로 활용됩니다.{'\n'}
-                    제공받은 소중한 개인정보는 인증 과정동안 암호화 처리되어 관리되며 인증 심사{'\n'}
-                    종료 후 인증 심사 이력만 남고 개인 정보는 모두 삭제됩니다.</Text>
-                </SpaceView>
-
+                  </View>
+                </View> */}
               </SpaceView>
+            {/* </ScrollView> */}
+          </SpaceView>
 
-              {/* <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15, commonStyle.mt10]}>
+        </TouchableWithoutFeedback>
 
-                <SpaceView mb={30} viewStyle={{width: '100%'}}>
-                  <SpaceView mb={10}>
-                    <Text style={styles.fontStyle('EB', 16, '#fff')}>아이디(이메일)</Text>
-                  </SpaceView>
-                  <SpaceView>
-                    <TextInput
-                      value={id}
-                      onChangeText={(text) => setId(text)}
-                      autoCapitalize={'none'}
-                      style={_styles.textInputStyle}
-                      maxLength={50}
-                      hitSlop={commonStyle.hipSlop25}
-                    />
-
-                    {id.length > 0 && (
-                      <TouchableOpacity 
-                        style={_styles.removeTextBtn}
-                        onPress={() => { setId(''); }}
-                        hitSlop={commonStyle.hipSlop20}>
-                        <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-                      </TouchableOpacity>
-                    )}
-                  </SpaceView>
-                </SpaceView>
-
-                <SpaceView viewStyle={{width: '100%'}}>
-                  <SpaceView mb={10}>
-                    <Text style={_styles.emailPwdText}>비밀번호</Text>
-                  </SpaceView>
-                  <SpaceView>
-                    <TextInput
-                      value={password}
-                      onChangeText={(text) => setPassword(text)}
-                      autoCapitalize={'none'}
-                      style={_styles.textInputStyle}
-                      maxLength={30}
-                      secureTextEntry={true}
-                    />
-
-                    {password.length > 0 && (
-                      <TouchableOpacity
-                        style={_styles.removeTextBtn}
-                        onPress={() => { setPassword(''); }} 
-                        hitSlop={commonStyle.hipSlop20}>
-                        <Image source={ICON.xYellow} style={styles.iconSquareSize(10)} />
-                      </TouchableOpacity>
-                    )}
-                  </SpaceView>
-
-                </SpaceView>
-
-                <View style={_styles.saveLogInfoContainer}>
-                  <TouchableOpacity
-                    style={_styles.checkWrap}
-                    onPress={() => { 
-                      if(activate === false) {
-                        setActivate(true); 
-                      }else {
-                        setActivate(false); 
-                      }
-                    }}
-                  >
-                  </TouchableOpacity>
-                </View>
-              </View> */}
-            </SpaceView>
-          {/* </ScrollView> */}
-        </SpaceView>
+        
       </SpaceView>
     </>
   );
