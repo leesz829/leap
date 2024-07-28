@@ -390,7 +390,7 @@ export const Login = () => {
 
           <SpaceView viewStyle={_styles.bodyWrap}>
             {/* <ScrollView horizontal={false}> */}
-              <SpaceView viewStyle={{justifyContent: 'space-between', height: Platform.OS == 'android' ? height-80 : height-130}}>
+              <SpaceView viewStyle={{height: Platform.OS == 'android' ? height-80 : height-130}}>
 
                 {/* ############################################################### 타이틀 */}
                 <SpaceView mt={65}>
@@ -404,7 +404,7 @@ export const Login = () => {
 
                 <SpaceView>
                   {/* ############################################################### 입력 영역 */}
-                  <SpaceView mt={50} pl={25} pr={25}>
+                  <SpaceView mt={80} pl={25} pr={25}>
                     <SpaceView>
                       <Text style={styles.fontStyle('EB', 15, '#fff')}>아이디(이메일)</Text>
                       <SpaceView>
@@ -470,7 +470,7 @@ export const Login = () => {
                     </SpaceView>
                   </SpaceView>
 
-                  <SpaceView mt={50}>
+                  <SpaceView mt={20}>
                     <Text style={[styles.fontStyle('SB', 10, '#CBCBCB'), {textAlign: 'center'}]}>
                       리프(LEAP)는 회원가입 절차에 직업 또는 학력 등의  인증이 필요합니다.{'\n'}
                       이는 피싱, 폭력으로부터 안전한 SNS 환경을 제공하기 위한 목적으로 활용됩니다.{'\n'}
