@@ -390,7 +390,7 @@ export const Login = () => {
 
           <SpaceView viewStyle={_styles.bodyWrap}>
             {/* <ScrollView horizontal={false}> */}
-              <SpaceView viewStyle={{justifyContent: 'space-between', height: height-50}}>
+              <SpaceView viewStyle={{justifyContent: 'space-between', height: Platform.OS == 'android' ? height-80 : height-130}}>
 
                 {/* ############################################################### 타이틀 */}
                 <SpaceView mt={65}>
