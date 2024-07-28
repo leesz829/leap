@@ -30,14 +30,14 @@ import { Vibe } from 'component/vibe/Vibe';
 ###### 컨텐츠
 ################################################################################################################ */
 
-interface Props {
+/* interface Props {
   navigation: StackNavigationProp<StackParamList, 'Contents'>;
   route: RouteProp<StackParamList, 'Contents'>;
-}
+} */
 
 const { width, height } = Dimensions.get('window');
 
-export const Contents = (props: Props) => {
+export const Contents = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
