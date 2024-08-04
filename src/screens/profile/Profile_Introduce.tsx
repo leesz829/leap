@@ -69,7 +69,7 @@ export const Profile_Introduce = (props: Props) => {
   const [selectList, setSelectList] = React.useState([
     {code: 'HEIGHT', name: '키(cm)', isEssential: true, vName: '', vCode: ''},
     {code: 'BODY', name: '체형', isEssential: true, vName: '', vCode: ''},
-    {code: 'JOB', name: '직업', isEssential: true, vName: '', vCode: ''},
+    {code: 'JOB', name: '직업', isEssential: true, vName: '', value1: '', value2: ''},
     {code: 'MBTI', name: 'MBTI', isEssential: false, vName: '', vCode: ''},
     {code: 'LOCAL', name: '선호지역', isEssential: false, vList: []},
     {code: 'RELIGION', name: '종교', isEssential: false, vName: '', vCode: ''},
@@ -115,6 +115,9 @@ export const Profile_Introduce = (props: Props) => {
     name: '',
     code: '',
     value: '',
+    value1: '',
+    value2: '',
+    valueList: [],
     dataList: [],
     isMinMax: false,
   });
@@ -155,6 +158,7 @@ export const Profile_Introduce = (props: Props) => {
       value: item?.vCode,
       value1: item?.value1,
       value2: item?.value2,
+      valueList: item?.vList,
       dataList: list,
       isMinMax: isMinMax,
     });
@@ -181,14 +185,11 @@ export const Profile_Introduce = (props: Props) => {
   }, []);
 
   // 팝업 확인
-  //const popupConfirm = async (code:string, vName:string, vCode:string, vList:any) => {
-  const popupConfirm = useCallback(async (code:string, vName:string, vCode:string, vList:any) => {
-    console.log('code ::::: ' , code);
-    console.log('vCode ::::: ' , vCode);
-
+  const popupConfirm = useCallback(async (code:string, vName:string, vCode:string, vList:any, value1:string, value2:string) => {
     popupClose(code);
 
     let isChk = true;
+    let isSave = true;
     /* if(code == 'AGE' || code == 'DISTANCE' || code == 'HEIGHT') {
       if(!isEmptyData(value1) || !isEmptyData(value2)) {
         isChk = false;
@@ -200,25 +201,56 @@ export const Profile_Introduce = (props: Props) => {
     } */
 
     if(isChk) {
-
       let list = selectList.filter((d, i) => {
         if(d.code == code) {
           if(code == 'LOCAL') {
-            d.vList = vList;
+            if(vList.length > 0) {
+              let dupCnt = 0;
+
+              vList.map((item, index) => {
+                d.vList.map((itm, idx) => {
+                  if(itm.value == item.value) {
+                    dupCnt = dupCnt+1;
+                  }
+                });
+              });
+
+              if(dupCnt > 1) {
+                isSave = false;
+              } else {
+                d.vList = vList;
+              }
+            } else {
+              isSave = false;
+            }
+
+          } else if(code == 'JOB') {
+            if(d.value2 == value2) {
+              isSave = false;
+            } else {
+              d.vName = vName;
+              d.value1 = value1;
+              d.value2 = value2;
+            }
           } else {
-            d.vName = vName;
-            d.vCode = vCode;
+            if(d.vCode == vCode) {
+              isSave = false;
+            } else {
+              d.vName = vName;
+              d.vCode = vCode;
+            }
           }
         }
 
         return d;
       });
 
-      setSelectList(list);
-      saveFn(list);
+      if(isSave) {
+        setSelectList(list);
+        saveFn(list);
+      }
     }
   }, [selectList]);
-//};
 
 
   // ############################################################ 회원 소개 정보 조회 함수
@@ -247,7 +279,7 @@ export const Profile_Introduce = (props: Props) => {
             setSelectList([
               {code: 'HEIGHT', name: '키(cm)', isEssential: true, vName: memberAdd?.height, vCode: memberAdd?.height},
               {code: 'BODY', name: '체형', isEssential: true, vName: memberAdd?.form_body_name, vCode: memberAdd?.form_body},
-              {code: 'JOB', name: '직업', isEssential: true, vName: memberAdd?.job_name, vCode: memberAdd?.job},
+              {code: 'JOB', name: '직업', isEssential: true, vName: memberAdd?.job_name, value1: memberAdd?.business, value2: memberAdd?.job},
               {code: 'MBTI', name: 'MBTI', isEssential: false, vName: memberAdd?.mbti_type_name, vCode: memberAdd?.mbti_type},
               {code: 'LOCAL', name: '선호지역', isEssential: false, vList: localList},
               {code: 'RELIGION', name: '종교', isEssential: false, vName: memberAdd?.religion_name, vCode: memberAdd?.religion},
@@ -296,9 +328,9 @@ export const Profile_Introduce = (props: Props) => {
           const code = item.code;
           const vCode = item.vCode;
 
-          if(code == 'AGE') {
-            _data.want_age_min = item.value1;
-            _data.want_age_max = item.value2;
+          if(code == 'JOB') {
+            _data.business = item.value1;
+            _data.job = item.value2;
           } else if(code == 'LOCAL') {
             if(isEmptyData(item?.vList) && item?.vList.length > 0) {
               for(let i=0 ; i<item?.vList.length ; i++) {

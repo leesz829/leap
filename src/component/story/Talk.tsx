@@ -24,7 +24,7 @@ import { SUCCESS, NODATA, EXIST } from 'constants/reusltcode';
 const { width, height } = Dimensions.get('window');
 
 //export default function Talk({ type, item, index, profileOpenFn }) {
-const Talk = React.memo(({ type, item, index, profileOpenFn }) => {
+const Talk = React.memo(({ isRefresh }) => {
 
   const navigation = useNavigation<ScreenNavigationProp>();
 
@@ -244,7 +244,7 @@ const Talk = React.memo(({ type, item, index, profileOpenFn }) => {
     if(isFocus) {
       setIsRefreshing(false);
 
-      if(storyList.length == 0) {
+      if(storyList.length == 0 || isRefresh) {
         getStoryBoardList('ADD', pageNum == 0 ? 1 : pageNum);
       }
     } else {
@@ -261,17 +261,27 @@ const Talk = React.memo(({ type, item, index, profileOpenFn }) => {
         ################################################################################################################
         ############################################################################################################ */}
         <SpaceView>
-          <SpaceView viewStyle={{flexDirection: 'row'}}>
-            <SpaceView mr={10}>
-              <Text style={styles.fontStyle('EB', 19, '#fff')}>키워드</Text>
+          <SpaceView mb={13} viewStyle={layoutStyle.rowBetween}>
+            <SpaceView viewStyle={layoutStyle.rowStart}>
+              <SpaceView mr={10}>
+                <Text style={styles.fontStyle('EB', 19, '#fff')}>키워드</Text>
+              </SpaceView>
+              <TouchableOpacity style={_styles.keywordAllBtn}>
+                <Text style={styles.fontStyle('SB', 11, '#fff')}>전체보기</Text>
+                <Text style={styles.fontStyle('SB', 11, '#fff')}>{'>'}</Text>
+              </TouchableOpacity>
             </SpaceView>
-            <TouchableOpacity style={_styles.keywordAllBtn}>
-              <Text style={styles.fontStyle('SB', 11, '#fff')}>전체보기</Text>
-              <Text style={styles.fontStyle('SB', 11, '#fff')}>{'>'}</Text>
-            </TouchableOpacity>
+
+            <SpaceView>
+              <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={styles.fontStyle('B', 11, '#fff')}>즐겨찾기만 보기</Text>
+                <SpaceView ml={3}><Image source={ICON.story_starOff} style={styles.iconSquareSize(11)} /></SpaceView>
+              </TouchableOpacity>
+            </SpaceView>
           </SpaceView>
+
           <ScrollView horizontal={true}>
-            <SpaceView mt={10} viewStyle={{flexDirection: 'row'}}>
+            <SpaceView viewStyle={{flexDirection: 'row'}}>
               <TouchableOpacity>
                 <Text style={_styles.keywordItemText(true)}>ALL</Text>
               </TouchableOpacity>
@@ -367,6 +377,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: 75,
+    height: 20,
     paddingHorizontal: 10,
   },
   keywordItemText: (isOn:boolean) => {

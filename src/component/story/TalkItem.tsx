@@ -64,9 +64,12 @@ export default function TalkItem({ item, profileOpenFn, goDetailFn }) {
             <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
               <Text style={styles.fontStyle('SB', 16, '#000000')}>{item?.nickname}</Text>
               {/* nickname_modifier, nickname_noun */}
-              <SpaceView viewStyle={_styles.keywordWrap}>
-                <Text style={styles.fontStyle('SB', 9, '#000000')}>나들이명소</Text>
-              </SpaceView>
+
+              {isEmptyData(item?.keyword_code_name) && (
+                <SpaceView viewStyle={_styles.keywordWrap}>
+                  <Text style={styles.fontStyle('SB', 9, '#000000')}>{item?.keyword_code_name}</Text>
+                </SpaceView>
+              )}
             </SpaceView>
 
             <SpaceView mt={15}>
@@ -120,29 +123,6 @@ const _styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 10,
     paddingVertical: 4,
-  },
-
-
-
-
-
-
-  itemArea02: (width:number, height:number) => {
-    return {
-      width: width,
-      height: height,
-      borderRadius: 10,
-      overflow: 'hidden',
-      marginHorizontal: 3,
-    };
-  },
-  itemArea: (size:number) => {
-    return {
-      width: size,
-      height: size,
-      borderRadius: 10,
-      overflow: 'hidden',
-    };
   },
 
 });

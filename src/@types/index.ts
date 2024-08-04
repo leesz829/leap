@@ -79,6 +79,8 @@ export type StackParamList = {
   StoryEdit: {
     storyBoardSeq: Number;
     storyType: string;
+    imgData: string;
+    contents: string;
   };
   StoryDetail: {
     storyBoardSeq: Number;
@@ -101,7 +103,9 @@ export type BottomParamList = {
   Live: undefined;
   MatchingList: undefined;
   Shop: undefined;
-  Story: undefined;
+  Story: {
+    isRefresh: boolean
+  };
   Main: undefined;
 };
 

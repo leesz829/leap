@@ -120,6 +120,8 @@ import {
   SOCIAL_REWARD_PASS_ADD,
   GET_MEMBER_ADD_CODE,
   SAVE_PROFILE_INFO,
+  GET_MEMBER_ADD_INFO,
+  SAVE_MEMBER_INTERVIEW,
 } from './route';
 
 /* ========================================================================================================
@@ -674,6 +676,13 @@ export async function get_member_interest(body: {
   return send(GET_MEMBER_INTEREST, 'POST', body, true, false);
 };
 
+// 회원 추가 정보를 조회한다.
+export async function get_member_add_info(body: {
+  
+}) {
+  return send(GET_MEMBER_ADD_INFO, 'POST', body, true, false);
+};
+
 // 회원 문의를 등록합니다.
 export async function save_profile_auth_comment(body: {
   member_auth_seq: any;
@@ -697,6 +706,16 @@ export async function save_member_interest(body: {
   interest_list: any;
 }) {
   return send(SAVE_MEMBER_INTEREST, 'POST', body, true, false);
+};
+
+// 회원 관심사를 저장한다.
+export async function save_member_interview(body: {
+  member_interview_seq: any;
+  common_code: string;
+  answer: string;
+  order_seq: any;
+}) {
+  return send(SAVE_MEMBER_INTERVIEW, 'POST', body, true, false);
 };
 
 // 회원 프로필 정보를 저장한다.
@@ -1122,7 +1141,8 @@ export async function save_story_board(body: {
   vote_list: any;
   vote_end_type: string;
   secret_yn: string;
-  del_yn: string;
+  keyword_code: string;
+  prompt_list: any;
 }) {
   return send(SAVE_STORY_BOARD, 'POST', body, true, false);
 };

@@ -94,7 +94,7 @@ export const SelectPopup = (props: Props) => {
                     return (
                       <>
                         <TouchableOpacity key={'promotion_'+index} style={_styles.listItemWrap(false)} onPress={() => { onPressItem(item); }}>
-                          <Text style={[styles.fontStyle('SB', 15, '#000'), {textAlign: 'center'}]}>{item.label}</Text>
+                          <Text style={[styles.fontStyle('SB', 15, '#000'), {textAlign: 'center'}]}>{item.label || item.code_name || item.prompt_name}</Text>
                         </TouchableOpacity>
                       </>
                     )

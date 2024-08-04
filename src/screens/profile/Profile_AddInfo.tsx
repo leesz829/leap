@@ -9,7 +9,7 @@ import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp } from
 import { useDispatch } from 'react-redux';
 import { STACK } from 'constants/routes';
 import { useUserInfo } from 'hooks/useUserInfo';
-import { get_member_interest, save_member_interest } from 'api/models';
+import { get_member_interest, save_member_interest, get_member_add_info, save_member_interview } from 'api/models';
 import { usePopup } from 'Context';
 import { Modalize } from 'react-native-modalize';
 import { SUCCESS } from 'constants/reusltcode';
@@ -20,6 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import RNPickerSelect from 'react-native-picker-select';
 import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 import InterestRegiPopup from 'component/member/InterestRegiPopup';
+import { getInterview } from 'hooks/member';
 
 
 /* ################################################################################################################
@@ -71,20 +72,19 @@ export const Profile_AddInfo = (props: Props) => {
 	const intCallbackFn = async (list:any) => {
 		console.log('list ::::::: ' , list);
 
-		//saveFn(list);
 		setCheckIntList(list);
 		int_onClose();
 
 		if(list.length > 0) {
-			saveFn(list);
+			saveInterest(list);
 		}
 	};
 
-	// ############################################################ 관심사 정보 조회
-	const getInterest = async() => {
+	// ############################################################ 추가 정보 조회
+	const getAddInfo = async() => {
 		const body = {};
 		try {
-			const { success, data } = await get_member_interest(body);
+			const { success, data } = await get_member_add_info(body);
 			if(success) {
 				switch (data.result_code) {
           case SUCCESS:
@@ -98,9 +98,10 @@ export const Profile_AddInfo = (props: Props) => {
                 };
               });
             });
-
-						console.log('setList :::::: ' , setList);
 					  setCheckIntList(setList);
+
+						setInterviewList(data?.interview_list);
+
 					  break;
 				  default:
   					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -117,8 +118,7 @@ export const Profile_AddInfo = (props: Props) => {
 	};
 
 	// ############################################################################# 저장 함수
-	const saveFn = async (list:any) => {
-		console.log('list :::::::: ' , list);
+	const saveInterest = async (list:any) => {
 
 		if(list.length < 1){
 			show({ content: '관심사를 입력해 주세요.' });
@@ -140,7 +140,7 @@ export const Profile_AddInfo = (props: Props) => {
           switch (data.result_code) {
             case SUCCESS:
 							show({ type: 'RESPONSIVE', content: '관심사가 저장되었습니다.' });
-							getInterest();
+							getAddInfo();
               break;
             default:
               show({ content: '오류입니다. 관리자에게 문의해주세요.' });
@@ -158,6 +158,59 @@ export const Profile_AddInfo = (props: Props) => {
 		}
 	};
 
+	// ############################################################################# 저장 함수
+	const saveInterview = async (data:any) => {
+
+		/* console.log('data ::: ' , data);
+		return; */
+
+		// 중복 클릭 방지 설정
+		if(isClickable) {
+			setIsClickable(false);
+			setIsLoading(true);
+
+			const body = {
+				member_interview_seq: data?.interview_seq,
+				common_code: data?.common_code,
+				answer: data?.answer,
+				order_seq: data?.order_seq,
+			};
+			try {
+        const { success, data } = await save_member_interview(body);
+        if (success) {
+          switch (data.result_code) {
+            case SUCCESS:
+							show({ type: 'RESPONSIVE', content: '인터뷰가 저장되었습니다.' });
+							getAddInfo();
+              break;
+            default:
+              show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+              break;
+          }
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+			} catch (error) {
+			  console.log(error);
+			} finally {
+			  setIsClickable(true);
+			  setIsLoading(false);
+			};
+		}
+	};
+
+	/* ############################################################################# 인터뷰 답변 핸들러 */
+	const answerChangeHandler = (common_code: any, text: any) => {
+		setInterviewList((prev) =>
+			prev.map((item: any) =>
+			item.common_code === common_code
+				? { ...item, answer: text }
+				: item
+			)
+		);
+		//callbackAnswerFn && callbackAnswerFn(member_interview_seq, text);
+	};
+
 
 
 
@@ -169,7 +222,7 @@ export const Profile_AddInfo = (props: Props) => {
 	// 첫 렌더링 때 실행
   React.useEffect(() => {
 		if(isFocus) {
-	  	getInterest();
+			getAddInfo();
     }
   }, [isFocus]);
 
@@ -235,57 +288,55 @@ export const Profile_AddInfo = (props: Props) => {
 					{currentTab == 'INTERVIEW' && (
 						<SpaceView pl={10} pr={10}>
 							<SpaceView mt={25}>
-								<Text style={styles.fontStyle('EB', 20, '#fff')}>리프의 친구들에게{'\n'}{memberBase.nickname}님의 생각을 남겨 보세요.</Text>
+								<Text style={styles.fontStyle('EB', 20, '#fff')}>리프의 친구들에게{'\n'}{memberBase?.nickname}님의 생각을 남겨 보세요.</Text>
 							</SpaceView>
 							<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, marginTop: 25, height: height-280}}>
 
-								{/* {selectList.map((item, index) => {
+								{interviewList.map((item, index) => {
 								
-									return item?.isEssential && (
+									return (
 										<>
-											<SpaceView mb={10}>
-												<TouchableOpacity 
-													style={_styles.itemWrap}
-													onPress={() => { popupOpen(item); }}>
-													<Text style={styles.fontStyle('EB', 16, '#fff')}>{item?.name}</Text>
-													<SpaceView viewStyle={layoutStyle.rowCenter}>
-														<Text style={styles.fontStyle('EB', 16, '#fff')}>{item?.vName}</Text>
-														<SpaceView ml={10}><Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(11, 18)} /></SpaceView>
+											<SpaceView>
+												<LinearGradient
+													colors={['rgba(203,239,255,0.3)', 'rgba(113,143,156,0.3)', 'rgba(122,154,183,0.3)']}
+													start={{ x: 0.1, y: 0 }}
+													end={{ x: 0.8, y: 0.8 }}
+													style={_styles.interviewItemWrap}
+												>
+													<SpaceView>
+														<Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
 													</SpaceView>
-												</TouchableOpacity>
+													<SpaceView mt={30} viewStyle={_styles.interviewAnswerWrap}>
+														<TextInput
+															defaultValue={item?.answer}
+															onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+															autoCapitalize={'none'}
+															multiline={true}
+															style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#C4B6AA')]}
+															placeholder={'내용을 입력해 주세요.\n※입력된 내용이 없는 인터뷰는 상대에게 공개되지 않습니다. '}
+															placeholderTextColor={'#C4B6AA'}
+															maxLength={200}
+															caretHidden={true}
+														/>
+													</SpaceView>
+													<SpaceView mt={10} viewStyle={_styles.interviewBtnWrap}>
+														<TouchableOpacity style={_styles.interviewCancelBtn}>
+															<Text style={styles.fontStyle('B', 16, '#fff')}>취소</Text>
+														</TouchableOpacity>
+														<TouchableOpacity 
+															style={_styles.interviewSaveBtn}
+															onPress={() => {
+																saveInterview(item);
+															}}>
+															<Text style={styles.fontStyle('B', 16, '#fff')}>저장</Text>
+														</TouchableOpacity>
+													</SpaceView>
+												</LinearGradient>
 											</SpaceView>
 										</>
 									);
-								})} */}
+								})}
 
-
-								<SpaceView>
-									<LinearGradient
-										colors={['rgba(203,239,255,0.3)', 'rgba(113,143,156,0.3)', 'rgba(122,154,183,0.3)']}
-										start={{ x: 0.1, y: 0 }}
-										end={{ x: 0.8, y: 0.8 }}
-										style={_styles.interviewItemWrap}
-									>
-										<SpaceView>
-											<Text style={styles.fontStyle('B', 14, '#fff')}>가장 선호하는 첫 만남 소개팅 장소는 어디인가요? 
-											EX)아늑한 카페, 숨겨진 맛집, 분위기 좋은 술집, 영화관 OR 미술관</Text>
-										</SpaceView>
-										<SpaceView mt={30} viewStyle={_styles.interviewAnswerWrap}>
-											<Text style={styles.fontStyle('SB', 12, '#C4B6AA')}>
-											리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고 라이브도 잊지 마시고 서로 평점 테러 좀 하지 마세요. 제발 리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고.리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고 라이브도 잊지 마시고 서로 평점 테러 좀 하지 마세요. 제발 리미티드에 오신 것을 정말 정말 환영합니다. 데일리뷰 많이 참여해 주시고.인터뷰 답변 글자 제한수는 임시로 300글자
-											제한수 변경은 테스트 후 재결정.
-											</Text>
-										</SpaceView>
-										<SpaceView mt={10} viewStyle={_styles.interviewBtnWrap}>
-											<TouchableOpacity style={_styles.interviewCancelBtn}>
-												<Text style={styles.fontStyle('B', 16, '#fff')}>취소</Text>
-											</TouchableOpacity>
-											<TouchableOpacity style={_styles.interviewSaveBtn}>
-												<Text style={styles.fontStyle('B', 16, '#fff')}>저장</Text>
-											</TouchableOpacity>
-										</SpaceView>
-									</LinearGradient>
-								</SpaceView>
 							</ScrollView>
 						</SpaceView>
 					)}
@@ -378,6 +429,17 @@ const _styles = StyleSheet.create({
 		width: 95,
 		paddingVertical: 5,
 		alignItems: 'center',
+	},
+	textInputBox: (_hegiht: number) => {
+		return {
+			width: '100%',
+			height: _hegiht,
+			borderRadius: 10,
+			textAlign: 'left',
+			textAlignVertical: 'top',
+			margin: 0,
+			padding: 0,
+		};
 	},
 
 

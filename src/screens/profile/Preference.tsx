@@ -174,7 +174,10 @@ export const Preference = (props: Props) => {
   const popupConfirm = useCallback(async (code:string, vName:string, vCode:string, value1:string, value2:string) => {
     popupClose();
 
+    console.log('vCode ::::: ' , vCode);
+
     let isChk = true;
+    let isSave = true;
     if(code == 'AGE' || code == 'DISTANCE' || code == 'HEIGHT') {
       if(!isEmptyData(value1) || !isEmptyData(value2)) {
         isChk = false;
@@ -183,10 +186,31 @@ export const Preference = (props: Props) => {
         isChk = false;
         show({ content: '최소값이 최대값 보다 작은 숫자를 선택해 주세요.' });
       }
-    }
+    };
 
     if(isChk) {
-      setSelectList((prev) => 
+      let list = selectList.filter((d, i) => {
+        if(d.code == code) {
+          if(code == 'AGE' || code == 'DISTANCE' || code == 'HEIGHT') {
+            if(d.value1 == value1 && d.value2 == value2) {
+              isSave = false;
+            } else {
+              d.value1 = value1;
+              d.value2 = value2;
+            }
+          } else {
+            if(d.vCode == vCode) {
+              isSave = false;
+            } else {
+              d.vName = vName;
+              d.vCode = vCode;
+            }
+          }
+        }
+        return d;
+      });
+
+      /* setSelectList((prev) => 
         prev.filter((d, i) => {
           if(d.code == code) {
             if(code == 'AGE' || code == 'DISTANCE' || code == 'HEIGHT') {
@@ -199,8 +223,11 @@ export const Preference = (props: Props) => {
           }
           return d;
         })
-      );
-      saveMemberIdealType();
+      ); */
+
+      if(isSave) {
+        saveMemberIdealType(list);
+      }
     }
   }, []);
 
@@ -241,12 +268,12 @@ export const Preference = (props: Props) => {
 	};
 
   // 내 선호이성 저장
-  const saveMemberIdealType = async () => {
+  const saveMemberIdealType = async (list:any) => {
 
     // 중복 클릭 방지 설정
     if(isClickable) {
-      setIsClickable(false);
-      setIsLoading(true);
+      /* setIsClickable(false);
+      setIsLoading(true); */
 
       try {
         if(wantAgeMin < 19) {
@@ -286,27 +313,6 @@ export const Preference = (props: Props) => {
           } else if(code == 'SMOKE') { _data.want_smoking = item.vCode;
           }
         });
-    
-        /* const body = {
-          want_local1: wantLocal1,
-          want_local2: wantLocal2,
-          want_age_min: wantAgeMin,
-          want_age_max: wantAgeMax,
-          want_business1: wantBusiness1,
-          want_business2: wantBusiness2,
-          want_business3: wantBusiness3,
-          want_job1: wantJob1,
-          want_job2: wantJob2,
-          want_job3: wantJob3,
-          want_person1: wantPerson1,
-          want_person2: wantPerson2,
-          want_person3: wantPerson3,
-          want_body: wantBod;
-          want_mbti: string;
-          want_religion: string;
-          want_drink: string;
-          want_smoking: string;
-        }; */
 
         const body = _data;
         console.log('body :::: ', body);
@@ -315,15 +321,6 @@ export const Preference = (props: Props) => {
         if(success) {
           if(data.result_code == '0000') {  
             dispatch(setPartialPrincipal({mbr_ideal_type : data.mbr_ideal_type}));
-  
-            /* show({ 
-              content: '저장되었습니다.' ,
-              confirmCallback: function() {
-                navigation.navigate(STACK.TAB, {
-                  screen: 'Roby',
-                });
-              }
-            }); */
 
             show({
               type: 'RESPONSIVE',
@@ -554,121 +551,6 @@ export const Preference = (props: Props) => {
         confirmCallbackFunc={popupConfirm}
         data={popupData}
       />
-
-
-
-      {/* <CommonHeader title={'선호이성 설정'} />
-
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={{paddingHorizontal: 20, minHeight: height}}
-        >
-        <ScrollView style={{marginTop: 20}}>
-
-          <KeyboardAvoidingView behavior={"padding"} style={{flex:1}}>
-
-            <View>
-              <SpaceView mb={32}>
-                  <SpaceView mb={15}>
-                    <CommonText color={'#D5CD9E'} fontWeight={'600'} type={'h4'}>
-                      나이
-                    </CommonText>
-                  </SpaceView>
-
-                  <SpaceView viewStyle={[styles.halfContainer, {alignItems: 'center', justifyContent: 'space-between'}]}>
-                      <View>
-                        <CommonRoundInput
-                          label={'최소'}
-                          keyboardType="number-pad"
-                          value={wantAgeMin}
-                          onChangeText={(wantAgeMin) => setWantAgeMin(wantAgeMin)}
-                          maxLength={2}
-                          placeholder={''}
-                          placeholderTextColor={'#c6ccd3'}
-                        />
-                      </View>
-
-                      <View>
-                        <Text style={styles1.hipenText}>-</Text>
-                      </View>
-
-                      <View>
-                        <CommonRoundInput
-                          label={'최대'}
-                          keyboardType="number-pad"
-                          value={wantAgeMax}
-                          onChangeText={(wantAgeMax) => setWantAgeMax(wantAgeMax)}
-                          maxLength={2}
-                          placeholder={''}
-                          placeholderTextColor={'#FFF'}
-                        />
-                      </View>
-                  </SpaceView>
-
-                  {isAgeError &&
-                    <SpaceView mt={10}>
-                      <Text style={styles1.minAgeErrorText}>최소 나이는 19 이상으로 입력해야 합니다.</Text>
-                    </SpaceView>
-                  }
-                  
-                </SpaceView>
-
-                <SpaceView mb={32}>
-                  <SpaceView mb={15}>
-                    <CommonText color={'#D5CD9E'} fontWeight={'600'} type={'h4'}>
-                      거리
-                    </CommonText>
-                  </SpaceView>
-
-                  <SpaceView viewStyle={[styles.halfContainer, {alignItems: 'center', justifyContent: 'space-between'}]}>
-                    <View>
-                      <CommonRoundInput
-                        label={'Km'}
-                        keyboardType="number-pad"
-                        value={wantLocal1}
-                        onChangeText={(wantLocal1) => setWantLocal1(wantLocal1)}
-                        maxLength={3}
-                        placeholder={'최소'}
-                        placeholderTextColor={'#FFF'}
-                      />
-                    </View>
-
-                    <View>
-                      <Text style={styles1.hipenText}>-</Text>
-                    </View>
-
-                    <View>
-                      <CommonRoundInput
-                        label={'Km'}
-                        keyboardType="number-pad"
-                        value={wantLocal2}
-                        onChangeText={(wantLocal2) => setWantLocal2(wantLocal2)}
-                        maxLength={3}
-                        placeholder={'최대'}
-                        placeholderTextColor={'#c6ccd3'}
-                      />
-                    </View>
-                  </SpaceView>
-                </SpaceView>
-
-            </View>
-
-            <SpaceView mb={16}>
-              <CommonBtn
-                value={'저장'}
-                type={'reNewId'}
-                borderRadius={5}
-                onPress={() => {
-                  saveMemberIdealType();
-                }}
-              />
-            </SpaceView>
-
-          </KeyboardAvoidingView>
-        </ScrollView>
-      </LinearGradient> */}
     </>
   );
 };

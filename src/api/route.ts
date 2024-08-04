@@ -36,7 +36,7 @@ export const JOIN_SAVE_PROFILE_INTRODUCE = '/join/saveProfileIntroduce'
 
 
 /**
- * USER
+ * MEMBER
  */
 export const ME = '/member/selectMemberInfo';
 export const UPDATE_SETTING = '/member/saveMemberBase';
@@ -80,9 +80,11 @@ export const GET_MEMBER_FACE_RANK = '/profile/getMemberFaceRankList';
 export const GET_MEMBER_PROFILE_INFO = '/profile/getMemberProfileData';
 export const GET_MEMBER_PROFILE_AUTH = '/profile/getMemberProfileAuth';
 export const GET_MEMBER_INTEREST = '/profile/getMemberInterest';
+export const GET_MEMBER_ADD_INFO = '/profile/getMemberAddInfo';
 export const SAVE_PROFILE_AUTH_COMMENT = '/profile/saveSecondAuthComment';
 export const SAVE_PROFILE_AUTH = '/profile/saveProfileAuth';
 export const SAVE_MEMBER_INTEREST = '/profile/saveMemberInterest';
+export const SAVE_MEMBER_INTERVIEW = '/profile/saveMemberInterview';
 export const SAVE_PROFILE_INFO = '/profile/saveProfileInfo';
 
 

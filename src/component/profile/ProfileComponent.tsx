@@ -197,7 +197,7 @@ const ItemRender = React.memo(({ code, name, value }) => {
         start={{ x: 0, y: 0.1 }}
         end={{ x: 0.4, y: 1 }}
         style={_styles.rowHalfWrap}>
-        <Text style={styles.fontStyle('B', 20, '#fff')}>{value}</Text>
+        <Text style={styles.fontStyle('B', 20, '#fff')}>{isEmptyData(value) ? value : '미설정'}</Text>
         <SpaceView mt={10} viewStyle={layoutStyle.rowCenter}>
           <Image source={iconSrc} style={styles.iconSquareSize(15)} />
           <SpaceView ml={5}><Text style={styles.fontStyle('B', 12, '#fff')}>{name}</Text></SpaceView>

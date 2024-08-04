@@ -2,7 +2,6 @@ import { useIsFocused, useNavigation, useFocusEffect, RouteProp  } from '@react-
 import { CommonCode, FileInfo, LabelObj, ProfileImg, LiveMemberInfo, LiveProfileImg, StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { RefreshControl, ScrollView, View, StyleSheet, Text, FlatList, Dimensions, TouchableOpacity, Animated, Easing, PanResponder, Platform, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
@@ -18,15 +17,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import { isEmptyData } from 'utils/functions';
 import CommonHeader from 'component/CommonHeader';
 import { STACK } from 'constants/routes';
-import { CommonImagePicker } from 'component/CommonImagePicker';
 import { Modalize } from 'react-native-modalize';
-import { CommonTextarea } from 'component/CommonTextarea';
 import { CommonLoading } from 'component/CommonLoading';
 import Modal from 'react-native-modal';
 import ReplyRegiPopup from 'component/story/ReplyRegiPopup';
 import LikeListPopup from 'component/story/LikeListPopup';
 import { useEffect, useRef, useState } from 'react';
-import { CommonBtn } from 'component/CommonBtn';
 
 
 /* ################################################################################################################
@@ -64,6 +60,7 @@ export default function StoryDetail(props: Props) {
     imageList: [],
     voteList: [],
     replyList: [],
+    promptList: [],
     voteInfo: {},
   });
 
@@ -349,6 +346,7 @@ export default function StoryDetail(props: Props) {
                 imageList: data.story_img_list,
                 replyList: data.story_reply_list,
                 voteList: data.story_vote_list,
+                promptList: data.story_prompt_list,
                 voteInfo: _voteInfo,
               });
             } else {
@@ -757,7 +755,7 @@ export default function StoryDetail(props: Props) {
   // ##################################################################################### 목록 새로고침
   const handleRefresh = () => {
     console.log('refresh!!!!!!!!!!!!!!');
-    getStoryBoard('REFRESH', 1);
+    getStoryBoard('REFRESH');
   };
 
   return (
@@ -965,10 +963,6 @@ export default function StoryDetail(props: Props) {
               />
             </SpaceView>
 
-
-
-
-
             {/* ###################################################################################### 태그 영역 */}
             <SpaceView mt={30}>
               <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
@@ -976,18 +970,13 @@ export default function StoryDetail(props: Props) {
                 <SpaceView ml={5}><Text style={styles.fontStyle('B', 16, '#fff')}>태그</Text></SpaceView>
               </SpaceView>
               <SpaceView mt={10} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                <SpaceView viewStyle={_styles.tagItemWrap}>
-                  <Text style={styles.fontStyle('SB', 12, '#000000')}>OTT뭐볼까?</Text>
-                </SpaceView>
-                <SpaceView viewStyle={_styles.tagItemWrap}>
-                  <Text style={styles.fontStyle('SB', 12, '#000000')}>직장</Text>
-                </SpaceView>
-                <SpaceView viewStyle={_styles.tagItemWrap}>
-                  <Text style={styles.fontStyle('SB', 12, '#000000')}>걱정</Text>
-                </SpaceView>
-                <SpaceView viewStyle={_styles.tagItemWrap}>
-                  <Text style={styles.fontStyle('SB', 12, '#000000')}>앱스쿼드이야기</Text>
-                </SpaceView>
+                {storyData.promptList?.map((item, index) => {
+                  return (
+                    <SpaceView viewStyle={_styles.tagItemWrap}>
+                      <Text style={styles.fontStyle('SB', 12, '#000000')}>{item?.prompt_name}</Text>
+                    </SpaceView>
+                  )
+                })}
               </SpaceView>
             </SpaceView>
 
@@ -1144,7 +1133,7 @@ export default function StoryDetail(props: Props) {
 
       <ReplyRegiPopup 
         ref={reply_modalizeRef}
-        profileOpenFn={profileCardOpen}
+        //profileOpenFn={profileCardOpen}
       />
 
       {/* ##################################################################################
@@ -1162,7 +1151,7 @@ export default function StoryDetail(props: Props) {
 
       <LikeListPopup
         ref={like_modalizeRef}
-        profileOpenFn={profileCardOpen}
+        //profileOpenFn={profileCardOpen}
       />
 
       {/* ###############################################

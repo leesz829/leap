@@ -1,20 +1,13 @@
 import { ColorType, ScreenNavigationProp } from '@types';
-import { Color } from 'assets/styles/Color';
 import { commonStyle, layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
 import { Modal, TouchableOpacity, View, Image, Text, ScrollView, Dimensions, StyleSheet, FlatList } from 'react-native';
-import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel';
-import { useUserInfo } from 'hooks/useUserInfo';
 import LinearGradient from 'react-native-linear-gradient';
 import { IMAGE, PROFILE_IMAGE, findSourcePath, ICON } from 'utils/imageUtils';
 import { CommaFormat, isEmptyData, formatNowDate } from 'utils/functions';
-import AsyncStorage from '@react-native-community/async-storage';
-import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Extrapolate, stopClock, cancelAnimation } from 'react-native-reanimated';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { STACK, ROUTES } from 'constants/routes';
-//import Modal from 'react-native-modal';
 
 
 
@@ -153,7 +146,8 @@ const SetSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackFunc, 
                 <SpaceView mt={10} mb={15} viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                   <TouchableOpacity 
                     style={_styles.confirmBtn}
-                    onPress={() => confirmCallbackFunc(data?.code, selectValue.name, selectValue.code, selectValue.value1, selectValue.value2)} >
+                    onPress={() => confirmCallbackFunc(data?.code, selectValue.name, selectValue.code, selectValue.value1, selectValue.value2)} 
+                  >
                     <Text style={styles.fontStyle('B', 16, '#fff')}>확인</Text>
                   </TouchableOpacity>
                 </SpaceView>

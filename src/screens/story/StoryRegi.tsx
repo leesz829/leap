@@ -61,13 +61,20 @@ export default function StoryRegi(props: Props) {
 
   // 다음 버튼
   const nextBtn = async () => {
+    if(contents.length < 20) {
+      show({ content: '최소 20글자 이상 입력해 주세요.' });
+      return false;
+    }
+
     navigation.navigate(STACK.COMMON, {
       screen: 'StoryEdit',
       params: {
         storyBoardSeq: 0,
+        imgData: imageData.file_base64,
+        contents: contents,
       }
     });
-  };
+   };
 
   // 사진 선택
   const imgSelected = async () => {
@@ -105,10 +112,7 @@ export default function StoryRegi(props: Props) {
     <>
       <SpaceView pt={30} viewStyle={_styles.wrap}>
 
-        <CommonHeader 
-          title={'새글등록'} 
-          type={'STORY_REGI'} 
-          callbackFunc={nextBtn} />
+        <CommonHeader title={'새글등록'}  type={'STORY_REGI'} callbackFunc={nextBtn} />
 
         <ScrollView showsVerticalScrollIndicator={false}>
 
@@ -207,6 +211,8 @@ const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
     backgroundColor: '#000',
+    paddingTop: 30,
+    paddingHorizontal: 10,
   },
   imgSetBtn: {
     flexDirection: 'row',

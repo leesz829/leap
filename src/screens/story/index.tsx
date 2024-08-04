@@ -1,6 +1,7 @@
-import { useIsFocused, useNavigation, useFocusEffect  } from '@react-navigation/native';
-import { CommonCode, FileInfo, LabelObj, ProfileImg, LiveMemberInfo, LiveProfileImg, ScreenNavigationProp } from '@types';
+import { useIsFocused, useNavigation, useFocusEffect, RouteProp } from '@react-navigation/native';
+import { ScreenNavigationProp, StackParamList } from '@types';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
@@ -30,9 +31,14 @@ import Talk from 'component/story/Talk';
 ###### Story
 ################################################################################################################ */
 
+interface Props {
+  navigation: StackNavigationProp<StackParamList, 'Story'>;
+  route: RouteProp<StackParamList, 'Story'>;
+}
+
 const { width, height } = Dimensions.get('window');
 
-export const Story = () => {
+export const Story = (props: Props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
@@ -63,7 +69,7 @@ export const Story = () => {
         storyType : 'STORY',
       }
     });
-  }
+  };
 
   // 스토리 알림 이동
   const goStoryActive = async () => {
@@ -195,17 +201,10 @@ export const Story = () => {
               onPress={() => (setCurrentTab('TALK'))}>
               <Text style={_styles.tabText(currentTab == 'TALK')}>리프Talk</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => (setCurrentTab('STORY'))}>
               <Text style={_styles.tabText(currentTab == 'STORY')}>FEED</Text>
-            </TouchableOpacity>
-          </SpaceView>
-
-          <SpaceView>
-            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={styles.fontStyle('B', 11, '#fff')}>즐겨찾기만 보기</Text>
-              <SpaceView ml={3}><Image source={ICON.story_starOff} style={styles.iconSquareSize(11)} /></SpaceView>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </SpaceView>
 
         </SpaceView>
@@ -225,12 +224,9 @@ export const Story = () => {
         ############################################################################################################ */}
 
         <SpaceView>
-          {currentTab == 'TALK' && <Talk />}
+          {currentTab == 'TALK' && <Talk isRefresh={props.route.params?.isRefresh} />}
 
         </SpaceView>
-
-
-
 
 
 
@@ -250,24 +246,24 @@ export const Story = () => {
           {/* ############################################################################################################
           ###### 알림
           ############################################################################################################ */}
-          {currentIndex == 1 && (
+          {/* {currentIndex == 1 && (
             <>
               <SpaceView>
                 <ActiveRender dataList={activeData.alarmData} type={'ALARM'} selectCallbackFn={getStoryActive} />
               </SpaceView>
             </>
-          )}
+          )} */}
 
           {/* ############################################################################################################
           ###### 내가쓴글
           ############################################################################################################ */}
-          {currentIndex == 2 && (
+          {/* {currentIndex == 2 && (
             <>
               <SpaceView>
                 <ActiveRender dataList={activeData.storyData} type={'BOARD'} selectCallbackFn={getStoryActive} />
               </SpaceView>
             </>
-          )}
+          )} */}
         </SpaceView>
 
       </SpaceView>

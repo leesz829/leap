@@ -97,7 +97,7 @@ export const Profile1 = (props: Props) => {
       const { success, data } = await get_member_profile_info();
       if (success) {
         const auth_list = data?.mbr_second_auth_list.filter(item => item.auth_status == 'ACCEPT');
-        const interviewApplyList = data?.mbr_interview_list.filter(item => item.use_yn == 'Y');
+        const interviewApplyList = data?.mbr_interview_list.filter(item => item.use_yn == 'Y' && isEmptyData(item?.answer));
 
         setProfileData({
             member_info: data?.mbr_base,

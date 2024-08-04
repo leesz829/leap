@@ -276,7 +276,7 @@ export const List: FC<Props> = (props) => {
 
         {!isEmpty ? (
           <>
-            <SpaceView pt={110}>
+            <SpaceView>
               <FlatList
                 ref={scrollRef}
                 data={data.matchList}
@@ -285,6 +285,7 @@ export const List: FC<Props> = (props) => {
                 showsVerticalScrollIndicator={false}
                 decelerationRate="fast"
                 snapToInterval={height * 0.65 + 33.5}
+                contentContainerStyle={{paddingTop: 110}}
                 refreshControl={
                   <RefreshControl
                     refreshing={isRefreshing}
