@@ -430,7 +430,7 @@ export const GUIDE_IMAGE = {
 
 export function findSourcePath(img_file_path: any) {
   if (img_file_path) {
-    if (img_file_path.startsWith('http') || img_file_path.startsWith('file:///') || img_file_path.startsWith('/Users') || img_file_path.startsWith('/Devices')) {
+    if (img_file_path.startsWith('http') || img_file_path.startsWith('file:///') || img_file_path.startsWith('/Users') || img_file_path.startsWith('/Devices') || img_file_path.startsWith('/Application')) {
       return { uri: img_file_path };
     } else {
       const path = properties.img_domain + img_file_path;
