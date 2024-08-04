@@ -315,15 +315,6 @@ const _styles = StyleSheet.create({
     borderRadius: Platform.OS == 'ios' ? 20 : 50,
     paddingHorizontal: 10,
   },
-  tabText: (isOn: boolean) => {
-		return {
-			fontFamily: 'SUITE-Bold',
-			color: isOn ? '#FFDD00' : '#445561',
-      width: 60,
-      textAlign: 'center',
-      paddingVertical: 3,
-		};
-	},
   contentWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -534,6 +525,7 @@ const _styles = StyleSheet.create({
       borderBottomColor: '#46F66F',
       borderBottomWidth: isOn ? 2 : 0,
       paddingBottom: 3,
+      overflow: 'hidden',
     };
   },
   
