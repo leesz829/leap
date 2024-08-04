@@ -503,20 +503,26 @@ export const Shop = () => {
                 </SpaceView>
                 <SpaceView mt={10}>
                   <SpaceView mb={5} viewStyle={{borderRadius: 50, width: 250}}>
-                    <LinearGradient
-                      colors={['#46F66F', '#FFFF5D']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={_styles.gradient(payInfo?.member_buy_price / payInfo?.target_buy_price)}>
-                    </LinearGradient>
-                    <Slider
-                      animateTransitions={true}
-                      renderThumbComponent={() => null}
-                      containerStyle={_styles.sliderContainerStyle}
-                      trackStyle={_styles.sliderThumbStyle}
-                      trackClickable={false}
-                      disabled
-                    />
+
+                    <SpaceView>
+
+                      <SpaceView>
+                        <LinearGradient
+                          colors={['#46F66F', '#FFFF5D']}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={_styles.gradient(0.3)} />
+                      </SpaceView>
+                      
+                      <Slider
+                        animateTransitions={true}
+                        renderThumbComponent={() => null}
+                        containerStyle={_styles.sliderContainerStyle}
+                        trackStyle={_styles.sliderThumbStyle}
+                        trackClickable={false}
+                        disabled
+                      />
+                    </SpaceView>
 
                     <SpaceView mt={5}>
                       <Text style={[styles.fontStyle('SB', 9, '#FFFF5D'), {textAlign: 'right'}]}>
@@ -1110,7 +1116,7 @@ const _styles = StyleSheet.create({
   gradient: (value:any) => {
     let percent = 0;
 
-    if(value != null && typeof value != 'undefined') {
+    if(isEmptyData(value)) {
       percent = value * 100;
     };
 
