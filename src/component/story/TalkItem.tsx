@@ -1,23 +1,17 @@
 import { layoutStyle, styles } from 'assets/styles/Styles';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View, Text, Platform, ScrollView, Dimensions } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { Color } from 'assets/styles/Color';
-import { useDispatch, useSelector } from 'react-redux';
 import { formatNowDate, isEmptyData, CommaFormat } from 'utils/functions';
 import { ICON, findSourcePath } from 'utils/imageUtils';
 import { STACK, ROUTES } from 'constants/routes';
-import LinearGradient from 'react-native-linear-gradient';
-import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { useUserInfo } from 'hooks/useUserInfo';
-import SocialGrade from 'component/common/SocialGrade';
 
 
 const { width, height } = Dimensions.get('window');
 
 export default function TalkItem({ item, profileOpenFn, goDetailFn }) {
+  //console.log('item ::::: ' , item);
 
   const storyBoardSeq = item.story_board_seq; // 스토리 게시글 번호
   const storyType = item?.story_type; // 스토리 유형
@@ -54,7 +48,7 @@ export default function TalkItem({ item, profileOpenFn, goDetailFn }) {
 
         {/* 대표사진 영역 */}
         <TouchableOpacity style={{flex: 0.5}} onPress={() => (goDetailFn(storyBoardSeq))}>
-          <Image source={ICON.storyMale} style={[styles.iconSquareSize(55), _styles.mstImgStyle]} />
+          <Image source={item?.gender == 'M' ? ICON.story_man01 : ICON.story_woman01} style={[styles.iconSquareSize(55), _styles.mstImgStyle]} />
         </TouchableOpacity>
 
         <SpaceView viewStyle={{flex: 2, justifyContent: 'space-between'}}>

@@ -16,13 +16,14 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import LinearGradient from 'react-native-linear-gradient';
 import { isEmptyData } from 'utils/functions';
 import CommonHeader from 'component/CommonHeader';
-import { STACK } from 'constants/routes';
+import { STACK, ROUTES } from 'constants/routes';
 import { Modalize } from 'react-native-modalize';
 import { CommonLoading } from 'component/CommonLoading';
-import Modal from 'react-native-modal';
 import ReplyRegiPopup from 'component/story/ReplyRegiPopup';
 import LikeListPopup from 'component/story/LikeListPopup';
 import { useEffect, useRef, useState } from 'react';
+import ReportPopup from 'screens/commonpopup/ReportPopup';
+
 
 
 /* ################################################################################################################
@@ -86,6 +87,10 @@ export default function StoryDetail(props: Props) {
 
   // 투표 선택 상태
   const [selectedVoteSeq, setSelectedVoteSeq] = React.useState(null);
+
+
+
+
 
   /* #########################################################################################################
   ######## 좋아요 관련
@@ -297,10 +302,16 @@ export default function StoryDetail(props: Props) {
     // 팝업 닫기
     storyMod_onClose();
 
+    console.log('storyData.imageList :::: ' ,storyData.imageList);
+
     navigation.navigate(STACK.COMMON, {
-      screen: 'StoryEdit',
+      screen: ROUTES.STORY_REGI,
       params: {
         storyBoardSeq: storyBoardSeq,
+        nicknameModifier: storyData.board?.nickname_modifier,
+        nicknameNoun: storyData.board?.nickname_noun,
+        contents: storyData.board?.contents,
+        imgList: storyData.imageList,
       }
     });
   };
@@ -349,6 +360,10 @@ export default function StoryDetail(props: Props) {
                 promptList: data.story_prompt_list,
                 voteInfo: _voteInfo,
               });
+
+              setReportCodeList(data?.report_code_list);
+
+
             } else {
               show({
                 content: '삭제된 스토리 입니다.',
@@ -570,7 +585,39 @@ export default function StoryDetail(props: Props) {
         setIsLoading(false);
       }
     }
+  };
+
+  // ############################################################################# 투표하기 실행
+  const ddddd = async (storyVoteSeq:number) => {
+
   }
+
+  /* #########################################################################################################
+  ######## 신고하기 관련
+  ######################################################################################################### */
+
+  const [reportCodeList, setReportCodeList] = React.useState([]);
+
+  // 신고하기 modalizeRef
+  const report_modalizeRef = React.useRef<Modalize>(null);
+
+  // 신고하기 팝업 활성화
+  const report_onOpen = () => {
+    report_modalizeRef.current?.openModal(reportCodeList);
+  };
+
+  // 신고하기 팝업 닫기
+  const report_onClose = () => {
+    report_modalizeRef.current?.closeModal();
+  };
+
+  // 신고하기
+  const reportProc = (value:string) => {
+    console.log('value :::: ' , value);
+    report_onClose();
+  };
+
+
 
   // ############################################################################# 댓글 렌더링
   const ReplyRender = ({ item, index, likeFunc, replyModalOpenFunc }) => {
@@ -763,19 +810,18 @@ export default function StoryDetail(props: Props) {
       {isLoading && <CommonLoading />}
 
       <SpaceView pt={30} viewStyle={_styles.wrap}>
-      
         <CommonHeader 
           title={(storyData.board?.story_type == 'STORY' ? '스토리' : storyData.board?.story_type == 'VOTE' ? '투표' : '시크릿')}
           type={'STORY_DETAIL'} 
-          mstImgPath={findSourcePath(storyData.board?.mst_img_path)} 
+          mstImgPath={memberBase?.member_seq == storyData.board?.member_seq ? findSourcePath(storyData.board?.mst_img_path) : ICON.story_regTmp} 
           nickname={storyData.board?.nickname}
-          gender={storyData.board?.gender}
           profileScore={storyData.board?.profile_score}
           authLevel={storyData.board?.auth_acct_cnt}
           storyType={storyData.board?.story_type}
-          secretYn={storyData.board?.secret_yn}
           nicknameModifier={storyData.board?.nickname_modifier}
-          nicknameNoun={storyData.board?.nickname_noun}
+          nicknameNoun={memberBase?.member_seq == storyData.board?.member_seq ? storyData.board?.nickname : storyData.board?.nickname_noun}
+          editBtnIcon={memberBase?.member_seq == storyData.board?.member_seq ? ICON.writeBtn : ICON.declaration}
+          callbackFunc={memberBase?.member_seq == storyData.board?.member_seq ? goStoryModify : report_onOpen}
         />
 
         <ScrollView
@@ -794,37 +840,14 @@ export default function StoryDetail(props: Props) {
           }
         >
 
-          <SpaceView mb={20} pl={10} pr={10}>
+          <SpaceView mb={20}>
 
             {/* ###################################################################################### 이미지 영역 */}
             <SpaceView>
-              {/* <View style={_styles.pagingContainer}>
-                {storyData.board?.story_type == 'VOTE' ? (
-                  <>
-                    {storyData.voteList?.map((item, index) => {
-                      return (
-                        <View style={_styles.dotContainerStyle} key={'dot' + index}>
-                          <SpaceView viewStyle={_styles.pagingDotStyle(index == currentIndex)} />
-                        </View>
-                      )
-                    })}
-                  </>
-                ) : (
-                  <>
-                    {storyData.imageList?.map((item, index) => {
-                      return (
-                        <View style={_styles.dotContainerStyle} key={'dot' + index}>
-                          <SpaceView viewStyle={_styles.pagingDotStyle(index == currentIndex)} />
-                        </View>
-                      )
-                    })}
-                  </>
-                )}
-              </View> */}
 
               <FlatList
                 ref={imgRef}
-                data={storyData.board?.story_type == 'VOTE' ? storyData.voteList : storyData.imageList}
+                data={storyData.imageList}
                 renderItem={ImageRender}
                 onScroll={handleScroll}
                 showsHorizontalScrollIndicator={false}
@@ -895,6 +918,11 @@ export default function StoryDetail(props: Props) {
                 </SpaceView>
               </SpaceView>
             </SpaceView>
+
+
+
+
+            
 
             {/* ###################################################################################### 투표 노출 영역 */}
             {storyData.board?.story_type == 'VOTE' && (
@@ -970,15 +998,18 @@ export default function StoryDetail(props: Props) {
                 <SpaceView ml={5}><Text style={styles.fontStyle('B', 16, '#fff')}>태그</Text></SpaceView>
               </SpaceView>
               <SpaceView mt={10} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                {storyData.promptList?.map((item, index) => {
+                {storyData?.promptList?.map((item, index) => {
                   return (
-                    <SpaceView viewStyle={_styles.tagItemWrap}>
+                    <SpaceView key={'prompt_'+index} viewStyle={_styles.tagItemWrap}>
                       <Text style={styles.fontStyle('SB', 12, '#000000')}>{item?.prompt_name}</Text>
                     </SpaceView>
                   )
                 })}
               </SpaceView>
             </SpaceView>
+
+
+
 
 
 
@@ -1155,7 +1186,7 @@ export default function StoryDetail(props: Props) {
       />
 
       {/* ###############################################
-			게시글 수정/삭제 팝업
+			          게시글 수정/삭제 팝업
 			############################################### */}
       <Modalize
         ref={storyMod_modalizeRef}
@@ -1185,6 +1216,20 @@ export default function StoryDetail(props: Props) {
           </TouchableOpacity>
         </SpaceView>
       </Modalize>
+
+
+      {/* ##################################################################################
+                    사용자 신고하기 팝업
+      ################################################################################## */}
+      <ReportPopup
+        ref={report_modalizeRef}
+        //profileOpenFn={profileCardOpen}
+        confirmFn={reportProc}
+      />
+
+
+
+
     </>
   );
 
@@ -1234,7 +1279,8 @@ export default function StoryDetail(props: Props) {
 const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
-    backgroundColor: '#000'
+    backgroundColor: '#000',
+    paddingHorizontal: 10,
   },
   imageStyle: {
     flex: 1,
@@ -1378,5 +1424,72 @@ const _styles = StyleSheet.create({
     borderBottomColor: '#8BC1FF',
     transform: [{ rotate: '0deg' }],
   },
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  reportTitle: {
+    fontFamily: 'Pretendard-ExtraBold',
+		fontSize: 20,
+		color: '#D5CD9E',
+		textAlign: 'left',
+  },
+  reportButton: {
+    height: 43,
+    borderRadius: 21.5,
+    backgroundColor: '#363636',
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    marginTop: 20,
+  },
+  reportTextBtn: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 14,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#ffffff',
+  },
+  reportText: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 17,
+    color: '#E1DFD1',
+    textAlign: 'left',
+  },
+  reportBtnArea: (bg:number, bdc:number) => {
+		return {
+			/* width: '50%',
+			height: 48, */
+			backgroundColor: bg,
+			alignItems: 'center',
+			justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: bdc,
+      borderRadius: 5,
+      paddingVertical: 13,
+		}
+	},
+  reportBtnText: (cr:string) => {
+		return {
+		  fontFamily: 'Pretendard-Bold',
+		  fontSize: 16,
+		  color: isEmptyData(cr) ? cr : '#fff',
+		};
+	},
 
 });

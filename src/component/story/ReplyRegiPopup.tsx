@@ -3,22 +3,10 @@ import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-n
 import { StackParamList, ScreenNavigationProp } from '@types';
 import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, InputAccessoryView, TextInput, Keyboard, Modal, Pressable  } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
-import { Watermark } from 'component/Watermark';
-import LinearGradient from 'react-native-linear-gradient';
 import { useUserInfo } from 'hooks/useUserInfo';
 import SpaceView from 'component/SpaceView';
-import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Extrapolate, cancelAnimation, stopClock } from 'react-native-reanimated';
-import { ROUTES, STACK } from 'constants/routes';
-//import Modal from 'react-native-modal';
-import { CommonTextarea } from 'component/CommonTextarea';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
-import { save_story_reply } from 'api/models';
-import { isEmptyData } from 'utils/functions';
-import { SUCCESS, NODATA } from 'constants/reusltcode';
 import { useProfileImg } from 'hooks/useProfileImg';
-import { ScrollView } from 'react-native-gesture-handler';
-import { myProfile } from 'redux/reducers/authReducer';
-import { useDispatch } from 'react-redux';
 import { Modalize } from 'react-native-modalize';
 
 
@@ -38,15 +26,12 @@ const { width, height } = Dimensions.get('window');
 
 //export default function ReplyRegiPopup({ isVisible, storyBoardSeq, storyReplySeq, depth, isSecret, callbackFunc }: Props) {
 const ReplyRegiPopup = forwardRef((props, ref) => {
-  const dispatch = useDispatch();
+  const modalizeRef = useRef(null); // 모달 ref
 
   // 본인 데이터
   const memberBase = useUserInfo();
 
-  const modalizeRef = useRef(null); // 모달 ref
-
-
-  const [storyBoardSeq, setStoryBoardSeq] = useState(false);
+  //const [storyBoardSeq, setStoryBoardSeq] = useState(false);
 
   // 부모 컴포넌트 handle
   useImperativeHandle(ref, () => ({
@@ -435,7 +420,7 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
           <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',}} onPress={()=> { popup_onClose(); }} />
 
-          <ScrollView style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
+          {/* <ScrollView style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
             {Platform.OS == 'ios' ? (
               <>
                 <InputAccessoryView>
@@ -504,7 +489,7 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
                 </SpaceView>
               </>
             )}
-          </ScrollView>
+          </ScrollView> */}
 
         </SpaceView>
 

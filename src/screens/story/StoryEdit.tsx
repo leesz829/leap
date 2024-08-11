@@ -18,7 +18,7 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import LinearGradient from 'react-native-linear-gradient';
 import { isEmptyData } from 'utils/functions';
 import CommonHeader from 'component/CommonHeader';
-import { STACK } from 'constants/routes';
+import { STACK, ROUTES } from 'constants/routes';
 import { CommonImagePicker } from 'component/CommonImagePicker';
 import { Modalize } from 'react-native-modalize';
 import { CommonTextarea } from 'component/CommonTextarea';
@@ -47,28 +47,28 @@ export default function StoryEdit(props: Props) {
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
 
+  const { params } = props.route;
+
   const memberBase = useUserInfo(); // 회원 기본 데이터
   const { show } = usePopup(); // 공통 팝업
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 체크
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
   const inputRef = React.useRef();
 
-  const [title, setTitle] = useState(''); // 제목
   const [isSecret, setIsSecret] = useState(false); // 비밀 여부
   
-  const [storyBoardSeq, setStoryBoardSeq] = useState(props.route.params.storyBoardSeq);
-  const [imageList, setImageList] = useState([]); // 이미지 목록
+  const [storyBoardSeq, setStoryBoardSeq] = useState(params.storyBoardSeq);
+  const [imageList, setImageList] = useState(params.imgList); // 이미지 목록
 
   const [imgDelSeqStr, setImgDelSeqStr] = useState('');
 
   // 스토리 기본 데이터
   const [storyData, setStoryData] = useState({
-    storyBoardSeq: props.route.params.storyBoardSeq,
-    storyType: isEmptyData(props.route.params.storyType) ? props.route.params.storyType : 'STORY',
-    contents: props.route.params.contents,
-    imgData: props.route.params.imgData,
+    storyBoardSeq: params.storyBoardSeq,
+    storyType: '',
+    contents: params.contents,
     voteEndType: '',
-    voteEndYn: props.route.params.voteEndYn,
+    voteEndYn: params.voteEndYn,
     keywordData: {common_code: '', code_name: ''},
   });
 
@@ -77,11 +77,6 @@ export default function StoryEdit(props: Props) {
 
   const [voteTypeValue, setVoteTypeValue] = useState(null); // 투표 유형 값
   const [voteOptionList, setVoteOptionList] = useState([]);
-
-  const [inputVoteName01, setInputVoteName01] = useState('');
-  const [inputVoteName02, setInputVoteName02] = useState('');
-  const [inputVoteFileData01, setInputVoteFileData01] = useState('');
-  const [inputVoteFileData02, setInputVoteFileData02] = useState('');
 
   // 투표 데이터
   const [voteData, setVoteData] = useState({
@@ -180,7 +175,7 @@ export default function StoryEdit(props: Props) {
       confirmCallback: async function(data:any) {
         setPromptList((prev) =>
           prev.map((_item: any) =>
-            _item.value === item.value ? { ..._item, selectedValue: data } : _item
+            _item.value === item.value ? { ..._item, selectedValue: {prompt_seq: data?.prompt_seq, prompt_name: data?.prompt_name} } : _item
           )
         );
       },
@@ -249,15 +244,10 @@ export default function StoryEdit(props: Props) {
       try {
         let voteList = [];
 
-        /* if(!isEmptyData(storyData.contents)) {
-          show({ content: '내용을 입력해 주세요.' });
+        if(!isEmptyData(storyData.keywordData?.common_code)) {
+          show({ content: '키워드를 선택해 주세요.' });
           return false;
-        }; */
-
-        /* if(storyData.contents.length < 10) {
-          show({ content: '최소 10글자 이상 입력해 주세요.' });
-          return false;
-        } */
+        };
         
         // 투표 목록 셋팅
         if(storyData.storyType == 'VOTE') {
@@ -306,6 +296,7 @@ export default function StoryEdit(props: Props) {
           vote_end_type: storyData.voteEndType,
           secret_yn: isSecret ? 'Y' : 'N',
           keyword_code: storyData?.keywordData?.common_code,
+          prompt_use_yn: isPromptUse ? 'Y' : 'N',
           prompt_list: prompt_list,
         };
 
@@ -324,7 +315,12 @@ export default function StoryEdit(props: Props) {
             }
 
             if(isEmptyData(storyBoardSeq)) {
-              navigation.goBack();
+              navigation.navigate(STACK.COMMON, {
+                screen: ROUTES.STORY_DETAIL,
+                params: {
+                  storyBoardSeq: storyBoardSeq
+                }
+              });
             } else {
               navigation.navigate(STACK.TAB, {
                 screen: 'Story',
@@ -365,27 +361,23 @@ export default function StoryEdit(props: Props) {
       if(success) {
         switch (data.result_code) {
         case SUCCESS:
-
-          setTitle(data.story?.story_type == 'STORY' ? '스토리 수정' : data.story?.story_type == 'VOTE' ? '투표 수정' : '시크릿 수정');
-
-          /* if(data.story?.story_type == 'VOTE') {
-            setCurrentIndex(1);
-          } else if(data.story?.story_type == 'SECRET') {
-            setCurrentIndex(2);
-          } */
+          console.log('data.story ::: ' , data.story);
 
           if(isEmptyData(data.story?.story_board_seq)) {
             setStoryData({
               ...storyData,
-              storyBoardSeq: data.story?.story_board_seq,
+              //storyBoardSeq: data.story?.story_board_seq,
               storyType: data.story?.story_type,
-              contents: data.story?.contents,
+              //contents: data.story?.contents,
               voteEndType: data.story?.vote_end_type,
+              keywordData: {common_code: data?.story?.keyword_code, code_name: data?.story?.keyword_code_name},
             });
           };
 
+          setIsPromptUse(data.story?.prompt_use_yn == 'Y' ? true : false);
+
           // 스토리 이미지 데이터 구성
-          if(isEmptyData(null != data.story_img_list) && data.story_img_list?.length > 0) {
+          /* if(isEmptyData(null != data.story_img_list) && data.story_img_list?.length > 0) {
             let imgData: any = {
               orgImgUrl01: { story_board_img_seq: '', imgPath: '', delYn: '' },
               orgImgUrl02: { story_board_img_seq: '', imgPath: '', delYn: '' },
@@ -404,7 +396,7 @@ export default function StoryEdit(props: Props) {
             });
 
             setImgData({ ...imgData, imgData });
-          };
+          }; */
 
           // 스토리 투표 데이터 구성
           if(isEmptyData(data.story_vote_list) && data.story_vote_list?.length > 0) {
@@ -439,11 +431,33 @@ export default function StoryEdit(props: Props) {
             })
           };
 
-          // 키워드 목록 설정
+          // 프롬프트 데이터 구성
+          if(data?.story_prompt_list.length > 0) {
+            data?.story_prompt_list?.map((item, index) => {
+              const groupCode = item?.prompt_group_code;
+              console.log('groupCode :::::: ' , groupCode);
+
+              if(!isEmptyData(groupCode)) {
+                setPromptList((prev) =>
+                  prev.map((_item: any) =>
+                    _item.value === 'LOGG' ? { ..._item, selectedValue: {prompt_seq: item?.prompt_seq, prompt_name: item?.prompt_name} } : _item
+                  )
+                );
+              } else {
+                setPromptList((prev) =>
+                  prev.map((_item: any) =>
+                    _item.value === groupCode ? { ..._item, selectedValue: {prompt_seq: item?.prompt_seq, prompt_name: item?.prompt_name} } : _item
+                  )
+                );
+              }
+            });
+          }
+
+          // 키워드 공통코드 목록 설정
           setKeywordList(data?.keyword_list);
 
-          // 프롬프트 목록 설정
-          setThemaList(data?.theme_list);
+          // 프롬프트 공통코드 목록 설정
+          setThemaList(data?.thema_list);
           setEmotionList(data?.emotion_list);
           setLogList(data?.log_list);
 
@@ -480,22 +494,6 @@ export default function StoryEdit(props: Props) {
 
 
 
-
-
-
-  // 투표 종료 유형 콜백 함수
-  const voteEndTypeCallbackFn = (value: string) => {
-    setStoryData({...storyData, voteEndType: value});
-  };
-
-
-  const voteFileCallBack01 = async (uri: any, base64: string, i: number) => {
-    setInputVoteFileData01(base64);
-  };
-
-  const voteFileCallBack02 = async (uri: any, base64: string, i: number) => {
-    setInputVoteFileData02(base64);
-  };
 
 
 
@@ -591,8 +589,6 @@ export default function StoryEdit(props: Props) {
 
       if(isEmptyData(props.route.params.storyBoardSeq)) {
         
-      } else {
-        setTitle(storyData.storyType == 'STORY' ? '스토리 등록' : storyData.storyType == 'VOTE' ? '투표 등록' : '시크릿 등록');
       }
     };
   }, [isFocus]);
@@ -603,12 +599,13 @@ export default function StoryEdit(props: Props) {
 
       <SpaceView pt={30} viewStyle={_styles.wrap}>
 
-        <CommonHeader type={'STORY_REGI'} title={'새글등록'} callbackFunc={storyRegister} />
+        <CommonHeader type={'STORY_REGI'} title={isEmptyData(params.storyBoardSeq) ? '새글수정' : '새글등록'} callbackFunc={storyRegister} />
 
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
           <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{paddingHorizontal: 10, marginTop: 35}}>
             <SpaceView mb={150}>
+
               {/* ##############################################################################################################
               ##### 키워드 선택 영역
               ############################################################################################################## */}

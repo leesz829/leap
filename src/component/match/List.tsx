@@ -170,6 +170,7 @@ export const List: FC<Props> = (props) => {
 
   // ############################################################ 매칭 상세 이동
   const goMatchDetail = React.useCallback(async (trgtMemberSeq:number) => {
+    console.log('asdkmasldkasmdlksamdlaskmdlkasmd ::::: ' , trgtMemberSeq);
     navigation.navigate(STACK.COMMON, {
       screen: 'MatchDetail',
       params: {
@@ -179,8 +180,21 @@ export const List: FC<Props> = (props) => {
     });
   }, []);
 
+  /* const goMatchDetail = async () => {
+    console.log('asdkmasldkasmdlksamdlaskmdlkasmd');
+    navigation.navigate(STACK.COMMON, {
+      screen: 'MatchDetail',
+      params: {
+        trgtMemberSeq: trgtMemberSeq,
+        type: 'OPEN',
+      } 
+    });
+  }; */
+
   // ############################################################ 프로필 열람
   const profileOpen = React.useCallback(async (trgtMemberSeq:number) => {
+    console.log('profileOpen !!!!!!!!!!!!!!!!!!!!!!!!');
+
     // 중복 클릭 방지 설정
     if(isClickable) {
       try {

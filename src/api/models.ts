@@ -1127,6 +1127,7 @@ export async function get_popup_list(body: {
 export async function get_story_board_list(body: { 
   load_type: string;
   page_num: number;
+  keyword_code: string;
 }) {
   return send(GET_STORY_BOARD_LIST, 'POST', body, true, false);
 };

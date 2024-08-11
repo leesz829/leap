@@ -49,7 +49,6 @@ export type StackParamList = {
     memberSeq: Number;
   };
   SecondAuthPopup: undefined; // 2차 인증 팝업
-  ReportPopup: undefined; // 신고하기 팝업
   LivePopup: undefined;
   Board: undefined; // 게시판 메인
   BoardDetail: undefined; // 게시판 상세
@@ -75,11 +74,16 @@ export type StackParamList = {
   TutorialSetting: undefined;
   AlarmSetting: undefined;
   ProfileImageSetting: undefined;
-  StoryRegi: undefined;
+  StoryRegi: {
+    storyBoardSeq: Number;
+    nicknameModifier: string;
+    nicknameNoun: string;
+    contents: string;
+    imgList: [];
+  };
   StoryEdit: {
     storyBoardSeq: Number;
-    storyType: string;
-    imgData: string;
+    imgList: [];
     contents: string;
   };
   StoryDetail: {

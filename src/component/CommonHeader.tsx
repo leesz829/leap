@@ -23,13 +23,12 @@ export type NavigationHeaderProps = {
   type?: string;
   mstImgPath?: any;
   nickname?: string;
-  gender?: string;
   profileScore?: any;
   authLevel?: any;
   storyType?: string;
-  secretYn?: string;
   nicknameModifier?: string;
   nicknameNoun?: string;
+  editBtnIcon?: any;
   callbackFunc: () => void;
 };
 
@@ -47,10 +46,9 @@ function CommonHeader({
   type,
   mstImgPath,
   nickname,
-  gender,
-  secretYn,
   nicknameModifier,
   nicknameNoun,
+  editBtnIcon,
   callbackFunc,
 }: NavigationHeaderProps) {
 
@@ -120,8 +118,10 @@ function CommonHeader({
 
                 {type == 'STORY_DETAIL' ? (
                   <>
-                    <SpaceView ml={60} viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
-                      <Image source={ICON.story_regTmp} style={styles.iconSquareSize(35)} />
+                    <SpaceView ml={45} viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+                      <SpaceView viewStyle={_styles.mstImgWrap}>
+                        <Image source={mstImgPath} style={styles.iconSquareSize(35)} />
+                      </SpaceView>
                       <SpaceView ml={10}><Text style={styles.fontStyle('B', 12, '#fff')}>{nicknameModifier}{'\n'}{nicknameNoun}</Text></SpaceView>
                     </SpaceView>
                   </>
@@ -132,26 +132,6 @@ function CommonHeader({
                     </SpaceView>
                   </>
                 )}
-
-                {/* {isEmptyData(mstImgPath) ? (
-                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                    <SpaceView viewStyle={_styles.mstImgArea}>
-                      {title == '시크릿' || secretYn == 'Y' ?
-                        <Image source={gender == 'W' ? ICON.storyFemale : ICON.storyMale} style={[_styles.mstImgStyle, {backgroundColor: '#FFF'}]} />
-                      :
-                        <Image source={mstImgPath} style={_styles.mstImgStyle} />
-                      }
-                    </SpaceView>
-                    {title == '스토리' && secretYn == 'Y' ?
-                      <Text style={styles.fontStyle('B', 12, '#fff')}>{nicknameModifier} {nicknameNoun}</Text>
-                    :
-                      <Text style={styles.fontStyle('B', 12, '#fff')}>{nickname}</Text>
-                    }
-                    
-                  </SpaceView>
-                ) : (
-                  <Text style={_styles.titleStyle}>{title}</Text>
-                )} */}
               </SpaceView>
 
               <SpaceView viewStyle={_styles.btnContainer}>
@@ -167,7 +147,7 @@ function CommonHeader({
                   <>
                     <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
                       <TouchableOpacity style={[layoutStyle.row]} onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
-                        <Image source={ICON.declaration} style={styles.iconSquareSize(28)} />
+                        <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
                       </TouchableOpacity>
                     </SpaceView>
                   </>  
@@ -180,6 +160,12 @@ function CommonHeader({
                         <View style={_styles.dot} />
                       </TouchableOpacity>
                     </SpaceView>
+                  </> 
+                ) : type == 'STORY_DETAIL' ? (
+                  <>
+                    <TouchableOpacity onPress={callbackFunc} hitSlop={commonStyle.hipSlop20}>
+                      <Image source={editBtnIcon} style={styles.iconSquareSize(35)} />
+                    </TouchableOpacity>
                   </>
                 ) : (
                   <>
@@ -220,12 +206,6 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titleStyle: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 17,
-    color: '#D5CD9E',
-    textAlign: 'center',
-  },
   mstImgArea: {
     borderColor: '#D5CD9E',
     borderWidth: 1,
@@ -237,20 +217,10 @@ const _styles = StyleSheet.create({
     borderRadius: 50,
     overflow: 'hidden',
   },
-  scoreText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 14,
-    color: '#333333',
-  },
-  regiText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    color: '#FFDD00',
-  },
   btnContainer: {
     position: 'absolute',
     top: 0,
-    right: 13,
+    right: 0,
     height: 56,
     justifyContent: 'center',
     zIndex: 1,
@@ -260,6 +230,10 @@ const _styles = StyleSheet.create({
     width: 6,
     borderRadius: 50,
     backgroundColor: '#D5CD9E',
+  },
+  mstImgWrap: {
+    borderRadius: 60,
+    overflow: 'hidden',
   },
 
 });

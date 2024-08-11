@@ -45,5 +45,10 @@ export const ROUTES = {
   PROFILE_INTEREST: 'Profile_Interest',
   PROFILE_INTRODUCE: 'Profile_Introduce',
   PREFERENCE: 'Preference',
+
+  // 스토리
+  STORY_REGI: 'StoryRegi',
+  STORY_EDIT: 'StoryEdit',
+  STORY_DETAIL: 'StoryDetail',
   
 };

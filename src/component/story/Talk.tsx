@@ -40,14 +40,21 @@ const Talk = React.memo(({ isRefresh }) => {
   const [isListFinally, setIsListFinally] = useState(false); // 목록 마지막 여부
   const [isTopBtn, setIsTopBtn] = useState(false);
 
+  const [selectedKeyword, setSelectedKeyword] = useState('ALL'); // 선택된 키워드
+
   const flatListRef = React.useRef(null);
 
   const [storyList, setStoryList] = React.useState<any>([]);
 
-  // ############################################################################# 스토리 목록 조회
-  const getStoryBoardList = async (_type:string, _pageNum:number) => {
-    console.log('_type :::::: ' , _type);
+  const keywordList = [
+    {name: 'ALL', code: 'ALL'},
+    {name: '나들이명소', code: 'PLACE'},
+    {name: 'OTT뭐볼까?', code: 'OTT'},
+    {name: '이력서·면접', code: 'RESUME'},
+  ]
 
+  // ############################################################################# 스토리 목록 조회
+  const getStoryBoardList = async (_type:string, _pageNum:number, _keyword:string) => {
     if(_type == 'ADD' && _pageNum > 1 && isListFinally) {
 
     } else {
@@ -58,10 +65,13 @@ const Talk = React.memo(({ isRefresh }) => {
         } else {
           setIsLoading(true);
         };
+
+        let searchKeywordCode = isEmptyData(_keyword) ? _keyword : selectedKeyword;
   
         const body = {
           load_type: _type,
           page_num: _pageNum,
+          keyword_code: searchKeywordCode == 'ALL' ? '' : searchKeywordCode,
         };
   
         const { success, data } = await get_story_board_list(body);
@@ -92,8 +102,6 @@ const Talk = React.memo(({ isRefresh }) => {
                   setPageNum(isEmptyData(data?.page_num) ? data?.page_num : 0);
                 }
               };
-
-              console.log('data?.finally_yn :::::: '  ,data?.finally_yn);
   
               if(isEmptyData(data?.finally_yn) && data?.finally_yn == 'Y') {
                 setIsListFinally(true);
@@ -212,6 +220,12 @@ const Talk = React.memo(({ isRefresh }) => {
     }
   };
 
+  // ##################################################################################### 키워드 선택
+  const keywordSelectFn = async (code:string) => {
+    getStoryBoardList('REFRESH', 1, code);
+    setSelectedKeyword(code);
+  };
+
   // ##################################################################################### 목록 새로고침
   const handleRefresh = () => {
     console.log('refresh!!!!!!!!!!!!!!');
@@ -266,34 +280,31 @@ const Talk = React.memo(({ isRefresh }) => {
               <SpaceView mr={10}>
                 <Text style={styles.fontStyle('EB', 19, '#fff')}>키워드</Text>
               </SpaceView>
-              <TouchableOpacity style={_styles.keywordAllBtn}>
+              <TouchableOpacity 
+                style={_styles.keywordAllBtn}
+                onPress={() => { keywordSelectFn('ALL') }}>
                 <Text style={styles.fontStyle('SB', 11, '#fff')}>전체보기</Text>
                 <Text style={styles.fontStyle('SB', 11, '#fff')}>{'>'}</Text>
               </TouchableOpacity>
             </SpaceView>
 
-            <SpaceView>
+            {/* <SpaceView>
               <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Text style={styles.fontStyle('B', 11, '#fff')}>즐겨찾기만 보기</Text>
                 <SpaceView ml={3}><Image source={ICON.story_starOff} style={styles.iconSquareSize(11)} /></SpaceView>
               </TouchableOpacity>
-            </SpaceView>
+            </SpaceView> */}
           </SpaceView>
 
           <ScrollView horizontal={true}>
             <SpaceView viewStyle={{flexDirection: 'row'}}>
-              <TouchableOpacity>
-                <Text style={_styles.keywordItemText(true)}>ALL</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={_styles.keywordItemText(false)}>나들이명소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={_styles.keywordItemText(false)}>OTT뭐볼까?</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={_styles.keywordItemText(false)}>이력서·면접</Text>
-              </TouchableOpacity>
+              {keywordList?.map((item, index) => {
+                return (
+                  <TouchableOpacity onPress={() => { keywordSelectFn(item?.code) }}>
+                  <Text style={_styles.keywordItemText(item?.code == selectedKeyword)}>{item?.name}</Text>
+                </TouchableOpacity>
+                )
+              })}
             </SpaceView>
           </ScrollView>
         </SpaceView>

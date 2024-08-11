@@ -1,7 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackParamList } from '@types';
 import { LivePopup } from 'screens/commonpopup/LivePopup';
-import { ReportPopup } from 'screens/commonpopup/ReportPopup';
 import { NiceAuth } from 'screens/login/niceAuth';
 import BottomNavigation from '../TabNavigation';
 
@@ -61,7 +60,6 @@ const CommonNavigation = () => {
   return (
     <CommonStack.Navigator screenOptions={{ headerShown: false }}>
       <CommonStack.Screen name="Main" component={BottomNavigation} />
-      <CommonStack.Screen name="ReportPopup" component={ReportPopup} />
       <CommonStack.Screen name="LivePopup" component={LivePopup} />
       <CommonStack.Screen name="Board" component={Board} />
       <CommonStack.Screen name="BoardDetail" component={BoardDetail} />

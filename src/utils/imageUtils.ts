@@ -259,6 +259,8 @@ export const ICON = {
   dropDown: require('assets/icon/common/drop_down.png'),
   dropUp: require('assets/icon/common/drop_up.png'),
   editBtn: require('assets/icon/common/edit_btn.png'),
+  writeBtn: require('assets/icon/common/write_btn.png'),
+  checkGreenIcon: require('assets/icon/common/check_green_icon.png'),
 
   /* match */
   distanceIcon: require('assets/icon/match/distance_icon.png'),
@@ -332,6 +334,9 @@ export const ICON = {
   story_lock: require('assets/icon/story/lock.png'),
   story_upBtn: require('assets/icon/story/up_btn.png'),
   story_downBtn: require('assets/icon/story/down_btn.png'),
+  story_man01: require('assets/icon/story/man_01.png'),
+  story_man02: require('assets/icon/story/man_02.png'),
+  story_woman01: require('assets/icon/story/woman_01.png'),
 
   /* shop */
   shop_inventory: require('assets/icon/shop/inventory.png'),

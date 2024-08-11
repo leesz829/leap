@@ -19,7 +19,7 @@ import SocialGrade from 'component/common/SocialGrade';
 const { width, height } = Dimensions.get('window');
 
 //export default function ListItem ({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGrade, isLastItem }) {
-const ListItem = React.memo(({ item, fnGoDetail, fnProfileOpen, freeOpenCnt, respectGrade, isLastItem }) => {
+const ListItem = React.memo(({ item, fnDetail, fnProfileOpen, freeOpenCnt, respectGrade, isLastItem }) => {
   const imgList = item?.img_list; // 이미지 목록
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +45,8 @@ const ListItem = React.memo(({ item, fnGoDetail, fnProfileOpen, freeOpenCnt, res
   // 상세 실행
   const detailProc = async () => {
     if(item?.open_yn == 'Y') {
-      fnGoDetail(item?.member_seq);
+      console.log('item?.member_seq ::::::  ' , item?.member_seq);
+      fnDetail(item?.member_seq);
     } else {
       setIsOpen(true);
     }
@@ -54,7 +55,7 @@ const ListItem = React.memo(({ item, fnGoDetail, fnProfileOpen, freeOpenCnt, res
   // 열람 실행
   const openProc = async() => {
     if(item?.open_yn == 'Y') {
-      fnGoDetail(item?.member_seq);
+      fnDetail(item?.member_seq);
     } else {
       fnProfileOpen(item?.member_seq);
     }
