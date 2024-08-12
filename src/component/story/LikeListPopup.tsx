@@ -161,7 +161,12 @@ const LikeListPopup = forwardRef((props, ref) => {
             <SpaceView ml={10} viewStyle={{flex: 0.9}}>
               <SpaceView viewStyle={{flexDirection: 'row'}}>
 
-                <MemberMark sizeType={'S'} /* respectGrade={item?.respect_grade} */ />
+                <MemberMark 
+                  sizeType={'S'} 
+                  respectGrade={item?.respect_grade} 
+                  bestFaceName={item?.best_face_name}
+                  highAuthYn={item?.high_auth_yn}
+                  variousAuthYn={item?.various_auth_yn} />
 
                 {/* 프로필 평점 */}
                 {/* {storyType != 'SECRET' && (

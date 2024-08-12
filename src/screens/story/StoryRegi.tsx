@@ -47,10 +47,10 @@ export default function StoryRegi(props: Props) {
 
   // 다음 버튼
   const nextBtn = async () => {
-    if(contents.length < 20) {
+    /* if(contents.length < 20) {
       show({ content: '최소 20글자 이상 입력해 주세요.' });
       return false;
-    }
+    } */
 
     navigation.navigate(STACK.COMMON, {
       screen: 'StoryEdit',
@@ -132,7 +132,7 @@ export default function StoryRegi(props: Props) {
                 })}
               </SpaceView>
               <TouchableOpacity onPress={imgSelected} style={_styles.imgSetBtn}>
-                <Text style={styles.fontStyle('SB', 11, '#fff')}>{imageList.length > 0 ? '사진변경' : '사진추가'}</Text>
+                <Text style={styles.fontStyle('SB', 11, '#fff')}>{imageList?.length > 0 ? '사진변경' : '사진추가'}</Text>
                 <Image source={ICON.story_imageRegi} style={styles.iconSquareSize(14)} />
               </TouchableOpacity>
             </SpaceView>

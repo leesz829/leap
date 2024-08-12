@@ -15,9 +15,7 @@ import { isEmptyData } from 'utils/functions';
 #########################################################################
 ###################################################################### */
 //export default function MemberMark({ authAcctCnt, sizeType }) {
-const MemberMark = React.memo(({ sizeType, respectGrade }) => {
-
-  console.log('respectGrade :::::: ' , respectGrade);
+const MemberMark = React.memo(({ sizeType, respectGrade, bestFaceName, highAuthYn, variousAuthYn }) => {
 
   let _fontSize = 13;
   let _iconSize = 15;
@@ -32,25 +30,33 @@ const MemberMark = React.memo(({ sizeType, respectGrade }) => {
       <SpaceView viewStyle={{flexWrap: 'wrap', flexDirection: 'row'}}>
 
         {/* 리스펙트 등급 표시 */}
-        <SpaceView viewStyle={_styles.itemWrap('#fff')}>
-          <Image source={ICON.sparkler} style={styles.iconSquareSize(_iconSize)} />
-          <SpaceView ml={2}><Text style={styles.fontStyle('SB', _fontSize, '#000000')}>DIAMOND</Text></SpaceView>
-        </SpaceView>
+        {isEmptyData(respectGrade) && (
+          <SpaceView viewStyle={_styles.itemWrap('#fff')}>
+            <Image source={ICON.sparkler} style={styles.iconSquareSize(_iconSize)} />
+            <SpaceView ml={2}><Text style={styles.fontStyle('SB', _fontSize, '#000000')}>{respectGrade}</Text></SpaceView>
+          </SpaceView>
+        )}
 
-        {/* 인상 표시 */}
-        <SpaceView viewStyle={_styles.itemWrap('#40E0D0')}>
-          <Text style={styles.fontStyle('SB', _fontSize, '#fff')}>#웃는게 예뻐요</Text>
-        </SpaceView>
+        {/* 가장 득표수가 많은 바이브 표시 */}
+        {isEmptyData(bestFaceName) && (
+          <SpaceView viewStyle={_styles.itemWrap('#40E0D0')}>
+            <Text style={styles.fontStyle('SB', _fontSize, '#fff')}>#웃는게 예뻐요</Text>
+          </SpaceView>
+        )}
 
-        {/* 레벨 표시 */}
-        <SpaceView viewStyle={_styles.itemWrap('#C740E0')}>
-          <Text style={styles.fontStyle('SB', _fontSize, '#fff')}>높은 인증 레벨</Text>
-        </SpaceView>
+        {/* 높은 인증 레벨 노출 */}
+        {(isEmptyData(highAuthYn) && highAuthYn == 'Y') && (
+          <SpaceView viewStyle={_styles.itemWrap('#C740E0')}>
+            <Text style={styles.fontStyle('SB', _fontSize, '#fff')}>높은 인증 레벨</Text>
+          </SpaceView>
+        )}
 
-        {/* 인증 표시 */}
-        <SpaceView viewStyle={_styles.itemWrap('#3875DF')}>
-          <Text style={styles.fontStyle('SB', _fontSize, '#fff')}>다양한 인증</Text>
-        </SpaceView>
+        {/* 다양한 인증 노출 */}
+        {(isEmptyData(variousAuthYn) && variousAuthYn == 'Y') && (
+          <SpaceView viewStyle={_styles.itemWrap('#3875DF')}>
+            <Text style={styles.fontStyle('SB', _fontSize, '#fff')}>다양한 인증</Text>
+          </SpaceView>
+        )}
 
       </SpaceView>
     </>

@@ -56,6 +56,7 @@ const ReportPopup = forwardRef((props, ref) => {
 			/* scrollViewProps={{
 				scrollEnabled: false, // 스크롤 비활성화
 			}} */
+			onOverlayPress={() => { popup_onClose(); }}
 			FooterComponent={
 				<>
 					<SpaceView pl={10} pr={10} pb={20} viewStyle={{backgroundColor: '#1B1633'}}>
@@ -68,24 +69,17 @@ const ReportPopup = forwardRef((props, ref) => {
 								<Text style={styles.fontStyle('B', 12, '#fff')}>신고 및 차단하기</Text>
 							</TouchableOpacity>
 						</SpaceView>
-
-						{/* <SpaceView>
-							<TouchableOpacity onPress={closeModal} style={_styles.reportBtnArea('#333B41', '#BBB18B')}>
-								<Text style={_styles.reportBtnText('#D5CD9E')}>취소</Text>
-							</TouchableOpacity>
-						</SpaceView> */}
 					</SpaceView>
 				</>
 			}
-			HeaderComponent={
-				<SpaceView viewStyle={_styles.titleArea}>
-					<SpaceView mb={50} viewStyle={layoutStyle.alignCenter}>
-						<Image source={ICON.popupDown} style={styles.iconNoSquareSize(37, 7)} />
-					</SpaceView>
-					<Text style={styles.fontStyle('EB', 22, '#fff')}>신고 및 차단하기</Text>
-				</SpaceView>
-			}
 		>
+			<SpaceView viewStyle={_styles.titleArea}>
+				<SpaceView mb={50} viewStyle={layoutStyle.alignCenter}>
+					<Image source={ICON.popupDown} style={styles.iconNoSquareSize(37, 7)} />
+				</SpaceView>
+				<Text style={styles.fontStyle('EB', 22, '#fff')}>신고 및 차단하기</Text>
+			</SpaceView>
+
 			<SpaceView ml={25} mr={25}>
 				<View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 0}]}>
 					<SpaceView mt={15} mb={13} pb={25} viewStyle={{borderBottomWidth: 1, borderColor: '#BCBCBC'}}>

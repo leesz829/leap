@@ -203,9 +203,9 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
                   {/* <Text style={[_styles.replyTimeText, {justifyContent: 'center'}]}>{item.time_text}</Text> */}
 
                   {/* 채택완료 노출 */}
-                  <SpaceView ml={5} viewStyle={_styles.badgeItemWrap}>
+                  {/* <SpaceView ml={5} viewStyle={_styles.badgeItemWrap}>
                     <Text style={styles.fontStyle('R', 8, '#FFFF5D')}>채택완료</Text>
-                  </SpaceView>
+                  </SpaceView> */}
                 </SpaceView>
 
                 {/* 댓글 내용 */}
@@ -230,7 +230,9 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
                   {/* 답글달기 버튼 */}
                   {depth == 1 && (
                     <>
-                      <TouchableOpacity onPress={() => { replyModalOpenFunc(storyReplySeq, depth, false); }}>
+                      <TouchableOpacity 
+                        //onPress={() => { replyModalOpenFunc(storyReplySeq, depth, false); }}
+                      >
                         <Text style={styles.fontStyle('B', 12, '#fff')}>답글달기</Text>
                       </TouchableOpacity>
                     </>
@@ -239,7 +241,7 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
                   {/* 좋아요 버튼 */}
                   <SpaceView mt={3} viewStyle={{flexDirection: 'row'}}>
                     <TouchableOpacity 
-                      onPress={() => { likeFunc('REPLY', storyReplySeq); }}
+                      //onPress={() => { likeFunc('REPLY', storyReplySeq); }}
                       style={{marginRight: 6}} 
                       hitSlop={commonStyle.hipSlop20}>
 
@@ -252,6 +254,7 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
                     <TouchableOpacity 
                       //disabled={memberBase.member_seq != item?.member_seq}
+                      disabled={true}
                       hitSlop={commonStyle.hipSlop10}
                       onPress={() => { /* popupStoryReplyActive(storyReplySeq, depth, item) */ }}>
                       <Text style={styles.fontStyle('SB', 12, '#fff')}>좋아요{item?.like_cnt > 0 && item?.like_cnt + '개'}</Text>

@@ -65,7 +65,7 @@ export default function StoryEdit(props: Props) {
   // 스토리 기본 데이터
   const [storyData, setStoryData] = useState({
     storyBoardSeq: params.storyBoardSeq,
-    storyType: '',
+    storyType: 'STORY',
     contents: params.contents,
     voteEndType: '',
     voteEndYn: params.voteEndYn,
@@ -654,7 +654,7 @@ export default function StoryEdit(props: Props) {
                   })}
                 </SpaceView>
 
-                {storyData.storyType != 'STORY' && (
+                {isEmptyData(storyData.storyType) && storyData.storyType != 'STORY' && (
                   <>
                     <SpaceView mt={20}>
                       <SpaceView>
