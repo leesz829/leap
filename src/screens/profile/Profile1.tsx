@@ -265,7 +265,7 @@ export const Profile1 = (props: Props) => {
           </SpaceView>
         </SpaceView> */}
 
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}} onScroll={handleScroll}>
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}} onScroll={handleScroll} scrollEventThrottle={16}>
 
           {/* ############################################################################################################# 프로필 이미지 영역 */}
           <SpaceView mt={15} mb={40} viewStyle={_styles.contentWrap}>
