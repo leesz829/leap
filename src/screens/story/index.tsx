@@ -326,7 +326,7 @@ export const Story = (props: Props) => {
           showsVerticalScrollIndicator={false}
           removeClippedSubviews={true}
           onScroll={handleScroll} // 스크롤 감지 이벤트 핸들러
-          scrollEventThrottle={0.1}
+          scrollEventThrottle={10}
           /* getItemLayout={(data, index) => (
             {
                 length: (width - 54) / 2,

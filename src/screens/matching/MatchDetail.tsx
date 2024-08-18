@@ -572,7 +572,7 @@ export default function MatchDetail(props: Props) {
       setIsModHeader(false);
     }
 
-    if(yOffset > 100) {
+    if(yOffset > 120) {
       setIsOnShrink(true);
     } else {
       setIsOnShrink(false);
@@ -717,7 +717,7 @@ export default function MatchDetail(props: Props) {
       )} */}
 
       {isOnShrink && (
-        <SpaceView mt={15} mb={35} viewStyle={[{height: 30}]}>
+        <SpaceView viewStyle={_styles.headerWrap}>
           <SpaceView viewStyle={layoutStyle.rowBetween}>
             <TouchableOpacity
               onPress={() => { navigation.goBack(); }}
@@ -861,63 +861,25 @@ export default function MatchDetail(props: Props) {
         </SpaceView>
       }
 
-      <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll} showsVerticalScrollIndicator={false} scrollEventThrottle={10}>
+      <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll} showsVerticalScrollIndicator={false} scrollEventThrottle={16}>
 
         {/* ############################################################################################### 상단 Header */}
-        {!isOnShrink && (
-          <SpaceView mt={35} mb={0} viewStyle={[{height: 50}]}>
-            <SpaceView viewStyle={layoutStyle.rowBetween}>
-              <TouchableOpacity
-                onPress={() => { navigation.goBack(); }}
-                style={_styles.backContainer}
-                hitSlop={commonStyle.hipSlop20}
-              >
-                <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
-              </TouchableOpacity>
-
-              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} hitSlop={commonStyle.hipSlop20}>
-                  <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
-                  <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
-                </TouchableOpacity>
-              </SpaceView>
-            </SpaceView>
-
-            {isOnShrink && (
-              <SpaceView mt={10} viewStyle={layoutStyle.alignCenter}>
-                <MemberMark 
-                  sizeType={'S'}
-                  respectGrade={data?.match_member_info?.respect_grade} 
-                  bestFaceName={data?.match_member_info?.best_face_name}
-                  highAuthYn={data?.match_member_info?.high_auth_yn}
-                  variousAuthYn={data?.match_member_info?.various_auth_yn} />
-              </SpaceView>
-            )}
-          </SpaceView>
-        )}
-
-        {/* <SpaceView mt={isOnShrink ? 15 : 35} mb={isOnShrink ? 35 : 0} viewStyle={[{height: isOnShrink ? 30 : 50}]}>
+        <SpaceView mt={35} mb={0} viewStyle={[{height: 50}]}>
           <SpaceView viewStyle={layoutStyle.rowBetween}>
             <TouchableOpacity
               onPress={() => { navigation.goBack(); }}
               style={_styles.backContainer}
               hitSlop={commonStyle.hipSlop20}
             >
-              <Image source={ICON.backBtnType01} style={styles.iconSquareSize(isOnShrink ? 24 : 35)} resizeMode={'contain'} />
+              <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
             </TouchableOpacity>
-
-            {isOnShrink && (
-              <SpaceView><Text style={styles.fontStyle('EB', 20, '#fff')}>{data?.match_member_info?.nickname}</Text></SpaceView>
-            )}
 
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
               <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} hitSlop={commonStyle.hipSlop20}>
-                <Image source={ICON.homeIcon} style={styles.iconSquareSize(isOnShrink ? 24 : 35)} />
+                <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
               </TouchableOpacity>
               <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
-                <Image source={ICON.declaration} style={styles.iconSquareSize(isOnShrink ? 24 : 35)} />
+                <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
               </TouchableOpacity>
             </SpaceView>
           </SpaceView>
@@ -932,8 +894,7 @@ export default function MatchDetail(props: Props) {
                 variousAuthYn={data?.match_member_info?.various_auth_yn} />
             </SpaceView>
           )}
-        </SpaceView> */}
-
+        </SpaceView>
 
         {/* {props.route.params?.type == 'OPEN' && props.route.params?.matchType == 'STORY' &&
           <>
@@ -963,23 +924,18 @@ export default function MatchDetail(props: Props) {
               ####################### 상단 영역
               #################################################################################### */}
               <SpaceView viewStyle={{overflow: 'hidden'}}>
+                <SpaceView>
+                  <SpaceView mb={13} viewStyle={layoutStyle.alignCenter}>
+                    <Text style={styles.fontStyle('H', 30, '#fff')}>{data?.match_member_info?.nickname}</Text>
+                  </SpaceView>
 
-                {!isOnShrink ? (
-                  <SpaceView>
-                    <SpaceView mb={13} viewStyle={layoutStyle.alignCenter}>
-                      <Text style={styles.fontStyle('H', 30, '#fff')}>{data?.match_member_info?.nickname}</Text>
-                    </SpaceView>
-
-                    <SpaceView mb={10} viewStyle={_styles.topWrap}>
-                      <SpaceView viewStyle={_styles.gradeArea}>
-                        <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
-                        <Text style={_styles.gradeText}>{data?.match_member_info?.respect_grade}</Text>
-                      </SpaceView>
+                  <SpaceView mb={10} viewStyle={_styles.topWrap}>
+                    <SpaceView viewStyle={_styles.gradeArea}>
+                      <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
+                      <Text style={_styles.gradeText}>{data?.match_member_info?.respect_grade}</Text>
                     </SpaceView>
                   </SpaceView>
-                ) : (
-                  <SpaceView viewStyle={{height: 0}} />
-                )}
+                </SpaceView>
 
                 {/* ############################################################## 상단 이미지 영역 */}
                 <LinearGradient
@@ -1600,6 +1556,18 @@ const _styles = StyleSheet.create({
     left: 0,
     justifyContent: 'center',
     zIndex: 1, */
+  },
+  headerWrap: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    height: 80,
+    backgroundColor: '#13111C',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 10,
   },
 
 
