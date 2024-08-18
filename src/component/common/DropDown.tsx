@@ -22,13 +22,21 @@ interface Props {
  */
 export const DropDown: FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState('');
+  const [selectedItem, setSelectedItem] = useState({
+    label: '블라인드 카드', value: 'BLIND'
+  });
+
+  const menuList = [
+    {label: '블라인드 카드', value: 'BLIND'},
+    {label: '바이브', value: 'VIBE'},
+    {label: '커플 시나리오', value: 'COUPLE'},
+  ]
 
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSelectItem = (item:string) => {
+  const handleSelectItem = (item:any) => {
     setSelectedItem(item);
     setIsOpen(false);
 
@@ -37,23 +45,29 @@ export const DropDown: FC<Props> = (props) => {
 
   return (
     <View style={_styles.container}>
-      <TouchableOpacity onPress={handleToggleDropdown} style={_styles.dropdownButton}>
-        <Image source={ICON.commonSelect} style={styles.iconSquareSize(20)} />
-        <SpaceView ml={10} mr={10}><Text style={styles.fontStyle('EB', 17, '#46F66F')}>{selectedItem || '블라인드 카드'}</Text></SpaceView>
-        <Image source={ICON.selectDown} style={styles.iconSquareSize(15)} />
+      <TouchableOpacity onPress={handleToggleDropdown} style={_styles.dropdownButton(isOpen)}>
+        {/* <Image source={ICON.commonSelect} style={styles.iconSquareSize(20)} /> */}
+        <SpaceView ml={10} mr={10}><Text style={styles.fontStyle('EB', 17, '#46F66F')}>{selectedItem.label}</Text></SpaceView>
+        
+        {!isOpen && (
+          <Image source={ICON.moreIcon} style={styles.iconSquareSize(15)} />
+        )}
       </TouchableOpacity>
       {isOpen && (
-        <View style={_styles.dropdown}>
-          <TouchableOpacity onPress={() => handleSelectItem('BLIND')} style={_styles.item}>
-            <Text style={_styles.itemText}>블라인드 카드</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleSelectItem('VIBE')} style={_styles.item}>
-            <Text style={_styles.itemText}>바이브</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleSelectItem('COUPLE')} style={_styles.item}>
-            <Text style={_styles.itemText}>커플 시나리오</Text>
-          </TouchableOpacity>
-        </View>
+        <>
+          <View style={_styles.dropdownWrap}>
+
+            {menuList.map((item, index) => {
+              return (item?.value != selectedItem.value) && (
+                <>
+                  <TouchableOpacity onPress={() => handleSelectItem(item)} style={[_styles.item, index == 1 && _styles.itmeBorder]}>
+                    <Text style={styles.fontStyle('EB', 16, '#fff')}>{item.label}</Text>
+                  </TouchableOpacity>
+                </>
+              );
+            })}
+          </View>
+        </>
       )}
     </View>
   );
@@ -65,30 +79,37 @@ const _styles = StyleSheet.create({
     zIndex: 1,
     width: 180,
   },
-  dropdownButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderRadius: 25,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(67,67,67,0.5)',
+  dropdownButton: (isOn:boolean) => {
+    return {
+      paddingVertical: 12,
+      paddingLeft: 10,
+      paddingRight: 15,
+      borderTopLeftRadius: 25,
+      borderTopRightRadius: 25,
+      borderBottomLeftRadius: isOn ? 0 : 25,
+      borderBottomRightRadius: isOn ? 0 : 25,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: isOn ? '#555D74' : 'rgba(67,67,67,0.5)',
+    };
   },
-  dropdown: {
+  dropdownWrap: {
     position: 'absolute',
-    top: 50, // Adjust this value according to your design
+    top: 43,
     width: '100%',
-    borderRadius: 11,
-    backgroundColor: '#3496BE',
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    backgroundColor: '#555D74',
   },
   item: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: 13,
+    paddingHorizontal: 20,
   },
-  itemText: {
-    fontFamily: 'SUITE-ExtraBold',
-    fontSize: 16,
-    color: '#fff',
+  itmeBorder: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#C4B6AA',
   },
 
 });

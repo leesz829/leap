@@ -20,7 +20,7 @@ export default function ProfileAuth({ dataList, isEditBtn, memberData }) {
 
   return (
     <>
-      {data.length > 0 && (
+      {dataList.length > 0 && (
         <SpaceView>
 
           {/* ########################################################################################### 타이틀 */}

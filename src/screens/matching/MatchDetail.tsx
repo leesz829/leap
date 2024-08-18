@@ -32,6 +32,8 @@ import { ROUTES, STACK } from 'constants/routes';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { SUCCESS } from 'constants/reusltcode';
 import ReportPopup from 'screens/commonpopup/ReportPopup';
+import MemberMark from 'component/common/MemberMark';
+
 
 
 
@@ -60,6 +62,8 @@ export default function MatchDetail(props: Props) {
   const trgtMemberSeq = props.route.params.trgtMemberSeq; // 대상 회원 번호
   const memberSeqList = props.route.params.memberSeqList; // 회원 번호 목록
   const matchType = props.route.params.matchType; // 매칭 유형(REQ:보낸매칭, RES:받은매칭)
+
+  const [isOnShrink, setIsOnShrink] = React.useState(false); // 쉬링크 상태 변수
 
   // 타이틀
   const [titleText, setTitleText] = useState('');
@@ -301,7 +305,7 @@ export default function MatchDetail(props: Props) {
       setIsClickable(false);
 
       const body = {
-        match_seq: data.match_base.match_seq
+        match_seq: data?.match_base.match_seq
       };
 
       try {
@@ -359,8 +363,24 @@ export default function MatchDetail(props: Props) {
   ############################################# */
   const popupActive = (activeType: string) => {
     if (activeType == 'interest') {
-      setInterestSendModalVisible(true);
+      show({
+        title: '관심있어요',
+        type: 'MATCH',
+        content: data?.match_member_info?.nickname + '님에게\n관심을 보냅니다.',
+        passType: 'CUBE',
+        passAmt: '30',
+        isNoPass: memberBase?.pass_has_amt < 30 ? false : true,
+        btnIcon: ICON.sendIcon,
+        confirmBtnText: '관심보내기',
+        memberImg: findSourcePath(data?.profile_img_list[0]?.img_file_path),
+        confirmCallback: function() {
+          insertMatchInfo('interest', 0, '');
+        },
+        cancelCallback: function() {
+        },
+      });
 
+      //setInterestSendModalVisible(true);
     } else if (activeType == 'sincere') {
       setSincereSendModalVisible(true);
 
@@ -551,6 +571,13 @@ export default function MatchDetail(props: Props) {
     } else {
       setIsModHeader(false);
     }
+
+    if(yOffset > 100) {
+      setIsOnShrink(true);
+    } else {
+      setIsOnShrink(false);
+    }
+
   };
 
 
@@ -623,6 +650,8 @@ export default function MatchDetail(props: Props) {
   const goChatDetail = async () => {
     const chatInfoData = chatData ? chatData : data.match_member_info;
 
+    console.log('mega :::: ' , memberBase?.royal_pass_has_amt);
+
     if(data.match_member_info?.chat_open_cnt > 0) {
       navigation.navigate(STACK.COMMON, { 
         screen: 'ChatDetail',
@@ -635,38 +664,29 @@ export default function MatchDetail(props: Props) {
           sch_member_seq: chatInfoData?.res_member_seq == memberBase?.member_seq ? chatInfoData?.req_member_seq : chatInfoData?.res_member_seq,
         } 
       });
-    }else {
+    } else {
       show({
-        title: '채팅방 입장',
-        content: '큐브 1을 소모하여 채팅방에 입장하시겠습니까?',
-        passType: 'PASS',
-        passAmt: '1',
+        title: 'DM 보내기',
+        type: 'MATCH',
+        content: data.match_member_info?.nickname + '님과의\n1:1 채팅방을 개설합니다.',
+        passType: 'MEGA_CUBE',
+        passAmt: '3',
+        isNoPass: memberBase?.royal_pass_has_amt < 3 ? false : true,
+        btnIcon: ICON.navStory,
+        confirmBtnText: '1:1 채팅',
+        memberImg: findSourcePath(data.profile_img_list[0]?.img_file_path),
         confirmCallback: function() {
-          if(memberBase?.pass_has_amt >= 1) {
-            navigation.navigate(STACK.COMMON, { 
-              screen: 'ChatDetail',
-              params: {
-                match_seq: chatInfoData?.match_seq,
-                chat_room_seq: chatInfoData?.chat_room_seq,
-                chat_room_id: chatInfoData?.chat_room_id,
-                chat_member_seq: chatInfoData?.chat_member_seq,
-                chat_type: 'OPEN',
-                sch_member_seq: chatInfoData?.res_member_seq == memberBase?.member_seq ? chatInfoData?.req_member_seq : chatInfoData?.res_member_seq,
-              } 
-            });
-          } else {
-            show({
-              title: '채팅방 입장',
-              content: '보유 큐브가 부족합니다.',
-              confirmBtnText: '상점 이동',
-              isCross: true,
-              cancelCallback: function() { 
-              },
-              confirmCallback: function () {
-                navigation.navigate(STACK.TAB, { screen: 'Cashshop' });
-              },
-            });
-          }
+          navigation.navigate(STACK.COMMON, { 
+            screen: 'ChatDetail',
+            params: {
+              match_seq: chatInfoData?.match_seq,
+              chat_room_seq: chatInfoData?.chat_room_seq,
+              chat_room_id: chatInfoData?.chat_room_id,
+              chat_member_seq: chatInfoData?.chat_member_seq,
+              chat_type: 'OPEN',
+              sch_member_seq: chatInfoData?.res_member_seq == memberBase?.member_seq ? chatInfoData?.req_member_seq : chatInfoData?.res_member_seq,
+            } 
+          });
         },
         cancelCallback: function() {
         },
@@ -679,10 +699,10 @@ export default function MatchDetail(props: Props) {
     <SpaceView viewStyle={_styles.wrap}>
 
       {/* ############################################################################################### 상단 Header */}
-      {isModHeader ? (
+      {/* {isModHeader ? (
         <CommonHeader 
           //title={titleText} 
-          title={data?.match_member_info.nickname}
+          //title={data?.match_member_info.nickname}
           type={'MATCH_DETAIL'} 
           callbackFunc={report_onOpen} 
           mstImgPath={findSourcePath(data.profile_img_list[0]?.img_file_path)}
@@ -690,10 +710,44 @@ export default function MatchDetail(props: Props) {
       ) : (
         <CommonHeader 
           //title={titleText} 
-          title={data?.match_member_info.nickname}
+          //title={data?.match_member_info.nickname}
           type={'MATCH_DETAIL'} 
           callbackFunc={report_onOpen}
           nickname={data?.match_member_info.nickname} />
+      )} */}
+
+      {isOnShrink && (
+        <SpaceView mt={15} mb={35} viewStyle={[{height: 30}]}>
+          <SpaceView viewStyle={layoutStyle.rowBetween}>
+            <TouchableOpacity
+              onPress={() => { navigation.goBack(); }}
+              style={_styles.backContainer}
+              hitSlop={commonStyle.hipSlop20}
+            >
+              <Image source={ICON.backBtnType01} style={styles.iconSquareSize(24)} resizeMode={'contain'} />
+            </TouchableOpacity>
+
+            <SpaceView><Text style={styles.fontStyle('EB', 20, '#fff')}>{data?.match_member_info?.nickname}</Text></SpaceView>
+
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+              <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} /* onPress={report_onOpen} */ hitSlop={commonStyle.hipSlop20}>
+                <Image source={ICON.homeIcon} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity>
+              <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
+                <Image source={ICON.declaration} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity>
+            </SpaceView>
+          </SpaceView>
+
+          <SpaceView mt={10} viewStyle={layoutStyle.alignCenter}>
+            <MemberMark 
+              sizeType={'S'}
+              respectGrade={data?.match_member_info?.respect_grade} 
+              bestFaceName={data?.match_member_info?.best_face_name}
+              highAuthYn={data?.match_member_info?.high_auth_yn}
+              variousAuthYn={data?.match_member_info?.various_auth_yn} />
+          </SpaceView>
+        </SpaceView>
       )}
 
       {/* ############################################################################################### 버튼 영역 */}
@@ -807,7 +861,80 @@ export default function MatchDetail(props: Props) {
         </SpaceView>
       }
 
-      <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll}>
+      <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll} showsVerticalScrollIndicator={false}>
+
+        {/* ############################################################################################### 상단 Header */}
+        {!isOnShrink && (
+          <SpaceView mt={35} mb={0} viewStyle={[{height: 50}]}>
+            <SpaceView viewStyle={layoutStyle.rowBetween}>
+              <TouchableOpacity
+                onPress={() => { navigation.goBack(); }}
+                style={_styles.backContainer}
+                hitSlop={commonStyle.hipSlop20}
+              >
+                <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
+              </TouchableOpacity>
+
+              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} hitSlop={commonStyle.hipSlop20}>
+                  <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
+                </TouchableOpacity>
+                <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
+                  <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
+                </TouchableOpacity>
+              </SpaceView>
+            </SpaceView>
+
+            {isOnShrink && (
+              <SpaceView mt={10} viewStyle={layoutStyle.alignCenter}>
+                <MemberMark 
+                  sizeType={'S'}
+                  respectGrade={data?.match_member_info?.respect_grade} 
+                  bestFaceName={data?.match_member_info?.best_face_name}
+                  highAuthYn={data?.match_member_info?.high_auth_yn}
+                  variousAuthYn={data?.match_member_info?.various_auth_yn} />
+              </SpaceView>
+            )}
+          </SpaceView>
+        )}
+
+        {/* <SpaceView mt={isOnShrink ? 15 : 35} mb={isOnShrink ? 35 : 0} viewStyle={[{height: isOnShrink ? 30 : 50}]}>
+          <SpaceView viewStyle={layoutStyle.rowBetween}>
+            <TouchableOpacity
+              onPress={() => { navigation.goBack(); }}
+              style={_styles.backContainer}
+              hitSlop={commonStyle.hipSlop20}
+            >
+              <Image source={ICON.backBtnType01} style={styles.iconSquareSize(isOnShrink ? 24 : 35)} resizeMode={'contain'} />
+            </TouchableOpacity>
+
+            {isOnShrink && (
+              <SpaceView><Text style={styles.fontStyle('EB', 20, '#fff')}>{data?.match_member_info?.nickname}</Text></SpaceView>
+            )}
+
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+              <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} hitSlop={commonStyle.hipSlop20}>
+                <Image source={ICON.homeIcon} style={styles.iconSquareSize(isOnShrink ? 24 : 35)} />
+              </TouchableOpacity>
+              <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
+                <Image source={ICON.declaration} style={styles.iconSquareSize(isOnShrink ? 24 : 35)} />
+              </TouchableOpacity>
+            </SpaceView>
+          </SpaceView>
+
+          {isOnShrink && (
+            <SpaceView mt={10} viewStyle={layoutStyle.alignCenter}>
+              <MemberMark 
+                sizeType={'S'}
+                respectGrade={data?.match_member_info?.respect_grade} 
+                bestFaceName={data?.match_member_info?.best_face_name}
+                highAuthYn={data?.match_member_info?.high_auth_yn}
+                variousAuthYn={data?.match_member_info?.various_auth_yn} />
+            </SpaceView>
+          )}
+        </SpaceView> */}
+
+
         {/* {props.route.params?.type == 'OPEN' && props.route.params?.matchType == 'STORY' &&
           <>
             <TouchableOpacity onPress={() => { goChatDetail(); }}>
@@ -820,13 +947,13 @@ export default function MatchDetail(props: Props) {
           </>
         } */}
 
-        <TouchableOpacity onPress={() => { goChatDetail(); }}>
+        {/* <TouchableOpacity onPress={() => { goChatDetail(); }}>
           <SpaceView mr={15} viewStyle={layoutStyle.alignEnd}>
             <SpaceView viewStyle={{paddingVertical: 5, backgroundColor: '#FFF6BE', width: 150, marginLeft: 10, borderRadius: 10, marginBottom: 10}}>
               <Text style={{textAlign: 'center'}}>채팅 신청 임시 버튼</Text>
             </SpaceView>
           </SpaceView>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {data.profile_img_list.length > 0 && isLoad ? (
           <>
@@ -837,16 +964,24 @@ export default function MatchDetail(props: Props) {
               #################################################################################### */}
               <SpaceView viewStyle={{overflow: 'hidden'}}>
 
-                <SpaceView mb={10} viewStyle={_styles.topWrap}>
-                  {/* 리스펙트 등급 표시 */}
-                  <SpaceView viewStyle={_styles.gradeArea}>
-                    <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
-                    <Text style={_styles.gradeText}>{data?.match_member_info?.respect_grade}</Text>
+                {!isOnShrink ? (
+                  <SpaceView>
+                    <SpaceView mb={13} viewStyle={layoutStyle.alignCenter}>
+                      <Text style={styles.fontStyle('H', 30, '#fff')}>{data?.match_member_info?.nickname}</Text>
+                    </SpaceView>
+
+                    <SpaceView mb={10} viewStyle={_styles.topWrap}>
+                      <SpaceView viewStyle={_styles.gradeArea}>
+                        <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
+                        <Text style={_styles.gradeText}>{data?.match_member_info?.respect_grade}</Text>
+                      </SpaceView>
+                    </SpaceView>
                   </SpaceView>
-                </SpaceView>
+                ) : (
+                  <SpaceView viewStyle={{height: 0}} />
+                )}
 
                 {/* ############################################################## 상단 이미지 영역 */}
-
                 <LinearGradient
                   colors={['#46F66F', '#FFFF5D']}
                   start={{ x: 0, y: 0 }}
@@ -897,9 +1032,9 @@ export default function MatchDetail(props: Props) {
               </SpaceView>
 
               {/* ############################################################################################################# 프로필 인증 영역 */}
-              {data.second_auth_list.length > 0 && (
+              {data?.second_auth_list.length > 0 && (
                 <SpaceView mb={40}>
-                  <ProfileAuth dataList={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
+                  <ProfileAuth dataList={data?.second_auth_list} isButton={false} memberData={data?.match_member_info} />
                 </SpaceView>
               )}
 
@@ -1114,10 +1249,12 @@ export default function MatchDetail(props: Props) {
 const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
-    paddingTop: 30,
+    //paddingTop: 30,
     paddingHorizontal: 10,
     backgroundColor: '#13111C',
   },
+
+
   profileImgWrap: {
     alignItems: 'center',
   },
@@ -1456,6 +1593,13 @@ const _styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 13,
     paddingVertical: 8,
+  },
+  backContainer: {
+    /* position: 'absolute',
+    top: 0,
+    left: 0,
+    justifyContent: 'center',
+    zIndex: 1, */
   },
 
 

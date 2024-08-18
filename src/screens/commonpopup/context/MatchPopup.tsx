@@ -21,19 +21,17 @@ interface Props {
   isConfirm?: boolean; // confirm 여부
   title?: string; // 팝업 제목
   text?: string; // 팝업 문구
-  subText?: string;
   confirmCallbackFunc?: Function | undefined; // 확인 Callback 함수
   cancelCallbackFunc?: Function | undefined;
   confirmBtnText?: string;
-  cancelBtnText?: string;
-  btnExpYn?: string;
   passType?: string;
   passAmt?: string;
-  type?: string;
   memberImg?: string;
+  btnIcon?: string;
+  isNoPass?: boolean;
 }
 
-export const BasePopup = (props: Props) => {
+export const MatchPopup = (props: Props) => {
   const onPressConfirm = () => {
     if(props.confirmCallbackFunc == null && typeof props.confirmCallbackFunc != 'undefined') {
       
@@ -55,32 +53,12 @@ export const BasePopup = (props: Props) => {
             <SpaceView viewStyle={_styles.modalWrap}>
 
               {/* ########################################################### 타이틀 영역 */}
-              {props.type != 'AUCTION' ? (
-                <SpaceView viewStyle={[layoutStyle.alignStart]}>
-                  <Text style={styles.fontStyle('H', 26, '#000000')}>{isEmptyData(props.title) ? props.title : '알림'}</Text>
-                </SpaceView>
-              ) : (
-                <TouchableOpacity onPress={onPressCancel}>
-                  <SpaceView pr={20} mt={20} viewStyle={[layoutStyle.alignEnd]}>
-                    <Image source={ICON.closeBlack} style={styles.iconSquareSize(18)} />
-                  </SpaceView>
-                </TouchableOpacity>
-              )}
+              <SpaceView viewStyle={[layoutStyle.alignStart]}>
+                <Text style={styles.fontStyle('H', 26, '#000000')}>{isEmptyData(props.title) ? props.title : '알림'}</Text>
+              </SpaceView>
 
               {/* ########################################################### 내용 영역 */}
               <SpaceView viewStyle={_styles.contentArea}>
-                {props.type == 'REPORT' &&
-                  <SpaceView mb={15}>
-                    <Image source={ICON.sirenMark} style={styles.iconSquareSize(60)} />
-                  </SpaceView>
-                }
-
-                {props.type == 'AUCTION' &&
-                  <SpaceView mb={15}>
-                    <Image source={ICON.hifive} style={styles.iconSquareSize(60)} />
-                  </SpaceView>
-                }
-
                 {/* {isEmptyData(props.passAmt) && (
                   <SpaceView mt={-3} mb={10}>
                     <Image style={styles.iconSquareSize(46)} source={isEmptyData(props.passType) && props.passType == 'ROYAL' ? ICON.megaCubeCyan : ICON.cubeYCyan} resizeMode={'contain'} />
@@ -90,10 +68,6 @@ export const BasePopup = (props: Props) => {
                 <SpaceView mt={5}>
                   <Text style={styles.fontStyle('B', 14, '#000000')}>{isEmptyData(props.text) ? props.text : ''}</Text>
                 </SpaceView>
-
-                {isEmptyData(props.subText) &&
-                  <Text style={styles.fontStyle('B', 14, '#000000')}>{props.subText}</Text>
-                }
 
                 {isEmptyData(props.memberImg) && (
                   <SpaceView mt={25} viewStyle={layoutStyle.alignCenter}>
@@ -110,27 +84,27 @@ export const BasePopup = (props: Props) => {
               </SpaceView>
 
               {/* ########################################################### 버튼 영역 */}
-              {(!isEmptyData(props.btnExpYn) || props.btnExpYn == 'Y') &&
-                <SpaceView mt={20} viewStyle={_styles.btnContainer}>
-                  {props.isConfirm ? (
-                    <>
-                      {/* <TouchableOpacity onPress={onPressCancel} style={_styles.btnWrap}>
-                        <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(props.cancelBtnText) ? props.cancelBtnText : '닫기'}</Text>
-                      </TouchableOpacity> */}
-
-                      <TouchableOpacity onPress={onPressConfirm} style={_styles.btnWrap}>
-                        <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(props.confirmBtnText) ? props.confirmBtnText : '확인하기'}</Text>
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <>
-                      <TouchableOpacity onPress={onPressConfirm} style={_styles.btnWrap}>
-                        <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(props.confirmBtnText) ? props.confirmBtnText : '확인'}</Text>
-                      </TouchableOpacity>
-                    </>
+              <SpaceView mt={20} viewStyle={_styles.btnContainer}>
+                <SpaceView>
+                  {isEmptyData(props.passAmt) && (
+                    <SpaceView viewStyle={_styles.passWrap}>
+                      <SpaceView viewStyle={_styles.passBox}>
+                        <Image source={props.passType == 'MEGA_CUBE' ? ICON.megaCube : ICON.cube} style={styles.iconSquareSize(17)} />
+                        <Text style={styles.fontStyle('R', 9, props.isNoPass ? '#fff' : '#FF516F')}>{props.passAmt}개</Text>
+                      </SpaceView>
+                    </SpaceView>
                   )}
+                  <TouchableOpacity 
+                    disabled={!props.isNoPass}
+                    activeOpacity={0.7}
+                    onPress={onPressConfirm} 
+                    style={_styles.btnWrap(props.isNoPass)}
+                  >
+                    {isEmptyData(props.btnIcon) && <SpaceView mr={7}><Image source={props.btnIcon} style={styles.iconSquareSize(18)} /></SpaceView> }
+                    <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(props.confirmBtnText) ? props.confirmBtnText : '확인하기'}</Text>
+                  </TouchableOpacity>
                 </SpaceView>
-              }
+              </SpaceView>
             </SpaceView>
 
             <SpaceView viewStyle={_styles.cancelWrap}>
@@ -162,30 +136,10 @@ const _styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
-  msgText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 11,
-    color: '#D5CD9E',
-  },
   btnContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-  },
-  openPopupDescIcon: (passType: string) => {
-    return {
-      fontFamily: 'Pretendard-ExtraBold',
-      fontSize: 16,
-      color: '#32F9E4',
-      marginLeft: 3,
-    };
-  },
-  modalAuctBtn: {
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 50,
-    borderRadius: 50,
-    marginBottom: 40,
   },
   contentArea: {
     marginVertical: 13,
@@ -194,13 +148,16 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
     //minHeight: 70,
   },
-  btnWrap: {
-    borderRadius: 25,
-    backgroundColor: '#44B6E5',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginHorizontal: 3,
-  },
+  btnWrap: (isOn:boolean) => {
+		return {
+			borderRadius: 25,
+      backgroundColor: isOn ? '#44B6E5' : '#808080',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      marginHorizontal: 3,
+      flexDirection: 'row',
+		}
+	},
   cancelWrap: {
     position: 'absolute',
     bottom: -40,
@@ -212,6 +169,24 @@ const _styles = StyleSheet.create({
     borderRadius: 60,
     overflow: 'hidden',
   },
+  passWrap: {
+    position: 'absolute',
+    top: -10,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+  },
+  passBox: {
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 25,
+    paddingHorizontal: 7,
+    paddingVertical: 1,
+    marginHorizontal: 37,
+  },
+  
 
 
 });

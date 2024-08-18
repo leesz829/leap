@@ -53,6 +53,8 @@ export const Profile1 = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const memberBase = useUserInfo();
 
+  const [isOnShrink, setIsOnShrink] = React.useState(false); // 쉬링크 상태 변수
+
   const [currentImgIdx, setCurrentImgIdx] = React.useState(0); // 현재 이미지 인덱스
   const [profileImageList, setProfileImageList] = React.useState([]); // 프로필 이미지 목록
 
@@ -222,7 +224,15 @@ export const Profile1 = (props: Props) => {
     }
   };
 
-
+  // ############################################################################# 스크롤 이동 함수
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    if(contentOffset.y > 10) {
+      setIsOnShrink(true);
+    } else {
+      setIsOnShrink(false);
+    }
+  };
 
   useEffect(() => {
     if(isFocus) {
@@ -237,9 +247,25 @@ export const Profile1 = (props: Props) => {
 
       <SpaceView viewStyle={_styles.wrap}>
 
-        <CommonHeader title="프로필 관리" />
+        <SpaceView mt={isOnShrink ? 10 : 30} mb={isOnShrink ? 10 : 0}>
+          <CommonHeader title="프로필 관리" isOnShrink={isOnShrink} />
+        </SpaceView>
 
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}}>
+        {/* <SpaceView mt={isOnShrink ? 0 : 15} viewStyle={{height: isOnShrink ? 30 : 50}}>
+          <TouchableOpacity
+            onPress={() => { navigation.goBack(); }}
+            style={_styles.backContainer}
+            hitSlop={commonStyle.hipSlop20}
+          >
+            <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
+          </TouchableOpacity>
+
+          <SpaceView viewStyle={{width: width, alignItems: 'center'}}>
+            <Text style={styles.fontStyle('H', isOnShrink ? 20 : 26, '#fff')}>프로필 관리</Text>
+          </SpaceView>
+        </SpaceView> */}
+
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}} onScroll={handleScroll}>
 
           {/* ############################################################################################################# 프로필 이미지 영역 */}
           <SpaceView mt={15} mb={40} viewStyle={_styles.contentWrap}>
@@ -387,7 +413,13 @@ const _styles = StyleSheet.create({
     minHeight: height,
     backgroundColor: '#13111C',
     paddingHorizontal: 10,
-    paddingTop: 30,
+  },
+  backContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    justifyContent: 'center',
+    zIndex: 1,
   },
   contentWrap: {
     /* flexDirection: 'row',

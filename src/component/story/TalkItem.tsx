@@ -54,10 +54,11 @@ export default function TalkItem({ item, profileOpenFn, goDetailFn }) {
         <SpaceView viewStyle={{flex: 2, justifyContent: 'space-between'}}>
 
           {/* 닉네임, 키워드, 내용 표시 영역 */}
-          <SpaceView>
+          <TouchableOpacity onPress={() => (goDetailFn(storyBoardSeq))}>
             <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Text style={styles.fontStyle('SB', 16, '#000000')}>{item?.nickname}</Text>
-              {/* nickname_modifier, nickname_noun */}
+              <Text style={styles.fontStyle('SB', 15, '#000000')}>
+                {isEmptyData(item?.nickname_modifier) ? item?.nickname_modifier + ' ' + item?.nickname_noun : item?.nickname}
+              </Text>
 
               {isEmptyData(item?.keyword_code_name) && (
                 <SpaceView viewStyle={_styles.keywordWrap}>
@@ -69,7 +70,8 @@ export default function TalkItem({ item, profileOpenFn, goDetailFn }) {
             <SpaceView mt={15}>
               <Text style={styles.fontStyle('SB', 12, '#000000')} numberOfLines={2}>{item?.contents}</Text>
             </SpaceView>
-          </SpaceView>
+
+          </TouchableOpacity>
 
           {/* 좋아요, 댓글 표시 영역 */}
           <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>

@@ -89,9 +89,6 @@ export default function StoryDetail(props: Props) {
   const [selectedVoteSeq, setSelectedVoteSeq] = React.useState(null);
 
 
-
-
-
   /* #########################################################################################################
   ######## 좋아요 관련
   ######################################################################################################### */
@@ -164,7 +161,7 @@ export default function StoryDetail(props: Props) {
 
   // 댓글 팝업 활성화
   const reply_onOpen = () => {
-    reply_modalizeRef.current?.openModal(storyBoardSeq, storyData.replyList);
+    reply_modalizeRef.current?.openModal(storyBoardSeq);
   };
 
   {/* <ReplyRegiPopup 
@@ -297,6 +294,60 @@ export default function StoryDetail(props: Props) {
     }
   };
 
+  // ############################################################################# 댓글 등록
+  const replyRegister = async (text:string, storyReplySeq:number, depth:number) => {
+
+    // 중복 클릭 방지 설정
+    if(isClickable) {
+      setIsClickable(false);
+      setIsLoading(true);
+
+      try {
+
+        if(!isEmptyData(text)) {
+          //show({ content: '댓글 내용을 입력해 주세요.' });
+          return false;
+        };
+    
+        const body = {
+          story_reply_seq: null,
+          story_board_seq: storyBoardSeq,
+          reply_contents: text,
+          group_seq: storyReplySeq,
+          depth: depth+1,
+          //secret_yn: isEmptyData(isSecret) && isSecret ? 'Y' : 'N',
+          secret_yn: 'N',
+        };
+
+        const { success, data } = await save_story_reply(body);
+        if(success) {
+          switch (data.result_code) {
+          case SUCCESS:
+
+            /* if(isSecret) {
+              dispatch(myProfile());
+            } */
+            
+            getStoryBoard();
+            
+            break;
+          default:
+            //show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+            break;
+          }
+        } else {
+          //show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsClickable(true);
+        setIsLoading(false);
+      }
+
+    }
+  };
+
   // ############################################################################# 수정하기 이동
   const goStoryModify = async () => {
     // 팝업 닫기
@@ -335,8 +386,6 @@ export default function StoryDetail(props: Props) {
           case SUCCESS:
 
             if(isEmptyData(data.story?.story_board_seq)) {
-
-              console.log('data selected_vote_seq :::::: ' , data.story?.selected_vote_seq);
 
               // 투표 정보 구성
               let _voteInfo = {};
@@ -588,9 +637,6 @@ export default function StoryDetail(props: Props) {
   };
 
   // ############################################################################# 투표하기 실행
-  const ddddd = async (storyVoteSeq:number) => {
-
-  }
 
   /* #########################################################################################################
   ######## 신고하기 관련
@@ -844,7 +890,6 @@ export default function StoryDetail(props: Props) {
 
             {/* ###################################################################################### 이미지 영역 */}
             <SpaceView>
-
               <FlatList
                 ref={imgRef}
                 data={storyData.imageList}
@@ -919,11 +964,6 @@ export default function StoryDetail(props: Props) {
               </SpaceView>
             </SpaceView>
 
-
-
-
-            
-
             {/* ###################################################################################### 투표 노출 영역 */}
             {storyData.board?.story_type == 'VOTE' && (
               <>
@@ -971,7 +1011,7 @@ export default function StoryDetail(props: Props) {
             )}
 
             {/* ###################################################################################### 릴레이 노출 영역 */}
-            <SpaceView pt={20} pb={20}>
+            {/* <SpaceView pt={20} pb={20}>
               <FlatList
                 contentContainerStyle={_styles.replyListWrap}
                 data={storyData.replyList}
@@ -989,7 +1029,7 @@ export default function StoryDetail(props: Props) {
                   )
                 }}
               />
-            </SpaceView>
+            </SpaceView> */}
 
             {/* ###################################################################################### 태그 영역 */}
             <SpaceView mt={30}>
@@ -1164,7 +1204,10 @@ export default function StoryDetail(props: Props) {
 
       <ReplyRegiPopup 
         ref={reply_modalizeRef}
+        replyList={storyData.replyList}
         //profileOpenFn={profileCardOpen}
+        likeFn={storyLikeProc}
+        replyRegisterFn={replyRegister}
       />
 
       {/* ##################################################################################
@@ -1246,20 +1289,12 @@ export default function StoryDetail(props: Props) {
       //url = findSourcePathLocal(item?.file_path);
     };
 
-    url = PROFILE_IMAGE.womanTmp1;
+    //url = PROFILE_IMAGE.womanTmp1;
 
     return (
       <>
         <SpaceView>
-          {storyData.board?.story_type == 'STORY' || storyData.board?.story_type == 'SECRET' ? (
-            <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
-          ) : (
-            <>
-              <SpaceView mb={15}>
-                <Image source={url} style={[_styles.imageStyle]} resizeMode={'cover'} />
-              </SpaceView>
-            </>
-          )}
+          <Image source={url} style={_styles.imageStyle} resizeMode={'cover'} />
         </SpaceView>
       </>
     );

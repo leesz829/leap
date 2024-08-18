@@ -237,6 +237,7 @@ export const ICON = {
   orderIcon: require('assets/icon/common/order_icon.png'),
   settingIcon: require('assets/icon/common/setting_icon.png'),
   cube: require('assets/icon/common/cube.png'),
+  megaCube: require('assets/icon/common/mega_cube.png'),
   checkWhite: require('assets/icon/common/check_white.png'),
   popupDown: require('assets/icon/common/popup_down.png'),
   print: require('assets/icon/common/print.png'),
@@ -265,6 +266,8 @@ export const ICON = {
   /* match */
   distanceIcon: require('assets/icon/match/distance_icon.png'),
   sendIcon: require('assets/icon/match/send_icon.png'),
+  moreIcon: require('assets/icon/match/more_icon.png'),
+  homeIcon: require('assets/icon/match/home_icon.png'),
 
   /* auth */
   jobIcon: require('assets/icon/auth/job_icon.png'),

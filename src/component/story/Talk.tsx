@@ -347,6 +347,7 @@ const Talk = React.memo(({ isRefresh }) => {
                 }
                 //onEndReached={loadMoreData}
                 onEndReachedThreshold={0.1}
+                ListHeaderComponent={<SpaceView><Text style={{color: '#fff'}}>asldkmasldkasmdlkasmdlaskmd</Text></SpaceView>}
                 ListFooterComponent={isLoadingMore && <Text>Loading more...</Text>}
                 renderItem={({ item, index }) => {
 
@@ -366,8 +367,6 @@ const Talk = React.memo(({ isRefresh }) => {
             </>
           )}
         </SpaceView>
-
-
     </>
   );
 });

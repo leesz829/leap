@@ -49,12 +49,14 @@ export const Contents = () => {
   // 회원 기본 정보
   const memberBase = useUserInfo();
 
-  const [selectedMenuValue, setSelectedMenuValue] = useState('BLIND'); // 선택한 메뉴 값
+  const [selectedMenuValue, setSelectedMenuValue] = useState({
+    label: '블라인드 카드', value: 'BLIND'
+  }); // 선택한 메뉴 값
 
   // 드롭다운 콜백 함수
-  const dropdownCallbackFn = React.useCallback(async (value: string) => {
-    console.log('value ::::: ' , value);
-    setSelectedMenuValue(value);
+  const dropdownCallbackFn = React.useCallback(async (item: any) => {
+    console.log('item ::::: ' , item);
+    setSelectedMenuValue(item);
 
   }, []);
 
@@ -92,8 +94,8 @@ export const Contents = () => {
       {/* 컨텐츠 내용 */}
       <SpaceView>
 
-        {selectedMenuValue == 'BLIND' && <List />}
-        {selectedMenuValue == 'VIBE' && <Vibe />}
+        {selectedMenuValue.value == 'BLIND' && <List />}
+        {selectedMenuValue.value == 'VIBE' && <Vibe />}
 
         {/* <Vibe /> */}
       </SpaceView>

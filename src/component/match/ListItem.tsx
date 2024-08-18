@@ -190,11 +190,15 @@ const ListItem = React.memo(({ item, fnDetail, fnProfileOpen, freeOpenCnt, respe
               {/* ########################################################################## 하단 정보 표시 */}
               <SpaceView viewStyle={_styles.baseInfoArea}>
                 <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-end', width: '70%', flexWrap: 'wrap'}}>
-                  <Text style={styles.fontStyle('H', 28, '#fff')}>{item.nickname}겳뷥궘</Text>
-                  <SpaceView ml={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image source={ICON.distanceIcon} style={styles.iconSquareSize(18)} />
-                    <SpaceView ml={3}><Text style={styles.fontStyle('SB', 12, '#3AF246')}>{item.distance}Km</Text></SpaceView>
-                  </SpaceView>
+                  <Text style={styles.fontStyle('H', 26, '#fff')}>{item.nickname}</Text>
+                  {isEmptyData(item.distance) && item.distance > 0 && (
+                    <>
+                      <SpaceView ml={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Image source={ICON.distanceIcon} style={styles.iconSquareSize(18)} />
+                        <SpaceView ml={3}><Text style={styles.fontStyle('SB', 12, '#3AF246')}>{item.distance}Km</Text></SpaceView>
+                      </SpaceView>
+                    </>
+                  )}
                 </SpaceView>
                 <TouchableOpacity onPress={() => { detailProc(); }} style={_styles.detailBtnArea}>
                   <Image source={ICON.searchWhite} style={styles.iconSquareSize(15)} />

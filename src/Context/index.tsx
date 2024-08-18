@@ -6,6 +6,7 @@ import { ResponsivePopup } from 'screens/commonpopup/context/ResponsivePopup';
 import { PromotionPopup } from 'screens/commonpopup/context/PromotionPopup';
 import { OpenProfilePopup } from 'screens/commonpopup/context/OpenProfilePopup';
 import { SelectPopup } from 'screens/commonpopup/context/SelectPopup';
+import { MatchPopup } from 'screens/commonpopup/context/MatchPopup';
 
 export const PopupContext = createContext({} as any);
 
@@ -29,6 +30,9 @@ interface PopupContextProps {
   passType: string | undefined; // 패스 종류
   passAmt: string | undefined; // 패스 금액
   isCross: boolean | undefined; // 교차 여부
+  memberImg: string | undefined; // 회원 이미지
+  btnIcon: string | undefined; // 버튼 아이콘
+  isNoPass: boolean | undefined; // 패스 금액 부족 여부
 }
 
 export const PopupProvider = ({ children }: any) => {
@@ -55,6 +59,10 @@ export const PopupProvider = ({ children }: any) => {
     passType: '',
     passAmt: '',
     isCross: false,
+    memberImg: '',
+    btnIcon: '',
+    isNoPass: false,
+
   });
 
   function show(content: PopupContextProps) {
@@ -96,6 +104,9 @@ export const PopupProvider = ({ children }: any) => {
       passType: '',
       passAmt: '',
       isCross: false,
+      memberImg: '',
+      btnIcon: '',
+      isNoPass: false,
     });
   }
 
@@ -155,6 +166,25 @@ export const PopupProvider = ({ children }: any) => {
           confirmCallbackFunc={contents.confirmCallback}
           cancelCallbackFunc={contents.cancelCallback}
         />
+      ) : contents.type == 'MATCH' ? (
+        <MatchPopup
+          popupVisible={!contents.isCross ? visible : visibleCross}
+          setPopupVIsible={!contents.isCross ? setVisible : setVisibleCross}
+          title={contents.title}
+          text={contents.content}
+          isConfirm={
+            typeof contents.confirmCallback != 'undefined' &&
+            typeof contents.cancelCallback != 'undefined'
+          }
+          confirmCallbackFunc={contents.confirmCallback}
+          cancelCallbackFunc={contents.cancelCallback}
+          confirmBtnText={contents.confirmBtnText}
+          passType={contents.passType}
+          passAmt={contents.passAmt}
+          memberImg={contents.memberImg}
+          btnIcon={contents.btnIcon}
+          isNoPass={contents.isNoPass}
+        />
       ) : (
         <BasePopup
           popupVisible={!contents.isCross ? visible : visibleCross}
@@ -174,6 +204,7 @@ export const PopupProvider = ({ children }: any) => {
           passType={contents.passType}
           passAmt={contents.passAmt}
           type={contents.type}
+          memberImg={contents.memberImg}
         />
       )}
     </PopupContext.Provider>

@@ -30,6 +30,7 @@ export type NavigationHeaderProps = {
   nicknameNoun?: string;
   editBtnIcon?: any;
   callbackFunc: () => void;
+  isOnShrink?: boolean;
 };
 
 /**
@@ -50,7 +51,9 @@ function CommonHeader({
   nicknameNoun,
   editBtnIcon,
   callbackFunc,
+  isOnShrink,
 }: NavigationHeaderProps) {
+
 
   const navigation = useNavigation<StackScreenProp>();
   const { show } = usePopup();  // 공통 팝업
@@ -102,15 +105,15 @@ function CommonHeader({
           </>
         ) : (
           <>
-            <View style={{ ..._styles.headerContainer, ...containerStyle, zIndex: 1 }}>
+            <View style={{ ..._styles.headerContainer(isOnShrink), ...containerStyle, zIndex: 1 }}>
 
               {/* 뒤로가기 버튼 */}
               <TouchableOpacity
                 onPress={goHome}
                 style={_styles.backContainer}
-                /* hitSlop={commonStyle.hipSlop20} */
+                hitSlop={commonStyle.hipSlop20}
               >
-                <Image source={backIcon || ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
+                <Image source={backIcon || ICON.backBtnType01} style={styles.iconSquareSize(isOnShrink ? 24 : 35)} resizeMode={'contain'} />
               </TouchableOpacity>
 
               {/* 제목 */}
@@ -128,7 +131,7 @@ function CommonHeader({
                 ) : (
                   <>
                     <SpaceView viewStyle={{alignItems: 'center', justifyContent: 'center'}}>
-                      <Text style={styles.fontStyle('H', 26, '#fff')}>{title}</Text>
+                      <Text style={styles.fontStyle('H', isOnShrink ? 20 : 26, '#fff')}>{title}</Text>
                     </SpaceView>
                   </>
                 )}
@@ -188,19 +191,20 @@ export default CommonHeader;
 const _styles = StyleSheet.create({
   backContainer: {
     position: 'absolute',
-    top: 0,
+    top: 10,
     left: 0,
-    height: 56,
     justifyContent: 'center',
     zIndex: 1,
   },
-  headerContainer: {
-    height: 56,
-    paddingRight: 24,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+  headerContainer: (_isOnShrink: boolean) => {
+		return {
+			height: _isOnShrink ? 42 : 56,
+      paddingRight: 24,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    };
+	},
   headerLogoContainer: {
     backgroundColor: 'white',
     alignItems: 'center',
