@@ -861,7 +861,7 @@ export default function MatchDetail(props: Props) {
         </SpaceView>
       }
 
-      <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll} showsVerticalScrollIndicator={false} scrollEventThrottle={10}>
 
         {/* ############################################################################################### 상단 Header */}
         {!isOnShrink && (

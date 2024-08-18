@@ -97,7 +97,6 @@ export const Story = (props: Props) => {
   /* ################################################################################ 스크롤 제어 */
   const handleScroll = async (event) => {
     const yOffset = event.nativeEvent.contentOffset.y;
-    console.log('yOffset ::::: ' , yOffset);
     /* if(yOffset > 300) {
       setIsTopBtn(true);
     } else {
