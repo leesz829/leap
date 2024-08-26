@@ -268,7 +268,7 @@ export const Vibe: FC<Props> = (props) => {
               end={{ x: 0, y: 1 }}
               style={_styles.subBg} />
 
-            <SpaceView pt={85}>
+            <SpaceView pt={105}>
               <SpaceView mb={10} viewStyle={_styles.imgAreaWrap}>
 
                 <LinearGradient
@@ -309,7 +309,7 @@ export const Vibe: FC<Props> = (props) => {
                           source={{uri: imgList[currentImgIdx]?.url?.uri}}
                           style={{
                             width: width - 20,
-                            height: height * 0.7, 
+                            height: Platform.OS == 'ios' ? height * 0.6 : height * 0.65, 
                             borderRadius: 10,
                           }}
                           resizeMode={'cover'}
@@ -352,7 +352,7 @@ export const Vibe: FC<Props> = (props) => {
                     </>
                   ) : (
                     <>
-                      <SpaceView viewStyle={{width: width - 20, height: height * 0.7, borderRadius: 10, backgroundColor: '#9A9A9A', opacity: 1 }} />
+                      <SpaceView viewStyle={{width: width - 20, height: Platform.OS == 'ios' ? height * 0.6 : height * 0.65, borderRadius: 10, backgroundColor: '#9A9A9A', opacity: 1 }} />
                     </>
                   )}
 
@@ -372,7 +372,7 @@ export const Vibe: FC<Props> = (props) => {
                   style={[_styles.bottomBtn, {width: width * 0.4, marginRight: 10, backgroundColor: '#FF516F',}]}
                   onPress={() => openImpressPop('SKIP', 'FACE_TYPE_SKIP', '6')}
                 >
-                  <Text style={[styles.fontStyle('B', 14, '#fff'), {textAlign: 'center'}]}>잘 모르겠어요.</Text>
+                  <Text style={[styles.fontStyle('B', 14, '#fff'), {textAlign: 'center'}]}>넘어가기</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[_styles.bottomBtn, {width: width * 0.53, backgroundColor: '#46F66F'}]}
@@ -381,7 +381,7 @@ export const Vibe: FC<Props> = (props) => {
                       setLiveModalVisible(true);
                     }
                   }} >
-                  <Text style={[styles.fontStyle('B', 14, '#fff'), {textAlign: 'center'}]}>내가 찾던 그 느낌</Text>
+                  <Text style={[styles.fontStyle('B', 14, '#fff'), {textAlign: 'center'}]}>바이브 호감 보내기</Text>
                 </TouchableOpacity>
               </SpaceView>
 
