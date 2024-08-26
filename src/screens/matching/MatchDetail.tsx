@@ -842,13 +842,13 @@ export default function MatchDetail(props: Props) {
                 </>
               ) : (
                 <SpaceView viewStyle={_styles.btnWrap}> 
-                <TouchableOpacity 
-                  onPress={() => { hpOpenPopup(); }}
-                  style={_styles.btnSubWrap(165, '#FFFF5D')}>
-                  <Image source={ICON.phoneIcon} style={styles.iconSquareSize(20)} />
-                  <Text style={styles.fontStyle('B', 16, '#44B6E5')}>연락처 잠금해제</Text>
-                </TouchableOpacity>
-              </SpaceView>
+                  <TouchableOpacity 
+                    onPress={() => { hpOpenPopup(); }}
+                    style={_styles.btnSubWrap(165, '#FFFF5D')}>
+                    <Image source={ICON.phoneIcon} style={styles.iconSquareSize(20)} />
+                    <Text style={styles.fontStyle('B', 16, '#44B6E5')}>연락처 잠금해제</Text>
+                  </TouchableOpacity>
+                </SpaceView>
               )}
             </>
           )}
@@ -1319,7 +1319,7 @@ const _styles = StyleSheet.create({
   },
   btnWrap: {
     position: 'absolute',
-    bottom: 50,
+    bottom: Platform.OS == 'ios' ? 80 : 50,
     right: 10,
     zIndex: 1,
   },
