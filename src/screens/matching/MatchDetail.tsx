@@ -1319,7 +1319,7 @@ const _styles = StyleSheet.create({
   },
   btnWrap: {
     position: 'absolute',
-    bottom: Platform.OS == 'ios' ? 80 : 50,
+    bottom: Platform.OS == 'ios' ? 110 : 50,
     right: 10,
     zIndex: 1,
   },
