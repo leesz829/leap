@@ -45,9 +45,31 @@ export default function InterestRender({ memberData, isEditBtn, interestList }) 
                 <SpaceView mt={8} viewStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                   {interestList.map((item, index) => {
                     const isOn = item.dup_chk == 0 ? false : true;
+
+                    let icon = ICON.int_active;
+
+                    if(item?.group_code == 'INTEREST_CATEGORY_01') {
+                      icon = ICON.int_lifestyle;
+                    } else if(item?.group_code == 'INTEREST_CATEGORY_02') {
+                      icon = ICON.int_leisure;
+                    } else if(item?.group_code == 'INTEREST_CATEGORY_03') {
+                      icon = ICON.int_food;
+                    } else if(item?.group_code == 'INTEREST_CATEGORY_04') {
+                      icon = ICON.int_body;
+                    } else if(item?.group_code == 'INTEREST_CATEGORY_05') {
+                      icon = ICON.int_active;
+                    } else if(item?.group_code == 'INTEREST_CATEGORY_06') {
+                      icon = ICON.int_social;
+                    } else if(item?.group_code == 'INTEREST_CATEGORY_07') {
+                      icon = ICON.int_entertainment;
+                    } else if(item?.group_code == 'INTEREST_CATEGORY_08') {
+                      icon = ICON.int_game;
+                    }
+
                     return (
-                      <View key={index} style={_styles.interestItem(isOn)}>
-                        <Text style={styles.fontStyle('B', 14, '#fff')}>{item.code_name}</Text>
+                      <View key={index} style={[_styles.interestItem(isOn), layoutStyle.rowBetween]}>
+                        <Image source={icon} style={styles.iconSquareSize(16)} />
+                        <SpaceView ml={8}><Text style={styles.fontStyle('B', 13, '#fff')}>{item.code_name}</Text></SpaceView>
                       </View>
                     );
                   })}
@@ -86,12 +108,12 @@ const _styles = StyleSheet.create({
   },
   interestItem: (isOn) => {
     return {
-      borderRadius: 20,
+      borderRadius: 25,
       borderWidth: 1,
       borderColor: isOn ? '#FF3838' : '#434635',
       backgroundColor: '#434635',
-      paddingHorizontal: 10,
-      paddingVertical: 5,
+      paddingHorizontal: 13,
+      paddingVertical: 10,
       marginRight: 5,
       marginBottom: 8,
       overflow: 'hidden',
@@ -108,4 +130,5 @@ const _styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 10,
   },
+
 });

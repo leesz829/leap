@@ -10,6 +10,7 @@ import { modalStyle, layoutStyle, commonStyle, styles } from 'assets/styles/Styl
 import { isEmptyData } from 'utils/functions';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { ScrollView } from 'react-native-gesture-handler';
+import RecommendBanner from 'component/common/RecommendBanner';
 
 
 
@@ -321,18 +322,8 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
         </LinearGradient>
 
         {/* ################################################################################ 배너 영역 */}
-        <SpaceView mt={20} viewStyle={_styles.bannerWrap}>
-          <SpaceView>
-            <Text style={styles.fontStyle('EB', 19, '#fff')}>믿고 보는 추천 이성</Text>
-            <SpaceView mt={10}><Text style={styles.fontStyle('SB', 9, '#fff')}>리프에서 특히나 Hot한 분들을 모아 봤는데...{'\n'}스-윽 보고 가실까요?🧐</Text></SpaceView>
-          </SpaceView>
-          <LinearGradient
-            colors={['#DF455D', '#E9109A']}
-            style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 25 }}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 0, y: 1 }} >
-            <Text style={styles.fontStyle('B', 11, '#fff')}>추천 목록 열기</Text>
-          </LinearGradient>
+        <SpaceView mt={20}>
+          <RecommendBanner />
         </SpaceView>
 
         {/* ################################################################################ 마이홈 방문자 영역 */}

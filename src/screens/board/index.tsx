@@ -37,6 +37,8 @@ export const Board = (props: Props) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const isFocus = useIsFocused();
 
+	const [isOnShrink, setIsOnShrink] = React.useState(false); // 쉬링크 상태 변수
+
 	const memberBase = useUserInfo();
 
 	const [noticeList, setnoticeList] = React.useState([]);
@@ -147,22 +149,36 @@ export const Board = (props: Props) => {
 		};
 	};
 
+	// ############################################################################# 스크롤 이동 함수
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    if(contentOffset.y > 50) {
+      setIsOnShrink(true);
+    } else {
+      setIsOnShrink(false);
+    }
+  };
+
 	// ######################################################################################## 초기 실행 함수
 	React.useEffect(() => {
 		if(isFocus) {
 			getBoardList();
 		};
-	  }, [isFocus]);
+  }, [isFocus]);
 
 	return (
 		<>
 			{isLoading && <CommonLoading />}
 
 			<SpaceView viewStyle={_styles.wrap}>
-        <CommonHeader title="새소식" />
 
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
-					<SpaceView>
+				<SpaceView mt={isOnShrink ? 10 : 30} mb={isOnShrink ? 10 : 0}>
+					<CommonHeader title="새소식" isOnShrink={isOnShrink} />
+				</SpaceView>
+
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}} onScroll={handleScroll} scrollEventThrottle={16}>
+
+					<SpaceView mt={40} mb={50}>
 						{noticeList.map((item, index) => {
 
 							let iconSrc = ICON.boardEvent;
@@ -260,7 +276,7 @@ const _styles = StyleSheet.create({
 		minHeight: height,
     backgroundColor: '#16112A',
     paddingHorizontal: 10,
-    paddingTop: 30,
+    //paddingTop: 50,
 	},
 	rowContainer: {
 		flexDirection: 'row',

@@ -74,7 +74,7 @@ export default function ProfileAuth({ dataList, isEditBtn, memberData }) {
                     <>
                       <SpaceView viewStyle={_styles.authItem}>
                         <SpaceView mb={20} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                          <Image source={authIcon} style={styles.iconSquareSize(130)} />
+                          <Image source={authIcon} style={styles.iconSquareSize(90)} />
                         </SpaceView>
 
                         <SpaceView mt={15}>

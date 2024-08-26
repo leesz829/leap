@@ -12,7 +12,7 @@ import TopNavigation from 'component/TopNavigation';
 import { usePopup } from 'Context';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
-import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, Platform } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View, Text, Platform, Modal } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
@@ -153,6 +153,16 @@ export default function MatchDetail(props: Props) {
   // 채팅 데이터
   const [chatData, setChatData] = useState([]);
 
+
+  // ######################################################################################## 연락처 열람 관련
+  const [phoneOpenModalVisible, setPhoneOpenModalVisible] = useState(false); // 연락처 열람 모달 visible
+  const [phoneOpenCubeType, setPhoneOpenCubeType] = useState('CUBE'); // 연락처 열람 재화 유형
+
+  // 연락처 열람 모달 닫기
+  const phoneOpenCloseModal = () => {
+    setPhoneOpenModalVisible(false);
+  };
+
   // ######################################################################################## 매칭 정보 조회
   const getMatchInfo = async () => {
     try {
@@ -277,6 +287,11 @@ export default function MatchDetail(props: Props) {
 
   // ############################################################ 연락처 열기 팝업 활성화
   const hpOpenPopup = async () => {
+
+    setPhoneOpenModalVisible(true);
+
+    return;
+
     let tmpContent = '큐브 150개를 사용하여 현재 보고 계신 프로필의 연락처를 확인하시겠어요?';
     let subContent = '';
 
@@ -335,6 +350,7 @@ export default function MatchDetail(props: Props) {
       } catch (error) {
         console.log(error);
       } finally {
+        setPhoneOpenModalVisible(false);
         setIsClickable(true);
         getMatchInfo();
       }
@@ -764,17 +780,18 @@ export default function MatchDetail(props: Props) {
           )} */}
             
           <TouchableOpacity
-              onPress={() => { popupActive('interest'); }}
-              style={_styles.sendBtn}>
+            onPress={() => { popupActive('interest'); }}
+            style={_styles.btnSubWrap(140, '#46F66F')}
+          >
             <Image source={ICON.sendIcon} style={styles.iconSquareSize(20)} />
-            <SpaceView ml={20}><Text style={styles.fontStyle('B', 16, '#fff')}>관심있어요</Text></SpaceView>
+            <SpaceView><Text style={styles.fontStyle('B', 16, '#fff')}>관심있어요</Text></SpaceView>
 
-            {isEmptyData(data?.use_item) && isEmptyData(data?.use_item?.FREE_LIKE) && data?.use_item?.FREE_LIKE?.use_yn == 'Y' && (
+            {/* {isEmptyData(data?.use_item) && isEmptyData(data?.use_item?.FREE_LIKE) && data?.use_item?.FREE_LIKE?.use_yn == 'Y' && (
               <SpaceView viewStyle={_styles.sendEtc}>
                 <Image source={ICON.cubeYCyan} style={styles.iconSquareSize(12)} />
                 <Text style={_styles.sendText}>FREE</Text>
               </SpaceView>
-            )}
+            )} */}
           </TouchableOpacity>
 
           {/* {type != 'STORAGE' && data?.match_member_info?.zzim_yn == 'Y' && (
@@ -786,79 +803,130 @@ export default function MatchDetail(props: Props) {
       )}
 
       {/* ############################################################################################### 보관함 상세 하단 영역 */}
-      {(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') &&
-        <SpaceView viewStyle={_styles.btnWrap}>
-          <SpaceView viewStyle={_styles.matchArea}>
-
-            <SpaceView mb={20} viewStyle={[layoutStyle.columCenter]}>
-              <SpaceView viewStyle={_styles.matchTitleArea}>
-                <Text style={_styles.matchTitle}>{data?.match_base.match_status == 'ACCEPT' ? '메시지' : matchType == 'RES' ? '관심' : '좋아요'}</Text>
-              </SpaceView>
-              {data?.match_base?.message &&
-                <SpaceView mt={10} pl={5} pr={5}>
-                  <Text style={_styles.matchMsg}>"{data?.match_base?.message}"</Text>
-                </SpaceView>
-              }
+      {type == 'STORAGE' &&
+        <>
+          {(matchType == 'RES' && data?.match_base?.match_status == 'PROGRESS') && (
+            <SpaceView viewStyle={_styles.btnWrap}> 
+              <TouchableOpacity 
+                onPress={() => updateMatchStatus('ACCEPT') }
+                style={_styles.btnSubWrap(130, '#46F66F')}>
+                <Image source={ICON.sendIcon} style={styles.iconSquareSize(20)} />
+                <Text style={styles.fontStyle('B', 16, '#fff')}>관심수락</Text>
+              </TouchableOpacity>
             </SpaceView>
+          )}
 
-            <SpaceView mt={10} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter]}>
-
-              {/* ################################# 성공 매칭 구분 */}
-              {data?.match_base.match_status == 'ACCEPT' ? (
+          {(data?.match_base?.match_status == 'ACCEPT') && (
+            <>
+              {(data.match_base.res_member_seq == memberBase.member_seq && data.match_base.res_phone_open_yn == 'Y') ||
+                (data.match_base.req_member_seq == memberBase.member_seq && data.match_base.req_phone_open_yn == 'Y') ? (
                 <>
-                  <SpaceView viewStyle={[layoutStyle.justifyCenter, layoutStyle.alignCenter, {width: '100%'}]}>
-                    {(data.match_base.res_member_seq == memberBase.member_seq && data.match_base.res_phone_open_yn == 'Y') ||
-                    (data.match_base.req_member_seq == memberBase.member_seq && data.match_base.req_phone_open_yn == 'Y') ? (
-                      <>
-                        <TouchableOpacity
-                          disabled={!isCopyHpState}
-                          style={_styles.matchSuccArea('#FFFFFF')}
-                          onPress={() => { onCopyPress(data.match_member_info.phone_number); }}>
-                          <Text style={_styles.matchSuccText('#D5CD9E')}>{data.match_member_info.phone_number}</Text>
-                        </TouchableOpacity>
-                        <Text style={_styles.clipboardCopyDesc}>연락처를 터치하면 클립보드에 복사되요.</Text>
-                      </>
-                    ) : (
-                      <TouchableOpacity style={_styles.matchSuccArea('#FFDD00')} onPress={() => { hpOpenPopup(); }}>
-                        <Text style={_styles.matchSuccText('#3D4348')}>연락처 확인하기</Text>
-                      </TouchableOpacity>
-                    )}
+                  <SpaceView viewStyle={_styles.btnWrap}> 
+                    <TouchableOpacity 
+                      onPress={() => { onCopyPress(data.match_member_info.phone_number); }}
+                      style={_styles.btnSubWrap02}>
+                      <Text style={[styles.fontStyle('B', 16, '#44B6E5'), {textAlign: 'center'}]}>클립보드 복사하기</Text>
+                    </TouchableOpacity>
+                    <SpaceView viewStyle={{position: 'absolute', top: -28, right: 0, alignItems: 'flex-end'}}>
+                      <LinearGradient
+                        colors={['#8BC1FF', '#416DFF']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={_styles.phoneMaskingMsgWrap}
+                      >
+                        <Text style={styles.fontStyle('SB', 10, '#fff')}>🛡️개인정보 보호를 위해 전화번호는 마스킹 처리하였어요.</Text>
+                      </LinearGradient>
+                      <View style={_styles.triangle} />
+                    </SpaceView>
                   </SpaceView>
                 </>
               ) : (
-                <>
-                  {matchType == 'RES' &&
-                    <>
-                      <SpaceView>
-                        <SpaceView viewStyle={{flexDirection:'row'}}>
-                          <SpaceView mr={5}>
-                            <TouchableOpacity onPress={() => updateMatchStatus('REFUSE') } style={[_styles.matchResBtn, {backgroundColor: '#FFF'}]}>
-                              <Text style={_styles.matchResBtnText}>거절</Text>
-                            </TouchableOpacity>
-                          </SpaceView>
-                          <SpaceView ml={5}>
-                            <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={[_styles.matchResBtn, {backgroundColor: '#FFDD00'}]}>
-                              <Text style={_styles.matchResBtnText}>수락</Text>
-                            </TouchableOpacity>
-                          </SpaceView>
-                        </SpaceView>
-                        <SpaceView>
-                          <Text style={_styles.matchResDesc}>관심을 수락하면 서로의 연락처를 열람할 수 있어요.</Text>
-                        </SpaceView>
-                      </SpaceView>
-                    </>
-                  }
+                <SpaceView viewStyle={_styles.btnWrap}> 
+                <TouchableOpacity 
+                  onPress={() => { hpOpenPopup(); }}
+                  style={_styles.btnSubWrap(165, '#FFFF5D')}>
+                  <Image source={ICON.phoneIcon} style={styles.iconSquareSize(20)} />
+                  <Text style={styles.fontStyle('B', 16, '#44B6E5')}>연락처 잠금해제</Text>
+                </TouchableOpacity>
+              </SpaceView>
+              )}
+            </>
+          )}
 
-                  {matchType == 'REQ' &&
-                    <SpaceView viewStyle={_styles.matchReqArea}>
-                      <Text style={_styles.matchReqText}>{data?.match_base?.match_status == 'REFUSE' ? '보내주신 관심에 상대방이 정중히 거절했어요.' : '상대방의 응답을 기다리고 있어요.'}</Text>
+          {/* {(matchType == 'RES' && data?.match_base?.match_status == 'PROGRESS') && (
+            <SpaceView viewStyle={_styles.btnWrap}>
+              <SpaceView viewStyle={_styles.matchArea}>
+
+                <SpaceView mb={20} viewStyle={[layoutStyle.columCenter]}>
+                  <SpaceView viewStyle={_styles.matchTitleArea}>
+                    <Text style={_styles.matchTitle}>{data?.match_base.match_status == 'ACCEPT' ? '메시지' : matchType == 'RES' ? '관심' : '좋아요'}</Text>
+                  </SpaceView>
+                  {data?.match_base?.message &&
+                    <SpaceView mt={10} pl={5} pr={5}>
+                      <Text style={_styles.matchMsg}>"{data?.match_base?.message}"</Text>
                     </SpaceView>
                   }
-                </>
-              )}
+                </SpaceView>
+
+                <SpaceView mt={10} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter]}>
+
+                  {data?.match_base.match_status == 'ACCEPT' ? (
+                    <>
+                      <SpaceView viewStyle={[layoutStyle.justifyCenter, layoutStyle.alignCenter, {width: '100%'}]}>
+                        {(data.match_base.res_member_seq == memberBase.member_seq && data.match_base.res_phone_open_yn == 'Y') ||
+                        (data.match_base.req_member_seq == memberBase.member_seq && data.match_base.req_phone_open_yn == 'Y') ? (
+                          <>
+                            <TouchableOpacity
+                              disabled={!isCopyHpState}
+                              style={_styles.matchSuccArea('#FFFFFF')}
+                              onPress={() => { onCopyPress(data.match_member_info.phone_number); }}>
+                              <Text style={_styles.matchSuccText('#D5CD9E')}>{data.match_member_info.phone_number}</Text>
+                            </TouchableOpacity>
+                            <Text style={_styles.clipboardCopyDesc}>연락처를 터치하면 클립보드에 복사되요.</Text>
+                          </>
+                        ) : (
+                          <TouchableOpacity style={_styles.matchSuccArea('#FFDD00')} onPress={() => { hpOpenPopup(); }}>
+                            <Text style={_styles.matchSuccText('#3D4348')}>연락처 확인하기</Text>
+                          </TouchableOpacity>
+                        )}
+                      </SpaceView>
+                    </>
+                  ) : (
+                    <>
+                      {matchType == 'RES' &&
+                        <>
+                          <SpaceView>
+                            <SpaceView viewStyle={{flexDirection:'row'}}>
+                              <SpaceView mr={5}>
+                                <TouchableOpacity onPress={() => updateMatchStatus('REFUSE') } style={[_styles.matchResBtn, {backgroundColor: '#FFF'}]}>
+                                  <Text style={_styles.matchResBtnText}>거절</Text>
+                                </TouchableOpacity>
+                              </SpaceView>
+                              <SpaceView ml={5}>
+                                <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={[_styles.matchResBtn, {backgroundColor: '#FFDD00'}]}>
+                                  <Text style={_styles.matchResBtnText}>수락</Text>
+                                </TouchableOpacity>
+                              </SpaceView>
+                            </SpaceView>
+                            <SpaceView>
+                              <Text style={_styles.matchResDesc}>관심을 수락하면 서로의 연락처를 열람할 수 있어요.</Text>
+                            </SpaceView>
+                          </SpaceView>
+                        </>
+                      }
+
+                      {matchType == 'REQ' &&
+                        <SpaceView viewStyle={_styles.matchReqArea}>
+                          <Text style={_styles.matchReqText}>{data?.match_base?.match_status == 'REFUSE' ? '보내주신 관심에 상대방이 정중히 거절했어요.' : '상대방의 응답을 기다리고 있어요.'}</Text>
+                        </SpaceView>
+                      }
+                    </>
+                  )}
+                </SpaceView>
+              </SpaceView>
             </SpaceView>
-          </SpaceView>
-        </SpaceView>
+          )} */}
+        </>
       }
 
       <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll} showsVerticalScrollIndicator={false} scrollEventThrottle={16}>
@@ -1119,51 +1187,6 @@ export default function MatchDetail(props: Props) {
       confirmFn={reportCheckCallbackFn}
     />
 
-    {/* <Modalize
-      ref={report_modalizeRef}
-      adjustToContentHeight={false}
-      handleStyle={modalStyle.modalHandleStyle}
-      modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#333B41'}}
-      modalHeight={550}
-      scrollViewProps={{
-        scrollEnabled: false, // 스크롤 비활성화
-      }}
-      FooterComponent={
-        <>
-          <SpaceView pl={25} pr={25} pb={20} viewStyle={{backgroundColor: '#333B41'}}>
-            <SpaceView mb={10}>
-              <TouchableOpacity onPress={popupReport} style={_styles.reportBtnArea('#FFDD00', '#FFDD00')}>
-                <Text style={_styles.reportBtnText('#3D4348')}>신고 및 차단하기</Text>
-              </TouchableOpacity>
-            </SpaceView>
-
-            <SpaceView>
-              <TouchableOpacity onPress={report_onClose} style={_styles.reportBtnArea('#333B41', '#BBB18B')}>
-                <Text style={_styles.reportBtnText('#D5CD9E')}>취소</Text>
-              </TouchableOpacity>
-            </SpaceView>
-          </SpaceView>
-        </>
-      }
-    >
-      <SpaceView viewStyle={{backgroundColor: '#333B41'}}>
-        <SpaceView mt={25} ml={30}>
-          <Text style={_styles.reportTitle}>사용자 신고 및 차단하기</Text>
-        </SpaceView>
-
-        <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 0}]}>
-          <SpaceView mt={15} mb={13} viewStyle={{borderBottomWidth: 1, borderColor: '#777777', paddingBottom: 15, paddingHorizontal: 25}}>
-            <Text style={_styles.reportText}>신고사유를 알려주시면 더 좋은 리프를{'\n'}만드는데 도움이 됩니다.</Text>
-          </SpaceView>
-
-          <SpaceView>
-            <RadioCheckBox_3 items={data.report_code_list} callBackFunction={reportCheckCallbackFn} />
-          </SpaceView>
-        </View>
-      </SpaceView>
-    </Modalize> */}
-
-
     {/* ##################################################################################
                 관심 보내기 팝업
     ################################################################################## */}
@@ -1190,6 +1213,76 @@ export default function MatchDetail(props: Props) {
       <AuthPickRender _authLevel={data?.match_member_info?.auth_acct_cnt} _authList={data?.second_auth_list}  />
     )} */}
 
+    {/* setPhoneOpenCubeType */}
+
+    <Modal visible={phoneOpenModalVisible} transparent={true}>
+      <SpaceView viewStyle={modalStyle.modalBackground}>
+        <SpaceView viewStyle={[modalStyle.modalStyle1]}>
+          <SpaceView viewStyle={_styles.openModalWrap}>
+            <SpaceView>
+              <Text style={styles.fontStyle('H', 26, '#000000')}>재화 선택</Text>
+              <SpaceView mt={5}><Text style={styles.fontStyle('B', 13, '#000000')}>연락처 잠금해제에 사용하실 재화를 선택해 주세요.</Text></SpaceView>
+            </SpaceView>
+            <SpaceView mt={10} viewStyle={layoutStyle.rowBetween}>
+              <TouchableOpacity 
+                style={{width:'48%'}}
+                activeOpacity={0.8}
+                onPress={() => {
+                  setPhoneOpenCubeType('CUBE');
+                }}>
+                <LinearGradient
+                  colors={phoneOpenCubeType == 'CUBE' ? ['#44B6E5', '#1084B4'] : ['#fff', '#fff']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={_styles.phoneOpenItemWrap(phoneOpenCubeType == 'CUBE')}
+                >
+                  <Image source={ICON.cube}  style={styles.iconSquareSize(45)} />
+                  <SpaceView mt={10}><Text style={styles.fontStyle('B', 14, phoneOpenCubeType == 'CUBE' ? '#fff' : '#000000')}>200개</Text></SpaceView>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={{width:'48%'}}
+                activeOpacity={0.8}
+                onPress={() => {
+                  setPhoneOpenCubeType('MEGA');
+                }}>
+                <LinearGradient
+                  colors={phoneOpenCubeType == 'MEGA' ? ['#44B6E5', '#1084B4'] : ['#fff', '#fff']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={_styles.phoneOpenItemWrap(phoneOpenCubeType == 'MEGA')}
+                >
+                  <Image source={ICON.megaCube}  style={styles.iconSquareSize(45)} />
+                  <SpaceView mt={10}><Text style={styles.fontStyle('B', 14, phoneOpenCubeType == 'MEGA' ? '#fff' : '#000000')}>8개</Text></SpaceView>
+                </LinearGradient>
+              </TouchableOpacity>
+            </SpaceView>
+            <SpaceView mt={45}>
+              <Text style={styles.fontStyle('EB', 16, '#707070')}>폭력적/공격적 행위로부터 안전한 리프</Text>
+              <SpaceView mt={5}>
+                <Text style={styles.fontStyle('SB', 10, '#707070')}>개인정보를 악용하여 다른 회원에게 피해를 준 사실이 확인되면 "영구 정지" 제재를 받을 수 있습니다. 또 한, 그로인한 법적 분쟁이 발생하는 경우 리프는 관련 수사 기관의 요청에 적극 협조하여 범죄 근절에 동참합니다.</Text>
+              </SpaceView>
+            </SpaceView>
+            <SpaceView mt={30} viewStyle={layoutStyle.alignEnd}>
+              <TouchableOpacity 
+                style={_styles.phoneOpenConfirm}
+                disabled={phoneOpenCubeType == 'MEGA'}
+                onPress={() => {
+                  goHpOpen();
+                }}>
+                <Text style={styles.fontStyle('B', 16, '#fff')}>확인</Text>
+              </TouchableOpacity>
+            </SpaceView>
+          </SpaceView>
+          <SpaceView viewStyle={_styles.cancelWrap}>
+            <TouchableOpacity onPress={phoneOpenCloseModal}>
+              <Text style={styles.fontStyle('EB', 16, '#ffffff')}>여기 터치하고 닫기</Text>
+            </TouchableOpacity>
+          </SpaceView>
+        </SpaceView>
+      </SpaceView>
+    </Modal>
+
   </>
   );
 }
@@ -1209,8 +1302,6 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: '#13111C',
   },
-
-
   profileImgWrap: {
     alignItems: 'center',
   },
@@ -1219,95 +1310,6 @@ const _styles = StyleSheet.create({
     height: height * 0.7,
     borderRadius: 10,
   },
-  infoArea: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-    paddingVertical: 25,
-    overflow: 'hidden',
-  },
-  infoText: (fs:number, cr:string) => {
-    return {
-      fontFamily: 'Pretendard-Regular',
-      fontSize: fs,
-      color: isEmptyData(cr) ? cr : '#fff',
-    };
-  },
-  thumnailDimArea: {
-    position: 'absolute',
-    bottom: -1,
-    left: 0,
-    right: 0,
-    opacity: 0.8,
-    height: height * 0.34,
-    marginHorizontal: 12,
-    borderRadius: 22,
-    overflow: 'hidden',
-  },
-  commentWrap: {
-    alignItems: 'center',
-  },
-  commentTitText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  commentText: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 14,
-    color: '#F3DEA6',
-    textAlign: 'center',
-  },
-  commentUnderline: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 7,
-    backgroundColor: '#FE8C12',
-  },
-  boostPannel: {
-    width: '100%',
-    borderRadius: 10,
-    backgroundColor: '#f6f7fe',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  boostBadge: {
-    width: 54,
-    borderRadius: 7.5,
-    backgroundColor: '#7986ee',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-  },
-  boostBadgeText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 10,
-    lineHeight: 19,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  boostTitle: {
-    fontFamily: 'Pretendard-ExtraBold',
-    fontSize: 14,
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#262626',
-  },
-  boostDescription: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#8e8e8e',
-  },
   emptyText: {
     textAlign: 'center',
     fontSize: 16,
@@ -1315,211 +1317,32 @@ const _styles = StyleSheet.create({
     minHeight: 70,
     textAlignVertical: 'center',
   },
-  authNoDataArea: {
-    width: '100%',
-    backgroundColor: '#ffffff', 
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderWidth: 1, 
-    borderRadius: 10, 
-    borderColor: '#8E9AEB', 
-    borderStyle: 'dotted',
-  },
-  authNoDataTit: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    color: '#7986EE',
-    textAlign: 'center',
-  },
-  authNoDataSubTit: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 10,
-    color: '#C3C3C8',
-    textAlign: 'center',
-  },
   btnWrap: {
     position: 'absolute',
-    bottom: 100,
-    right: 0,
+    bottom: 50,
+    right: 10,
     zIndex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
   },
-  btnText: (type:string, _fColor:string) => {
-    let ph = 30;
-    let bg = '#fff';
-
-    if(type == 'REQ') {
-      ph = 55;
-      bg = '#FFDD00';
-    } else if(type == 'ZZIM') {
-      ph = 15;
-      bg = '#FFDD00';
-    }
-    
+  btnSubWrap: (_w:number, _bg:string) => {
     return {
-      fontFamily: 'Pretendard-Bold',
-      fontSize: 20,
-      color: _fColor,
-      textAlign: 'center',
-      borderRadius: 10,
-      backgroundColor: bg,
-      paddingHorizontal: ph,
-      paddingVertical: 10,
-      marginHorizontal: type == 'REQ' ? 5 : 0,
-      overflow: 'hidden',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: _bg,
+      borderRadius: 25,
+      width: _w,
+      height: 40,
+      paddingHorizontal: 15,
     };
   },
-
-
-
-
-
-
-
-
-
-  reportTitle: {
-    fontFamily: 'Pretendard-ExtraBold',
-		fontSize: 20,
-		color: '#D5CD9E',
-		textAlign: 'left',
-  },
-  reportButton: {
-    height: 43,
-    borderRadius: 21.5,
-    backgroundColor: '#363636',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: 20,
-  },
-  reportTextBtn: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  reportText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 17,
-    color: '#E1DFD1',
-    textAlign: 'left',
-  },
-  reportBtnArea: (bg:number, bdc:number) => {
-		return {
-			/* width: '50%',
-			height: 48, */
-			backgroundColor: bg,
-			alignItems: 'center',
-			justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: bdc,
-      borderRadius: 5,
-      paddingVertical: 13,
-		}
-	},
-  reportBtnText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-		  fontSize: 16,
-		  color: isEmptyData(cr) ? cr : '#fff',
-		};
-	},
-
-
-  matchArea: {
-    borderRadius: 10,
-    paddingVertical: 20,
-    backgroundColor: 'rgba(51, 59, 65, 0.9)',
-    width: '95%',
-  },
-  matchTitleArea: {
-    backgroundColor: '#FFF',
-    paddingHorizontal: 10,
-    width: 60,
-    borderRadius: Platform.OS == 'ios' ? 20 : 50,
-  },
-  matchTitle: {
-    textAlign: 'center',
-    fontFamily: 'Pretendard-SemiBold',
-    color: '#D5CD9E',
-  },
-  matchMsg: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#E1DFD1',
-  },
-  matchResBtn: {
-    paddingVertical: 10,
-    paddingHorizontal: 65,
-    borderRadius: 10,
-  },
-  matchResBtnText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
-    color: '#3D4348',
-  },
-  matchReqArea: {
-    borderWidth: 2,
-    borderColor: '#D5CD9E',
-    width: '95%',
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderStyle: 'dashed',
-  },
-  matchReqText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
-    color: '#D5CD9E',
-    textAlign: 'center',
-  },
-  matchSuccArea: (bgcr:string) => {
-		return {
-		  width: '95%',
-      backgroundColor: bgcr,
-      paddingVertical: 10,
-      borderRadius: 10,
-		};
-	},
-  matchSuccText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-      fontSize: 16,
-      color: cr,
-      textAlign: 'center',
-		};
-	},
-  matchResDesc: {
-    marginTop: 10,
-    textAlign: 'center',
-    fontFamily: 'Pretendard-Light',
-    fontSize: 10,
-    color: '#FFFDEC',
-  },  
-  clipboardCopyDesc: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 10,
-    color: '#FFFDEC',
-    marginTop: 10,
-  },
-  sendEtc: {
-    position: 'absolute',
-    top: -10,
-    right: 15,
-    backgroundColor: '#292F33',
-    borderRadius: 8,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
+  btnSubWrap02: {
     justifyContent: 'center',
-    paddingHorizontal: 5,
-  },
-  sendText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 11,
-    color: '#32F9E4',
+    alignItems: 'center',
+    backgroundColor: '#FFFF5D',
+    borderRadius: 25,
+    width: 155,
+    height: 40,
+    paddingHorizontal: 15,
   },
   gradeArea: {
     backgroundColor: '#FFFFFF',
@@ -1537,18 +1360,8 @@ const _styles = StyleSheet.create({
     color: '#000000',
     marginLeft: 3,
   },
-
-
-
   topWrap: {
     flexDirection: 'row',
-  },
-  sendBtn: {
-    flexDirection: 'row',
-    backgroundColor: '#46F66F',
-    borderRadius: 25,
-    paddingHorizontal: 13,
-    paddingVertical: 8,
   },
   backContainer: {
     /* position: 'absolute',
@@ -1568,6 +1381,73 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
     paddingTop: 10,
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  openModalWrap: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingTop: 35,
+    paddingBottom: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  cancelWrap: {
+    position: 'absolute',
+    bottom: -40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  phoneOpenConfirm: {
+    backgroundColor: '#46F66F',
+    borderRadius: 25,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+  },
+  phoneOpenItemWrap: (isOn:boolean) => {
+    return {
+      width: '100%', 
+      borderWidth: 1, 
+      borderColor: '#44B6E5', 
+      borderRadius: 11, 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      height: 100,
+    };
+  },
+
+  phoneMaskingMsgWrap: {
+    borderRadius: 13,
+    width: 250,
+    paddingVertical: 5,
+    alignItems: 'center',    
+  },
+  triangle: {
+    marginTop: -1,
+    marginRight: 15,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#416DFF',
+    transform: [{ rotate: '180deg' }],
   },
 
 

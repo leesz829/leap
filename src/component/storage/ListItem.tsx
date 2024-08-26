@@ -13,7 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { useUserInfo } from 'hooks/useUserInfo';
 import SocialGrade from 'component/common/SocialGrade';
-
+import MemberMark from 'component/common/MemberMark';
 
 
 const { width, height } = Dimensions.get('window');
@@ -85,6 +85,7 @@ export default function ListItem({ type, item, index, profileOpenFn }) {
       item?.special_interest_yn,
       item?.message,
       item?.nickname,
+      _imgFilePath,
     );
   };
 
@@ -263,11 +264,11 @@ export default function ListItem({ type, item, index, profileOpenFn }) {
                       <Image source={_imgFilePath} style={_styles.mstImg} />
 
                       {/* 열람 여부 표시 */}
-                      {profileOpenYn == 'N' && (
+                      {/* {profileOpenYn == 'N' && (
                         <SpaceView viewStyle={_styles.openYnMark}>
                           <Image source={ICON.yBlue} style={styles.iconSquareSize(18)} />
                         </SpaceView>
-                      )}
+                      )} */}
                     </TouchableOpacity>
 
                     <LinearGradient
@@ -287,17 +288,19 @@ export default function ListItem({ type, item, index, profileOpenFn }) {
                         </SpaceView>
                       </SpaceView>
 
+                      {/* 회원 마크 */}
                       <SpaceView viewStyle={_styles.etcInfoWrap}>
 
-                        <SpaceView viewStyle={_styles.gradeArea}>
-                          <Image source={ICON.sparkler} style={styles.iconSquareSize(12)} />
-                          <Text style={styles.fontStyle('SB', 9, '#000000')}>{item?.respect_grade}</Text>
-                        </SpaceView>
-
+                        <MemberMark 
+                          sizeType={'S'} 
+                          respectGrade={item?.respect_grade} 
+                          bestFaceName={item?.best_face_name}
+                          highAuthYn={item?.high_auth_yn}
+                          variousAuthYn={item?.various_auth_yn} />
                       </SpaceView>
 
                       {/* 인상, 인증 정보 노출 */}
-                      {(isEmptyData(_faceModifier) || _authList.length > 0) && (
+                      {/* {(isEmptyData(_faceModifier) || _authList.length > 0) && (
                         <ScrollView
                           style={{marginLeft: 10, marginTop: 5,}}
                           showsHorizontalScrollIndicator={false}
@@ -336,7 +339,7 @@ export default function ListItem({ type, item, index, profileOpenFn }) {
                             })}
                           </SpaceView>
                         </ScrollView>
-                      )}
+                      )} */}
 
                       {/* 닉네임, 나이, 소개 정보 */}
                       <SpaceView mb={5} viewStyle={_styles.bottomArea}>

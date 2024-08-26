@@ -268,6 +268,11 @@ export const ICON = {
   sendIcon: require('assets/icon/match/send_icon.png'),
   moreIcon: require('assets/icon/match/more_icon.png'),
   homeIcon: require('assets/icon/match/home_icon.png'),
+  refuseIcon: require('assets/icon/match/refuse_icon.png'),
+  phoneIcon: require('assets/icon/match/phone_icon.png'),
+  lockIcon: require('assets/icon/match/lock_icon.png'),
+  storageEmptyFemale: require('assets/icon/match/storage_empty_female.png'),
+  storageEmptyMale: require('assets/icon/match/storage_empty_male.png'),
 
   /* auth */
   jobIcon: require('assets/icon/auth/job_icon.png'),
@@ -299,6 +304,10 @@ export const ICON = {
   int_entertainment: require('assets/icon/member/int_entertainment.png'),
   int_lifestyle: require('assets/icon/member/int_lifestyle.png'),
   int_social: require('assets/icon/member/int_social.png'),
+  int_active: require('assets/icon/member/int_active.png'),
+  int_food: require('assets/icon/member/int_food.png'),
+  int_game: require('assets/icon/member/int_game.png'),
+  int_leisure: require('assets/icon/member/int_leisure.png'),
   saveIcon: require('assets/icon/member/save_icon.png'),
 
   /* myhome */

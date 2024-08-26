@@ -105,7 +105,7 @@ function CommonHeader({
           </>
         ) : (
           <>
-            <View style={{ ..._styles.headerContainer(isOnShrink), ...containerStyle, zIndex: 1 }}>
+            <SpaceView viewStyle={{..._styles.headerContainer(isOnShrink), ...containerStyle, zIndex: 1}}>
 
               {/* 뒤로가기 버튼 */}
               <TouchableOpacity
@@ -178,7 +178,7 @@ function CommonHeader({
                 )}
 
               </SpaceView>
-            </View>
+            </SpaceView>
           </>
         )}
       </SpaceView>
@@ -205,6 +205,16 @@ const _styles = StyleSheet.create({
       justifyContent: 'space-between',
     };
 	},
+  headerFixedContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 50,
+    backgroundColor: '#000',
+    zIndex: 1,
+    justifyContent: 'center',
+  },
   headerLogoContainer: {
     backgroundColor: 'white',
     alignItems: 'center',

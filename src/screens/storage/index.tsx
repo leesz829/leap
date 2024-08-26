@@ -1,7 +1,5 @@
 import { ColorType, BottomParamList, ScreenNavigationProp } from '@types';
 import { commonStyle, styles, layoutStyle, modalStyle } from 'assets/styles/Styles';
-import { CommonSwich } from 'component/CommonSwich';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
 import { Wallet } from 'component/TopNavigation';
@@ -11,25 +9,25 @@ import { ICON, IMAGE, findSourcePath } from 'utils/imageUtils';
 import LinearGradient from 'react-native-linear-gradient';
 import { useState, useRef } from 'react';
 import axios from 'axios';
+import { useUserInfo } from 'hooks/useUserInfo';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation, useIsFocused, CommonActions, useFocusEffect } from '@react-navigation/native';
 import * as dataUtils from 'utils/data';
 import { useDispatch } from 'react-redux';
 import { get_member_storage, update_match, match_check_all } from 'api/models';
-import { useMemberseq } from 'hooks/useMemberseq';
 import { usePopup } from 'Context';
 import { STACK } from 'constants/routes';
 import CommonHeader from 'component/CommonHeader';
 import { myProfile } from 'redux/reducers/authReducer';
 import Carousel from 'react-native-snap-carousel';
 import ToggleSwitch from 'toggle-switch-react-native';
-import { Color } from 'assets/styles/Color';
 import { isEmptyData } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { BlurView } from "@react-native-community/blur";
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import Image from 'react-native-fast-image';
 import ListItem from 'component/storage/ListItem';
+import RecommendBanner from 'component/common/RecommendBanner';
 
 
 
@@ -55,7 +53,7 @@ export const Storage = (props: Props) => {
 
   const { show } = usePopup();  // 공통 팝업
 
-  const memberSeq = useMemberseq(); // 회원번호
+  const memberBase = useUserInfo(); // 회원 기본정보
 
   const tabScrollRef = useRef();
 
@@ -154,8 +152,9 @@ export const Storage = (props: Props) => {
           let resSpeList = [];
           let reqIntList = [];
           let reqSpeList = [];
+          let succIntList = [];
+          let succSpeList = [];
           
-
           /* resListData = dataUtils.getStorageListData(data?.res_list);
           reqListData = dataUtils.getStorageListData(data?.req_list);
           successListData = dataUtils.getStorageListData(data?.success_list); */
@@ -169,6 +168,8 @@ export const Storage = (props: Props) => {
           }
 
           // 목록 데이터 구성
+
+          // 받은관심
           resListData.map((item: any, index) => {
             if(item.special_interest_yn == 'Y') {
               resSpeList.push(item);
@@ -177,11 +178,21 @@ export const Storage = (props: Props) => {
             }
           });
 
+          // 보낸관심
           reqListData.map((item: any, index) => {
             if(item.special_interest_yn == 'Y') {
               reqSpeList.push(item);
             } else {
               reqIntList.push(item);
+            }
+          });
+
+          // 성공매칭
+          successListData.map((item: any, index) => {
+            if(item.special_interest_yn == 'Y') {
+              succSpeList.push(item);
+            } else {
+              succIntList.push(item);
             }
           });
 
@@ -207,8 +218,8 @@ export const Storage = (props: Props) => {
               type: 'MATCH',
               title: '성공 매칭',
               data: successListData,
-              interestList: [],
-              specialList: [],
+              interestList: succIntList,
+              specialList: succSpeList,
               isNew: data?.succes_new_yn == 'Y' ? true : false,
             },
           ];
@@ -282,6 +293,7 @@ export const Storage = (props: Props) => {
     special_interest_yn: any,
     message: any,
     nickname: any,
+    img_file_path: any,
   ) => {
     
     if(member_status != 'ACTIVE') {
@@ -301,10 +313,18 @@ export const Storage = (props: Props) => {
     if (special_interest_yn == 'N' && profile_open_yn == 'N') {
       setProfileOpenMessage(message);
 
+      console.log('img_file_path :::::: ' , img_file_path);
+
       show({
-        title: '블라인드 카드 열람',
-        content: '큐브 15개로 블라인드 카드를 열람하시겠습니까?' ,
-        passAmt: 15,
+        title: '프로필 열람',
+        content: nickname + '님의\n프로필을 열어 보시겠어요?' ,
+        type: 'MATCH',
+        passType: 'CUBE',
+        passAmt: '15',
+        isNoPass: memberBase?.pass_has_amt < 15 ? false : true,
+        memberImg: img_file_path,
+        confirmBtnText: '잠금해제',
+        btnIcon: ICON.lockIcon,
         cancelCallback: function() {},
         confirmCallback: function() {
           goProfileOpen(match_seq, trgt_member_seq, match_type, message);
@@ -444,6 +464,8 @@ export const Storage = (props: Props) => {
 
   // #######################################################################################################
   const onPressDot = async (index:any, type:any) => {
+    setCurrentIndex(index);
+
     if(isEmptyData(dataRef?.current)) {
       setCurrentIndex(index);
       //dataRef?.current?.snapToItem(index);
@@ -516,52 +538,22 @@ export const Storage = (props: Props) => {
               showsVerticalScrollIndicator={false} 
               style={{width: '100%', height: height-200}}
             >
-              <SpaceView mb={100}>
+              {tabs[currentIndex].data.length > 0 ? (
+                <SpaceView mb={100}>
 
-                {/* ############################################################################################################
-                ###### 관심 영역
-                ############################################################################################################ */}
-                <SpaceView mt={15}>
-                  <SpaceView mb={10} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <Text style={styles.fontStyle('EB', 20, '#fff')}>관심</Text>
-                    <TouchableOpacity style={_styles.specialAddBtn}>
-                      <Text style={styles.fontStyle('SB', 12, '#46F66F')}>99개 보기</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                  <SpaceView>
-                    {/* {!tabs[currentIndex].data.length ?
-                        <SpaceView viewStyle={_styles.noData}>
-                          <Text style={styles.fontStyle('SB', 16, '#445561')}>
-                            {tabs[currentIndex].title}{tabs[currentIndex].type == 'ZZIM' ? '가' : '이'} 없습니다.   
-                          </Text>
-                        </SpaceView>
-                        :
-                        <FlatList
-                          data={tabs[currentIndex].data}
-                          keyExtractor={(item, index) => index.toString()}
-                          showsHorizontalScrollIndicator={false}
-                          showsVerticalScrollIndicator={false}
-                          horizontal={true}
-                          pagingEnabled
-                          renderItem={({ item, index }) => {
-                            const type = tabs[currentIndex].type;
+                  {/* ############################################################################################################
+                  ###### 관심 영역
+                  ############################################################################################################ */}
+                  {tabs[currentIndex].specialList.length > 0 && (
+                    <SpaceView mt={15}>
+                      <SpaceView mb={10} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <Text style={styles.fontStyle('EB', 20, '#fff')}>관심</Text>
+                        <TouchableOpacity style={_styles.specialAddBtn}>
+                          <Text style={styles.fontStyle('SB', 12, '#46F66F')}>99개 보기</Text>
+                        </TouchableOpacity>
+                      </SpaceView>
 
-                            return (
-                              <View key={index}>
-                                <ListItem type={'SPECIAL'} item={item} index={index} profileOpenFn={popupProfileOpen} />
-                              </View>
-                            )
-                          }}
-                        />
-                    } */}
-
-                    {!tabs[currentIndex].specialList.length ?
-                        <SpaceView viewStyle={_styles.noData}>
-                          <Text style={styles.fontStyle('SB', 16, '#445561')}>
-                            {tabs[currentIndex].title}{tabs[currentIndex].type == 'ZZIM' ? '가' : '이'} 없습니다.   
-                          </Text>
-                        </SpaceView>
-                        :
+                      <SpaceView>
                         <Carousel
                           data={tabs[currentIndex].specialList}
                           sliderWidth={Math.round(width)} 
@@ -591,55 +583,72 @@ export const Storage = (props: Props) => {
                             )
                           }}
                         />
+                      </SpaceView>
+                    </SpaceView>
+                  )}
+
+                  {/* ############################################################################################################
+                  ###### 호감 영역
+                  ############################################################################################################ */}
+                  <SpaceView viewStyle={{flex: 1}} /* mb={100} */ mt={20}>
+                    <SpaceView mb={10} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <Text style={styles.fontStyle('EB', 20, '#fff')}>호감</Text>
+
+                      <SpaceView viewStyle={{flexDirection: 'row'}}>
+                        {/* <TouchableOpacity>
+                          <Image source={ICON.orderIcon} style={styles.iconSquareSize(23)} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{marginLeft: 10}}>
+                          <Image source={ICON.settingIcon} style={styles.iconSquareSize(23)} />
+                        </TouchableOpacity> */}
+                      </SpaceView>
+                    </SpaceView>
+
+                    {!tabs[currentIndex].interestList.length ?
+                        <SpaceView viewStyle={_styles.noData}>
+                          <Text ref={dataRef} style={styles.fontStyle('SB', 16, '#445561')}>
+                            {tabs[currentIndex].title}{tabs[currentIndex].type == 'ZZIM' ? '가' : '이'} 없습니다.   
+                          </Text>
+                        </SpaceView>
+                        :
+                        <FlatList
+                          ref={dataRef}
+                          data={tabs[currentIndex].interestList}
+                          keyExtractor={(item, index) => index.toString()}
+                          showsHorizontalScrollIndicator={false}
+                          showsVerticalScrollIndicator={false}
+                          renderItem={({ item, index }) => {
+                            const type = tabs[currentIndex].type;
+
+                            return (
+                              <View key={index}>
+                                <ListItem type={'BASE'} item={item} index={index} profileOpenFn={popupProfileOpen} />
+                              </View>
+                            )
+                          }}
+                        />
                     }
                   </SpaceView>
                 </SpaceView>
+              ) : (
+                <SpaceView>
+                  <SpaceView viewStyle={_styles.noEmptyWrap}>
+                    <Image source={memberBase?.gender == 'M' ? ICON.storageEmptyMale : ICON.storageEmptyFemale} style={styles.iconSquareSize(220)} />
 
-
-                {/* ############################################################################################################
-                ###### 호감 영역
-                ############################################################################################################ */}
-                <SpaceView viewStyle={{flex: 1}} /* mb={100} */ mt={20}>
-                  <SpaceView mb={10} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <Text style={styles.fontStyle('EB', 20, '#fff')}>호감</Text>
-
-                    <SpaceView viewStyle={{flexDirection: 'row'}}>
-                      <TouchableOpacity>
-                        <Image source={ICON.orderIcon} style={styles.iconSquareSize(23)} />
-                      </TouchableOpacity>
-                      <TouchableOpacity style={{marginLeft: 10}}>
-                        <Image source={ICON.settingIcon} style={styles.iconSquareSize(23)} />
-                      </TouchableOpacity>
+                    <LinearGradient 
+                      colors={['rgba(17,25,49,0.0)', 'rgba(17,25,49,1)']} 
+                      start={{ x: 0, y: 0 }} 
+                      end={{ x: 0, y: 1 }} style={_styles.noEmptyTextBlur} />
+                    <SpaceView viewStyle={_styles.noEmptyTextWrap}>
+                      <Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>보관 중인 프로필 카드가 없습니다.{'\n'}새로운 친구를 찾아 볼까요?</Text>
                     </SpaceView>
                   </SpaceView>
 
-                  {!tabs[currentIndex].interestList.length ?
-                      <SpaceView viewStyle={_styles.noData}>
-                        <Text ref={dataRef} style={styles.fontStyle('SB', 16, '#445561')}>
-                          {tabs[currentIndex].title}{tabs[currentIndex].type == 'ZZIM' ? '가' : '이'} 없습니다.   
-                        </Text>
-                      </SpaceView>
-                      :
-                      <FlatList
-                        ref={dataRef}
-                        data={tabs[currentIndex].interestList}
-                        keyExtractor={(item, index) => index.toString()}
-                        showsHorizontalScrollIndicator={false}
-                        showsVerticalScrollIndicator={false}
-                        renderItem={({ item, index }) => {
-                          const type = tabs[currentIndex].type;
-
-                          return (
-                            <View key={index}>
-                              <ListItem type={'BASE'} item={item} index={index} profileOpenFn={popupProfileOpen} />
-                            </View>
-                          )
-                        }}
-                      />
-                  }
+                  <SpaceView mt={15}>
+                    <RecommendBanner />
+                  </SpaceView>
                 </SpaceView>
-
-              </SpaceView>
+              )}
             </ScrollView>
           </>
         )}
@@ -687,6 +696,27 @@ const _styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 5,
     paddingVertical: 3,
+  },
+  noEmptyWrap: {
+    height: height/2.5,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  noEmptyTextWrap: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  noEmptyTextBlur: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: '35%',
   },
 
 
