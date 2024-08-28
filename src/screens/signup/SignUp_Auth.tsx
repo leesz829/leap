@@ -227,8 +227,10 @@ export const SignUp_Auth = (props : Props) => {
 				auth_comment: null,
 				img_del_seq_str: _imgDelSeqStr,
       };
-      try {
 
+			console.log('body ::::::: ' , body);
+
+      try {
 				if(isSave) {
 					const { success, data } = await join_save_profile_auth(body);
 					if(success) {
@@ -250,11 +252,7 @@ export const SignUp_Auth = (props : Props) => {
 					}
 
 				} else {
-					if(isTab == false) {
-						navigation.navigate(ROUTES.APPROVAL, { memberSeq: memberSeq });
-					} else {
-						getAuth();
-					}
+					navigation.navigate(ROUTES.APPROVAL, { memberSeq: memberSeq });
 				}
 
       } catch (error) {

@@ -3,7 +3,7 @@ import { layoutStyle, styles, modalStyle, commonStyle } from 'assets/styles/Styl
 import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions, Modal } from 'react-native';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -17,6 +17,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import { ICON, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
+import SetSelectPopup from 'screens/commonpopup/SetSelectPopup';
+import SetLocalSelectPopup from 'screens/commonpopup/SetLocalSelectPopup';
+import SetJobSelectPopup from 'screens/commonpopup/SetJobSelectPopup';
 
 
 /* ################################################################################################################
@@ -45,36 +48,42 @@ export const SignUp_AddInfo = (props : Props) => {
 	const mstImgPath = props.route.params?.mstImgPath; // 대표 사진 경로
 	const nickname = props.route.params?.nickname; // 닉네임
 
-	// 추가 정보 데이터
-	const [addData, setAddData] = React.useState({
-		height: '', // 키
-		business: '', // 직업1
-		job: '', // 직업2
-		form_body: '', // 체형
-		religion: '', // 종교
-		drinking: '', // 음주
-		smoking: '', // 흡연
-		introduce_comment: '', // 자기소개
-		mbti_type: '', // MBTI
-		prefer_local1: '', // 선호 활동 지역1
-		prefer_local2: '', // 선호 활동 지역2
-	});
+	const [isModalVisible, setIsModalVisible] = React.useState(false); // 모달 visible 여부
+  const [isLocalModalVisible, setIsLocalModalVisible] = React.useState(false); // 선호지역 모달 visible 여부
+  const [isJobModalVisible, setIsJobModalVisible] = React.useState(false); // 직업 모달 visible 여부
 
-	const [isModalVisible, setIsModalVIsible] = React.useState(false); // 모달 visible 여부
 
-	/* ############################################################################# 선택 팝업 함수 관련 */
-	const openSelectPopup = () => {
-    setIsModalVIsible(true);
+	/* ########################################################################################
+  ###### 목록 데이터 변수 
+  ######################################################################################## */
+	// 목록
+  const [selectList, setSelectList] = React.useState([
+    {code: 'HEIGHT', name: '키(cm)', isEssential: true, vName: '', vCode: ''},
+    {code: 'BODY', name: '체형', isEssential: true, vName: '', vCode: ''},
+    {code: 'JOB', name: '직업', isEssential: true, vName: '', value1: '', value2: ''},
+    {code: 'MBTI', name: 'MBTI', isEssential: false, vName: '', vCode: ''},
+    {code: 'LOCAL', name: '선호지역', isEssential: false, vList: []},
+    {code: 'RELIGION', name: '종교', isEssential: false, vName: '', vCode: ''},
+    {code: 'DRINK', name: '음주', isEssential: false, vName: '', vCode: ''},
+    {code: 'SMOKE', name: '흡연', isEssential: false, vName: '', vCode: ''},
+  ]);
+
+  // 키 목록
+  let heightList = [];
+  for (let i = 155; i <= 190; i++) {
+    heightList.push({ label: i.toString() + 'cm', value: i });
   };
 
-  const closeSelectPopup = () => {
-    setIsModalVIsible(false);
-  };
-
-	const heightList = [];
-  for (let i = 150; i <= 200; i++) {
-    heightList.push({ name: i.toString() + 'cm', value: i });
-  }
+	// 직업 목록
+  let jobList = [
+    {label: '일반', value: 'JOB_00'}, {label: '공군/군사', value: 'JOB_01'}, {label: '교육/지식/연구', value: 'JOB_02'}, 
+    {label: '경영/사무', value: 'JOB_03'}, {label: '기획/통계', value: 'JOB_04'}, {label: '건설/전기', value: 'JOB_05'}, 
+    {label: '금융/회계', value: 'JOB_06'}, {label: '기계/기술', value: 'JOB_07'}, {label: '보험/부동산', value: 'JOB_08'}, 
+    {label: '생활', value: 'JOB_09'}, {label: '식음료/여가/오락', value: 'JOB_10'}, {label: '법률/행정', value: 'JOB_11'},
+    {label: '생산/제조/가공', value: 'JOB_12'}, {label: '영업/판매/관리', value: 'JOB_13'}, {label: '운송/유통', value: 'JOB_14'}, 
+    {label: '예체능/예술/디자인', value: 'JOB_15'}, {label: '의료/건강', value: 'JOB_16'}, {label: '인터넷/IT', value: 'JOB_17'}, 
+    {label: '미디어', value: 'JOB_18'}, {label: '기타', value: 'JOB_19'},
+  ];
 
 	// 공통 코드 목록 데이터
 	const [codeData, setCodeData] = React.useState({
@@ -88,80 +97,153 @@ export const SignUp_AddInfo = (props : Props) => {
 		mbtiCdList: [],
 	});
 
-	// ############################################################ 업종 그룹 코드 목록
-	const busiGrpCdList = [
-		{ label: '일반', value: 'JOB_00' },
-		{ label: '공군/군사', value: 'JOB_01' },
-		{ label: '교육/지식/연구', value: 'JOB_02' },
-		{ label: '경영/사무', value: 'JOB_03' },
-		{ label: '기획/통계', value: 'JOB_04' },
-		{ label: '건설/전기', value: 'JOB_05' },
-		{ label: '금융/회계', value: 'JOB_06' },
-		{ label: '기계/기술', value: 'JOB_07' },
-		{ label: '보험/부동산', value: 'JOB_08' },
-		{ label: '생활', value: 'JOB_09' },
-		{ label: '식음료/여가/오락', value: 'JOB_10' },
-		{ label: '법률/행정', value: 'JOB_11' },
-		{ label: '생산/제조/가공', value: 'JOB_12' },
-		{ label: '영업/판매/관리', value: 'JOB_13' },
-		{ label: '운송/유통', value: 'JOB_14' },
-		{ label: '예체능/예술/디자인', value: 'JOB_15' },
-		{ label: '의료/건강', value: 'JOB_16' },
-		{ label: '인터넷/IT', value: 'JOB_17' },
-		{ label: '미디어', value: 'JOB_18' },
-		{ label: '기타', value: 'JOB_19' },
-	];
 
-	// 직업 그룹 코드 목록
-	const [jobCdList, setJobCdList] = React.useState([{ label: '', value: '' }]);
+	/* ########################################################################################
+  ###### 선택 설정 팝업 변수 
+  ######################################################################################## */
 
-	// 직업 코드 콜백 함수
-	const busiCdCallbackFn = (value: string) => {
-		if(addData.business != value) {
-			setAddData({...addData, business: value});
-			getCommonCodeList(value);
-		}
-	};
+	// 팝업 데이터
+  const [popupData, setPopupData] = React.useState({
+    name: '',
+    code: '',
+    value: '',
+    value1: '',
+    value2: '',
+    valueList: [],
+    dataList: [],
+    isMinMax: false,
+  });
 
-	// ############################################################ 직업, 지역 코드 목록 조회 함수
-	const getCommonCodeList = async (value: string) => {
-		const isType = /JOB/.test(value);
-		const body = {
-			group_code: value,
-		};
-		try {
-			setIsLoading(true);
-			const { success, data } = await get_common_code_list(body);
+	// 팝업 활성화
+  const popupOpen = async (item:any) => {
+    const _code = item.code;
+    
+    let list = [];
+    let isMinMax = false;
 
-			if(success) {
-				switch (data.result_code) {
-					case SUCCESS:
-						let dataList = new Array();
-						data.code_list?.map(({group_code, common_code, code_name,}: {group_code: any; common_code: any; code_name: any;}) => {
-							let dataMap = { label: code_name, value: common_code };
-							dataList.push(dataMap);
-						});
-						if(isType) {
-							setJobCdList(dataList);
-						} else {
-							//setBLocalCdList(dataList);
-						}
-					
-						break;
-					default:
-						show({content: '오류입니다. 관리자에게 문의해주세요.' });
-						break;
-				}
-			} else {
-				show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-			}
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setIsLoading(false);
-		}
+    if(_code == 'HEIGHT') {
+      list = heightList;
+    } else if(_code == 'BODY') {
+      if(gender == 'M') {
+        list = codeData.manBodyCdList;
+      } else {
+        list = codeData.womanBodyCdList;
+      }
+    } else if(_code == 'MBTI') {
+      list = codeData.mbtiCdList;
+    } else if(_code == 'LOCAL') {
+      list = codeData.localCdList;
+    } else if(_code == 'RELIGION') {
+      list = codeData.religionCdList;
+    } else if(_code == 'DRINK') {
+      list = codeData.drinkCdList;
+    } else if(_code == 'SMOKE') {
+      list = codeData.smokeCdList;
+    } else if(_code == 'JOB') {
+      list = jobList;
+    }
 
-	};
+    setPopupData({
+      ...popupData,
+      name: item?.name,
+      code: _code,
+      value: item?.vCode,
+      value1: item?.value1,
+      value2: item?.value2,
+      valueList: item?.vList,
+      dataList: list,
+      isMinMax: isMinMax,
+    });
+
+    if(_code == 'LOCAL') {
+      setIsLocalModalVisible(true);
+    } else if(_code == 'JOB') {
+      setIsJobModalVisible(true);
+    } else {
+      setIsModalVisible(true);
+    }
+    
+  };
+
+	// 팝업 닫기
+  const popupClose = useCallback(async (code:string) => {
+    if(code == 'LOCAL') {
+      setIsLocalModalVisible(false);
+    } else if(code == 'JOB') {
+      setIsJobModalVisible(false);
+    } else {
+      setIsModalVisible(false);
+    }
+  }, []);
+
+	// 팝업 확인
+  const popupConfirm = useCallback(async (code:string, vName:string, vCode:string, vList:any, value1:string, value2:string) => {
+    popupClose(code);
+
+    let isChk = true;
+    let isSave = true;
+    /* if(code == 'AGE' || code == 'DISTANCE' || code == 'HEIGHT') {
+      if(!isEmptyData(value1) || !isEmptyData(value2)) {
+        isChk = false;
+        show({ content: '값을 모두 선택해 주세요.' });
+      } else if(value1 > value2) {
+        isChk = false;
+        show({ content: '최소값이 최대값 보다 작은 숫자를 선택해 주세요.' });
+      }
+    } */
+
+    if(isChk) {
+      let list = selectList.filter((d, i) => {
+        if(d.code == code) {
+          if(code == 'LOCAL') {
+            if(vList.length > 0) {
+              let dupCnt = 0;
+
+              vList.map((item, index) => {
+                d.vList.map((itm, idx) => {
+                  if(itm.value == item.value) {
+                    dupCnt = dupCnt+1;
+                  }
+                });
+              });
+
+              if(dupCnt > 1) {
+                isSave = false;
+              } else {
+                d.vList = vList;
+              }
+            } else {
+              isSave = false;
+            }
+
+          } else if(code == 'JOB') {
+            if(d.value2 == value2) {
+              isSave = false;
+            } else {
+              d.vName = vName;
+              d.value1 = value1;
+              d.value2 = value2;
+            }
+          } else {
+            if(d.vCode == vCode) {
+              isSave = false;
+            } else {
+              d.vName = vName;
+              d.vCode = vCode;
+            }
+          }
+        }
+
+        return d;
+      });
+
+      if(isSave) {
+        setSelectList(list);
+        //saveFn(list);
+      }
+    }
+  }, [selectList]);
+
 
 	// ############################################################ 회원 소개 정보 조회
 	const getMemberIntro = async() => {
@@ -174,21 +256,27 @@ export const SignUp_AddInfo = (props : Props) => {
 			if(success) {
 				switch (data.result_code) {
 					case SUCCESS:
-						setAddData({
-							height: data?.add_info?.height,
-							business: data?.add_info?.business,
-							job: data?.add_info?.job,
-							form_body: data?.add_info?.form_body,
-							religion: data?.add_info?.religion,
-							drinking: data?.add_info?.drinking,
-							smoking: data?.add_info?.smoking,
-							introduce_comment: data?.add_info?.introduce_comment,
-							mbti_type: data?.add_info?.mbti_type,
-							prefer_local1: data?.add_info?.prefer_local1,
-							prefer_local2: data?.add_info?.prefer_local2,
-						});
-						
-						getCommonCodeList(data?.add_info?.business,);
+
+						const memberAdd = data?.add_info;
+
+						let localList = [];
+						if(isEmptyData(memberAdd?.prefer_local1)) {
+							localList.push({label: memberAdd?.prefer_local1_name, value: memberAdd?.prefer_local1});
+						}
+						if(isEmptyData(memberAdd?.prefer_local2)) {
+							localList.push({label: memberAdd?.prefer_local2_name, value: memberAdd?.prefer_local2});
+						}
+
+						setSelectList([
+							{code: 'HEIGHT', name: '키(cm)', isEssential: true, vName: memberAdd?.height, vCode: memberAdd?.height},
+							{code: 'BODY', name: '체형', isEssential: true, vName: memberAdd?.form_body_name, vCode: memberAdd?.form_body},
+							{code: 'JOB', name: '직업', isEssential: true, vName: memberAdd?.job_name, value1: memberAdd?.business, value2: memberAdd?.job},
+							{code: 'MBTI', name: 'MBTI', isEssential: false, vName: memberAdd?.mbti_type_name, vCode: memberAdd?.mbti_type},
+							{code: 'LOCAL', name: '선호지역', isEssential: false, vList: localList},
+							{code: 'RELIGION', name: '종교', isEssential: false, vName: memberAdd?.religion_name, vCode: memberAdd?.religion},
+							{code: 'DRINK', name: '음주', isEssential: false, vName: memberAdd?.drinking_name, vCode: memberAdd?.drinking},
+							{code: 'SMOKE', name: '흡연', isEssential: false, vName: memberAdd?.smoking_name, vCode: memberAdd?.smoking},
+						]);
 
 						setCodeData({
 							busiCdList: [],
@@ -199,7 +287,7 @@ export const SignUp_AddInfo = (props : Props) => {
 							drinkCdList: data?.drink_code_list,
 							smokeCdList: data?.smoke_code_list,
 							mbtiCdList: data?.mbti_code_list,
-						});
+						});						
 
 						break;
 					default:
@@ -219,46 +307,64 @@ export const SignUp_AddInfo = (props : Props) => {
 	// ############################################################################# 저장 함수
 	const saveFn = async () => {
 
-		if(!isEmptyData(addData.height) || !addData.height.trim()) {
+		let _data = {};
+		_data.member_seq = memberSeq;
+		_data.join_status = 'ADD';
+
+		selectList.map((item: any, index) => {
+			const code = item.code;
+			const vCode = item.vCode;
+
+			if(code == 'JOB') {
+				_data.business = item.value1;
+				_data.job = item.value2;
+			} else if(code == 'LOCAL') {
+				if(isEmptyData(item?.vList) && item?.vList.length > 0) {
+					for(let i=0 ; i<item?.vList.length ; i++) {
+						if(i == 0) {
+							_data.prefer_local1 = item?.vList[0].value;
+						} else if(i == 1) {
+							_data.prefer_local2 = item?.vList[1].value;
+						}
+					}
+				}
+			} else if(code == 'HEIGHT') { _data.height = item.vCode;
+			} else if(code == 'BODY') { _data.form_body = item.vCode;
+			} else if(code == 'MBTI') { _data.mbti_type = item.vCode;
+			} else if(code == 'RELIGION') { _data.religion = item.vCode;
+			} else if(code == 'DRINK') { _data.drinking = item.vCode;
+			} else if(code == 'SMOKE') { _data.smoking = item.vCode;
+			}
+		});
+
+		if(!isEmptyData(_data.height)) {
 			show({ content: '키를 입력해 주세요.' });
 			return;
 		}
-		if(!isEmptyData(addData.business) || !addData.business.trim() || !isEmptyData(addData.job) || !addData.job.trim()) {
-			show({ content: '직업을 선택해 주세요.' });
-			return;
-		}
 
-		if(!isEmptyData(addData.form_body) || !addData.form_body.trim()) {
+		if(!isEmptyData(_data.form_body)) {
 			show({ content: '체형을 선택해 주세요.' });
 			return;
 		}
 
-		if(addData.prefer_local1 == addData.prefer_local2) {
-			show({ content: '같은 선호지역은 고를 수 없습니다.' });
+		if(!isEmptyData(_data.job)) {
+			show({ content: '직업을 선택해 주세요.' });
 			return;
 		}
+
+		/* if(_data.prefer_local1 == _data.prefer_local2) {
+			show({ content: '같은 선호지역은 고를 수 없습니다.' });
+			return;
+		} */
 
 		// 중복 클릭 방지 설정
 		if(isClickable) {
 			setIsClickable(false);
 			setIsLoading(true);
 
-			const body = {
-				member_seq: memberSeq,
-				business: addData.business,
-				job: addData.job,
-				height: addData.height,
-				form_body: addData.form_body,
-				religion: addData.religion,
-				drinking: addData.drinking,
-				smoking: addData.smoking,
-				join_status: 'ADD',
-				introduce_comment: addData.introduce_comment,
-				mbti_type: addData.mbti_type,
-				prefer_local1: addData.prefer_local1,
-				prefer_local2: addData.prefer_local2,
-			};
-
+			const body = _data;
+			console.log('body ::::: ' , body);
+			
 			try {
 				const { success, data } = await join_save_profile_add(body);
 				if (success) {
@@ -297,313 +403,144 @@ export const SignUp_AddInfo = (props : Props) => {
 		<>
 			<SpaceView viewStyle={_styles.wrap}>
 				<SpaceView>
-          <CommonHeader title="" />
-        </SpaceView>
 
-				<SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
-          <SpaceView>
-            <SpaceView mt={50} mb={50}>
-              <Text style={styles.fontStyle('H', 28, '#fff')}>내 소개 정보</Text>
-            </SpaceView>
+					{/* ####################################################################################### HEADER */}
+					<SpaceView>
+						<CommonHeader title="" />
+					</SpaceView>
 
-						<ScrollView showsVerticalScrollIndicator={false} style={{height: height-330}}>
-							<SpaceView>
-								<Text style={styles.fontStyle('EB', 16, '#fff')}>필수 소개</Text>
-								<SpaceView>
-									<SpaceView mt={15}>
-										<TouchableOpacity 
-											style={_styles.itemWrap}
-											onPress={() => { openSelectPopup(); }}>
-											<Text style={styles.fontStyle('EB', 16, '#fff')}>키(cm)</Text>
-											<SpaceView viewStyle={layoutStyle.rowCenter}>
-												<Text style={styles.fontStyle('EB', 16, '#fff')}>172</Text>
-												<SpaceView ml={10}><Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(11, 18)} /></SpaceView>
-											</SpaceView>
-										</TouchableOpacity>
-									</SpaceView>
-								</SpaceView>
+					<SpaceView viewStyle={{justifyContent: 'space-between'}}>
+						<SpaceView>
+							<SpaceView mt={40} mb={50}>
+								<Text style={styles.fontStyle('H', 28, '#fff')}>내 소개 정보</Text>
 							</SpaceView>
 
-						</ScrollView>
+							<ScrollView 
+								bounces={false}
+								showsVerticalScrollIndicator={false} 
+								style={{height: height-330}}>
 
-						<SpaceView viewStyle={_styles.bottomWrap}>
-							<TouchableOpacity 
-								//disabled={!comment}
-								onPress={() => { 
-									//saveFn();
+								{/* ####################################################################################### 필수 설정 */}
+								<SpaceView mb={20}>
+									<SpaceView>
+										<Text style={styles.fontStyle('EB', 16, '#fff')}>필수 설정</Text>
+									</SpaceView>
+									<SpaceView mt={15}>
+										{selectList.map((item, index) => {
+										
+											return item?.isEssential && (
+												<>
+													<SpaceView mb={10}>
+														<TouchableOpacity 
+															style={_styles.itemWrap}
+															onPress={() => { popupOpen(item); }}>
+															<Text style={styles.fontStyle('EB', 16, '#fff')}>{item?.name}</Text>
+															<SpaceView viewStyle={layoutStyle.rowCenter}>
+																<Text style={styles.fontStyle('EB', 16, '#fff')}>{item?.vName}</Text>
+																<SpaceView ml={10}><Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(11, 18)} /></SpaceView>
+															</SpaceView>
+														</TouchableOpacity>
+													</SpaceView>
+												</>
+											);
+										})}
+									</SpaceView>
+								</SpaceView>
 
-									navigation.navigate(ROUTES.SIGNUP_INTEREST, {
-										memberSeq: memberSeq,
-										gender: gender,
-										nickname: nickname,
-									});
-								}}
-								style={_styles.nextBtnWrap(true)}>
-								<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
-								<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
-							</TouchableOpacity>
+								{/* ####################################################################################### 선택 설정 */}
+								<SpaceView>
+									<SpaceView>
+										<Text style={styles.fontStyle('EB', 16, '#fff')}>선택 설정</Text>
+									</SpaceView>
+									<SpaceView mt={15}>
+										{selectList.map((item, index) => {
+
+											let selectName:any = '';
+
+											if(item.code == 'LOCAL') {
+												let _list:any = item?.vList;
+												if(isEmptyData(_list) && _list.length > 0) {
+													for(let i=0 ; i<_list.length ; i++) {
+														if(selectName != '') {
+															selectName += ', ';
+														}
+														selectName += _list[i].label;
+													}
+												}
+											} else {
+												selectName = item?.vName;
+											}
+
+
+											return !item?.isEssential && (
+												<>
+													<SpaceView mb={10}>
+														<TouchableOpacity 
+															style={_styles.itemWrap}
+															onPress={() => { popupOpen(item); }}>
+															<Text style={styles.fontStyle('EB', 16, '#fff')}>{item?.name}</Text>
+															<SpaceView viewStyle={layoutStyle.rowCenter}>
+																<Text style={styles.fontStyle('EB', 16, '#fff')}>{selectName}</Text>
+																<SpaceView ml={10}><Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(11, 18)} /></SpaceView>
+															</SpaceView>
+														</TouchableOpacity>
+													</SpaceView>
+												</>
+											);
+										})}
+									</SpaceView>
+								</SpaceView>
+
+							</ScrollView>
 						</SpaceView>
 					</SpaceView>
 				</SpaceView>
 
+				{/* ####################################################################################### 버튼 */}
+				<SpaceView mb={20} viewStyle={_styles.bottomWrap}>
+					<TouchableOpacity 
+						//disabled={!comment}
+						onPress={() => { 
+							saveFn();
 
-
-				{/* <ScrollView showsVerticalScrollIndicator={false} style={{height: height-200}}>
-					<SpaceView viewStyle={_styles.titleContainer}>
-						<Image source={findSourcePath(mstImgPath)} style={_styles.addInfoImg} />
-						<Text style={_styles.title}><Text style={{color: '#F3E270'}}>{nickname}</Text>님의{'\n'}간편소개 정보를{'\n'}선택해 주세요.</Text>
-					</SpaceView>
-
-					<SpaceView mt={30}>
-						<View>
-							<Text style={_styles.essentialTitle}>필수 정보</Text>
-						</View>
-						<View style={_styles.underline}></View>
-						<View style={_styles.essentialOption}>
-
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>키(cm)</Text>
-
-								<TextInput
-									value={addData.height}
-									onChangeText={(text) => setAddData({...addData, height: text})}
-									keyboardType="number-pad"
-									autoCapitalize={'none'}
-									style={[_styles.optionText, {height: 30, width: 105}]}
-									maxLength={3}
-								/>
-							</View>
-
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>직업</Text>
-								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={{
-											inputIOS: {
-												...pickerSelectStyles.inputIOS,
-												width: 120,
-											},
-											inputAndroid: {
-												...pickerSelectStyles.inputAndroid,
-												width: 120,
-											},
-										}}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={busiCdCallbackFn}
-										value={addData.business}
-										items={busiGrpCdList}
-									/>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={{
-											inputIOS: {
-												...pickerSelectStyles.inputIOS,
-												width: 120,
-											},
-											inputAndroid: {
-												...pickerSelectStyles.inputAndroid,
-												width: 120,
-											},
-										}}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, job: value})}
-										value={addData.job}
-										items={jobCdList}
-									/>
-								</View>
-							</View>
-
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>체형</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, form_body: value})}
-									value={addData.form_body}
-									items={gender == 'M' ? codeData.manBodyCdList : codeData.womanBodyCdList}
-								/>
-							</View>
-						</View>
-					</SpaceView>
-
-					<SpaceView mt={20}>
-						<View>
-							<Text style={_styles.choiceTitle}>선택 정보</Text>
-						</View>
-						<View style={_styles.underline}></View>
-						<View>
-
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>MBTI</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, mbti_type: value})}
-									value={addData.mbti_type}
-									items={codeData.mbtiCdList}
-								/>
-							</View>
-
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>선호지역</Text>
-								<View style={{flexDirection: 'row', justifyContent: 'space-between', width: '74%'}}>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={{
-											inputIOS: {
-												...pickerSelectStyles.inputIOS,
-												width: 120,
-											},
-											inputAndroid: {
-												...pickerSelectStyles.inputAndroid,
-												width: 120,
-											},
-										}}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, prefer_local1: value})}
-										value={addData.prefer_local1}
-										items={codeData.localCdList}
-									/>
-									<RNPickerSelect
-										placeholder={{label: '선택', value: ''}}
-										style={{
-											inputIOS: {
-												...pickerSelectStyles.inputIOS,
-												width: 120,
-											},
-											inputAndroid: {
-												...pickerSelectStyles.inputAndroid,
-												width: 120,
-											},
-										}}
-										useNativeAndroidPickerStyle={false}
-										onValueChange={(value) => setAddData({...addData, prefer_local2: value})}
-										value={addData.prefer_local2}
-										items={codeData.localCdList}
-									/>
-								</View>
-							</View>
-
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>종교</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, religion: value})}
-									value={addData.religion}
-									items={codeData.religionCdList}
-								/>
-							</View>
-
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>음주</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, drinking: value})}
-									value={addData.drinking}
-									items={codeData.drinkCdList}
-								/>
-							</View>
-
-							<View style={_styles.option}>
-								<Text style={_styles.optionTitle}>흡연</Text>
-								<RNPickerSelect
-									placeholder={{label: '선택', value: ''}}
-									style={pickerSelectStyles}
-									useNativeAndroidPickerStyle={false}
-									onValueChange={(value) => setAddData({...addData, smoking: value})}
-									value={addData.smoking}
-									items={codeData.smokeCdList}
-								/>
-							</View>
-						</View>
-					</SpaceView>
-				</ScrollView>
-
-				<SpaceView mb={10}>
-					<SpaceView>
-						<CommonBtn
-							value={'관심사 등록하기'}
-							type={'reNewId'}
-							fontSize={16}
-							fontFamily={'Pretendard-Bold'}
-							borderRadius={5}
-							onPress={() => {
-								saveFn();
-							}}
-						/>
-					</SpaceView>
-
-					<SpaceView mt={8}>
-						<CommonBtn
-							value={'이전으로'}
-							type={'reNewGoBack'}
-							isGradient={false}
-							fontFamily={'Pretendard-Light'}
-							fontSize={14}
-							borderRadius={5}
-							onPress={() => {
-								navigation.goBack();
-							}}
-						/>
-					</SpaceView>
-				</SpaceView> */}
-
+							/* navigation.navigate(ROUTES.SIGNUP_INTEREST, {
+								memberSeq: memberSeq,
+								gender: gender,
+								nickname: nickname,
+							}); */
+						}}
+						style={_styles.nextBtnWrap(true)}>
+						<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+						<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+					</TouchableOpacity>
+				</SpaceView>
+			
 			</SpaceView>
 
-			<Modal visible={isModalVisible} transparent={true}>
-        <View style={modalStyle.modalBackground}>
-          <View style={[modalStyle.modalStyle1]}>
-            <SpaceView viewStyle={_styles.modalWrap}>
-              <SpaceView mb={20}>
-                <Text style={styles.fontStyle('H', 26, '#000000')}>키(cm)</Text>
-              </SpaceView>
 
-              <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
-                <SpaceView mt={20} pl={15} pr={15} viewStyle={{height: 250, paddingVertical: 15}}>
-                  <LinearGradient
-                    colors={['rgba(255, 255, 255, 0.8)', 'transparent']}
-                    style={_styles.topGradient}
-                  />
-                  <FlatList
-                    data={heightList}
-                    keyExtractor={item => item?.value}
-                    numColumns={2}
-                    columnWrapperStyle={{flex: 1, justifyContent: 'space-between'}}
-                    renderItem={({ item, index }) => (
-                      <TouchableOpacity style={_styles.heightItemWrap} activeOpacity={0.5}>
-                        <Text style={[styles.fontStyle('B', 12, '#44B6E5'), {textAlign: 'center'}]}>{item?.name}</Text>
-                      </TouchableOpacity>
-                    )}
-                  />
-                  <LinearGradient
-                    colors={['transparent', 'rgba(255, 255, 255, 0.8)']}
-                    style={_styles.bottomGradient}
-                  />
-                </SpaceView>
+			{/* ################################################################################# 설정 팝업 */}
+      <SetSelectPopup 
+        isVisible={isModalVisible}
+        closeFunc={popupClose}
+        confirmCallbackFunc={popupConfirm}
+        data={popupData}
+      />
 
-                <SpaceView mt={10} mb={15} viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                  <TouchableOpacity style={_styles.confirmBtn}>
-                    <Text style={styles.fontStyle('B', 16, '#fff')}>확인</Text>
-                  </TouchableOpacity>
-                </SpaceView>
-              </ScrollView>
-            </SpaceView>
+      {/* ################################################################################# 선호지역 설정 팝업 */}
+      <SetLocalSelectPopup 
+        isVisible={isLocalModalVisible}
+        closeFunc={popupClose}
+        confirmCallbackFunc={popupConfirm}
+        data={popupData}
+      />
 
-            <SpaceView viewStyle={_styles.cancelWrap}>
-              <TouchableOpacity onPress={() => closeSelectPopup()}>
-                <Text style={styles.fontStyle('EB', 16, '#ffffff')}>여기 터치하고 닫기</Text>
-              </TouchableOpacity>
-            </SpaceView>
-          </View>
-        </View>
-      </Modal>
+      {/* ################################################################################# 직업 설정 팝업 */}
+      <SetJobSelectPopup 
+        isVisible={isJobModalVisible}
+        closeFunc={popupClose}
+        confirmCallbackFunc={popupConfirm}
+        data={popupData}
+      />
 		</>
 	);
 };
@@ -618,14 +555,16 @@ export const SignUp_AddInfo = (props : Props) => {
 const _styles = StyleSheet.create({
 	wrap: {
 		flex: 1,
-    minHeight: height,
+    height: height,
     backgroundColor: '#000000',
     paddingTop: 30,
     paddingHorizontal: 10,
+		justifyContent: 'space-between',
 	},
 	bottomWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+		paddingHorizontal: 10,
   },
   nextBtnWrap: (isOn:boolean) => {
 		return {
@@ -637,14 +576,6 @@ const _styles = StyleSheet.create({
       paddingVertical: 10,
     };
 	},
-  textInputStyle: {
-    width: '100%',
-    borderBottomWidth: 1,
-    borderBottomColor: '#A8A8A8',
-    padding: 0,
-    paddingBottom: 5,
-    paddingTop: 5,
-  },
 	itemWrap: {
     borderRadius: 10,
     borderWidth: 1,
@@ -655,53 +586,8 @@ const _styles = StyleSheet.create({
     height: 45,
     paddingHorizontal: 15,
   },
-	modalWrap: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 15,
-    paddingTop: 35,
-    paddingBottom: 20,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  confirmBtn: {
-    backgroundColor: '#46F66F',
-    borderRadius: 25,
-    width: 100,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cancelWrap: {
-    position: 'absolute',
-    bottom: -40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-	heightItemWrap: {
-    borderWidth: 1,
-    borderColor: '#44B6E5',
-    borderRadius: 15,
-    width: '48.8%',
-    paddingVertical: 5,
-    marginBottom: 5,
-  },
-  topGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 10, // 그라데이션 높이를 조정하세요
-    zIndex: 1,
-  },
-  bottomGradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 10, // 그라데이션 높이를 조정하세요
-    zIndex: 1,
-  },
+
+	
 
 
 });

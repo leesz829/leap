@@ -288,43 +288,49 @@ export const SignUp_Image = (props: Props) => {
 
       <SpaceView viewStyle={_styles.wrap}>
         <SpaceView>
-          <CommonHeader title="" />
-        </SpaceView>
 
-        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          {/* ########################################################################################## HEADER */}
           <SpaceView>
-            <SpaceView mt={50}>
-              <Text style={styles.fontStyle('H', 28, '#fff')}>프로필 사진을 등록해 주세요.</Text>
-              <SpaceView mt={10}>
-                <Text style={styles.fontStyle('SB', 12, '#fff')}>얼굴이 가려지지 않은 셀카 1장이 포함되어야 가입 심사가 진행됩니다.</Text>
+            <CommonHeader title="" />
+          </SpaceView>
+
+          <SpaceView viewStyle={{justifyContent: 'space-between'}}>
+            <SpaceView>
+              <SpaceView mt={50}>
+                <Text style={styles.fontStyle('H', 28, '#fff')}>프로필 사진을 등록해 주세요.</Text>
+                <SpaceView mt={10}>
+                  <Text style={styles.fontStyle('SB', 12, '#fff')}>얼굴이 가려지지 않은 셀카 1장이 포함되어야 가입 심사가 진행됩니다.</Text>
+                </SpaceView>
+              </SpaceView>
+
+              <SpaceView mt={50} viewStyle={_styles.contentWrap}>
+                {[0,1,2,3,4,5].map((i, index) => {
+                  return (
+                    <>
+                      {index == 0 && <ProfileImageItem index={index} imgData={profileImageList.length > 0 ? profileImageList[0] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                      {index == 1 && <ProfileImageItem index={index} imgData={profileImageList.length > 1 ? profileImageList[1] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                      {index == 2 && <ProfileImageItem index={index} imgData={profileImageList.length > 2 ? profileImageList[2] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                      {index == 3 && <ProfileImageItem index={index} imgData={profileImageList.length > 3 ? profileImageList[3] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                      {index == 4 && <ProfileImageItem index={index} imgData={profileImageList.length > 4 ? profileImageList[4] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                      {index == 5 && <ProfileImageItem index={index} imgData={profileImageList.length > 5 ? profileImageList[5] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                    </>
+                  )
+                })}
               </SpaceView>
             </SpaceView>
-
-            <SpaceView mt={50} viewStyle={_styles.contentWrap}>
-              {[0,1,2,3,4,5].map((i, index) => {
-                return (
-                  <>
-                    {index == 0 && <ProfileImageItem index={index} imgData={profileImageList.length > 0 ? profileImageList[0] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                    {index == 1 && <ProfileImageItem index={index} imgData={profileImageList.length > 1 ? profileImageList[1] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                    {index == 2 && <ProfileImageItem index={index} imgData={profileImageList.length > 2 ? profileImageList[2] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                    {index == 3 && <ProfileImageItem index={index} imgData={profileImageList.length > 3 ? profileImageList[3] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                    {index == 4 && <ProfileImageItem index={index} imgData={profileImageList.length > 4 ? profileImageList[4] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                    {index == 5 && <ProfileImageItem index={index} imgData={profileImageList.length > 5 ? profileImageList[5] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                  </>
-                )
-              })}
-            </SpaceView>
           </SpaceView>
 
-          <SpaceView viewStyle={_styles.bottomWrap}>
-            <TouchableOpacity 
-              //disabled={!emailId}
-              onPress={() => { saveProfileImage(); }}
-              style={_styles.nextBtnWrap(true)}>
-              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
-              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
-            </TouchableOpacity>
-          </SpaceView>
+        </SpaceView>
+
+        {/* ########################################################################################## 버튼 */}
+        <SpaceView mb={20} viewStyle={_styles.bottomWrap}>
+          <TouchableOpacity 
+            //disabled={!emailId}
+            onPress={() => { saveProfileImage(); }}
+            style={_styles.nextBtnWrap(true)}>
+            <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+            <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+          </TouchableOpacity>
         </SpaceView>
       </SpaceView>
     </>
@@ -410,10 +416,11 @@ function ProfileImageItem({ index, imgData, delFn, imgSelectedFn }) {
 const _styles = StyleSheet.create({
   wrap: {
     flex: 1,
-    minHeight: height,
+    height: height,
     backgroundColor: '#000000',
     paddingTop: 30,
     paddingHorizontal: 10,
+    justifyContent: 'space-between'
   },
   imgWrap: {
     width: (width - 60) / 3,
@@ -469,6 +476,7 @@ const _styles = StyleSheet.create({
   bottomWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    paddingHorizontal: 10,
   },
   nextBtnWrap: (isOn:boolean) => {
 		return {

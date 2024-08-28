@@ -247,62 +247,67 @@ export const SignUp_Password = (props: Props) => {
     <>
       <SpaceView viewStyle={_styles.wrap}>
         <SpaceView>
-          <CommonHeader title="" />
-        </SpaceView>
 
-        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          {/* ########################################################################################## HEADER */}
           <SpaceView>
-            <SpaceView mt={50}>
-              <Text style={styles.fontStyle('H', 28, '#fff')}>사용하실{'\n'}비밀번호를 입력해 주세요.</Text>
-              <SpaceView mt={10}>
-                <Text style={styles.fontStyle('SB', 12, '#fff')}>비밀번호는 8글자 이상, 영문포함, 숫자포함, 특수기호 허용</Text>
+            <CommonHeader title="" />
+          </SpaceView>
+
+          <SpaceView viewStyle={{justifyContent: 'space-between'}}>
+            <SpaceView>
+              <SpaceView mt={50}>
+                <Text style={styles.fontStyle('H', 28, '#fff')}>사용하실{'\n'}비밀번호를 입력해 주세요.</Text>
+                <SpaceView mt={10}>
+                  <Text style={styles.fontStyle('SB', 12, '#fff')}>비밀번호는 8글자 이상, 영문포함, 숫자포함, 특수기호 허용</Text>
+                </SpaceView>
               </SpaceView>
-            </SpaceView>
 
-            <SpaceView mt={50} viewStyle={_styles.contentWrap}>
-              <TextInput
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-                autoCapitalize={'none'}
-                style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
-                maxLength={20}
-                placeholder={'비밀번호를 입력해 주세요.'}
-                placeholderTextColor={'#808080'}
-                secureTextEntry={true}
-              />
-            </SpaceView>
-            <SpaceView mt={20} viewStyle={_styles.contentWrap}>
-              <TextInput
-                value={passwordChk}
-                onChangeText={(text) => setPasswordChk(text)}
-                autoCapitalize={'none'}
-                style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
-                maxLength={20}
-                placeholder={'비밀번호를 재입력해 주세요.'}
-                placeholderTextColor={'#808080'}
-                secureTextEntry={true}
-              />
-
-                {/* <TextInput
+              <SpaceView mt={50} viewStyle={_styles.contentWrap}>
+                <TextInput
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   autoCapitalize={'none'}
-                  style={_styles.textInputStyle('#F3E270')}
-                  secureTextEntry={true}
+                  style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
                   maxLength={20}
-                /> */}
+                  placeholder={'비밀번호를 입력해 주세요.'}
+                  placeholderTextColor={'#808080'}
+                  secureTextEntry={true}
+                />
+              </SpaceView>
+              <SpaceView mt={20} viewStyle={_styles.contentWrap}>
+                <TextInput
+                  value={passwordChk}
+                  onChangeText={(text) => setPasswordChk(text)}
+                  autoCapitalize={'none'}
+                  style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
+                  maxLength={20}
+                  placeholder={'비밀번호를 재입력해 주세요.'}
+                  placeholderTextColor={'#808080'}
+                  secureTextEntry={true}
+                />
+
+                  {/* <TextInput
+                    value={password}
+                    onChangeText={(text) => setPassword(text)}
+                    autoCapitalize={'none'}
+                    style={_styles.textInputStyle('#F3E270')}
+                    secureTextEntry={true}
+                    maxLength={20}
+                  /> */}
+              </SpaceView>
             </SpaceView>
           </SpaceView>
+        </SpaceView>
 
-          <SpaceView viewStyle={_styles.bottomWrap}>
-            <TouchableOpacity 
-              disabled={!emailId}
-              onPress={() => { register(); }}
-              style={_styles.nextBtnWrap(isEmptyData(password) && isEmptyData(passwordChk) && password === passwordChk)}>
-              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
-              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
-            </TouchableOpacity>
-          </SpaceView>
+        {/* ########################################################################################## 버튼 */}
+        <SpaceView mb={20} viewStyle={_styles.bottomWrap}>
+          <TouchableOpacity 
+            disabled={!emailId}
+            onPress={() => { register(); }}
+            style={_styles.nextBtnWrap(isEmptyData(password) && isEmptyData(passwordChk) && password === passwordChk)}>
+            <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+            <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+          </TouchableOpacity>
         </SpaceView>
       </SpaceView>
     </>
@@ -318,10 +323,11 @@ export const SignUp_Password = (props: Props) => {
 const _styles = StyleSheet.create({
   wrap: {
     flex: 1,
-    minHeight: height,
+    height: height,
     backgroundColor: '#000000',
     paddingTop: 30,
     paddingHorizontal: 10,
+    justifyContent: 'space-between',
   },
   contentWrap: {
     flexDirection: 'row',
@@ -341,6 +347,7 @@ const _styles = StyleSheet.create({
   bottomWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    paddingHorizontal: 10,
   },
   nextBtnWrap: (isOn:boolean) => {
 		return {
@@ -352,51 +359,6 @@ const _styles = StyleSheet.create({
       paddingVertical: 10,
     };
 	},
-
-
-
-
-
-
-
-
-
-
-  signUpContainer: {
-    minHeight: height,
-    paddingTop: 60,
-    paddingLeft: 16,
-    paddingRight: 16,
-    flexGrow: 1,
-  },
-  container: {
-    paddingTop: 24,
-    paddingHorizontal: 16,
-    flex: 1,
-  },
-  title: {
-    fontFamily: 'Pretendard-Bold',
-    color: '#D5CD9E',
-    fontSize: 30,
-    lineHeight: 35,
-    marginBottom: 15,
-  },
-  emailPwdText: {
-    fontFamily: 'Pretendard-Bold',
-    color: '#F3E270',
-    fontSize: 14,
-  },
-  noticeText: {
-    fontFamily: 'Pretendard-Light',
-    color: '#D5CD9E',
-    fontSize: 12,
-    marginTop: 5,
-  },
-  removeTextBtn: {
-    position: 'absolute',
-    bottom: 10,
-    right: 0,
-  },
   textInputStyle: {
     width: '100%',
     borderBottomWidth: 1,

@@ -6,14 +6,14 @@ import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import { usePopup } from 'Context';
 import { SUCCESS, MEMBER_NICKNAME_DUP } from 'constants/reusltcode';
 import { join_save_profile_nickname, get_member_introduce_guide } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
-import { TextInput } from 'react-native-gesture-handler';
+import { TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
 /* ################################################################################################################
@@ -36,6 +36,8 @@ export const SignUp_Nickname = (props: Props) => {
   const { show } = usePopup();  // 공통 팝업
   const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
   const [isLoading, setIsLoading] = React.useState(false); // 로딩 여부
+
+  const [isKeyboardVisible, setIsKeyboardVisible] = React.useState(false);
 
   const memberSeq = props.route.params?.memberSeq; // 회원 번호
   const gender = props.route.params?.gender; // 성별
@@ -128,49 +130,77 @@ export const SignUp_Nickname = (props: Props) => {
     }
   };
 
+
+  // ############################################################ 키패드 핸들러
+  const keyBoardHandle = () => {
+    if(isKeyboardVisible) {
+      Keyboard.dismiss();
+    };
+  };
+
   // ############################################################ 최초 실행
 	React.useEffect(() => {
-		getMemberIntro();
+    if(isFocus) {
+      getMemberIntro();
+    };
+
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    }
+		
 	}, [isFocus]);
 
   return (
     <>
       <SpaceView viewStyle={_styles.wrap}>
         <SpaceView>
-          <CommonHeader title="" />
-        </SpaceView>
 
-        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          {/* ########################################################################################## HEADER */}
           <SpaceView>
-            <SpaceView mt={50}>
-              <Text style={styles.fontStyle('H', 28, '#fff')}>닉네임 설정하기</Text>
-              <SpaceView mt={10}>
-                <Text style={styles.fontStyle('SB', 12, '#fff')}>한글,영문,숫자 포함 12글자 허용</Text>
+            <CommonHeader title="" />
+          </SpaceView>
+
+          <SpaceView>
+            <TouchableWithoutFeedback onPress={() => { keyBoardHandle(); }}>
+              <SpaceView mt={50}>
+                <Text style={styles.fontStyle('H', 28, '#fff')}>닉네임 설정하기</Text>
+                <SpaceView mt={10}>
+                  <Text style={styles.fontStyle('SB', 12, '#fff')}>한글,영문,숫자 포함 12글자 허용</Text>
+                </SpaceView>
               </SpaceView>
-            </SpaceView>
 
-            <SpaceView mt={50}>
-              <TextInput
-                value={nickname}
-                onChangeText={(text) => setNickname(text)}
-                autoCapitalize={'none'}
-                style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
-                maxLength={12}
-                placeholder={'닉네임을 입력해 주세요.'}
-                placeholderTextColor={'#808080'}
-              />
-            </SpaceView>
+              <SpaceView mt={50}>
+                <TextInput
+                  value={nickname}
+                  onChangeText={(text) => setNickname(text)}
+                  autoCapitalize={'none'}
+                  style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
+                  maxLength={12}
+                  placeholder={'닉네임을 입력해 주세요.'}
+                  placeholderTextColor={'#808080'}
+                />
+              </SpaceView>
+            </TouchableWithoutFeedback>
           </SpaceView>
-
-          <SpaceView viewStyle={_styles.bottomWrap}>
-            <TouchableOpacity 
-              disabled={!nickname}
-              onPress={() => { saveFn(); }}
-              style={_styles.nextBtnWrap(nickname)}>
-              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
-              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
-            </TouchableOpacity>
-          </SpaceView>
+        </SpaceView>
+        
+        {/* ########################################################################################## 버튼 */}
+        <SpaceView mb={20} viewStyle={_styles.bottomWrap}>
+          <TouchableOpacity 
+            disabled={!nickname}
+            onPress={() => { saveFn(); }}
+            style={_styles.nextBtnWrap(nickname)}>
+            <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+            <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+          </TouchableOpacity>
         </SpaceView>
       </SpaceView>
     </>
@@ -187,14 +217,16 @@ export const SignUp_Nickname = (props: Props) => {
 const _styles = StyleSheet.create({
   wrap: {
     flex: 1,
-    minHeight: height,
+    height: height,
     backgroundColor: '#000000',
     paddingTop: 30,
     paddingHorizontal: 10,
+    justifyContent: 'space-between',
   },
   bottomWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    paddingHorizontal: 10,
   },
   nextBtnWrap: (isOn:boolean) => {
 		return {

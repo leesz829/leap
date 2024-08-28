@@ -61,39 +61,45 @@ export const SignUp_Check = (props: Props) => {
     <>
       <SpaceView viewStyle={_styles.wrap}>
         <SpaceView>
-          <CommonHeader title="" />
+
+          {/* ########################################################################################## HEADER */}
+          <SpaceView>
+            <CommonHeader title="" />
+          </SpaceView>
+
+          <SpaceView viewStyle={{justifyContent: 'space-between'}}>
+            <SpaceView>
+              <SpaceView mt={50}>
+                <Text style={styles.fontStyle('H', 28, '#fff')}>입력된 회원 정보가{'\n'}맞으신가요?</Text>
+              </SpaceView>
+
+              <SpaceView mt={50} viewStyle={_styles.contentWrap}>
+                <SpaceView viewStyle={_styles.itemWrap}>
+                  <Text style={styles.fontStyle('B', 14, '#808080')}>이름</Text>
+                  <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>{name}</Text></SpaceView>
+                </SpaceView>
+                <SpaceView viewStyle={_styles.itemWrap}>
+                  <Text style={styles.fontStyle('B', 14, '#808080')}>나이/성별</Text>
+                  <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>만 {age}세/{gender === 'M' ? '남자' : '여자'}</Text></SpaceView>
+                </SpaceView>
+                <SpaceView viewStyle={_styles.itemWrap}>
+                  <Text style={styles.fontStyle('B', 14, '#808080')}>전화번호</Text>
+                  <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>{mobile}</Text></SpaceView>
+                </SpaceView>
+              </SpaceView>
+            </SpaceView>
+          </SpaceView>
+
         </SpaceView>
 
-        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
-          <SpaceView>
-            <SpaceView mt={50}>
-              <Text style={styles.fontStyle('H', 28, '#fff')}>입력된 회원 정보가{'\n'}맞으신가요?</Text>
-            </SpaceView>
-
-            <SpaceView mt={50} viewStyle={_styles.contentWrap}>
-              <SpaceView viewStyle={_styles.itemWrap}>
-                <Text style={styles.fontStyle('B', 14, '#808080')}>이름</Text>
-                <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>{name}</Text></SpaceView>
-              </SpaceView>
-              <SpaceView viewStyle={_styles.itemWrap}>
-                <Text style={styles.fontStyle('B', 14, '#808080')}>나이/성별</Text>
-                <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>만 {age}세/{gender === 'M' ? '남자' : '여자'}</Text></SpaceView>
-              </SpaceView>
-              <SpaceView viewStyle={_styles.itemWrap}>
-                <Text style={styles.fontStyle('B', 14, '#808080')}>전화번호</Text>
-                <SpaceView mt={10} viewStyle={_styles.textWrap}><Text style={styles.fontStyle('B', 18, '#fff')}>{mobile}</Text></SpaceView>
-              </SpaceView>
-            </SpaceView>
-          </SpaceView>
-
-          <SpaceView viewStyle={_styles.bottomWrap}>
-            <TouchableOpacity
-              onPress={() => { goNext(); }}
-              style={_styles.nextBtnWrap(true)}>
-              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
-              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
-            </TouchableOpacity>
-          </SpaceView>
+        {/* ########################################################################################## 버튼 */}
+        <SpaceView mb={20} viewStyle={_styles.bottomWrap}>
+          <TouchableOpacity
+            onPress={() => { goNext(); }}
+            style={_styles.nextBtnWrap(true)}>
+            <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+            <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+          </TouchableOpacity>
         </SpaceView>
       </SpaceView>
     </>
@@ -104,10 +110,11 @@ export const SignUp_Check = (props: Props) => {
 const _styles = StyleSheet.create({
   wrap: {
     flex: 1,
-    minHeight: height,
+    height: height,
     backgroundColor: '#000000',
     paddingTop: 30,
     paddingHorizontal: 10,
+    justifyContent: 'space-between',
   },
   contentWrap: {
     flexDirection: 'row',
@@ -127,6 +134,7 @@ const _styles = StyleSheet.create({
   bottomWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    paddingHorizontal: 10,
   },
   nextBtnWrap: (isOn:boolean) => {
 		return {

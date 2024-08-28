@@ -88,41 +88,47 @@ export const SignUp_ID = (props: Props) => {
     <>
       <SpaceView viewStyle={_styles.wrap}>
         <SpaceView>
-          <CommonHeader title="" />
-        </SpaceView>
 
-        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
+          {/* ########################################################################################## HEADER */}
           <SpaceView>
-            <SpaceView mt={50}>
-              <Text style={styles.fontStyle('H', 28, '#fff')}>아이디로 사용 하실{'\n'}이메일을 입력해 주세요.</Text>
-              <SpaceView mt={10}>
-                <Text style={styles.fontStyle('SB', 12, '#fff')}>비밀번호를 잃어 버리신 경우 이메일로 안내가 됩니다.{'\n'}실제로 사용하는 이메일을 입력해 주세요.</Text>
+            <CommonHeader title="" />
+          </SpaceView>
+
+          <SpaceView viewStyle={{justifyContent: 'space-between'}}>
+            <SpaceView>
+              <SpaceView mt={50}>
+                <Text style={styles.fontStyle('H', 28, '#fff')}>아이디로 사용 하실{'\n'}이메일을 입력해 주세요.</Text>
+                <SpaceView mt={10}>
+                  <Text style={styles.fontStyle('SB', 12, '#fff')}>비밀번호를 잃어 버리신 경우 이메일로 안내가 됩니다.{'\n'}실제로 사용하는 이메일을 입력해 주세요.</Text>
+                </SpaceView>
+              </SpaceView>
+
+              <SpaceView mt={50}>
+                <TextInput
+                  value={emailId}
+                  onChangeText={(text) => setEmailId(text)}
+                  autoCapitalize={'none'}
+                  style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
+                  maxLength={50}
+                  placeholder={'이메일을 입력해 주세요.'}
+                  placeholderTextColor={'#808080'}
+                />
               </SpaceView>
             </SpaceView>
-
-            <SpaceView mt={50}>
-              <TextInput
-                value={emailId}
-                onChangeText={(text) => setEmailId(text)}
-                autoCapitalize={'none'}
-                style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
-                maxLength={50}
-                placeholder={'이메일을 입력해 주세요.'}
-                placeholderTextColor={'#808080'}
-              />
-            </SpaceView>
-          </SpaceView>
-
-          <SpaceView viewStyle={_styles.bottomWrap}>
-            <TouchableOpacity 
-              disabled={!emailId}
-              onPress={() => { emailValidChk(); }}
-              style={_styles.nextBtnWrap(emailId)}>
-              <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
-              <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
-            </TouchableOpacity>
           </SpaceView>
         </SpaceView>
+
+        {/* ########################################################################################## 버튼 */}
+        <SpaceView mb={20} viewStyle={_styles.bottomWrap}>
+          <TouchableOpacity 
+            disabled={!emailId}
+            onPress={() => { emailValidChk(); }}
+            style={_styles.nextBtnWrap(emailId)}>
+            <Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+            <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+          </TouchableOpacity>
+        </SpaceView>
+        
       </SpaceView>
     </>
   );
@@ -138,10 +144,11 @@ export const SignUp_ID = (props: Props) => {
 const _styles = StyleSheet.create({
   wrap: {
     flex: 1,
-    minHeight: height,
+    height: height,
     backgroundColor: '#000000',
     paddingTop: 30,
     paddingHorizontal: 10,
+    justifyContent: 'space-between',
   },
   itemWrap: {
     alignItems: 'center',
@@ -156,6 +163,7 @@ const _styles = StyleSheet.create({
   bottomWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    paddingHorizontal: 10,
   },
   nextBtnWrap: (isOn:boolean) => {
 		return {

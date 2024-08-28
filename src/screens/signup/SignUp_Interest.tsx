@@ -175,68 +175,96 @@ export const SignUp_Interest = (props : Props) => {
 		<>
 			<SpaceView viewStyle={_styles.wrap}>
 				<SpaceView>
-          <CommonHeader title="" />
-        </SpaceView>
 
-				<SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
-          <SpaceView>
-            <SpaceView mt={50} mb={50}>
-              <Text style={styles.fontStyle('H', 28, '#fff')}>추가 정보(관심사)</Text>
-							<SpaceView mt={10}>
-                <Text style={styles.fontStyle('SB', 12, '#fff')}>나와 비슷한 성향을 가진 친구를 찾기 위해{'\n'}관심사와 인터뷰 내용을 작성해 주세요.</Text>
-              </SpaceView>
-            </SpaceView>
-
-						<ScrollView showsVerticalScrollIndicator={false} style={{height: height-350}}>
-							<SpaceView mb={20}>
-								{intList.map((i, n) => {
-									//let list:any;
-									const list = checkIntList.filter(item => item.group_code === i.group_code);
-
-									return list.length > 0 && (
-										<>
-											<SpaceView mb={30}>
-												<SpaceView viewStyle={layoutStyle.rowStart}>
-													<Image source={ICON.int_lifestyle} style={styles.iconSquareSize(15)} />
-													<SpaceView ml={5}><Text style={styles.fontStyle('B', 14, '#fff')}>{i.group_code_name}</Text></SpaceView>
-												</SpaceView>
-
-												<SpaceView mt={20} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
-													{list.map((i2, n2) => {
-														return isEmptyData(i2.code_name) && (
-															<SpaceView key={n2 + 'reg'} mr={5} mb={10} viewStyle={_styles.interestItemWrap}>
-																<Text style={styles.fontStyle('B', 14, '#fff')}>{i2.code_name}</Text>
-															</SpaceView>
-														);
-													})}
-												</SpaceView>
-											</SpaceView>
-										</>
-									);
-								})}
-							</SpaceView>
-						</ScrollView>
-
-						<SpaceView viewStyle={_styles.bottomWrap}>
-							<TouchableOpacity 
-								onPress={() => { int_onOpen(); }}
-								style={[_styles.nextBtnWrap(false), {marginRight: 10}]}>
-								<Text style={styles.fontStyle('B', 16, '#000000')}>관심사 추가/삭제</Text>
-							</TouchableOpacity>
-							<TouchableOpacity 
-								//disabled={!comment}
-								onPress={() => { 
-									saveFn();
-								}}
-								style={_styles.nextBtnWrap(true)}>
-								<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
-								<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
-							</TouchableOpacity>
-						</SpaceView>
-
+					{/* ####################################################################################### HEADER */}
+					<SpaceView>
+						<CommonHeader title="" />
 					</SpaceView>
+
+					<SpaceView viewStyle={{justifyContent: 'space-between'}}>
+						<SpaceView>
+							<SpaceView mt={50} mb={50}>
+								<Text style={styles.fontStyle('H', 28, '#fff')}>추가 정보(관심사)</Text>
+								<SpaceView mt={10}>
+									<Text style={styles.fontStyle('SB', 12, '#fff')}>나와 비슷한 성향을 가진 친구를 찾기 위해{'\n'}관심사와 인터뷰 내용을 작성해 주세요.</Text>
+								</SpaceView>
+							</SpaceView>
+
+							<ScrollView 
+								bounces={false}
+								showsVerticalScrollIndicator={false} 
+								style={{height: height-350}}
+							>
+								<SpaceView mb={20}>
+									{intList.map((i, n) => {
+										//let list:any;
+										const list = checkIntList.filter(item => item.group_code === i.group_code);
+										const groupCode = i.group_code;
+										let icon = ICON.int_active;
+
+										// 아이콘 설정
+										if(groupCode == 'INTEREST_CATEGORY_01') {
+											icon = ICON.int_lifestyle;
+										} else if(groupCode == 'INTEREST_CATEGORY_02') {
+											icon = ICON.int_leisure;
+										} else if(groupCode == 'INTEREST_CATEGORY_03') {
+											icon = ICON.int_food;
+										} else if(groupCode == 'INTEREST_CATEGORY_04') {
+											icon = ICON.int_body;
+										} else if(groupCode == 'INTEREST_CATEGORY_05') {
+											icon = ICON.int_active;
+										} else if(groupCode == 'INTEREST_CATEGORY_06') {
+											icon = ICON.int_social;
+										} else if(groupCode == 'INTEREST_CATEGORY_07') {
+											icon = ICON.int_entertainment;
+										} else if(groupCode == 'INTEREST_CATEGORY_08') {
+											icon = ICON.int_game;
+										}
+
+										return list.length > 0 && (
+											<>
+												<SpaceView mb={30}>
+													<SpaceView viewStyle={layoutStyle.rowStart}>
+														<Image source={icon} style={styles.iconSquareSize(15)} />
+														<SpaceView ml={5}><Text style={styles.fontStyle('B', 14, '#fff')}>{i.group_code_name}</Text></SpaceView>
+													</SpaceView>
+
+													<SpaceView mt={20} viewStyle={{flexDirection: 'row', flexWrap: 'wrap'}}>
+														{list.map((i2, n2) => {
+															return isEmptyData(i2.code_name) && (
+																<SpaceView key={n2 + 'reg'} mr={5} mb={10} viewStyle={_styles.interestItemWrap}>
+																	<Text style={styles.fontStyle('B', 14, '#fff')}>{i2.code_name}</Text>
+																</SpaceView>
+															);
+														})}
+													</SpaceView>
+												</SpaceView>
+											</>
+										);
+									})}
+								</SpaceView>
+							</ScrollView>
+						</SpaceView>
+					</SpaceView>
+
 				</SpaceView>
 
+				<SpaceView mb={20} viewStyle={_styles.bottomWrap}>
+					<TouchableOpacity 
+						onPress={() => { int_onOpen(); }}
+						style={[_styles.nextBtnWrap(false), {marginRight: 10}]}>
+						<Text style={styles.fontStyle('B', 16, '#000000')}>관심사 추가/삭제</Text>
+					</TouchableOpacity>
+					<TouchableOpacity 
+						//disabled={!comment}
+						onPress={() => { 
+							saveFn();
+						}}
+						style={_styles.nextBtnWrap(true)}>
+						<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+						<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+					</TouchableOpacity>
+				</SpaceView>
 
 				{/* <ScrollView showsVerticalScrollIndicator={false}>
 					<SpaceView mt={20}>
@@ -315,10 +343,11 @@ export const SignUp_Interest = (props : Props) => {
 const _styles = StyleSheet.create({
 	wrap: {
 		flex: 1,
-    minHeight: height,
+    height: height,
     backgroundColor: '#000000',
     paddingTop: 30,
     paddingHorizontal: 10,
+		justifyContent: 'space-between',
 	},
 	interestItemWrap: {
 		backgroundColor: '#808080',
@@ -331,6 +360,7 @@ const _styles = StyleSheet.create({
 	bottomWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+		paddingHorizontal: 10,
   },
   nextBtnWrap: (isOn:boolean) => {
 		return {

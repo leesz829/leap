@@ -3,21 +3,13 @@ import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-n
 import { StackParamList, ScreenNavigationProp } from '@types';
 import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, InputAccessoryView, TextInput, Keyboard, Modal, Pressable  } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
-import { Watermark } from 'component/Watermark';
-import LinearGradient from 'react-native-linear-gradient';
 import { useUserInfo } from 'hooks/useUserInfo';
 import SpaceView from 'component/SpaceView';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Extrapolate, cancelAnimation, stopClock } from 'react-native-reanimated';
 import { ROUTES, STACK } from 'constants/routes';
-//import Modal from 'react-native-modal';
-import { CommonTextarea } from 'component/CommonTextarea';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
-import { save_story_reply } from 'api/models';
 import { isEmptyData } from 'utils/functions';
-import { SUCCESS, NODATA } from 'constants/reusltcode';
-import { useProfileImg } from 'hooks/useProfileImg';
 import { ScrollView } from 'react-native-gesture-handler';
-import { myProfile } from 'redux/reducers/authReducer';
 import { useDispatch } from 'react-redux';
 import { Modalize } from 'react-native-modalize';
 
@@ -151,7 +143,7 @@ const InterestRegiPopup = forwardRef((props, ref) => {
                         const groupCode = item?.group_code;
                         let tmpCommonCode = '';
                         let tmpCnt = 0;
-                        let iconImg = ICON.int_lifestyle;
+                        let icon = ICON.int_active;
         
                         for (let j = 0; j < checkIntList.length; j++) {
                           if(checkIntList[j].common_code == i.common_code){
@@ -162,22 +154,22 @@ const InterestRegiPopup = forwardRef((props, ref) => {
                         }
 
                         // 아이콘 설정
-                        if(groupCode == 'INTEREST_CATEGORY_02') {
-                          iconImg = ICON.int_lifestyle;
+                        if(groupCode == 'INTEREST_CATEGORY_01') {
+                          icon = ICON.int_lifestyle;
+                        } else if(groupCode == 'INTEREST_CATEGORY_02') {
+                          icon = ICON.int_leisure;
                         } else if(groupCode == 'INTEREST_CATEGORY_03') {
-                          iconImg = ICON.int_lifestyle;
+                          icon = ICON.int_food;
                         } else if(groupCode == 'INTEREST_CATEGORY_04') {
-                          iconImg = ICON.int_body;
+                          icon = ICON.int_body;
                         } else if(groupCode == 'INTEREST_CATEGORY_05') {
-                          iconImg = ICON.int_lifestyle;
+                          icon = ICON.int_active;
                         } else if(groupCode == 'INTEREST_CATEGORY_06') {
-                          iconImg = ICON.int_social;
+                          icon = ICON.int_social;
                         } else if(groupCode == 'INTEREST_CATEGORY_07') {
-                          iconImg = ICON.int_entertainment;
+                          icon = ICON.int_entertainment;
                         } else if(groupCode == 'INTEREST_CATEGORY_08') {
-                          iconImg = ICON.int_lifestyle;
-                        } else if(groupCode == 'INTEREST_CATEGORY_99') {
-                          iconImg = ICON.int_lifestyle;
+                          icon = ICON.int_game;
                         }
 
                         return (
@@ -196,7 +188,7 @@ const InterestRegiPopup = forwardRef((props, ref) => {
                                 }
                               }}
                             >
-                              <Image source={iconImg} style={styles.iconSquareSize(15)} />
+                              <Image source={icon} style={styles.iconSquareSize(15)} />
                               <SpaceView ml={3}><Text style={styles.fontStyle('B', 14, '#fff')}>{i.code_name}</Text></SpaceView>
                             </TouchableOpacity>
                           </SpaceView>

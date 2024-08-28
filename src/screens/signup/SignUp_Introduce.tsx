@@ -4,7 +4,7 @@ import { CommonBtn } from 'component/CommonBtn';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import React, { useRef, useState } from 'react';
-import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
+import { View, Image, ScrollView, TouchableOpacity, StyleSheet, FlatList, Text, Dimensions, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { usePopup } from 'Context';
@@ -13,8 +13,7 @@ import { SUCCESS } from 'constants/reusltcode';
 import { ROUTES } from 'constants/routes';
 import { CommonLoading } from 'component/CommonLoading';
 import { isEmptyData } from 'utils/functions';
-import LinearGradient from 'react-native-linear-gradient';
-import { TextInput } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback, TextInput } from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 
@@ -40,6 +39,8 @@ export const SignUp_Introduce = (props : Props) => {
 	const isFocus = useIsFocused();
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
+
+	const [isKeyboardVisible, setIsKeyboardVisible] = React.useState(false);
 
 	const memberSeq = props.route.params?.memberSeq; // 회원 번호
 	const gender = props.route.params?.gender; // 성별
@@ -171,68 +172,98 @@ export const SignUp_Introduce = (props : Props) => {
 		//callbackAnswerFn && callbackAnswerFn(member_interview_seq, text);
 	};
 
+	// ############################################################ 키패드 핸들러
+  const keyBoardHandle = () => {
+    if(isKeyboardVisible) {
+      Keyboard.dismiss();
+    };
+  };
+
 	// ############################################################ 최초 실행
 	React.useEffect(() => {
-		getMemberIntro();
+		if(isFocus) {
+			getMemberIntro();
+		}
+
+		const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    }
+
 	}, [isFocus]);
 
 	return (
 		<>
 			<SpaceView viewStyle={_styles.wrap}>
-        <SpaceView>
-          <CommonHeader title="" />
-        </SpaceView>
+				<SpaceView>
 
-        <SpaceView viewStyle={{justifyContent: 'space-between', height: height-180}}>
-          <SpaceView>
-            <SpaceView mt={50}>
-              <Text style={styles.fontStyle('H', 28, '#fff')}>추가 정보(인터뷰)</Text>
-              <SpaceView mt={10}>
-                <Text style={styles.fontStyle('SB', 12, '#fff')}>리프의 친구들에게{'\n'}{nickname}님의 생각을 남겨 보세요.</Text>
-              </SpaceView>
-            </SpaceView>
+					<SpaceView>
+						<CommonHeader title="" />
+					</SpaceView>
 
-						<ScrollView showsVerticalScrollIndicator={false} style={{height: height-330}}>
-							<SpaceView mt={50} mb={20}>
-								{interviewList.map((item, index) => {
-									return isEmptyData(item?.common_code) && (
-										<>
-											<SpaceView mb={15}>
-												<SpaceView mb={10}>
-													<Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
-												</SpaceView>
-												<TextInput
-													defaultValue={item?.answer}
-													onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
-													autoCapitalize={'none'}
-													multiline={true}
-													style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#fff')]}
-													placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
-													placeholderTextColor={'#FFFDEC'}
-													maxLength={200}
-													caretHidden={true}
-												/>
-											</SpaceView>
-										</>
-									)
-								})}
+					<SpaceView>
+						<TouchableWithoutFeedback onPress={() => { keyBoardHandle(); }}>
+							<SpaceView mt={50}>
+								<Text style={styles.fontStyle('H', 28, '#fff')}>추가 정보(인터뷰)</Text>
+								<SpaceView mt={10}>
+									<Text style={styles.fontStyle('SB', 12, '#fff')}>리프의 친구들에게{'\n'}{nickname}님의 생각을 남겨 보세요.</Text>
+								</SpaceView>
 							</SpaceView>
-						</ScrollView>
 
-						<SpaceView mt={15} viewStyle={_styles.bottomWrap}>
-							<TouchableOpacity 
-								//disabled={!comment}
-								onPress={() => { 
-									saveFn();
-								}}
-								style={_styles.nextBtnWrap(true)}>
-								<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
-								<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
-							</TouchableOpacity>
-						</SpaceView>
+							<ScrollView 
+								bounces={false}
+								showsVerticalScrollIndicator={false} 
+								style={{height: height-330}}
+							>
+								<SpaceView mt={50} mb={20}>
+									{interviewList.map((item, index) => {
+										return isEmptyData(item?.common_code) && (
+											<>
+												<SpaceView mb={15}>
+													<SpaceView mb={10}>
+														<Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
+													</SpaceView>
+													<TextInput
+														defaultValue={item?.answer}
+														onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+														autoCapitalize={'none'}
+														multiline={true}
+														style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#fff')]}
+														placeholder={'인터뷰 답변 입력(가입 후 변경 가능)'}
+														placeholderTextColor={'#FFFDEC'}
+														maxLength={200}
+														caretHidden={true}
+													/>
+												</SpaceView>
+											</>
+										)
+									})}
+								</SpaceView>
+							</ScrollView>
 
+							<SpaceView mt={20} viewStyle={_styles.bottomWrap}>
+								<TouchableOpacity 
+									//disabled={!comment}
+									onPress={() => { 
+										saveFn();
+									}}
+									style={_styles.nextBtnWrap(true)}>
+									<Text style={styles.fontStyle('B', 16, '#fff')}>다음으로</Text>
+									<SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
+								</TouchableOpacity>
+							</SpaceView>
+
+						</TouchableWithoutFeedback>
 					</SpaceView>
 				</SpaceView>
+        
 			</SpaceView>
 
 
@@ -352,10 +383,11 @@ export const SignUp_Introduce = (props : Props) => {
 const _styles = StyleSheet.create({
 	wrap: {
 		flex: 1,
-    minHeight: height,
+    height: height,
     backgroundColor: '#000000',
     paddingTop: 30,
     paddingHorizontal: 10,
+		justifyContent: 'space-between',
 	},
 	textInputBox: (_hegiht: number) => {
 		return {
@@ -369,6 +401,7 @@ const _styles = StyleSheet.create({
 	bottomWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+		paddingHorizontal: 10,
   },
   nextBtnWrap: (isOn:boolean) => {
 		return {
