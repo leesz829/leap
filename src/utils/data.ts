@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage';
 import * as properties from 'utils/properties';
 import { findSourcePath } from 'utils/imageUtils';
 

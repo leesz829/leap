@@ -7,7 +7,7 @@ import { enableScreens } from 'react-native-screens';
 import { Provider, useDispatch } from 'react-redux';
 import store from 'redux/store';
 import MainNaviagtion from './src/navigation/MainNaviagtion';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { JWT_TOKEN } from 'constants/storeKey';
 import codePush from 'react-native-code-push';

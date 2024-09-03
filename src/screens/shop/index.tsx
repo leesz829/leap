@@ -14,7 +14,7 @@ import CategoryShop from './Component/CategoryShop';
 import { ROUTES, STACK } from 'constants/routes';
 import BannerPannel from './Component/BannerPannel';
 import { CommonLoading } from 'component/CommonLoading';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { usePopup } from 'Context';

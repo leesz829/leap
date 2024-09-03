@@ -19,11 +19,11 @@ public class MainActivity extends ReactActivity {
       super.onCreate(null);
       getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
-      MobileAds.initialize(this, new OnInitializationCompleteListener() {
+      /* MobileAds.initialize(this, new OnInitializationCompleteListener() {
           @Override
           public void onInitializationComplete(InitializationStatus initializationStatus) {
           }
-      });
+      }); */
   }
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule

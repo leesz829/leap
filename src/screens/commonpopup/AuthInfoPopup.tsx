@@ -10,7 +10,6 @@ import { useUserInfo } from 'hooks/useUserInfo';
 import LinearGradient from 'react-native-linear-gradient';
 import { IMAGE, PROFILE_IMAGE, findSourcePath, ICON } from 'utils/imageUtils';
 import { CommaFormat, isEmptyData, formatNowDate } from 'utils/functions';
-import AsyncStorage from '@react-native-community/async-storage';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withSequence, withDelay, Easing, withRepeat, interpolate, Extrapolate, stopClock, cancelAnimation } from 'react-native-reanimated';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { STACK, ROUTES } from 'constants/routes';

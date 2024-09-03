@@ -15,7 +15,6 @@ import { formatNowDate, isEmptyData, CommaFormat } from 'utils/functions';
 import { Watermark } from 'component/Watermark';
 import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { ROUTES, STACK } from 'constants/routes';
-import AsyncStorage from '@react-native-community/async-storage';
 import { clearPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
 import { CommonText } from 'component/CommonText';

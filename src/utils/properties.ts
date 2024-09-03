@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { JWT_TOKEN } from 'constants/storeKey';
 
 // api 서버 도메인

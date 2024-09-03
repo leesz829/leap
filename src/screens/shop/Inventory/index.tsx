@@ -21,7 +21,7 @@ import { useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/n
 import { ROUTES, STACK } from 'constants/routes';
 import { findSourcePath } from 'utils/imageUtils';
 import { CommonLoading } from 'component/CommonLoading';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommaFormat, formatNowDate, isEmptyData } from 'utils/functions';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';

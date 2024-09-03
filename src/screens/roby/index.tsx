@@ -26,7 +26,7 @@ import { isEmptyData, formatNowDate } from 'utils/functions';
 import { CommonLoading } from 'component/CommonLoading';
 import { CommaFormat } from 'utils/functions';
 import { clearPrincipal } from 'redux/reducers/authReducer';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SocialGrade from 'component/common/SocialGrade';
 import Modal from 'react-native-modal';
 import { myProfile } from 'redux/reducers/authReducer';
