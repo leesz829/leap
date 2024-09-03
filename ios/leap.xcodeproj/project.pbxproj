@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,24 +11,24 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		819269ABC38A460CE736F789 /* Pods_leap_leapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62169FD7571D5B1CAFBFACC4 /* Pods_leap_leapTests.framework */; };
-		8413F0E62B109AB1006F491D /* AppleSDGothicNeoB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1786CE02C22F4178A2B51687 /* AppleSDGothicNeoB00.ttf */; };
 		8413F0E82B109AB1006F491D /* Pretendard-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */; };
 		8413F0E92B109AB1006F491D /* Pretendard-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */; };
 		8413F0EA2B109AB1006F491D /* Pretendard-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */; };
 		8413F0EB2B109AB1006F491D /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DC2B0E01AD00359ED1 /* Pretendard-Medium.ttf */; };
 		8413F0EC2B109AB1006F491D /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DD2B0E01AD00359ED1 /* Pretendard-Regular.ttf */; };
 		8413F0ED2B109AB1006F491D /* Pretendard-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DF2B0E01AD00359ED1 /* Pretendard-SemiBold.ttf */; };
-		8413F0EE2B109AB1006F491D /* AppleSDGothicNeoM00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */; };
-		8413F0EF2B109AB1006F491D /* AppleSDGothicNeoR00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F739A331B9B142E3995067D0 /* AppleSDGothicNeoR00.ttf */; };
-		8413F0F02B109AB1006F491D /* AppleSDGothicNeoEB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63141EE5A8E940BCB34D9639 /* AppleSDGothicNeoEB00.ttf */; };
-		8413F0F12B109AB1006F491D /* AppleSDGothicNeoH00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */; };
-		8413F0F22B109AB1006F491D /* AppleSDGothicNeoSB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */; };
 		8413F0F32B109AC1006F491D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8413F0F52B109AD3006F491D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */; };
 		8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
 		8413F0F72B109B17006F491D /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 7CEB068529CB622E007F724F /* fonts */; };
-		8413F0FA2B109E0D006F491D /* MinSans-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8413F0F92B109E0D006F491D /* MinSans-Bold.otf */; };
+		847F03E62B55071F0066259E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 847F03E52B55071F0066259E /* GoogleService-Info.plist */; };
+		84CDB3C72C56401900DEB58E /* SUITE-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3C62C56401900DEB58E /* SUITE-Bold.ttf */; };
+		84CDB3CE2C56402F00DEB58E /* SUITE-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3C82C56402F00DEB58E /* SUITE-ExtraBold.ttf */; };
+		84CDB3CF2C56402F00DEB58E /* SUITE-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3C92C56402F00DEB58E /* SUITE-Regular.ttf */; };
+		84CDB3D02C56402F00DEB58E /* SUITE-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3CA2C56402F00DEB58E /* SUITE-Light.ttf */; };
+		84CDB3D12C56402F00DEB58E /* SUITE-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3CB2C56402F00DEB58E /* SUITE-Medium.ttf */; };
+		84CDB3D22C56402F00DEB58E /* SUITE-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3CC2C56402F00DEB58E /* SUITE-SemiBold.ttf */; };
+		84CDB3D32C56402F00DEB58E /* SUITE-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3CD2C56402F00DEB58E /* SUITE-Heavy.ttf */; };
 		84F4E05829F823F7000977E9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F4E05729F823F7000977E9 /* StoreKit.framework */; };
 		AC88F52FB845B0E5C5C18D36 /* Pods_leap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 998A2D7CC8D7771394266903 /* Pods_leap.framework */; };
 /* End PBXBuildFile section */
@@ -53,33 +53,35 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = leap/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = leap/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = leap/main.m; sourceTree = "<group>"; };
-		1786CE02C22F4178A2B51687 /* AppleSDGothicNeoB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoB00.ttf; sourceTree = "<group>"; };
 		1DE016962ACB4680CF3CB83C /* Pods-leap-leapTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap-leapTests.debug.xcconfig"; path = "Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests.debug.xcconfig"; sourceTree = "<group>"; };
-		36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoSB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoSB00.ttf; sourceTree = "<group>"; };
 		39788C5D3104A878C8824294 /* Pods-leap-leapTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap-leapTests.staging.xcconfig"; path = "Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests.staging.xcconfig"; sourceTree = "<group>"; };
 		3C74782505E6946EB3E343F1 /* Pods-leap-leapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap-leapTests.release.xcconfig"; path = "Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests.release.xcconfig"; sourceTree = "<group>"; };
 		62169FD7571D5B1CAFBFACC4 /* Pods_leap_leapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_leap_leapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		63141EE5A8E940BCB34D9639 /* AppleSDGothicNeoEB00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoEB00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoEB00.ttf; sourceTree = "<group>"; };
-		670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoM00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoM00.ttf; sourceTree = "<group>"; };
 		7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		7CA540472937A4AA0071FB41 /* leap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = leap.entitlements; path = leap/leap.entitlements; sourceTree = "<group>"; };
 		7CEB068529CB622E007F724F /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = ../src/assets/fonts; sourceTree = "<group>"; };
 		8131F8F916F64BCB7FF2BA65 /* Pods-leap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.release.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = leap/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		83E35F69B9ED9E3635492A41 /* Pods-leap.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.staging.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.staging.xcconfig"; sourceTree = "<group>"; };
-		8413F0F92B109E0D006F491D /* MinSans-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "MinSans-Bold.otf"; path = "../src/assets/fonts/MinSans-Bold.otf"; sourceTree = "<group>"; };
-		84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		847F03E52B55071F0066259E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.ttf"; sourceTree = "<group>"; };
 		84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.ttf"; sourceTree = "<group>"; };
 		84BB78DC2B0E01AD00359ED1 /* Pretendard-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.ttf"; sourceTree = "<group>"; };
 		84BB78DD2B0E01AD00359ED1 /* Pretendard-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.ttf"; sourceTree = "<group>"; };
 		84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-ExtraBold.ttf"; sourceTree = "<group>"; };
 		84BB78DF2B0E01AD00359ED1 /* Pretendard-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.ttf"; sourceTree = "<group>"; };
+		84C00BE52B4580920016DFB4 /* MinSans-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "MinSans-Black.otf"; path = "../src/assets/fonts/MinSans-Black.otf"; sourceTree = "<group>"; };
+		84CDB3C62C56401900DEB58E /* SUITE-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SUITE-Bold.ttf"; path = "../src/assets/fonts/SUITE-Bold.ttf"; sourceTree = "<group>"; };
+		84CDB3C82C56402F00DEB58E /* SUITE-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SUITE-ExtraBold.ttf"; path = "../src/assets/fonts/SUITE-ExtraBold.ttf"; sourceTree = "<group>"; };
+		84CDB3C92C56402F00DEB58E /* SUITE-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SUITE-Regular.ttf"; path = "../src/assets/fonts/SUITE-Regular.ttf"; sourceTree = "<group>"; };
+		84CDB3CA2C56402F00DEB58E /* SUITE-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SUITE-Light.ttf"; path = "../src/assets/fonts/SUITE-Light.ttf"; sourceTree = "<group>"; };
+		84CDB3CB2C56402F00DEB58E /* SUITE-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SUITE-Medium.ttf"; path = "../src/assets/fonts/SUITE-Medium.ttf"; sourceTree = "<group>"; };
+		84CDB3CC2C56402F00DEB58E /* SUITE-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SUITE-SemiBold.ttf"; path = "../src/assets/fonts/SUITE-SemiBold.ttf"; sourceTree = "<group>"; };
+		84CDB3CD2C56402F00DEB58E /* SUITE-Heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SUITE-Heavy.ttf"; path = "../src/assets/fonts/SUITE-Heavy.ttf"; sourceTree = "<group>"; };
+		84D00C9C2B43F26C00389CC5 /* StoreConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = StoreConfiguration.storekit; path = leap/StoreConfiguration.storekit; sourceTree = "<group>"; };
 		84F4E05729F823F7000977E9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		998A2D7CC8D7771394266903 /* Pods_leap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_leap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoH00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoH00.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F739A331B9B142E3995067D0 /* AppleSDGothicNeoR00.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AppleSDGothicNeoR00.ttf; path = ../src/assets/fonts/AppleSDGothicNeoR00.ttf; sourceTree = "<group>"; };
 		F93CE1C3428B4BC61D79C1E5 /* Pods-leap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.debug.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,19 +126,20 @@
 		136ED0319BA3459BB9EC22D5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				1786CE02C22F4178A2B51687 /* AppleSDGothicNeoB00.ttf */,
+				84CDB3C82C56402F00DEB58E /* SUITE-ExtraBold.ttf */,
+				84CDB3CD2C56402F00DEB58E /* SUITE-Heavy.ttf */,
+				84CDB3CA2C56402F00DEB58E /* SUITE-Light.ttf */,
+				84CDB3CB2C56402F00DEB58E /* SUITE-Medium.ttf */,
+				84CDB3C92C56402F00DEB58E /* SUITE-Regular.ttf */,
+				84CDB3CC2C56402F00DEB58E /* SUITE-SemiBold.ttf */,
+				84CDB3C62C56401900DEB58E /* SUITE-Bold.ttf */,
 				84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */,
-				8413F0F92B109E0D006F491D /* MinSans-Bold.otf */,
+				84C00BE52B4580920016DFB4 /* MinSans-Black.otf */,
 				84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */,
 				84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */,
 				84BB78DC2B0E01AD00359ED1 /* Pretendard-Medium.ttf */,
 				84BB78DD2B0E01AD00359ED1 /* Pretendard-Regular.ttf */,
 				84BB78DF2B0E01AD00359ED1 /* Pretendard-SemiBold.ttf */,
-				670DB48B4B764396AB3C3ED5 /* AppleSDGothicNeoM00.ttf */,
-				F739A331B9B142E3995067D0 /* AppleSDGothicNeoR00.ttf */,
-				63141EE5A8E940BCB34D9639 /* AppleSDGothicNeoEB00.ttf */,
-				D23CDB4B619645389CE1FA18 /* AppleSDGothicNeoH00.ttf */,
-				36445508456E48D794395C87 /* AppleSDGothicNeoSB00.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -144,7 +147,7 @@
 		13B07FAE1A68108700A75B9A /* leap */ = {
 			isa = PBXGroup;
 			children = (
-				84A3B3D92A77AB6C008FAAE9 /* GoogleService-Info.plist */,
+				847F03E52B55071F0066259E /* GoogleService-Info.plist */,
 				7CA540472937A4AA0071FB41 /* leap.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -177,6 +180,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				84D00C9C2B43F26C00389CC5 /* StoreConfiguration.storekit */,
 				7CEB068529CB622E007F724F /* fonts */,
 				7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */,
 				13B07FAE1A68108700A75B9A /* leap */,
@@ -277,7 +281,7 @@
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "leap" */;
-			compatibilityVersion = "Xcode 12.0";
+			compatibilityVersion = "Xcode 15.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -308,23 +312,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				8413F0F72B109B17006F491D /* fonts in Resources */,
+				84CDB3D02C56402F00DEB58E /* SUITE-Light.ttf in Resources */,
 				8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */,
-				8413F0F52B109AD3006F491D /* GoogleService-Info.plist in Resources */,
 				8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */,
-				8413F0FA2B109E0D006F491D /* MinSans-Bold.otf in Resources */,
+				84CDB3D12C56402F00DEB58E /* SUITE-Medium.ttf in Resources */,
 				8413F0F32B109AC1006F491D /* Images.xcassets in Resources */,
-				8413F0E62B109AB1006F491D /* AppleSDGothicNeoB00.ttf in Resources */,
 				8413F0E82B109AB1006F491D /* Pretendard-Bold.ttf in Resources */,
+				84CDB3D32C56402F00DEB58E /* SUITE-Heavy.ttf in Resources */,
 				8413F0E92B109AB1006F491D /* Pretendard-ExtraBold.ttf in Resources */,
+				84CDB3CF2C56402F00DEB58E /* SUITE-Regular.ttf in Resources */,
+				84CDB3D22C56402F00DEB58E /* SUITE-SemiBold.ttf in Resources */,
+				84CDB3C72C56401900DEB58E /* SUITE-Bold.ttf in Resources */,
 				8413F0EA2B109AB1006F491D /* Pretendard-Light.ttf in Resources */,
 				8413F0EB2B109AB1006F491D /* Pretendard-Medium.ttf in Resources */,
 				8413F0EC2B109AB1006F491D /* Pretendard-Regular.ttf in Resources */,
+				84CDB3CE2C56402F00DEB58E /* SUITE-ExtraBold.ttf in Resources */,
+				847F03E62B55071F0066259E /* GoogleService-Info.plist in Resources */,
 				8413F0ED2B109AB1006F491D /* Pretendard-SemiBold.ttf in Resources */,
-				8413F0EE2B109AB1006F491D /* AppleSDGothicNeoM00.ttf in Resources */,
-				8413F0EF2B109AB1006F491D /* AppleSDGothicNeoR00.ttf in Resources */,
-				8413F0F02B109AB1006F491D /* AppleSDGothicNeoEB00.ttf in Resources */,
-				8413F0F12B109AB1006F491D /* AppleSDGothicNeoH00.ttf in Resources */,
-				8413F0F22B109AB1006F491D /* AppleSDGothicNeoSB00.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,7 +562,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.0.7;
 				MULTI_DEPLOYMENT_CONFIG = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -592,7 +596,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.0.7;
 				MULTI_DEPLOYMENT_CONFIG = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -687,7 +691,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.0.7;
 				MULTI_DEPLOYMENT_CONFIG = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
