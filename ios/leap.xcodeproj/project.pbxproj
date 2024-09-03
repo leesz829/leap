@@ -8,20 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* leapTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* leapTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		0C80B921A6F3F58F76C31292 /* libPods-leap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-leap.a */; };
+		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		6132EF182BDFF13200BBE14D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */; };
+		7699B88040F8A987B510C191 /* libPods-leap-leapTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-leap-leapTests.a */; };
 		819269ABC38A460CE736F789 /* Pods_leap_leapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62169FD7571D5B1CAFBFACC4 /* Pods_leap_leapTests.framework */; };
+		8413F0F32B109AC1006F491D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
+		8413F0F72B109B17006F491D /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 7CEB068529CB622E007F724F /* fonts */; };
+		847F03E62B55071F0066259E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 847F03E52B55071F0066259E /* GoogleService-Info.plist */; };
 		8413F0E82B109AB1006F491D /* Pretendard-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */; };
 		8413F0E92B109AB1006F491D /* Pretendard-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */; };
 		8413F0EA2B109AB1006F491D /* Pretendard-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */; };
 		8413F0EB2B109AB1006F491D /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DC2B0E01AD00359ED1 /* Pretendard-Medium.ttf */; };
 		8413F0EC2B109AB1006F491D /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DD2B0E01AD00359ED1 /* Pretendard-Regular.ttf */; };
 		8413F0ED2B109AB1006F491D /* Pretendard-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DF2B0E01AD00359ED1 /* Pretendard-SemiBold.ttf */; };
-		8413F0F32B109AC1006F491D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
-		8413F0F72B109B17006F491D /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 7CEB068529CB622E007F724F /* fonts */; };
-		847F03E62B55071F0066259E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 847F03E52B55071F0066259E /* GoogleService-Info.plist */; };
 		84CDB3C72C56401900DEB58E /* SUITE-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3C62C56401900DEB58E /* SUITE-Bold.ttf */; };
 		84CDB3CE2C56402F00DEB58E /* SUITE-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3C82C56402F00DEB58E /* SUITE-ExtraBold.ttf */; };
 		84CDB3CF2C56402F00DEB58E /* SUITE-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3C92C56402F00DEB58E /* SUITE-Regular.ttf */; };
@@ -83,6 +86,8 @@
 		998A2D7CC8D7771394266903 /* Pods_leap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_leap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F93CE1C3428B4BC61D79C1E5 /* Pods-leap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.debug.xcconfig"; path = "Target Support Files/Pods-leap/Pods-leap.debug.xcconfig"; sourceTree = "<group>"; };
+		5DCACB8F33CDC322A6C60F78 /* libPods-leap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-leap.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = leap/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,7 +155,7 @@
 				847F03E52B55071F0066259E /* GoogleService-Info.plist */,
 				7CA540472937A4AA0071FB41 /* leap.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -246,13 +251,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "leap" */;
 			buildPhases = (
 				F822E34C28BE33405F0667E7 /* [CP] Check Pods Manifest.lock */,
-				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				8413F0E52B109AA2006F491D /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				05D1725853969F9A0C0A1A7A /* [CP] Copy Pods Resources */,
 				FB4F8BAEAD5BD96655EFBF50 /* [CP-User] [RNFB] Core Configuration */,
+				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -313,6 +318,7 @@
 			files = (
 				8413F0F72B109B17006F491D /* fonts in Resources */,
 				84CDB3D02C56402F00DEB58E /* SUITE-Light.ttf in Resources */,
+				6132EF182BDFF13200BBE14D /* PrivacyInfo.xcprivacy in Resources */,
 				8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */,
 				8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */,
 				84CDB3D12C56402F00DEB58E /* SUITE-Medium.ttf in Resources */,
@@ -341,13 +347,15 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
 			);
 			name = "Bundle React Native code and images";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
 		05D1725853969F9A0C0A1A7A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -364,6 +372,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-leap/Pods-leap-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-leap/Pods-leap-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-leap/Pods-leap-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-leap/Pods-leap-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		0D57C7E934DEBE1658C8601C /* [CP] Check Pods Manifest.lock */ = {
@@ -440,25 +465,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-leap-leapTests/Pods-leap-leapTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FD10A7F022414F080027D42C /* Start Packager */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Start Packager";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -501,7 +507,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = leapTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -526,7 +532,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 7DWLU7RU2S;
 				INFOPLIST_FILE = leapTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -615,7 +621,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -653,7 +659,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -665,6 +671,13 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+				);
 				MULTI_DEPLOYMENT_CONFIG = "$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)";
 				NEW_SETTING = "";
 				SDKROOT = iphoneos;
@@ -713,7 +726,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 7DWLU7RU2S;
 				INFOPLIST_FILE = leapTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -735,7 +748,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -780,7 +793,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -795,6 +808,13 @@
 				MULTI_DEPLOYMENT_CONFIG = "";
 				NEW_SETTING = "";
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+				);
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -804,7 +824,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -842,7 +862,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -854,6 +874,13 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+				);
 				MULTI_DEPLOYMENT_CONFIG = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				NEW_SETTING = "";
 				SDKROOT = iphoneos;
