@@ -38,6 +38,7 @@ target 'leap' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
   
+  pod 'Firebase', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
   pod 'Firebase/Crashlytics'
@@ -52,7 +53,7 @@ target 'leap' do
     inherit! :complete
     # Pods for testing
   end
-  use_frameworks! :linkage => :static
+  #use_frameworks! :linkage => :static
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
