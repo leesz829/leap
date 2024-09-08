@@ -195,6 +195,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				E233CBF5F47BEE60B243DCF8 /* Pods */,
 				136ED0319BA3459BB9EC22D5 /* Resources */,
+				6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
