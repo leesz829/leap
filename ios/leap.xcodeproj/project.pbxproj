@@ -8,19 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* leapTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* leapTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		917F2B2C3D9E6BEF550BE4F9 /* libPods-leap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBF817EF9E162CDD0E5D2A77 /* libPods-leap.a */; };
+		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
+		8413F0F32B109AC1006F491D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		229E05D8E3520BA11A493451 /* libPods-leap-leapTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAB18969877922A60E10943 /* libPods-leap-leapTests.a */; };
 		6132EF182BDFF13200BBE14D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */; };
+		8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
+		229E05D8E3520BA11A493451 /* libPods-leap-leapTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAB18969877922A60E10943 /* libPods-leap-leapTests.a */; };
 		8413F0E82B109AB1006F491D /* Pretendard-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DA2B0E01AD00359ED1 /* Pretendard-Bold.ttf */; };
 		8413F0E92B109AB1006F491D /* Pretendard-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DE2B0E01AD00359ED1 /* Pretendard-ExtraBold.ttf */; };
 		8413F0EA2B109AB1006F491D /* Pretendard-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DB2B0E01AD00359ED1 /* Pretendard-Light.ttf */; };
 		8413F0EB2B109AB1006F491D /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DC2B0E01AD00359ED1 /* Pretendard-Medium.ttf */; };
 		8413F0EC2B109AB1006F491D /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DD2B0E01AD00359ED1 /* Pretendard-Regular.ttf */; };
 		8413F0ED2B109AB1006F491D /* Pretendard-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BB78DF2B0E01AD00359ED1 /* Pretendard-SemiBold.ttf */; };
-		8413F0F32B109AC1006F491D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		8413F0F42B109AC8006F491D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8413F0F62B109AED006F491D /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E08C3293BB73600242D71 /* SplashScreen.storyboard */; };
 		8413F0F72B109B17006F491D /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 7CEB068529CB622E007F724F /* fonts */; };
 		847F03E62B55071F0066259E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 847F03E52B55071F0066259E /* GoogleService-Info.plist */; };
 		84CDB3C72C56401900DEB58E /* SUITE-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3C62C56401900DEB58E /* SUITE-Bold.ttf */; };
@@ -31,7 +32,6 @@
 		84CDB3D22C56402F00DEB58E /* SUITE-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3CC2C56402F00DEB58E /* SUITE-SemiBold.ttf */; };
 		84CDB3D32C56402F00DEB58E /* SUITE-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84CDB3CD2C56402F00DEB58E /* SUITE-Heavy.ttf */; };
 		84F4E05829F823F7000977E9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F4E05729F823F7000977E9 /* StoreKit.framework */; };
-		917F2B2C3D9E6BEF550BE4F9 /* libPods-leap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBF817EF9E162CDD0E5D2A77 /* libPods-leap.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +50,7 @@
 		00E356F21AD99517003FC87E /* leapTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = leapTests.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* leap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = leap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = leap/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = leap/AppDelegate.m; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = leap/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = leap/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = leap/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = leap/main.m; sourceTree = "<group>"; };
@@ -152,7 +152,7 @@
 				847F03E52B55071F0066259E /* GoogleService-Info.plist */,
 				7CA540472937A4AA0071FB41 /* leap.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -496,7 +496,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
