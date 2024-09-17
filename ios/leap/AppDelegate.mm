@@ -36,7 +36,7 @@
           NSLog(@"Family name:  %@", name);
       }
   }
-  [RNSplashScreen show];
+  //[RNSplashScreen show];
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
