@@ -89,12 +89,15 @@ export const Vibe: FC<Props> = (props) => {
       setPickFace(pick);
       setPickProfileScore(profileScore);
 
-      if(pick == 'SKIP') {
+      insertLiveMatch(pick, code, profileScore);
+
+      /* if(pick == 'SKIP') {
         insertLiveMatch(pick, code, profileScore);
       } else {
         setLiveModalVisible(false);
-        setIsPopVisible(true);
-      }
+        //setIsPopVisible(true);
+        //insertLiveMatch();
+      } */
     }
   };
 
@@ -391,34 +394,34 @@ export const Vibe: FC<Props> = (props) => {
 
                 <BlurView 
                   style={_styles.liveModalBlur}
-                  blurType={'chromeMaterialLight'}
+                  blurType={'dark'}
                   blurAmount={30}
                   //overlayColor={'rgba(0,0,0,0.6)'}
-                >
-                  <SpaceView viewStyle={_styles.liveModalWrap}>
-                    <SpaceView mb={40}>
-                      <SpaceView mb={15}><Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>바이브 선택하기</Text></SpaceView>
-                      <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>아래 선택지에서 상대방에게 주고 싶은{'\n'}바이브를 선택해 주세요.</Text>
-                    </SpaceView>
+                />
 
-                    <SpaceView mb={30}>
-                      {data?.face_type_list.map((item, index) => {
-                        return item.common_code != 'FACE_TYPE_SKIP' && (
-                          <TouchableOpacity 
-                            key={'face_' + item.common_code} 
-                            onPress={() => openImpressPop('#' + item.code_name, item.common_code, item.code_memo)}
-                            style={_styles.liveModalFaceItem}>
-                            <Text style={[styles.fontStyle('B', 16, '#44B6E5'), {textAlign: 'center', marginBottom: 3}]}>#{item.code_name}</Text>
-                          </TouchableOpacity>
-                        )
-                      })}
-                    </SpaceView>
-
-                    <SpaceView>
-                      <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>바이브 선택이 많아질수록 리프에서{'\n'}선호하는 친구를 찾는 게 더 수월해질 거예요.</Text>
-                    </SpaceView>
+                <SpaceView viewStyle={_styles.liveModalWrap}>
+                  <SpaceView mb={40}>
+                    <SpaceView mb={15}><Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>바이브 선택하기</Text></SpaceView>
+                    <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>아래 선택지에서 상대방에게 주고 싶은{'\n'}바이브를 선택해 주세요.</Text>
                   </SpaceView>
-                </BlurView>
+
+                  <SpaceView mb={30}>
+                    {data?.face_type_list.map((item, index) => {
+                      return item.common_code != 'FACE_TYPE_SKIP' && (
+                        <TouchableOpacity 
+                          key={'face_' + item.common_code} 
+                          onPress={() => openImpressPop('#' + item.code_name, item.common_code, item.code_memo)}
+                          style={_styles.liveModalFaceItem}>
+                          <Text style={[styles.fontStyle('B', 16, '#44B6E5'), {textAlign: 'center', marginBottom: 3}]}>#{item.code_name}</Text>
+                        </TouchableOpacity>
+                      )
+                    })}
+                  </SpaceView>
+
+                  <SpaceView>
+                    <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>바이브 선택이 많아질수록 리프에서{'\n'}선호하는 친구를 찾는 게 더 수월해질 거예요.</Text>
+                  </SpaceView>
+                </SpaceView>
 
                 <SpaceView viewStyle={_styles.liveModalXBtn}>
                   <TouchableOpacity hitSlop={commonStyle.hipSlop20} onPress={() => { setLiveModalVisible(false); }}>
@@ -455,9 +458,7 @@ export const Vibe: FC<Props> = (props) => {
                             style={[_styles.impressBtn, {backgroundColor: '#FFF', borderTopLeftRadius: 10, borderBottomLeftRadius: 10}]}
                             onPress={cancelImpressPop}
                           >
-                            <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>
-                              취소하기
-                            </CommonText>
+                            <CommonText fontWeight={'600'} color={'#3D4348'} textStyle={{fontSize: 16}}>취소하기</CommonText>
                           </TouchableOpacity>
 
                           <TouchableOpacity
@@ -587,7 +588,7 @@ const _styles = StyleSheet.create({
   },
   gradeArea: {
     backgroundColor: '#FFFFFF',
-    borderRadius: Platform.OS == 'ios' ? 8 : 12,
+    borderRadius: 12,
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
@@ -635,8 +636,11 @@ const _styles = StyleSheet.create({
 
 
   liveModalBlur: {
-    width: width,
-    height: height,
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   liveModalXBtn: {
     position: 'absolute',
