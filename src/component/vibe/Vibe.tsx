@@ -399,34 +399,38 @@ export const Vibe: FC<Props> = (props) => {
                   //overlayColor={'rgba(0,0,0,0.6)'}
                 />
 
-                <SpaceView viewStyle={_styles.liveModalWrap}>
-                  <SpaceView mb={40}>
-                    <SpaceView mb={15}><Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>바이브 선택하기</Text></SpaceView>
-                    <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>아래 선택지에서 상대방에게 주고 싶은{'\n'}바이브를 선택해 주세요.</Text>
+                <SpaceView pt={50}>
+
+                  <SpaceView viewStyle={_styles.liveModalXBtn}>
+                    <TouchableOpacity hitSlop={commonStyle.hipSlop20} onPress={() => { setLiveModalVisible(false); }}>
+                      <Image source={ICON.backBtnType01} style={styles.iconSquareSize(40)} />
+                    </TouchableOpacity>
                   </SpaceView>
 
-                  <SpaceView mb={30}>
-                    {data?.face_type_list.map((item, index) => {
-                      return item.common_code != 'FACE_TYPE_SKIP' && (
-                        <TouchableOpacity 
-                          key={'face_' + item.common_code} 
-                          onPress={() => openImpressPop('#' + item.code_name, item.common_code, item.code_memo)}
-                          style={_styles.liveModalFaceItem}>
-                          <Text style={[styles.fontStyle('B', 16, '#44B6E5'), {textAlign: 'center', marginBottom: 3}]}>#{item.code_name}</Text>
-                        </TouchableOpacity>
-                      )
-                    })}
-                  </SpaceView>
+                  <SpaceView viewStyle={_styles.liveModalWrap}>
+                    <SpaceView mb={30}>
+                      <SpaceView mb={15}><Text style={[styles.fontStyle('EB', 28, '#fff'), {textAlign: 'center'}]}>바이브 선택하기</Text></SpaceView>
+                      <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>아래 선택지에서 상대방에게 주고 싶은{'\n'}바이브를 선택해 주세요.</Text>
+                    </SpaceView>
 
-                  <SpaceView>
-                    <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>바이브 선택이 많아질수록 리프에서{'\n'}선호하는 친구를 찾는 게 더 수월해질 거예요.</Text>
-                  </SpaceView>
-                </SpaceView>
+                    <SpaceView mb={30}>
+                      {data?.face_type_list.map((item, index) => {
+                        return item.common_code != 'FACE_TYPE_SKIP' && (
+                          <TouchableOpacity 
+                            key={'face_' + item.common_code} 
+                            onPress={() => openImpressPop('#' + item.code_name, item.common_code, item.code_memo)}
+                            style={_styles.liveModalFaceItem}>
+                            <Text style={[styles.fontStyle('B', 15, '#44B6E5'), {textAlign: 'center', marginBottom: 3}]}>#{item.code_name}</Text>
+                          </TouchableOpacity>
+                        )
+                      })}
+                    </SpaceView>
 
-                <SpaceView viewStyle={_styles.liveModalXBtn}>
-                  <TouchableOpacity hitSlop={commonStyle.hipSlop20} onPress={() => { setLiveModalVisible(false); }}>
-                    <Image source={ICON.backBtnType01} style={styles.iconSquareSize(30)} />
-                  </TouchableOpacity>
+                    <SpaceView>
+                      <Text style={[styles.fontStyle('SB', 12, '#fff'), {textAlign: 'center'}]}>바이브 선택이 많아질수록 리프에서{'\n'}선호하는 친구를 찾는 게 더 수월해질 거예요.</Text>
+                    </SpaceView>
+                  </SpaceView>
+                  
                 </SpaceView>
               </Modal>
 
@@ -643,9 +647,10 @@ const _styles = StyleSheet.create({
     right: 0,
   },
   liveModalXBtn: {
-    position: 'absolute',
-    top: 20,
-    left: 10,
+    paddingHorizontal: 10,
+    /* position: 'absolute',
+    top: 50,
+    left: 10, */
   },
   liveModalWrap: {
     flexDirection: 'column',
@@ -655,14 +660,14 @@ const _styles = StyleSheet.create({
     alignContent: 'center',
     width: width,
     height: height,
-    paddingTop: 105,
+    paddingTop: 30,
   },
   liveModalFaceItem: {
     borderWidth: 1,
     borderColor: '#44B6E5',
-    borderRadius: 5,
-    width: 200,
-    paddingVertical: 4,
+    borderRadius: 25,
+    width: width-60,
+    paddingVertical: 8,
     justifyContent: 'center',
     marginBottom: 13,
   },
