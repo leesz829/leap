@@ -47,10 +47,11 @@ export default function StoryRegi(props: Props) {
 
   // 다음 버튼
   const nextBtn = async () => {
-    /* if(contents.length < 20) {
+    if(!isEmptyData(contents) || contents.length < 20) {
+      console.log('asdsadas');
       show({ content: '최소 20글자 이상 입력해 주세요.' });
       return false;
-    } */
+    }
 
     navigation.navigate(STACK.COMMON, {
       screen: 'StoryEdit',

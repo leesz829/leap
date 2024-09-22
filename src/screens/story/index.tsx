@@ -286,6 +286,9 @@ export const Story = (props: Props) => {
 
       <SpaceView viewStyle={_styles.wrap}>
 
+        {/* ########################################################################################
+        ####### 쉬링크 ON UI
+        #########################################################################################*/}
         {isOnShrink && (
           <SpaceView viewStyle={_styles.headerWrap}>
             <SpaceView viewStyle={layoutStyle.alignCenter}>
@@ -456,8 +459,8 @@ const StoryHeader = React.memo(({selectFn}) => {
   return (
     <>
       <SpaceView mb={20}>
-        <SpaceView mt={40}>
-          <Text style={styles.fontStyle('H', 38, '#fff')}>스토리</Text>
+        <SpaceView mt={50}>
+          <Text style={styles.fontStyle('H', 32, '#fff')}>스토리</Text>
         </SpaceView>
 
         {/* ########################################################### 탭 영역 */}
@@ -531,39 +534,12 @@ const _styles = StyleSheet.create({
     backgroundColor: '#000',
     //paddingHorizontal: 10,
   },
-  tabArea: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#292F33',
-    borderRadius: Platform.OS == 'ios' ? 20 : 50,
-    paddingHorizontal: 10,
-  },
   contentWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingTop: 5,
     paddingBottom: 50,
-    paddingHorizontal: 5,
     width: width,
     height: height-120,
-  },
-  itemArea02: (width:number, height:number) => {
-    return {
-      width: width,
-      height: height,
-      borderRadius: 10,
-      overflow: 'hidden',
-      marginHorizontal: 3,
-    };
-  },
-  itemArea: (size:number) => {
-    return {
-      width: size,
-      height: size,
-      borderRadius: 10,
-      overflow: 'hidden',
-    };
   },
   btnArea: {
     position: 'absolute',
@@ -583,157 +559,6 @@ const _styles = StyleSheet.create({
     width: 140,
     height: 40,
   },
-  profileArea: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    zIndex: 1,
-    backgroundColor: '#fff',
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    overflow: 'hidden',
-  },
-  typeArea: (type:string) => {
-    let bgColor = '#FF9900';
-
-    if(type == 'VOTE') {
-      bgColor = '#7B81EC';
-    } else if(type == 'SECRET') {
-      bgColor = '#B873FF';
-    }
-
-    return {
-      position: 'absolute',
-      top: 10,
-      left: 10,
-      //backgroundColor: 'rgba(0,0,0,0.5)',
-      backgroundColor: '#FFDD00',
-      borderRadius: 15,
-      paddingVertical: 2,
-      width: 45,
-      zIndex: 1,
-    };
-  },
-  typeText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 12,
-    color: '#fff',
-    textAlign: 'center',
-  },
-  mstImgStyle: (size:number, bdRadius:number) => {
-    return {
-      width: size,
-      height: size,
-      borderRadius: bdRadius,
-      overflow: 'hidden',
-      borderWidth: 1,
-      borderColor: '#FFDD00',
-    };
-  },
-  secretIconStyle: (sizeType:string) => {
-    let size = 230;
-
-    if(sizeType == 'MEDIUM') {
-      size = 160;
-    } else if(sizeType == 'SMALL') {
-      size = 120;
-    }
-
-    return {
-      width: size,
-      height: size,
-      overflow: 'hidden',
-    };
-  },
-  contentsText: (_color:string) => {
-    return {
-      fontFamily: 'Pretendard-Light',
-      fontSize: 12,
-      color: _color,
-    };
-  },
-  activeText: (_color:string) => {
-    return {
-      fontFamily: 'Pretendard-SemiBold',
-      fontSize: 12,
-      color: _color,
-      backgroundColor: '#FFDD00',
-    };
-  },
-  profileText: {
-    backgroundColor: '#FFDD00',
-    borderTopRightRadius: 5,
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 11,
-    color: '#fff',
-    paddingHorizontal: 3,
-  },
-  nicknameText: (_color:string, _fontSize:number, _sizeType:string) => {
-    return {
-      fontFamily: 'Pretendard-Bold',
-      fontSize: _fontSize,
-      color: _color,
-      width: _sizeType == 'LARGE' ? '100%' : width - 260,
-    };
-  },
-  noImageArea: (gender:string, storyType:string, _height:number) => {
-    return {
-      width: '100%',
-      height: _height,
-      //backgroundColor: gender == 'M' ? '#D5DAFC' : '#FEEFF2',
-      alignItems: storyType == 'SECRET' ? 'flex-start' : 'center',
-      justifyContent: storyType == 'SECRET' ? 'flex-end' : 'center',
-    };
-  },
-  topBtnArea: {
-    position: 'absolute',
-    top: 125,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  topBtnText: {
-    textAlign: 'center',
-    backgroundColor: '#1A1E1C',
-    width: 85,
-    paddingVertical: 2,
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#D5CD9E',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  dimsArea: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    opacity: 0.6,
-    height: 80,
-  },
-  noData: {
-    paddingHorizontal: 20,
-    height: height,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 180,
-  },
-  noDataText: {
-    fontFamily: 'Pretendard-Medium',
-    color: '#555555',
-    fontSize: 15,
-  },
-  multiImageArea: {
-    position: 'absolute',
-    top: 13,
-    right: 13,
-    zIndex: 1,
-  },
-  
-
-
-
   headerWrap: {
     position: 'absolute',
     top: 0,
@@ -790,7 +615,6 @@ const _styles = StyleSheet.create({
       overflow: 'hidden',
     };
   },
-
   
 
 });

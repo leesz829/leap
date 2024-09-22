@@ -447,8 +447,8 @@ export const Shop = () => {
 
       <SpaceView viewStyle={_styles.wrap}>
 
-        <SpaceView mt={40} viewStyle={{flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between'}}>
-          <Text style={styles.fontStyle('H', 38, '#fff')}>스토어</Text>
+        <SpaceView mt={50} viewStyle={{flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between'}}>
+          <Text style={styles.fontStyle('H', 32, '#fff')}>스토어</Text>
 
           <TouchableOpacity onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}>
             <Image source={ICON.shop_inventory} style={styles.iconSquareSize(40)} />

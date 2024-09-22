@@ -8,6 +8,7 @@ import SpaceView from 'component/SpaceView';
 import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styles';
 import { useProfileImg } from 'hooks/useProfileImg';
 import { Modalize } from 'react-native-modalize';
+import { isEmptyData } from 'utils/functions';
 
 
 interface Props {
@@ -119,6 +120,12 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
       applyMsgImg = gender == 'M' ? ICON.storyMale : ICON.storyFemale;
     }; */
 
+    if(gender == 'M') {
+      applyMsgImg = ICON.story_man01;
+    } else {
+      applyMsgImg = ICON.story_woman02;
+    }
+
     // 노출 닉네임
     let applyNickname = item?.nickname;
     /* if(isApplySecret) {
@@ -129,6 +136,15 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
       }
     }; */
 
+    if(isEmptyData(item?.nickname_modifier)) {
+      applyNickname = item?.nickname_modifier + ' ' + item?.nickname_noun;
+    } else {
+      applyNickname = '닉네임없음';
+    }
+
+    
+    
+
     return (
       <>
         <SpaceView mt={20}>
@@ -138,11 +154,11 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
               {/* 썸네일 */}
               <SpaceView>
                 <TouchableOpacity 
-                  style={_styles.replyImgCircle(depth == 0 ? 30 : 20)}
+                  style={_styles.replyImgCircle(depth == 0 ? 30 : 30)}
                   //disabled={memberBase?.gender === item?.gender || memberBase?.member_seq === item?.member_seq || storyData.board?.story_type == 'SECRET' || isApplySecret}
                   onPress={() => { /* profileCardOpenPopup(item?.member_seq, item?.open_cnt, false); */ }}
                 >
-                  <Image source={applyMsgImg} style={styles.iconSquareSize(depth == 0 ? 30 : 20)} resizeMode={'cover'} />
+                  <Image source={applyMsgImg} style={styles.iconSquareSize(depth == 0 ? 30 : 30)} resizeMode={'cover'} />
                 </TouchableOpacity>
                 {/* {memberBase?.member_seq === item?.member_seq && (
                   <SpaceView viewStyle={_styles.myReplyChk}>
@@ -415,7 +431,7 @@ const _styles = StyleSheet.create({
       borderWidth: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      borderColor: '#FFDD00',
+      borderColor: '#fff',
       width: num,
       height: num,
       overflow: 'hidden',

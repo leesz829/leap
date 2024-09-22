@@ -71,7 +71,9 @@ export const MatchPopup = (props: Props) => {
 
                 {isEmptyData(props.memberImg) && (
                   <SpaceView mt={25} viewStyle={layoutStyle.alignCenter}>
-                    <Image source={props.memberImg} style={[_styles.memberImgWrap, styles.iconSquareSize(85)]} />
+                    <SpaceView viewStyle={_styles.memberImgWrap}>
+                      <Image source={props.memberImg} style={_styles.memberImgStyle} resizeMode={'cover'} />
+                    </SpaceView>
                   </SpaceView>
                 )}
 
@@ -166,8 +168,15 @@ const _styles = StyleSheet.create({
     width: '100%',
   },
   memberImgWrap: {
-    borderRadius: 60,
+    width: 85,
+    borderRadius: 50,
     overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  memberImgStyle: {
+    width: 120,
+    height: 85
   },
   passWrap: {
     position: 'absolute',
@@ -175,6 +184,7 @@ const _styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1,
+    alignItems: 'center',
   },
   passBox: {
     backgroundColor: 'rgba(0,0,0,0.6)',

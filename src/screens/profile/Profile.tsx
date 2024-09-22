@@ -96,7 +96,10 @@ export const Profile = (props: Props) => {
     } else {
       show({
         title: '닉네임 변경',
-        content: '닉네임을 변경하시겠습니까?\n패스 x25',
+        content: '닉네임을 변경하시겠습니까?',
+        passType: 'CUBE',
+        passAmt: '25',
+        isNoPass: memberBase?.pass_has_amt < 25 ? false : true,
         cancelCallback: function() {
   
         },
@@ -210,7 +213,7 @@ export const Profile = (props: Props) => {
   const btnMemberSleep = async () => {
     show({
 			title: '휴면회원 전환',
-			content: '휴면회원 전환을 진행하시겠습니까?\n휴면회원 전환 시 보유하고 있는 아이템은 그대로 유지되며,\n상대방에게 회원님에 정보는 노출되지 않습니다.',
+			content: '휴면회원 전환을 진행하시겠습니까?\n휴면회원 전환 시 보유하고 있는 아이템은 그대로 유지되며, 상대방에게 회원님에 정보는 노출되지 않습니다.',
 			cancelCallback: function() {},
 			confirmCallback: function() {
 				sleepProc();

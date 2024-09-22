@@ -205,6 +205,7 @@ export const PopupProvider = ({ children }: any) => {
           passAmt={contents.passAmt}
           type={contents.type}
           memberImg={contents.memberImg}
+          isNoPass={contents.isNoPass}
         />
       )}
     </PopupContext.Provider>

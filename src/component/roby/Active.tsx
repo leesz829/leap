@@ -56,7 +56,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
 
           <SpaceView mt={20} viewStyle={_styles.respectTabWrap}>
             {respectGradeList.map((item, index) => (
-              <TouchableOpacity onPress={() => (setCurrentRespectType(item.type))} style={_styles.respectTabItem((memberBase?.respect_grade == 'UNKNOWN' && item.type == 'MEMBER') || (memberBase?.respect_grade == item.type))}>
+              <TouchableOpacity onPress={() => (setCurrentRespectType(item.type))} style={_styles.respectTabItem((memberBase?.respect_grade == 'UNKNOWN' && item.type == 'MEMBER') || (currentRespectType == item.type))}>
                 <Text style={[_styles.respectText(currentRespectType == item.type)]}>{item.type}</Text>
 
                 {((memberBase?.respect_grade == 'UNKNOWN' && item.type == 'MEMBER') || (memberBase?.respect_grade == item.type)) && (
@@ -100,16 +100,18 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
                     {item == 'MEGACUBE' && ( <Image source={ICON.respectMegaCube} style={styles.iconSquareSize(60)} /> )}
                   </SpaceView>
 
-                  <TouchableOpacity
-                    disabled={isBtnDisabled}
-                    style={_styles.respectBtnWrap(item, isBtnDisabled)}
-                    onPress={() => {
-                      fnRewardPass(item == 'CUBE' ? 'PASS' : 'ROYAL_PASS');
-                    }}>
+                  {memberBase?.respect_grade == currentRespectType && (
+                    <TouchableOpacity
+                      disabled={isBtnDisabled}
+                      style={_styles.respectBtnWrap(item, isBtnDisabled)}
+                      onPress={() => {
+                        fnRewardPass(item == 'CUBE' ? 'PASS' : 'ROYAL_PASS');
+                      }}>
 
-                    {item == 'FREE' && <Text style={styles.fontStyle('B', 12, '#fff')}>적용중</Text>}
-                    {item != 'FREE' && <Text style={styles.fontStyle('B', 12, isBtnDisabled ? '#606060' : '#000')}>받기</Text>}
-                  </TouchableOpacity>
+                      {item == 'FREE' && <Text style={styles.fontStyle('B', 12, '#fff')}>적용중</Text>}
+                      {item != 'FREE' && <Text style={styles.fontStyle('B', 12, isBtnDisabled ? '#606060' : '#000')}>받기</Text>}
+                    </TouchableOpacity>
+                  )}
                 </LinearGradient>
               )
             })}
@@ -474,6 +476,7 @@ const _styles = StyleSheet.create({
   },
   respectItemWrap: {
     width: width/3.6,
+    height: 180,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 20,

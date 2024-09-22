@@ -45,17 +45,21 @@ export const DropDown: FC<Props> = (props) => {
 
   return (
     <View style={_styles.container}>
-      <TouchableOpacity onPress={handleToggleDropdown} style={_styles.dropdownButton(isOpen)}>
-        {/* <Image source={ICON.commonSelect} style={styles.iconSquareSize(20)} /> */}
-        <SpaceView ml={10} mr={10}><Text style={styles.fontStyle('EB', 17, '#46F66F')}>{selectedItem.label}</Text></SpaceView>
-        
-        {!isOpen && (
-          <Image source={ICON.moreIcon} style={styles.iconSquareSize(15)} />
-        )}
-      </TouchableOpacity>
+
+      {!isOpen && (
+        <TouchableOpacity onPress={handleToggleDropdown} style={_styles.dropdownButton(isOpen)}>
+          {/* <Image source={ICON.commonSelect} style={styles.iconSquareSize(20)} /> */}
+          <SpaceView ml={10} mr={10}><Text style={styles.fontStyle('EB', 17, '#46F66F')}>{selectedItem.label}</Text></SpaceView>
+          
+          {!isOpen && (
+            <Image source={ICON.moreIcon} style={styles.iconSquareSize(15)} />
+          )}
+        </TouchableOpacity>
+      )}
+
       {isOpen && (
         <>
-          <View style={_styles.dropdownWrap}>
+          {/* <View style={_styles.dropdownWrap}>
 
             {menuList.map((item, index) => {
               return (item?.value != selectedItem.value) && (
@@ -66,12 +70,27 @@ export const DropDown: FC<Props> = (props) => {
                 </>
               );
             })}
+          </View> */}
+
+          <View style={_styles.dropdownWrap}>
+            {menuList.map((item, index) => {
+              return (
+                <>
+                  <TouchableOpacity 
+                    activeOpacity={0.8}
+                    onPress={() => handleSelectItem(item)} style={[_styles.item, index == 1 && _styles.itmeBorder]}>
+                    <Text style={styles.fontStyle('EB', 16, item?.value == selectedItem.value ? '#46F66F' : '#fff')}>{item.label}</Text>
+                  </TouchableOpacity>
+                </>
+              );
+            })}
           </View>
         </>
       )}
     </View>
   );
 };
+
 
 const _styles = StyleSheet.create({
   container: {
@@ -96,11 +115,12 @@ const _styles = StyleSheet.create({
   },
   dropdownWrap: {
     position: 'absolute',
-    top: 43,
+    //top: 43,
     width: '100%',
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
+    borderRadius: 25,
     backgroundColor: '#555D74',
+    borderWidth: 1,
+    borderColor: '#C4B6AA',
   },
   item: {
     paddingVertical: 13,

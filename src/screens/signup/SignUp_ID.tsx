@@ -7,7 +7,7 @@ import axios from 'axios';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -15,6 +15,7 @@ import { SUCCESS, MEMBER_EMAIL_DUP } from 'constants/reusltcode';
 import { regist_member_base_info } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
 
@@ -87,7 +88,7 @@ export const SignUp_ID = (props: Props) => {
   return (
     <>
       <SpaceView viewStyle={_styles.wrap}>
-        <SpaceView>
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
 
           {/* ########################################################################################## HEADER */}
           <SpaceView>
@@ -116,7 +117,7 @@ export const SignUp_ID = (props: Props) => {
               </SpaceView>
             </SpaceView>
           </SpaceView>
-        </SpaceView>
+        </TouchableWithoutFeedback>
 
         {/* ########################################################################################## 버튼 */}
         <SpaceView mb={20} viewStyle={_styles.bottomWrap}>

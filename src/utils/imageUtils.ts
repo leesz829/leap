@@ -349,6 +349,7 @@ export const ICON = {
   story_man01: require('assets/icon/story/man_01.png'),
   story_man02: require('assets/icon/story/man_02.png'),
   story_woman01: require('assets/icon/story/woman_01.png'),
+  story_woman02: require('assets/icon/story/woman_02.png'),
 
   /* shop */
   shop_inventory: require('assets/icon/shop/inventory.png'),

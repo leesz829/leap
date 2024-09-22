@@ -511,8 +511,8 @@ export const Storage = (props: Props) => {
         style={_styles.wrap}
       >
         
-        <SpaceView mt={30}>
-          <Text style={styles.fontStyle('H', 28, '#fff')}>보관함</Text>
+        <SpaceView mt={50}>
+          <Text style={styles.fontStyle('H', 32, '#fff')}>보관함</Text>
         </SpaceView>
 
         {!isLoading && (
@@ -666,7 +666,7 @@ export const Storage = (props: Props) => {
 const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
-    padding: 10,
+    paddingHorizontal: 10,
   },
   tabArea: {
     flexDirection: 'row',

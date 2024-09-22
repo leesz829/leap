@@ -746,7 +746,7 @@ export default function MatchDetail(props: Props) {
             <SpaceView><Text style={styles.fontStyle('EB', 20, '#fff')}>{data?.match_member_info?.nickname}</Text></SpaceView>
 
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-              <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} /* onPress={report_onOpen} */ hitSlop={commonStyle.hipSlop20}>
+              <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20}>
                 <Image source={ICON.homeIcon} style={styles.iconSquareSize(24)} />
               </TouchableOpacity>
               <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
@@ -943,7 +943,7 @@ export default function MatchDetail(props: Props) {
             </TouchableOpacity>
 
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-              <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} hitSlop={commonStyle.hipSlop20}>
+              <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20} >
                 <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
               </TouchableOpacity>
               <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>

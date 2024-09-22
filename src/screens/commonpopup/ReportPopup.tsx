@@ -56,7 +56,7 @@ const ReportPopup = forwardRef((props, ref) => {
 			/* scrollViewProps={{
 				scrollEnabled: false, // 스크롤 비활성화
 			}} */
-			onOverlayPress={() => { popup_onClose(); }}
+			onOverlayPress={() => { closeModal(); }}
 			FooterComponent={
 				<>
 					<SpaceView pl={10} pr={10} pb={20} viewStyle={{backgroundColor: '#1B1633'}}>

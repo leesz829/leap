@@ -188,9 +188,9 @@ export const Message = (props: Props) => {
 											<SpaceView mt={10}>
 												<TouchableOpacity 
 													disabled={item.link_end_yn == 'Y' ? true : false} 
-													style={_styles.btnWrap}
+													style={_styles.btnWrap(item.link_end_yn != 'Y')}
 													onPress={() => { goLink(item); }}>
-													<Text style={styles.fontStyle('SB', 14, '#44B6E5')}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
+													<Text style={styles.fontStyle('SB', 14, item.link_end_yn == 'Y' ? '#fff' : '#44B6E5')}>{item.link_end_yn == 'Y' ? '기간만료' : '바로가기'}</Text>
 												</TouchableOpacity>
 											</SpaceView>
 										}
@@ -247,11 +247,13 @@ const _styles = StyleSheet.create({
 		borderBottomLeftRadius: 20,
 		borderBottomRightRadius: 20,
 	},
-	btnWrap: {
-		backgroundColor: '#FFFF5D',
-		borderRadius: 25,
-		alignItems: 'center',
-		paddingVertical: 10,
+	btnWrap: (isOn: boolean) => {
+		return {
+			backgroundColor: isOn ? '#FFFF5D' : '#808080',
+			borderRadius: 25,
+			alignItems: 'center',
+			paddingVertical: 10,
+		};
 	},
 
 

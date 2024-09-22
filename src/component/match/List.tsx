@@ -193,8 +193,7 @@ export const List: FC<Props> = (props) => {
 
   // ############################################################ 프로필 열람
   const profileOpen = React.useCallback(async (trgtMemberSeq:number) => {
-    console.log('profileOpen !!!!!!!!!!!!!!!!!!!!!!!!');
-
+    
     // 중복 클릭 방지 설정
     if(isClickable) {
       try {

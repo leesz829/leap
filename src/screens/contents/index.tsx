@@ -55,9 +55,7 @@ export const Contents = () => {
 
   // 드롭다운 콜백 함수
   const dropdownCallbackFn = React.useCallback(async (item: any) => {
-    console.log('item ::::: ' , item);
     setSelectedMenuValue(item);
-
   }, []);
 
 

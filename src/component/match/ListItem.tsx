@@ -28,6 +28,18 @@ const ListItem = React.memo(({ item, fnDetail, fnProfileOpen, freeOpenCnt, respe
   const _renderWidth = width - 20;
   const _renderHeight = height * 0.65;
 
+  let maxFreeCnt = 0;
+
+  if(memberBase?.respect_grade == 'SILVER') {
+    maxFreeCnt = 1;
+  } else if(memberBase?.respect_grade == 'GOLD') {
+    maxFreeCnt = 2;
+  } else if(memberBase?.respect_grade == 'PLATINUM') {
+    maxFreeCnt = 3;
+  } else if(memberBase?.respect_grade == 'DIAMOND') {
+    maxFreeCnt = 4;
+  }
+
   // 이전 이미지
   const prevImage = async () => {
     if(currentImgIdx > 0) {
@@ -44,12 +56,13 @@ const ListItem = React.memo(({ item, fnDetail, fnProfileOpen, freeOpenCnt, respe
 
   // 상세 실행
   const detailProc = async () => {
-    if(item?.open_yn == 'Y') {
-      console.log('item?.member_seq ::::::  ' , item?.member_seq);
+    /* if(item?.open_yn == 'Y') {
       fnDetail(item?.member_seq);
     } else {
       setIsOpen(true);
-    }
+    } */
+
+    fnProfileOpen(item?.member_seq);
   };
 
   // 열람 실행
@@ -191,6 +204,7 @@ const ListItem = React.memo(({ item, fnDetail, fnProfileOpen, freeOpenCnt, respe
               <SpaceView viewStyle={_styles.baseInfoArea}>
                 <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'flex-end', width: '70%', flexWrap: 'wrap'}}>
                   <Text style={styles.fontStyle('H', 26, '#fff')}>{item.nickname}</Text>
+
                   {isEmptyData(item.distance) && item.distance > 0 && (
                     <>
                       <SpaceView ml={5} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
@@ -200,10 +214,37 @@ const ListItem = React.memo(({ item, fnDetail, fnProfileOpen, freeOpenCnt, respe
                     </>
                   )}
                 </SpaceView>
-                <TouchableOpacity onPress={() => { detailProc(); }} style={_styles.detailBtnArea}>
-                  <Image source={ICON.searchWhite} style={styles.iconSquareSize(15)} />
-                  <SpaceView ml={5}><Text style={styles.fontStyle('B', 13, '#fff')}>열람하기</Text></SpaceView>
-                </TouchableOpacity>
+
+                {item?.open_yn == 'Y' ? (
+                  <>
+                    <TouchableOpacity onPress={() => { fnDetail(item?.member_seq); }} style={_styles.detailBtnArea('#46F66F')}>
+                      <Image source={ICON.searchWhite} style={styles.iconSquareSize(15)} />
+                      <SpaceView ml={5}><Text style={styles.fontStyle('B', 13, '#fff')}>열람하기</Text></SpaceView>
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <>
+                    <TouchableOpacity onPress={() => { openProc(); }} style={_styles.detailBtnArea('#44B6E5')}>
+                      <Image source={ICON.lockIcon} style={styles.iconSquareSize(15)} />
+                      <SpaceView ml={5}><Text style={styles.fontStyle('B', 13, '#fff')}>잠금해제</Text></SpaceView>
+
+                      <SpaceView viewStyle={_styles.freeTextWrap}>
+                        {freeOpenCnt == 0 ? (
+                          <>
+                            <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
+                            <SpaceView ml={4}><Text style={styles.fontStyle('R', 8, '#fff')}>30개</Text></SpaceView>
+                          </>
+                        ) : (
+                          <>
+                            <SpaceView pb={2} pt={2}>
+                              <Text style={styles.fontStyle('R', 8, '#46F66F')}>FREE {maxFreeCnt-freeOpenCnt}/{maxFreeCnt}회</Text>
+                            </SpaceView>
+                          </>
+                        )}
+                      </SpaceView>
+                    </TouchableOpacity>
+                  </>
+                )}
               </SpaceView>
 
             </SpaceView>
@@ -224,6 +265,17 @@ const ListItem = React.memo(({ item, fnDetail, fnProfileOpen, freeOpenCnt, respe
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={_styles.thumnailDimArea} />
+
+
+
+
+
+
+
+
+
+
+
 
             {/* ############################### 열람 블러 영역 */}
             {isOpen && (
@@ -437,7 +489,7 @@ const _styles = StyleSheet.create({
   },
   gradeArea: {
     backgroundColor: '#FFFFFF',
-    borderRadius: Platform.OS == 'ios' ? 8 : 12,
+    borderRadius: 12,
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
@@ -466,14 +518,16 @@ const _styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 15,
   },
-  detailBtnArea: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#46F66F',
-    borderRadius: 25,
-    paddingHorizontal: 13,
-    height: 35,
+  detailBtnArea: (bg:string) => {
+    return {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: bg,
+      borderRadius: 25,
+      paddingHorizontal: 13,
+      height: 35,
+    };
   },
   interestArea: {
     flexDirection: 'row',
@@ -502,6 +556,19 @@ const _styles = StyleSheet.create({
     paddingVertical: 3,
     marginTop: 5,
   },
+  freeTextWrap: {
+    position: 'absolute',
+    bottom: -13,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 25,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+
 
 });
 

@@ -31,6 +31,7 @@ interface Props {
   passAmt?: string;
   type?: string;
   memberImg?: string;
+  isNoPass?: boolean;
 }
 
 export const BasePopup = (props: Props) => {
@@ -118,9 +119,25 @@ export const BasePopup = (props: Props) => {
                         <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(props.cancelBtnText) ? props.cancelBtnText : '닫기'}</Text>
                       </TouchableOpacity> */}
 
-                      <TouchableOpacity onPress={onPressConfirm} style={_styles.btnWrap}>
-                        <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(props.confirmBtnText) ? props.confirmBtnText : '확인하기'}</Text>
-                      </TouchableOpacity>
+                      <SpaceView>
+                        {isEmptyData(props.passAmt) && (
+                          <SpaceView viewStyle={_styles.passWrap}>
+                            <SpaceView viewStyle={_styles.passBox}>
+                              <Image source={props.passType == 'MEGA_CUBE' ? ICON.megaCube : ICON.cube} style={styles.iconSquareSize(17)} />
+                              <Text style={styles.fontStyle('R', 9, props.isNoPass ? '#fff' : '#FF516F')}>{props.passAmt}개</Text>
+                            </SpaceView>
+                          </SpaceView>
+                        )}
+
+                        <TouchableOpacity 
+                          style={_styles.btnWrap}
+                          disabled={!props.isNoPass}
+                          onPress={onPressConfirm}
+                        >
+                          <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(props.confirmBtnText) ? props.confirmBtnText : '확인하기'}</Text>
+                        </TouchableOpacity>
+
+                      </SpaceView>
                     </>
                   ) : (
                     <>
@@ -162,30 +179,10 @@ const _styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
-  msgText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 11,
-    color: '#D5CD9E',
-  },
   btnContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-  },
-  openPopupDescIcon: (passType: string) => {
-    return {
-      fontFamily: 'Pretendard-ExtraBold',
-      fontSize: 16,
-      color: '#32F9E4',
-      marginLeft: 3,
-    };
-  },
-  modalAuctBtn: {
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 50,
-    borderRadius: 50,
-    marginBottom: 40,
   },
   contentArea: {
     marginVertical: 13,
@@ -211,6 +208,25 @@ const _styles = StyleSheet.create({
   memberImgWrap: {
     borderRadius: 60,
     overflow: 'hidden',
+  },
+  passWrap: {
+    position: 'absolute',
+    top: -10,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    alignItems: 'center',
+  },
+  passBox: {
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 25,
+    paddingHorizontal: 7,
+    paddingVertical: 1,
+    marginHorizontal: 37,
+    width: 50,
   },
 
 

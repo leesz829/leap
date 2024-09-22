@@ -402,7 +402,7 @@ export const SignUp_AddInfo = (props : Props) => {
 	return (
 		<>
 			<SpaceView viewStyle={_styles.wrap}>
-				<SpaceView>
+				<SpaceView viewStyle={{flex: 0.5}}>
 
 					{/* ####################################################################################### HEADER */}
 					<SpaceView>
@@ -418,7 +418,8 @@ export const SignUp_AddInfo = (props : Props) => {
 							<ScrollView 
 								bounces={false}
 								showsVerticalScrollIndicator={false} 
-								style={{height: height-330}}>
+								/* style={{height: height-350}} */
+							>
 
 								{/* ####################################################################################### 필수 설정 */}
 								<SpaceView mb={20}>

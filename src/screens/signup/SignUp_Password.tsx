@@ -10,7 +10,7 @@ import { CommonInput } from 'component/CommonInput';
 import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import * as React from 'react';
-import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { Image, ScrollView, StyleSheet, View, Platform, Text, Dimensions, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import { ICON, IMAGE } from 'utils/imageUtils';
 import * as properties from 'utils/properties';
 import { usePopup } from 'Context';
@@ -19,6 +19,7 @@ import { regist_member_base_info } from 'api/models';
 import { ROUTES } from 'constants/routes';
 import { isEmptyData } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
 interface Props {
@@ -33,6 +34,7 @@ export const SignUp_Password = (props: Props) => {
 
   const { show } = usePopup();  // 공통 팝업
   const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
+  const [isKeyboardVisible, setIsKeyboardVisible] = React.useState(false);
 
   const birthday = props.route.params?.birthday; // 생년월일
   const ci = props.route.params?.ci; // CI
@@ -241,12 +243,12 @@ export const SignUp_Password = (props: Props) => {
         setIsClickable(true);
       }
     }
-  }
+  };
 
   return (
     <>
       <SpaceView viewStyle={_styles.wrap}>
-        <SpaceView>
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
 
           {/* ########################################################################################## HEADER */}
           <SpaceView>
@@ -262,42 +264,44 @@ export const SignUp_Password = (props: Props) => {
                 </SpaceView>
               </SpaceView>
 
-              <SpaceView mt={50} viewStyle={_styles.contentWrap}>
-                <TextInput
-                  value={password}
-                  onChangeText={(text) => setPassword(text)}
-                  autoCapitalize={'none'}
-                  style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
-                  maxLength={20}
-                  placeholder={'비밀번호를 입력해 주세요.'}
-                  placeholderTextColor={'#808080'}
-                  secureTextEntry={true}
-                />
-              </SpaceView>
-              <SpaceView mt={20} viewStyle={_styles.contentWrap}>
-                <TextInput
-                  value={passwordChk}
-                  onChangeText={(text) => setPasswordChk(text)}
-                  autoCapitalize={'none'}
-                  style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
-                  maxLength={20}
-                  placeholder={'비밀번호를 재입력해 주세요.'}
-                  placeholderTextColor={'#808080'}
-                  secureTextEntry={true}
-                />
-
-                  {/* <TextInput
+              
+                <SpaceView mt={50} viewStyle={_styles.contentWrap}>
+                  <TextInput
                     value={password}
                     onChangeText={(text) => setPassword(text)}
                     autoCapitalize={'none'}
-                    style={_styles.textInputStyle('#F3E270')}
-                    secureTextEntry={true}
+                    style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
                     maxLength={20}
-                  /> */}
-              </SpaceView>
+                    placeholder={'비밀번호를 입력해 주세요.'}
+                    placeholderTextColor={'#808080'}
+                    secureTextEntry={true}
+                  />
+                </SpaceView>
+                <SpaceView mt={20} viewStyle={_styles.contentWrap}>
+                  <TextInput
+                    value={passwordChk}
+                    onChangeText={(text) => setPasswordChk(text)}
+                    autoCapitalize={'none'}
+                    style={[_styles.textInputStyle, styles.fontStyle('B', 28, '#fff')]}
+                    maxLength={20}
+                    placeholder={'비밀번호를 재입력해 주세요.'}
+                    placeholderTextColor={'#808080'}
+                    secureTextEntry={true}
+                  />
+
+                    {/* <TextInput
+                      value={password}
+                      onChangeText={(text) => setPassword(text)}
+                      autoCapitalize={'none'}
+                      style={_styles.textInputStyle('#F3E270')}
+                      secureTextEntry={true}
+                      maxLength={20}
+                    /> */}
+                </SpaceView>
+
             </SpaceView>
           </SpaceView>
-        </SpaceView>
+        </TouchableWithoutFeedback>
 
         {/* ########################################################################################## 버튼 */}
         <SpaceView mb={20} viewStyle={_styles.bottomWrap}>
@@ -309,6 +313,7 @@ export const SignUp_Password = (props: Props) => {
             <SpaceView ml={10}><Text style={styles.fontStyle('B', 20, '#fff')}>{'>'}</Text></SpaceView>
           </TouchableOpacity>
         </SpaceView>
+        
       </SpaceView>
     </>
   );

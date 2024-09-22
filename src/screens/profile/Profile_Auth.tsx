@@ -185,7 +185,9 @@ export const Profile_Auth = (props: Props) => {
 			<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, marginTop: 20, paddingTop: 46}}>
 				<SpaceView viewStyle={layoutStyle.alignCenter}>
 					<SpaceView><Text style={styles.fontStyle('EB', 24, '#fff')}>나도 멤버십 인증 레벨업</Text></SpaceView>
-					<SpaceView mt={15}><Text style={[styles.fontStyle('B', 14, '#fff'), layoutStyle.textCenter]}>회원님의 성취를 리프에 자랑하세요.{'\n'}프라이드로 만들어 드릴게요.</Text></SpaceView>
+					<SpaceView mt={15}>
+						<Text style={[styles.fontStyle('B', 14, '#fff'), layoutStyle.textCenter]}>당신의 성취를 자랑해 주세요.{'\n'}리프가 프라이드로 만들어 드립니다.</Text>
+					</SpaceView>
 				</SpaceView>
 
 				<SpaceView mt={25} mb={200}>

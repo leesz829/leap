@@ -356,20 +356,21 @@ function ProfileImageItem({ index, imgData, delFn, imgSelectedFn }) {
   const titleNm = index == 0 ? '대표사진' : index > 2 ? '선택사진' : '필수사진';
 
   return (
-    <SpaceView viewStyle={_styles.imgWrap}>
+    <TouchableOpacity 
+        style={_styles.imgWrap} 
+        activeOpacity={0.8}
+        onPress={() => { 
+          imgSelectedFn(index, isNew);
+        }}
+    >
       <SpaceView viewStyle={_styles.imgTextWrap}>
         <Text style={styles.fontStyle('SB', 9, '#fff')}>{titleNm}</Text>
       </SpaceView>
 
       {/* 이미지 선택 버튼 */}
-      <TouchableOpacity 
-        style={_styles.imgSelectBtnWrap} 
-        onPress={() => { 
-          imgSelectedFn(index, isNew);
-        }}
-      >
-        <Image source={ICON.join_imgSelect} style={styles.iconSquareSize(24)} />
-      </TouchableOpacity>
+      <SpaceView viewStyle={_styles.imgSelectBtnWrap}>
+        <Image source={ICON.join_imgSelect} style={styles.iconSquareSize(24)} />    
+      </SpaceView>
 
       {isEmptyData(imgUrl) && imgDelYn == 'N' ? (
         <>
@@ -403,7 +404,8 @@ function ProfileImageItem({ index, imgData, delFn, imgSelectedFn }) {
           </SpaceView>
         </>
       )}
-    </SpaceView>
+
+    </TouchableOpacity>
   );
 };
 
