@@ -34,6 +34,7 @@ import ProductModal from 'screens/shop/Component/ProductModal';
 import { NoticePopup } from 'screens/commonpopup/NoticePopup';
 import Active from 'component/roby/Active';
 import Story from 'component/roby/Story';
+import { BlurView, VibrancyView } from "@react-native-community/blur";
 
 
 
@@ -512,12 +513,12 @@ export const Roby = (props: Props) => {
               <SpaceView mt={35} ml={13} mr={13} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                 <TouchableOpacity 
                   onPress={() => ( onPressAlarmMessage() )}>
-                  <Image source={ICON.alarm} style={styles.iconSquareSize(35)} />
+                  <Image source={ICON.alarm} style={styles.iconSquareSize(42)} />
                 </TouchableOpacity>
                 <TouchableOpacity 
                   onPress={() => ( setIsVisible(true) )}
                   hitSlop={commonStyle.hipSlop20}>
-                  <Image source={ICON.menu} style={styles.iconSquareSize(35)} />
+                  <Image source={ICON.menu} style={styles.iconSquareSize(38)} />
                 </TouchableOpacity>
               </SpaceView>
 
@@ -585,8 +586,15 @@ export const Roby = (props: Props) => {
         <Modal 
           isVisible={isVisible}
           style={{backgroundColor: 'rgba(9, 32, 50, 0.6)', margin: 0}}
-          animationIn={'slideInDown'}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}
         >
+          <BlurView 
+            style={_styles.menuBlurWrap}
+            blurType='dark'
+            blurAmount={15}
+          />
+
           <SpaceView pr={10} viewStyle={{alignItems: 'flex-end', marginTop: -140}}>
             <TouchableOpacity
               style={{marginBottom: 50}}
@@ -683,12 +691,10 @@ const _styles = StyleSheet.create({
   },
   mstProfileImgArea: {
     borderRadius: 15,
-    /* borderWidth: 1,
-    borderColor: '#fff', */
     shadowColor: '#fff',
-    shadowOffset: { width: 10, height: 10 },
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.83,
-    shadowRadius: 5.0,
+    shadowRadius: 8.0,
     elevation: 40,
     overflow: 'visible',
   },
@@ -714,6 +720,13 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     bottom: 3,
     right: 3,
+  },
+  menuBlurWrap: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 
 
