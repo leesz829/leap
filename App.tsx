@@ -320,7 +320,7 @@ const { width, height } = Dimensions.get('window');
 const _style = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.tabColor,
+    backgroundColor: '#16112A',
   },
   loadingArea: {
     width: width,
