@@ -217,78 +217,73 @@ export const ChangePassword = (props : Props) => {
 
 	return (
 		<>
-			<CommonHeader title={'비밀번호 변경'} />
+			<SpaceView viewStyle={_styles.wrap}>
+				<CommonHeader title={'개인정보 변경 및 관리'} />
 
-			<LinearGradient
-				colors={['#3D4348', '#1A1E1C']}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 0, y: 1 }}
-				style={_styles.wrap}
-			>
-				<ScrollView>
-					<View style={{paddingHorizontal: 25}}>
-						<View style={layoutStyle.alignCenter}>
-							<SpaceView mt={20}>
-								<Image source={IMAGE.logoLeapTmon} style={{width: 200, height: 57}} />
-							</SpaceView>
-						</View>
-
-						<SpaceView mb={24} mt={60}>
-							<CommonInput
-								label="현재 비밀번호"
-								value={oldPassword}
-								onChangeText={(oldPassword) => setOldPassword(oldPassword)}
-								isMasking={true}
-								maxLength={20}
-
-							/>
-							{/* {isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)} */}
-							{oldPasswordConfirmMessage !== '' && (<Text style={{marginTop: 10, color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
+				<View>
+					<SpaceView mt={40}>
+						<SpaceView>
+							<Text style={_styles.title}>사용하실{'\n'}비밀번호를 입력해 주세요.
+							</Text>
+							<Text style={_styles.desc}>비밀번호는 8글자 이상, 영문포함, 숫자포함, 특수기호 허용</Text>
 						</SpaceView>
+					</SpaceView>
 
-						<SpaceView mb={24}>
-							<CommonInput
-								label="새 비밀번호 입력"
-								value={newPassword}
-								onChangeText={(newPassword) => setNewPassword(newPassword)}
-								isMasking={true}
-								maxLength={20}
-								placeholderTextColor={'#c6ccd3'}
-								placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
-								fontSize={14}
-							/>
-							{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor, marginTop: 10}}>{newPasswordConfirmMessage}</Text>)}
-						</SpaceView>
+					<SpaceView mb={24} mt={80}>
+						<CommonInput
+							value={oldPassword}
+							onChangeText={(oldPassword) => setOldPassword(oldPassword)}
+							placeholder='현재 비밀번호를 입력해 주세요.'
+							placeholderTextColor='#808080'
+							style={_styles.inputText}
+							isMasking={true}
+							maxLength={20}
 
-						<SpaceView mb={44}>
-							<CommonInput
-								label="새 비밀번호 재입력"
-								value={newPasswordChk}
-								onChangeText={(newPasswordChk) => setNewPasswordChk(newPasswordChk)}
-								isMasking={true}
-								maxLength={20}
-								placeholderTextColor={'#c6ccd3'}
-								placeholder={'영문, 숫자, 특수기호(!@#$%^*+=-) 포함 8글자 이상'}
-								fontSize={14}
-							/>
-							{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor, marginTop: 10}}>{newPasswordChkConfirmMessage}</Text>)}
-						</SpaceView>
+						/>
+						{/* {isOldPassword && (<Text style={{color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)} */}
+						{oldPasswordConfirmMessage !== '' && (<Text style={{marginTop: 10, color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
+					</SpaceView>
 
-						<SpaceView mb={24}>
-							<SpaceView>
-								<TouchableOpacity onPress={() => { validatePassword(); }}>
-									<Text style={_styles.btnText('#FFDD00', '#3D4348', '#FFDD00')}>비밀번호 변경</Text>
-								</TouchableOpacity>
-							</SpaceView>
-							<SpaceView mt={15}>
-								<TouchableOpacity onPress={() => { btnDeleteMyAccount(); }}>
-									<Text style={_styles.btnText('#262626', '#D5CD9E', '#BBB18B')}>탈퇴하기</Text>
-								</TouchableOpacity>
-							</SpaceView>
+					<SpaceView mb={24}>
+						<CommonInput
+							value={newPassword}
+							onChangeText={(newPassword) => setNewPassword(newPassword)}
+							isMasking={true}
+							maxLength={20}
+							placeholderTextColor={'#808080'}
+							placeholder={'새 비밀번호를 입력해 주세요.'}
+							style={_styles.inputText}
+						/>
+						{isNewPassword && (<Text style={{color: newPasswordConfirmMessageColor, marginTop: 10}}>{newPasswordConfirmMessage}</Text>)}
+					</SpaceView>
+
+					<SpaceView mb={44}>
+						<CommonInput
+							value={newPasswordChk}
+							onChangeText={(newPasswordChk) => setNewPasswordChk(newPasswordChk)}
+							isMasking={true}
+							maxLength={20}
+							placeholderTextColor={'#808080'}
+							placeholder={'새 비밀번호를 입력해 주세요.'}
+							style={_styles.inputText}
+						/>
+						{isNewPasswordChk && (<Text style={{color: newPasswordChkConfirmMessageColor, marginTop: 10}}>{newPasswordChkConfirmMessage}</Text>)}
+					</SpaceView>
+
+					<SpaceView mt={24}>
+						<SpaceView>
+							<TouchableOpacity onPress={() => { validatePassword(); }}>
+								<Text style={_styles.btnText('#44B6E5', '#FFFFFF', '#44B6E5')}>비밀번호 변경</Text>
+							</TouchableOpacity>
 						</SpaceView>
-					</View>
-				</ScrollView>
-			</LinearGradient>
+						<SpaceView mt={15}>
+							<TouchableOpacity onPress={() => { btnDeleteMyAccount(); }}>
+								<Text style={_styles.btnText('transparent', '#FF516F', '#FF516F')}>탈퇴하기</Text>
+							</TouchableOpacity>
+						</SpaceView>
+					</SpaceView>
+				</View>
+			</SpaceView>
 		</>
 	);
 };
@@ -299,6 +294,25 @@ const _styles = StyleSheet.create({
 	wrap: {
 	  minHeight: height,
 	  paddingTop: 24,
+	  paddingHorizontal: 10,
+	  backgroundColor: '#16112A',
+	},
+	title: {
+		fontFamily: 'SUITE-Bold',
+		fontSize: 30,
+		color: '#FFFFFF',
+	},
+	desc: {
+		fontFamily: 'SUITE-Bold',
+		fontSize: 12,
+		color: '#FFFFFF',
+		marginTop: 10,
+	},
+	inputText: {
+		fontFamily: 'SUITE-Bold',
+		fontSize: 30,
+		color: '#808080',
+		marginBottom: -10,
 	},
 	btnText: (_bg:string, _cr:string, _bdcr:string) => {
 		return {
@@ -306,10 +320,10 @@ const _styles = StyleSheet.create({
 			borderColor: _bdcr,
 			borderWidth: 1,
 			color: _cr,
-			fontFamily: 'Pretendard-Bold',
-			fontSize: 16,
+			fontFamily: 'SUITE-Bold',
+			fontSize: 12,
 			textAlign: 'center',
-			borderRadius: 5,
+			borderRadius: 50,
 			overflow: 'hidden',
 			paddingVertical: 15,
 			paddingHorizontal: 20,

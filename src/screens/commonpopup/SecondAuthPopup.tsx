@@ -562,9 +562,9 @@ export const SecondAuthPopup = (props: Props) => {
                       </View>
                     </SpaceView>
                     <View style={[_styles.rowStyle, _styles.rowHeader]}>
-                      <Text style={[_styles.rowTextLeft, {color: '#FFDD00'}]}>구분</Text>
-                      <Text style={[_styles.rowTextCenter, {color: '#FFDD00'}]}>현금</Text>
-                      <Text style={[_styles.rowTextRight, {color: '#FFDD00'}]}>부동산</Text>
+                      <Text style={[_styles.rowTextLeft, {color: '#44B6E5'}]}>구분</Text>
+                      <Text style={[_styles.rowTextCenter, {color: '#44B6E5'}]}>현금</Text>
+                      <Text style={[_styles.rowTextRight, {color: '#44B6E5'}]}>부동산</Text>
                     </View>
                     <View style={_styles.rowStyle}>
                       <Text style={_styles.rowTextLeft}>LV 1</Text>
@@ -772,7 +772,7 @@ const _styles = StyleSheet.create({
 
 
   rowHeader: {
-    backgroundColor: '#3D4348',
+    backgroundColor: '#FFFF5D',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderWidth: 0,

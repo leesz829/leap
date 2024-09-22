@@ -67,7 +67,7 @@ const InterestRegiPopup = forwardRef((props, ref) => {
 
   // 관심사 체크 목록
 	const [checkIntList, setCheckIntList] = React.useState([{code_name: "", common_code: "", interest_seq: ""}]);
-
+  
   // 관심사 그룹 선택
   const onInterestGroup = async (groupCode:string) => {
     setSelectGroupCode(groupCode);
@@ -114,7 +114,7 @@ const InterestRegiPopup = forwardRef((props, ref) => {
             <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 5}} />
           </SpaceView>
           <SpaceView viewStyle={_styles.headerWrap}>
-            <Text style={styles.fontStyle('EB', 24, '#fff')}>관심사 추가/삭제</Text>
+            <Text style={styles.fontStyle('EB', 24, '#fff')}>관심사 추가/삭제({!checkIntList.length ? 0 : checkIntList.length}/5)</Text>
           </SpaceView>
           <SpaceView>
             <ScrollView horizontal={true}>
@@ -177,8 +177,8 @@ const InterestRegiPopup = forwardRef((props, ref) => {
                             <TouchableOpacity 
                               style={_styles.interestItemWrap(i.common_code === tmpCommonCode)}
                               onPress={() => {
-                                if(checkIntList.length > 19 && i.common_code !== tmpCommonCode) {
-
+                                if(checkIntList.length > 4 && i.common_code !== tmpCommonCode) {
+                                  
                                 } else {
                                   if(i.common_code === tmpCommonCode){
                                     setCheckIntList(checkIntList.filter(value => value.common_code != tmpCommonCode))
