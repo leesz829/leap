@@ -302,12 +302,12 @@ export const Profile1 = (props: Props) => {
                     autoCapitalize={'none'}
                     multiline={true}
                     numberOfLines={2}
-                    style={_styles.textInputBox(40)}
+                    style={[_styles.textInputBox(60)]}
                     placeholder={'한줄 소개 입력'}
                     placeholderTextColor={'#808080'}
                     maxLength={30}
                     //caretHidden={true}
-                    textAlignVertical={'top'}
+                    // textAlignVertical={'top'}
                     textAlign={'left'}
                   />
                 </SpaceView>

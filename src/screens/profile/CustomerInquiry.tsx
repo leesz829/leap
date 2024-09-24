@@ -22,6 +22,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { TextInput } from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { Shadow } from 'react-native-shadow-2';
 
 
 
@@ -115,27 +116,37 @@ export const CustomerInquiry = (props : Props) => {
 	return (
 		<>
 			<SpaceView viewStyle={_styles.wrap}>
-        <CommonHeader title="1:1 문의" />
+        		<CommonHeader title="1:1 문의" />
 
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
-					<SpaceView>
+        		<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
+					<SpaceView mb={30}>
 						<Text style={styles.fontStyle('EB', 20, '#fff')}>궁금한 점, 불편한 점{'\n'}저희에게 문의하세요 : )</Text>
 					</SpaceView>
-					<SpaceView mt={30} viewStyle={_styles.contentWrap}>
-						<TextInput
-							style={[styles.fontStyle('SB', 12, '#fff'), {height:190}]}
-							value={contents}
-							onChangeText={(contents) => setContents(contents)}
-							placeholder={'여기에 내용을 입력하기. '}
-							placeholderTextColor={'#D5CD9E'}
-							maxLength={500}
-							autoCapitalize={'none'}
-							textAlignVertical={'top'}
-							multiline={true}
-							caretHidden={true}
-							// exceedCharCountColor={'#990606'}
-						/>
-					</SpaceView>
+
+					<Shadow
+						style={_styles.shadow}
+						distance={5}
+						offset={[0, 0]}
+						startColor='#8D8D8D'
+					>
+						<SpaceView viewStyle={_styles.contentWrap}>
+
+							<TextInput
+								style={[styles.fontStyle('B', 12, '#FFFFFF'), {height:190, width: 200}]}
+								value={contents}
+								onChangeText={(contents) => setContents(contents)}
+								placeholder={'여기에 내용을 입력하기. '}
+								placeholderTextColor={'#FFFFFF'}
+								maxLength={500}
+								autoCapitalize={'none'}
+								textAlignVertical={'top'}
+								multiline={true}
+								caretHidden={true}
+								// exceedCharCountColor={'#990606'}
+							/>
+
+						</SpaceView>
+					</Shadow>
 
 					<SpaceView mt={45}>
 						<TouchableOpacity 
@@ -155,15 +166,15 @@ export const CustomerInquiry = (props : Props) => {
 const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,
-    backgroundColor: '#16112A',
-    paddingHorizontal: 10,
-    paddingTop: 30,
+		backgroundColor: '#16112A',
+		paddingHorizontal: 10,
+		paddingTop: 30,
 	},
 	contentWrap: {
-		backgroundColor: 'rgba(141,141,141,0.5)',
 		borderRadius: 14,
 		paddingHorizontal: 10,
 		paddingVertical: 5,
+		width: '95%',
 	},
 	btnWrap: {
 		backgroundColor: '#46F66F',
@@ -171,7 +182,11 @@ const _styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 10,
 	},
-
+	shadow: {
+		width: '100%',
+		borderRadius: 25,
+		alignItems: 'center',
+	},
 
 
 });
