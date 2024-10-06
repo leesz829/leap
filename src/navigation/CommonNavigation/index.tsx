@@ -43,8 +43,8 @@ import { Profile_Auth } from 'screens/profile/Profile_Auth';
 import { Profile_Interest } from 'screens/profile/Profile_Interest';
 import { Profile_Introduce } from 'screens/profile/Profile_Introduce';
 
-import {Terms} from 'screens/policy/Terms';
-import {Privacy} from 'screens/policy/Privacy';
+import { Terms } from 'screens/policy/Terms';
+import { Privacy } from 'screens/policy/Privacy';
 
 import { Chat } from 'screens/chat';
 import { ChatDetail } from 'screens/chat/ChatDetail';
@@ -52,6 +52,9 @@ import { ChatDetail } from 'screens/chat/ChatDetail';
 import { Contents } from 'screens/contents';
 
 import { Message } from 'screens/message';
+
+import { RecommendMatch } from 'screens/roby/RecommendMatch';
+import { MyHomeVisitor } from 'screens/roby/MyHomeVisitor';
 
 
 const CommonStack = createStackNavigator<StackParamList>();
@@ -99,6 +102,8 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="Chat" component={Chat} />
       <CommonStack.Screen name="ChatDetail" component={ChatDetail} />
       <CommonStack.Screen name="Message" component={Message} />
+      <CommonStack.Screen name="RecommendMatch" component={RecommendMatch} />
+      <CommonStack.Screen name="MyHomeVisitor" component={MyHomeVisitor} />
     </CommonStack.Navigator>
   );
 };

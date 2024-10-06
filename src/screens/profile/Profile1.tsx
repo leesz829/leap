@@ -352,7 +352,7 @@ export const Profile1 = (props: Props) => {
           </SpaceView>
 
           {/* ############################################################################################################# 프로필 정보 영역 */}
-          <SpaceView mb={130}>
+          <SpaceView mb={160}>
             <ProfileComponent 
               data={profileData?.member_add} 
               authPercent={profileData.auth_percent} 
@@ -447,7 +447,7 @@ const _styles = StyleSheet.create({
 	},
   saveBtnWrap: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 50,
     right: 10,
     zIndex: 1,
     backgroundColor: '#46F66F',

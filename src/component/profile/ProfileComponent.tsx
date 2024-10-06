@@ -90,7 +90,7 @@ const ProfileComponent = React.memo(({ data, authPercent, interestCnt, interview
                     end={{ x: 0.4, y: 1 }}
                     style={_styles.rowFullWrap}>
                     <SpaceView viewStyle={layoutStyle.rowCenter}>
-                      <Image source={ICON.member_suitcase} style={styles.iconSquareSize(15)} />
+                      <Image source={ICON.member_local} style={styles.iconSquareSize(15)} />
                       <SpaceView ml={5}><Text style={styles.fontStyle('B', 12, '#fff')}>지역</Text></SpaceView>
                     </SpaceView>
                     <Text style={styles.fontStyle('B', 20, '#fff')}>
@@ -150,10 +150,10 @@ const ProfileComponent = React.memo(({ data, authPercent, interestCnt, interview
               <SpaceView viewStyle={layoutStyle.rowBetween}>
 
                 {/* 관심사 */}
-                <ItemRender code={'SMOKE'} name={'관심사'} value={interestCnt + '개'} />
+                <ItemRender code={'INTEREST'} name={'관심사'} value={interestCnt + '개'} />
 
                 {/* 인터뷰 */}
-                <ItemRender code={'SMOKE'} name={'인터뷰'} value={interviewCnt + '개'} />
+                <ItemRender code={'INTERVIEW'} name={'인터뷰'} value={interviewCnt + '개'} />
 
               </SpaceView>
             </SpaceView>
@@ -184,9 +184,19 @@ const ItemRender = React.memo(({ code, name, value }) => {
   let iconSrc = ICON.member_body;
 
   if(code == 'HEIGHT') {
-
-  } else if(code == 'BODY') {
-
+    iconSrc = ICON.member_length;
+  } else if(code == 'MBTI') {
+    iconSrc = ICON.member_mbti;
+  } else if(code == 'RELIGION') {
+    iconSrc = ICON.member_religion;
+  } else if(code == 'DRINK') {
+    iconSrc = ICON.member_drink;
+  } else if(code == 'SMOKE') {
+    iconSrc = ICON.member_smoke;
+  } else if(code == 'INTEREST') {
+    iconSrc = ICON.member_interest;
+  } else if(code == 'INTERVIEW') {
+    iconSrc = ICON.member_interview;
   }
 
 

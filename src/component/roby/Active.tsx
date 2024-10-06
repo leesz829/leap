@@ -8,15 +8,15 @@ import LinearGradient from 'react-native-linear-gradient';
 import { STACK, ROUTES } from 'constants/routes';
 import { modalStyle, layoutStyle, commonStyle, styles } from 'assets/styles/Styles';
 import { isEmptyData } from 'utils/functions';
-import { useUserInfo } from 'hooks/useUserInfo';
 import { ScrollView } from 'react-native-gesture-handler';
 import RecommendBanner from 'component/common/RecommendBanner';
+import PopupGradeGuide from 'component/roby/PopupGradeGuide';
 
 
 
 const { width, height } = Dimensions.get('window');
 
-const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass }) => {
+const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, onGradeGudePopup, onAiIntroPopup }) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
   const [currentRespectType, setCurrentRespectType] = React.useState(memberBase?.respect_grade); // repsect 등급 타입
@@ -34,13 +34,58 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
   // resLikeList
   // matchTrgtList
 
+  // 추천이성 이동
+  const onPressRecommendMatch = async () => {
+    navigation.navigate(STACK.COMMON, { screen: 'RecommendMatch' });
+  };
+
+  // 마이홈 방문자 이동
+  const onPressMyHomeVisitor = async () => {
+    navigation.navigate(STACK.COMMON, { screen: 'MyHomeVisitor' });
+  };
+
+
   return (
     <>
       <LinearGradient
         colors={['#706fc6', '#16112A']}
         style={{ paddingHorizontal: 10, paddingTop: 20}}
         start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 0.3 }} >
+        end={{ x: 0, y: 0.3 }}
+      >
+
+        {/* ################################################################################ AI 소개글 영역 */}
+        <LinearGradient
+          colors={['rgba(65,25,104,0.5)', 'rgba(59,95,212,0.5)']}
+          style={{ borderRadius: 10, paddingHorizontal: 10, paddingVertical: 18, marginBottom: 20 }}
+          start={{ x: 0, y: 0.3 }}
+          end={{ x: 0.9, y: 0.9 }}
+        >
+          <Text style={styles.fontStyle('EB', 20, '#fff')}>AI 소개글</Text>
+
+          <SpaceView mt={8}>
+            <Text style={styles.fontStyle('SB', 12, '#fff')}>스토리: "김리미"의 경로</Text>
+
+            <SpaceView mt={20}>
+              <Text style={styles.fontStyle('SB', 12, '#fff')}>"김리미"은 2018년 1월, 중견기업에서 사원으로 경력을 시작했습니다. 그 시점에서 그는 직장에서의 초기 적응과 기초적인 업무 숙련도를 쌓아가며, 자신의 아이디어와 창의성을 발휘하고자 했습니다. 이 시기의 그는 높은 에너지를 바탕으로 활발히 활동하며, 새로운 기회를 모색하고 사람들과의 네트워크를 확장하는 데 주력했습니다. 업무에 대한 접근 방식은 실용적이면서도 창의적이었으며, 팀 내에서 주도적인 역할을 자주 맡았고, 주변 동료들과의 협력을 통해 업무를 효율적으로 수행했습...</Text>
+            </SpaceView>
+          </SpaceView>
+
+          <SpaceView mt={25} viewStyle={layoutStyle.rowCenter}>
+            <TouchableOpacity onPress={onAiIntroPopup}>
+              <LinearGradient
+                colors={['#44B6E5', '#1CDE95']}
+                style={{ flexDirection: 'row', borderRadius: 25, paddingHorizontal: 15, paddingVertical: 10 }}
+                start={{ x: 0, y: 0.3 }}
+                end={{ x: 0.9, y: 0.9 }}
+              >
+                <Image source={ICON.searchWhite} style={styles.iconSquareSize(18)} />
+                <SpaceView ml={5}><Text style={styles.fontStyle('EB', 17, '#fff')}>전체보기</Text></SpaceView>
+              </LinearGradient>
+            </TouchableOpacity>
+          </SpaceView>
+        </LinearGradient>
+
 
         {/* ################################################################################ 리프로운 매너 생활 영역 */}
         <LinearGradient
@@ -124,7 +169,9 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
           </SpaceView>
 
           <SpaceView mt={20} viewStyle={{alignItems: 'flex-end'}}>
-            <TouchableOpacity style={_styles.respectBtn}>
+            <TouchableOpacity
+              style={_styles.respectBtn}
+              onPress={onGradeGudePopup}>
               <Text style={styles.fontStyle('B', 11, '#fff')}>등급 관리하기</Text>
               <Text style={styles.fontStyle('B', 11, '#fff')}>{'>'}</Text>
             </TouchableOpacity>
@@ -325,7 +372,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
 
         {/* ################################################################################ 배너 영역 */}
         <SpaceView mt={20}>
-          <RecommendBanner />
+          <RecommendBanner openFn={onPressRecommendMatch} />
         </SpaceView>
 
         {/* ################################################################################ 마이홈 방문자 영역 */}
@@ -337,7 +384,9 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
 
           <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
             <Text style={styles.fontStyle('EB', 19, '#fff')}>마이홈 방문자</Text>
-            <TouchableOpacity style={{backgroundColor: 'rgba(56,56,56,0.7)', borderRadius: 25, paddingHorizontal: 10, paddingVertical: 5}}>
+            <TouchableOpacity 
+              style={{backgroundColor: 'rgba(56,56,56,0.7)', borderRadius: 25, paddingHorizontal: 10, paddingVertical: 5}}
+              onPress={onPressMyHomeVisitor}>
               <Text style={styles.fontStyle('SB', 11, '#CBCBCB')}>전체보기</Text>
             </TouchableOpacity>
           </SpaceView>
@@ -419,7 +468,6 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
       </LinearGradient>
     </>
   );
-
 });
 
 
@@ -428,7 +476,6 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass })
 ##################### Style 영역
 ###########################################################################################################
 ####################################################################################################### */}
-
 const _styles = StyleSheet.create({
   
   respectTabWrap: {

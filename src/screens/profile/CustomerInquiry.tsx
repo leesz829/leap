@@ -116,16 +116,16 @@ export const CustomerInquiry = (props : Props) => {
 	return (
 		<>
 			<SpaceView viewStyle={_styles.wrap}>
-        		<CommonHeader title="1:1 문의" />
+        <CommonHeader title="1:1 문의" />
 
-        		<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
 					<SpaceView mb={30}>
 						<Text style={styles.fontStyle('EB', 20, '#fff')}>궁금한 점, 불편한 점{'\n'}저희에게 문의하세요 : )</Text>
 					</SpaceView>
 
 					<Shadow
 						style={_styles.shadow}
-						distance={5}
+						distance={3}
 						offset={[0, 0]}
 						startColor='#8D8D8D'
 					>

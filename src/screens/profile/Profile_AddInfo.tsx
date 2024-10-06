@@ -291,52 +291,52 @@ export const Profile_AddInfo = (props: Props) => {
 								<Text style={styles.fontStyle('EB', 20, '#fff')}>리프의 친구들에게{'\n'}{memberBase?.nickname}님의 생각을 남겨 보세요.</Text>
 							</SpaceView>
 							<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, marginTop: 25, height: height-280}}>
-
-								{interviewList.map((item, index) => {
-								
-									return (
-										<>
-											<SpaceView>
-												<LinearGradient
-													colors={['rgba(203,239,255,0.3)', 'rgba(113,143,156,0.3)', 'rgba(122,154,183,0.3)']}
-													start={{ x: 0.1, y: 0 }}
-													end={{ x: 0.8, y: 0.8 }}
-													style={_styles.interviewItemWrap}
-												>
-													<SpaceView>
-														<Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
-													</SpaceView>
-													<SpaceView mt={30} viewStyle={_styles.interviewAnswerWrap}>
-														<TextInput
-															defaultValue={item?.answer}
-															onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
-															autoCapitalize={'none'}
-															multiline={true}
-															style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#C4B6AA')]}
-															placeholder={'내용을 입력해 주세요.\n※입력된 내용이 없는 인터뷰는 상대에게 공개되지 않습니다. '}
-															placeholderTextColor={'#C4B6AA'}
-															maxLength={200}
-															caretHidden={true}
-														/>
-													</SpaceView>
-													<SpaceView mt={10} viewStyle={_styles.interviewBtnWrap}>
-														<TouchableOpacity style={_styles.interviewCancelBtn}>
-															<Text style={styles.fontStyle('B', 16, '#fff')}>취소</Text>
-														</TouchableOpacity>
-														<TouchableOpacity 
-															style={_styles.interviewSaveBtn}
-															onPress={() => {
-																saveInterview(item);
-															}}>
-															<Text style={styles.fontStyle('B', 16, '#fff')}>저장</Text>
-														</TouchableOpacity>
-													</SpaceView>
-												</LinearGradient>
-											</SpaceView>
-										</>
-									);
-								})}
-
+								<SpaceView mb={50}>
+									{interviewList.map((item, index) => {
+										
+										return (
+											<>
+												<SpaceView>
+													<LinearGradient
+														colors={['rgba(203,239,255,0.3)', 'rgba(113,143,156,0.3)', 'rgba(122,154,183,0.3)']}
+														start={{ x: 0.1, y: 0 }}
+														end={{ x: 0.8, y: 0.8 }}
+														style={_styles.interviewItemWrap}
+													>
+														<SpaceView>
+															<Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
+														</SpaceView>
+														<SpaceView mt={30} viewStyle={_styles.interviewAnswerWrap}>
+															<TextInput
+																defaultValue={item?.answer}
+																onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+																autoCapitalize={'none'}
+																multiline={true}
+																style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#C4B6AA')]}
+																placeholder={'내용을 입력해 주세요.\n※입력된 내용이 없는 인터뷰는 상대에게 공개되지 않습니다. '}
+																placeholderTextColor={'#C4B6AA'}
+																maxLength={200}
+																caretHidden={true}
+															/>
+														</SpaceView>
+														<SpaceView mt={10} viewStyle={_styles.interviewBtnWrap}>
+															<TouchableOpacity style={_styles.interviewCancelBtn}>
+																<Text style={styles.fontStyle('B', 16, '#fff')}>취소</Text>
+															</TouchableOpacity>
+															<TouchableOpacity 
+																style={_styles.interviewSaveBtn}
+																onPress={() => {
+																	saveInterview(item);
+																}}>
+																<Text style={styles.fontStyle('B', 16, '#fff')}>저장</Text>
+															</TouchableOpacity>
+														</SpaceView>
+													</LinearGradient>
+												</SpaceView>
+											</>
+										);
+									})}
+								</SpaceView>
 							</ScrollView>
 						</SpaceView>
 					)}

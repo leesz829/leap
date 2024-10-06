@@ -1,7 +1,7 @@
 import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
-import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, InputAccessoryView, TextInput, Keyboard, Modal, Pressable, ScrollView } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, InputAccessoryView, TextInput, Keyboard, Pressable, ScrollView } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import { useUserInfo } from 'hooks/useUserInfo';
 import SpaceView from 'component/SpaceView';
@@ -9,7 +9,15 @@ import { styles, layoutStyle, commonStyle, modalStyle } from 'assets/styles/Styl
 import { useProfileImg } from 'hooks/useProfileImg';
 import { Modalize } from 'react-native-modalize';
 import { isEmptyData } from 'utils/functions';
+import Modal from 'react-native-modal';
 
+
+
+/* ################################################################################################################
+###################################################################################################################
+###### 팝업 - 댓글 관리 화면
+###################################################################################################################
+################################################################################################################ */
 
 interface Props {
   isVisible: boolean;
@@ -24,7 +32,7 @@ const { width, height } = Dimensions.get('window');
 
 
 const ReplyRegiPopup = forwardRef((props, ref) => {
-  const modalizeRef = useRef(null); // 모달 ref
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { replyList, likeFn, replyRegisterFn } = props;
 
@@ -47,13 +55,12 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
   // 팝업 활성화
   const popup_onOpen = () => {
-    modalizeRef.current?.open();
+    setIsModalVisible(true);
   }
 
   // 팝업 닫기
   const popup_onClose = () => {
-    console.log('close!!');
-    modalizeRef.current?.close();
+    setIsModalVisible(false);
   };
 
   const mbrProfileImgList = useProfileImg(); // 회원 프로필 이미지 목록
@@ -63,6 +70,7 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
   const [inputReplyText, setInputReplyText] = React.useState(''); // 댓글 입력 텍스트
 
+  // 선택한 댓글
   const [selectReply, setSelectReply] = React.useState({
     story_replay_seq: 0,
     depth: 0,
@@ -70,16 +78,26 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
   const inputRef = React.useRef();
 
-  const closeModal = async () => {
-    setInputReplyText('');
-    //callbackFunc(false);
-  };
-
   const onReply = async (replySeq:number, depth:number) => {
     console.log('replySeq ::::: ' , replySeq);
     console.log('depth ::::: ' , depth);
 
     setSelectReply({story_replay_seq: replySeq, depth: depth});
+  };
+
+  const [canSwipe, setCanSwipe] = useState(true); // 스와이프 가능 여부 관리
+
+  const handleScroll = (event) => {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+
+    // 스크롤이 끝에 도달했는지 확인
+    if (contentOffset.y === 0) {
+      setCanSwipe(true); // 스크롤이 맨 위에 있을 때만 스와이프 가능
+    } else if (contentOffset.y + layoutMeasurement.height >= contentSize.height) {
+      setCanSwipe(true); // 스크롤이 맨 아래에 있을 때도 스와이프 가능
+    } else {
+      setCanSwipe(false); // 스크롤 중간에서는 스와이프 비활성화
+    }
   };
 
   // ############################################################################# 댓글 등록
@@ -141,9 +159,6 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
     } else {
       applyNickname = '닉네임없음';
     }
-
-    
-    
 
     return (
       <>
@@ -245,17 +260,6 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
     );
   };
 
-
-
-
-
-
-  React.useEffect(() => {
-    /* if (inputRef.current) {
-      inputRef.current.focus();
-    } */
-  }, []);
-
   useFocusEffect(
     React.useCallback(() => {
       setInputReplyText('');
@@ -276,9 +280,8 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
   return (
     <>
-      <Modalize
+      {/* <Modalize
         ref={modalizeRef}
-        adjustToContentHeight={false}
         handleStyle={modalStyle.modalHandleStyle}
         modalStyle={_styles.modalWrap}
         modalHeight={height-150} 
@@ -382,7 +385,119 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
         </SpaceView>
 
-      </Modalize>
+      </Modalize> */}
+
+
+      <Modal
+        isVisible={isModalVisible}
+        style={_styles.modalWrap}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        //swipeDirection="down" // 아래로 스와이프하면 닫힘
+        swipeDirection={canSwipe ? "down" : null} // 스크롤 위치에 따라 스와이프 가능 여부 설정
+        propagateSwipe={true} // 스와이프 동작과 스크롤 동작이 겹치지 않도록 설정
+        onSwipeComplete={popup_onClose} // 스와이프가 완료되면 모달 닫힘
+        onBackdropPress={popup_onClose} // 배경을 터치해도 모달 닫기
+      >
+        <SpaceView viewStyle={{alignItems: 'center'}}>
+          <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 7}} />
+        </SpaceView>
+
+        <SpaceView mt={45}>
+          <Text style={styles.fontStyle('H', 26, '#fff')}>댓글 {replyList?.length}개</Text>
+        </SpaceView>
+
+        <SpaceView mt={30}>
+          <FlatList
+            style={{height: height - 400, marginBottom: 50}}
+            data={replyList}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => {
+              return (
+                <SpaceView>
+                  <ReplyRender item={item} index={index} likeFunc={likeFn} />
+                </SpaceView>
+              )
+            }}
+          />
+        </SpaceView>
+
+        <SpaceView>
+          <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',}} onPress={()=> { popup_onClose(); }} />
+
+          <ScrollView>
+            {Platform.OS == 'ios' ? (
+              <>
+                <InputAccessoryView>
+                  <SpaceView viewStyle={_styles.inputArea}>
+                    <SpaceView viewStyle={_styles.replyImgCircle(30)}>
+                      <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
+                    </SpaceView>
+
+                    <SpaceView viewStyle={_styles.replyInputWrap}>
+                      <TextInput
+                        ref={inputRef}
+                        value={inputReplyText}
+                        onChangeText={(text) => setInputReplyText(text)}
+                        multiline={false}
+                        textAlignVertical={'center'}
+                        autoCapitalize={'none'}
+                        style={[_styles.replyTextStyle, styles.fontStyle('SB', 12, '#CBCBCB')]}
+                        placeholder={'댓글 내용을 입력해 주세요.'}
+                        placeholderTextColor={'#606060'}
+                        editable={true}
+                        secureTextEntry={false}
+                        maxLength={150}
+                        autoFocus={true}
+                      />
+
+                      <TouchableOpacity
+                        onPress={() => { replyRegister(); }}
+                        style={_styles.replyBtnWrap}
+                        hitSlop={commonStyle.hipSlop30}>
+                        <Text style={styles.fontStyle('SB', 12, '#fff')}>전송</Text>
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </SpaceView>
+                </InputAccessoryView>
+              </>
+            ) : (
+              <>
+                <SpaceView viewStyle={_styles.inputArea}>
+                  <SpaceView viewStyle={_styles.replyImgCircle(30)}>
+                    <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
+                  </SpaceView>
+
+                  <SpaceView viewStyle={_styles.replyInputWrap}>
+                    <TextInput
+                      ref={inputRef}
+                      value={inputReplyText}
+                      onChangeText={(text) => setInputReplyText(text)}
+                      multiline={false}
+                      textAlignVertical={'center'}
+                      autoCapitalize={'none'}
+                      style={[_styles.replyTextStyle, styles.fontStyle('SB', 12, '#CBCBCB')]}
+                      placeholder={'댓글 내용을 입력해 주세요.'}
+                      placeholderTextColor={'#606060'}
+                      editable={true}
+                      secureTextEntry={false}
+                      maxLength={150}
+                      autoFocus={true}
+                    />
+
+                    <TouchableOpacity
+                      onPress={() => { replyRegister(); }}
+                      style={_styles.replyBtnWrap}>
+                      <Text style={styles.fontStyle('SB', 12, '#fff')}>전송</Text>
+                    </TouchableOpacity>
+                  </SpaceView>
+                </SpaceView>
+              </>
+            )}
+          </ScrollView>
+
+        </SpaceView>
+      </Modal>
     </>
   );
 });
@@ -403,6 +518,10 @@ const _styles = StyleSheet.create({
     overflow: 'hidden', 
     backgroundColor: '#1B1633',
     paddingHorizontal: 20,
+    margin: 0,
+    marginTop: 100,
+    justifyContent: 'flex-start',
+    paddingTop: 20,
   },
   badgeItemWrap: {
     backgroundColor: '#000000',
@@ -423,9 +542,6 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
-
-
   replyImgCircle: (num:number) => {
     return {
       borderWidth: 1,

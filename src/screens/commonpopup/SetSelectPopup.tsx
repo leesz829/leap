@@ -59,7 +59,10 @@ const SetSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackFunc, 
               <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
                 <SpaceView mt={20} pl={15} pr={15} viewStyle={{height: 250, paddingVertical: 15}}>
                   <LinearGradient
-                    colors={['rgba(255, 255, 255, 0.8)', 'transparent']}
+                    colors={['rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 0.0)']}
+                    //colors={['red', 'rgba(255, 255, 255, 0.0)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
                     style={_styles.topGradient}
                   />
 
@@ -138,7 +141,10 @@ const SetSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackFunc, 
                   )}
 
                   <LinearGradient
-                    colors={['transparent', 'rgba(255, 255, 255, 0.8)']}
+                    colors={['rgba(255, 255, 255, 0.0)', 'rgba(255, 255, 255, 1)']}
+                    //colors={['red', 'rgba(255, 255, 255, 0.0)']}
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0 }}
                     style={_styles.bottomGradient}
                   />
                 </SpaceView>
@@ -212,10 +218,10 @@ const _styles = StyleSheet.create({
 	},
   topGradient: {
     position: 'absolute',
-    top: 0,
+    top: 10,
     left: 0,
     right: 0,
-    height: 10, // 그라데이션 높이를 조정하세요
+    height: 25, // 그라데이션 높이를 조정하세요
     zIndex: 1,
   },
   bottomGradient: {
@@ -223,7 +229,7 @@ const _styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 10, // 그라데이션 높이를 조정하세요
+    height: 25, // 그라데이션 높이를 조정하세요
     zIndex: 1,
   },
 

@@ -180,46 +180,58 @@ export const Profile_Auth = (props: Props) => {
   	{isLoading && <CommonLoading />}
 
 		<SpaceView viewStyle={_styles.wrap}>
-			<CommonHeader title="멤버십 인증 관리" />
+			<SpaceView pl={10} pr={10}>
+				<CommonHeader title="멤버십 인증 관리" />
+			</SpaceView>
 
 			<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, marginTop: 20, paddingTop: 46}}>
-				<SpaceView viewStyle={layoutStyle.alignCenter}>
-					<SpaceView><Text style={styles.fontStyle('EB', 24, '#fff')}>나도 멤버십 인증 레벨업</Text></SpaceView>
-					<SpaceView mt={15}>
-						<Text style={[styles.fontStyle('B', 14, '#fff'), layoutStyle.textCenter]}>당신의 성취를 자랑해 주세요.{'\n'}리프가 프라이드로 만들어 드립니다.</Text>
+				<SpaceView pl={10} pr={10} viewStyle={{zIndex:2}}>
+					<SpaceView viewStyle={layoutStyle.alignCenter}>
+						<SpaceView><Text style={styles.fontStyle('EB', 24, '#fff')}>나도 멤버십 인증 레벨업</Text></SpaceView>
+						<SpaceView mt={15}>
+							<Text style={[styles.fontStyle('B', 14, '#fff'), layoutStyle.textCenter]}>당신의 성취를 자랑해 주세요.{'\n'}리프가 프라이드로 만들어 드립니다.</Text>
+						</SpaceView>
+					</SpaceView>
+
+					<SpaceView mt={25} mb={200}>
+						<SpaceView mb={30}>
+							<SpaceView mb={10}>
+								<Text style={styles.fontStyle('B', 20, '#fff')}>필수 인증</Text>
+							</SpaceView>
+							<SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+								{authList.map((item, index) => {
+									return (item?.common_code == 'JOB' || item?.common_code == 'EDU') && (
+										<>
+											<AuthItemRender key={item?.common_code} data={item} detailOpenFn={openDetail}  />
+										</>
+									);
+								})}
+							</SpaceView>
+						</SpaceView>
+						<SpaceView>
+							<SpaceView mb={10}>
+								<Text style={styles.fontStyle('B', 20, '#fff')}>선택 인증</Text>
+							</SpaceView>
+							<SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+								{authList.map((item, index) => {
+									return (item?.common_code == 'ASSET' || item?.common_code == 'SNS' || item?.common_code == 'INCOME') && (
+										<>
+											<AuthItemRender key={item?.common_code} data={item} detailOpenFn={openDetail}  />
+										</>
+									);
+								})}
+							</SpaceView>
+						</SpaceView>
 					</SpaceView>
 				</SpaceView>
 
-				<SpaceView mt={25} mb={200}>
-					<SpaceView mb={30}>
-						<SpaceView mb={10}>
-							<Text style={styles.fontStyle('B', 20, '#fff')}>필수 인증</Text>
-						</SpaceView>
-						<SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-							{authList.map((item, index) => {
-								return (item?.common_code == 'JOB' || item?.common_code == 'EDU') && (
-									<>
-										<AuthItemRender key={item?.common_code} data={item} detailOpenFn={openDetail}  />
-									</>
-								);
-							})}
-						</SpaceView>
-					</SpaceView>
-					<SpaceView>
-						<SpaceView mb={10}>
-							<Text style={styles.fontStyle('B', 20, '#fff')}>선택 인증</Text>
-						</SpaceView>
-						<SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-							{authList.map((item, index) => {
-								return (item?.common_code == 'ASSET' || item?.common_code == 'SNS' || item?.common_code == 'INCOME') && (
-									<>
-										<AuthItemRender key={item?.common_code} data={item} detailOpenFn={openDetail}  />
-									</>
-								);
-							})}
-						</SpaceView>
-					</SpaceView>
-				</SpaceView>
+				<LinearGradient
+					colors={['rgba(19,17,28,0.4)', 'rgba(89,88,119,0.4)', 'rgba(89,88,119,0.4)', 'rgba(19,17,28,0.4)']}
+					start={{ x: 0, y: 0 }}
+					end={{ x: 0, y: 1 }}
+					style={[_styles.gradientBg]}
+				/>
+
 			</ScrollView>
 		</SpaceView>
 		
@@ -279,7 +291,7 @@ const AuthItemRender = React.memo(({ data, detailOpenFn }) => {
     imgSrc = ICON.auth_itemAsset;
     authDesc = '은행에서 발급해주는 잔고 증명서를 올려주세요.';
   } else if(data.common_code == 'SNS') { 
-    imgSrc = ICON.auth_itemJob;
+    imgSrc = ICON.auth_itemSns;
     authDesc = '팔로워 수가 충족되는 경우 스크린샷을 올려주세요.';
   } else if(data.common_code == 'VEHICLE') {
     imgSrc = ICON.auth_itemJob;
@@ -297,7 +309,7 @@ const AuthItemRender = React.memo(({ data, detailOpenFn }) => {
 				<LinearGradient
 					colors={['rgba(203,241,255,0.3)', 'rgba(113,147,156,0.3)', 'rgba(122,132,183,0.3)']}
 					start={{ x: 0, y: 0.1 }}
-					end={{ x: 0.4, y: 1 }}
+					end={{ x: 0.5, y: 0.4 }}
 					style={[_styles.authItemWrap, {height: isSmall ? 120 : 170}]}>
 					<SpaceView><Image source={imgSrc} style={styles.iconSquareSize(isSmall ? 54 : 64)} /></SpaceView>
 					<SpaceView mt={13}><Text style={styles.fontStyle('B', isSmall ? 16 : 18, '#fff')}>{data.code_name} 인증</Text></SpaceView>
@@ -331,7 +343,7 @@ const _styles = StyleSheet.create({
 	wrap: {
 		minHeight: height,
     backgroundColor: '#13111C',
-    paddingHorizontal: 10,
+    //paddingHorizontal: 10,
     paddingTop: 30,
 	},
 	authItemWrap: {
@@ -347,6 +359,14 @@ const _styles = StyleSheet.create({
 		borderRadius: 12,
 		paddingHorizontal: 10,
 		paddingVertical: 2,
+	},
+	gradientBg: {
+		position: 'absolute',
+		top: -50,
+		bottom: 0,
+		left: 0,
+		right: 0,
+		zIndex: 1,
 	},
 
 });

@@ -19,7 +19,11 @@ import { Modalize } from 'react-native-modalize';
 import MemberMark from 'component/common/MemberMark';
 
 
-
+/* ################################################################################################################
+###################################################################################################################
+###### 팝업 - 좋아요 화면
+###################################################################################################################
+################################################################################################################ */
 
 const { width, height } = Dimensions.get('window');
 
@@ -33,9 +37,8 @@ interface Props {
   profileOpenFn: (memberSeq:number, openCnt:number, isSecret:boolean) => void;
 }
 
-//const LikeListPopup({ _ref, closeModal, type, _storyBoardSeq, selectedData, replyInfo, profileOpenFn }: Props) {
 const LikeListPopup = forwardRef((props, ref) => {
-  const modalizeRef = useRef(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { profileOpenFn } = props;
 
@@ -44,11 +47,9 @@ const LikeListPopup = forwardRef((props, ref) => {
     openModal: (type:any, seq:any) => {
       console.log('type :::::: ' , type);
       getStoryLikeList(type, seq);
-      //modalizeRef.current?.open();
       popup_onOpen();
     },
     closeModal: () => {
-      //modalizeRef.current?.close();
       popup_onClose();
     },
   }));
@@ -60,14 +61,29 @@ const LikeListPopup = forwardRef((props, ref) => {
 
   // 팝업 활성화
   const popup_onOpen = () => {
-    modalizeRef.current?.open();
+    setIsModalVisible(true);
   }
 
   // 팝업 닫기
   const popup_onClose = () => {
-    console.log('close!!');
-    modalizeRef.current?.close();
+    setIsModalVisible(false);
   };
+
+  const [canSwipe, setCanSwipe] = useState(true); // 스와이프 가능 여부 관리
+
+  const handleScroll = (event) => {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+
+    // 스크롤이 끝에 도달했는지 확인
+    if (contentOffset.y === 0) {
+      setCanSwipe(true); // 스크롤이 맨 위에 있을 때만 스와이프 가능
+    } else if (contentOffset.y + layoutMeasurement.height >= contentSize.height) {
+      setCanSwipe(true); // 스크롤이 맨 아래에 있을 때도 스와이프 가능
+    } else {
+      setCanSwipe(false); // 스크롤 중간에서는 스와이프 비활성화
+    }
+  };
+
 
   // 좋아요 목록
   const [likeList, setLikeList] = React.useState([]);
@@ -114,19 +130,6 @@ const LikeListPopup = forwardRef((props, ref) => {
     //closeModal();
     //profileOpenFn(memberSeq, openCnt, false);
   };
-
-  React.useEffect(() => {
-
-    //console.log('_ref ::::: ' , _ref);
-
-    //getStoryLikeList();
-
-    /* if(isVisible){
-      console.log('visible!!!!!!!!!!!');
-      getStoryLikeList();
-      popup_onOpen();
-    } */
-	}, [modalizeRef]);
 
   // ############################################################################# 좋아요 목록 렌더링
   const LikeListRender = ({ item, index }) => {
@@ -217,16 +220,19 @@ const LikeListPopup = forwardRef((props, ref) => {
 
   return (
     <>
-      <Modalize
-        ref={modalizeRef}
-        adjustToContentHeight={false}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={_styles.modalWrap}
-        modalHeight={height-150} 
-        onOverlayPress={() => { popup_onClose(); }}
+      <Modal
+        isVisible={isModalVisible}
+        style={_styles.modalWrap}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        //swipeDirection="down" // 아래로 스와이프하면 닫힘
+        swipeDirection={canSwipe ? "down" : null} // 스크롤 위치에 따라 스와이프 가능 여부 설정
+        propagateSwipe={true} // 스와이프 동작과 스크롤 동작이 겹치지 않도록 설정
+        onSwipeComplete={popup_onClose} // 스와이프가 완료되면 모달 닫힘
+        onBackdropPress={popup_onClose} // 배경을 터치해도 모달 닫기
       >
         <SpaceView mt={25} viewStyle={{alignItems: 'center'}}>
-          <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 5}} />
+          <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 7}} />
         </SpaceView>
 
         <SpaceView mt={45}>
@@ -235,25 +241,28 @@ const LikeListPopup = forwardRef((props, ref) => {
 
         <SpaceView mt={30}>
           <FlatList
-            style={{height: height - 350, marginBottom: 50}}
+            style={{height: height - 350, marginBottom: 30}}
             data={likeList}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => {
               return (
-                <SpaceView>
-                  <LikeListRender item={item} index={index} />
-                </SpaceView>
+                <>
+                  <SpaceView>
+                    <LikeListRender item={item} index={index} />
+                  </SpaceView>
+                </>
               )
             }}
           />
         </SpaceView>
 
-        <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
+        <SpaceView mb={30}>
           <TouchableOpacity style={_styles.confirmBtn} onPress={() => { popup_onClose(); }}>
             <Text style={styles.fontStyle('B', 12, '#fff')}>확인</Text>
           </TouchableOpacity>
         </SpaceView>
 
-      </Modalize>
+      </Modal>
     </>
   );
 });
@@ -270,6 +279,8 @@ const _styles = StyleSheet.create({
     overflow: 'hidden', 
     backgroundColor: '#1B1633',
     paddingHorizontal: 20,
+    margin: 0,
+    marginTop: 100,
   },
   likeListArea: {
     flexDirection: 'row',

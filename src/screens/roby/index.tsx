@@ -35,6 +35,8 @@ import { NoticePopup } from 'screens/commonpopup/NoticePopup';
 import Active from 'component/roby/Active';
 import Story from 'component/roby/Story';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
+import PopupGradeGuide from 'component/roby/PopupGradeGuide';
+import PopupAiIntro from 'component/roby/PopupAiIntro';
 
 
 
@@ -141,63 +143,22 @@ export const Roby = (props: Props) => {
     }
   };
 
-  
 
+  // 등급 관리하기 modalizeRef
+  const gradeGuide_modalizeRef = useRef(null);
+  //const gradeGuide_modalizeRef = React.useRef<Modalize>(null);
 
-  
+  // 등급 관리하기 활성화
+  const gradeGuide_onOpen = () => {
+    gradeGuide_modalizeRef.current?.openModal();
+  };
 
-  // ####################################################################################################### 프로필 재심사 팝업 활성화
-  const profileReexPopupOpen = async () => {
-    if(memberBase?.pass_has_amt < 30) {
-      show({
-        title: '재화 부족',
-        content: '보유 재화가 부족합니다.',
-        confirmCallback: function () {},
-      });
-    } else {
-      show({
-        title: '프로필 재심사',
-        content: '큐브 30개로 프로필 재심사 대기열에 등록하시겠습니까?',
-        passAmt: 30,
-        cancelCallback: function() {
-  
-        },
-        confirmCallback: function () {
-          profileReexProc();
-        },
-      });
-    }
-  }
+  // AI 소개글 modalizeRef
+  const aiIntro_modalizeRef = useRef(null);
 
-  // ####################################################################################################### 프로필 재심사 실행
-  const profileReexProc = async () => {
-
-    // 중복 클릭 방지 설정
-    if(isClickable) {
-      setIsClickable(false);
-      setIsLoading(true);
-
-      try {
-        const { success, data } = await request_reexamination();
-        if (success) {
-          dispatch(setPartialPrincipal({ mbr_base : data.mbr_base }));
-
-          show({
-            type: 'RESPONSIVE',
-            content: '프로필 재심사가 시작되었습니다.',
-          });
-  
-        } else {
-          show({ content: '일시적인 오류가 발생했습니다.' });
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsClickable(true);
-        setIsLoading(false);
-      }
-    }
-
+  // AI 소개글 활성화
+  const aiIntro_onOpen = () => {
+    aiIntro_modalizeRef.current?.openModal();
   };
 
   /* #################################################################################################################################
@@ -578,7 +539,9 @@ export const Roby = (props: Props) => {
               memberBase={memberBase} 
               authList={mbrProfileAuthList} 
               realTimeData={memberPeekData.realTimeData}
-              fnRewardPass={procGradeRewardPass} />}
+              fnRewardPass={procGradeRewardPass}
+              onGradeGudePopup={gradeGuide_onOpen}
+              onAiIntroPopup={aiIntro_onOpen} />}
           {currentTab == 'STORY' && <Story memberBase={memberBase} />}
         </SpaceView>
 
@@ -633,6 +596,20 @@ export const Roby = (props: Props) => {
         </Modal>
         
       </ScrollView>
+
+      {/* ##################################################################################
+            등급 관리하기 팝업
+      ################################################################################## */}
+      <PopupGradeGuide 
+        ref={gradeGuide_modalizeRef}
+      />
+
+      {/* ##################################################################################
+            AI 소개글 팝업
+      ################################################################################## */}
+      <PopupAiIntro 
+        ref={aiIntro_modalizeRef}
+      />
 
       {/********************************************************** 프로필 관리 버튼 */}
       {/* <TouchableOpacity style={_styles.profileBtn} onPress={onPressMangeProfile}>

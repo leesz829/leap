@@ -262,6 +262,9 @@ export const ICON = {
   editBtn: require('assets/icon/common/edit_btn.png'),
   writeBtn: require('assets/icon/common/write_btn.png'),
   checkGreenIcon: require('assets/icon/common/check_green_icon.png'),
+  arrowRight: require('assets/icon/common/arrow_right.png'),
+  searchGreen: require('assets/icon/common/search_green.png'),
+  respectIcon: require('assets/icon/common/respect_icon.png'),
 
   /* match */
   distanceIcon: require('assets/icon/match/distance_icon.png'),
@@ -288,6 +291,7 @@ export const ICON = {
   auth_itemEdu: require('assets/icon/auth/item_edu.png'),
   auth_itemAsset: require('assets/icon/auth/item_asset.png'),
   auth_itemIncome: require('assets/icon/auth/item_income.png'),
+  auth_itemSns: require('assets/icon/auth/item_sns.png'),
 
   /* vibe */
   vibeEmpty: require('assets/icon/vibe/vibe_empty.png'),
@@ -300,6 +304,13 @@ export const ICON = {
   member_body: require('assets/icon/member/member_body.png'),
   member_length: require('assets/icon/member/member_length.png'),
   member_suitcase: require('assets/icon/member/member_suitcase.png'),
+  member_drink: require('assets/icon/member/member_drink.png'),
+  member_interest: require('assets/icon/member/member_interest.png'),
+  member_interview: require('assets/icon/member/member_interview.png'),
+  member_local: require('assets/icon/member/member_local.png'),
+  member_mbti: require('assets/icon/member/member_mbti.png'),
+  member_religion: require('assets/icon/member/member_religion.png'),
+  member_smoke: require('assets/icon/member/member_smoke.png'),
   int_body: require('assets/icon/member/int_body.png'),
   int_entertainment: require('assets/icon/member/int_entertainment.png'),
   int_lifestyle: require('assets/icon/member/int_lifestyle.png'),
@@ -321,6 +332,12 @@ export const ICON = {
   awardRight: require('assets/icon/myhome/award_right.png'),
   peapleIcon: require('assets/icon/myhome/peaple_icon.png'),
   authLevel: require('assets/icon/myhome/auth_level.png'),
+  grade01: require('assets/icon/myhome/grade_01.png'),
+  grade02: require('assets/icon/myhome/grade_02.png'),
+  grade03: require('assets/icon/myhome/grade_03.png'),
+  grade04: require('assets/icon/myhome/grade_04.png'),
+  grade05: require('assets/icon/myhome/grade_05.png'),
+  grade06: require('assets/icon/myhome/grade_06.png'),
 
   /* story */
   story_heartBlack: require('assets/icon/story/heart_black.png'),
