@@ -403,6 +403,14 @@ export const ICON = {
   join_close: require('assets/icon/join/close.png'),
   join_exclamation: require('assets/icon/join/exclamation.png'),
 
+  /* scenario */
+  scenario_datingImg: require('assets/icon/scenario/dating_img.png'),
+  scenario_bgImg: require('assets/icon/scenario/bg_img.png'),
+  scenario_descIcon1: require('assets/icon/scenario/desc_icon1.png'),
+  scenario_descIcon2: require('assets/icon/scenario/desc_icon2.png'),
+  scenario_descIcon3: require('assets/icon/scenario/desc_icon3.png'),
+  scenario_play: require('assets/icon/scenario/play.png'),
+
 
 };
 
