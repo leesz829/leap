@@ -131,7 +131,7 @@ export const BasePopup = (props: Props) => {
 
                         <TouchableOpacity 
                           style={_styles.btnWrap}
-                          disabled={!props.isNoPass}
+                          disabled={isEmptyData(props.passAmt) && !props.isNoPass}
                           onPress={onPressConfirm}
                         >
                           <Text style={styles.fontStyle('B', 16, '#fff')}>{isEmptyData(props.confirmBtnText) ? props.confirmBtnText : '확인하기'}</Text>

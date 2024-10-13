@@ -737,7 +737,6 @@ export default function MatchDetail(props: Props) {
           <SpaceView viewStyle={layoutStyle.rowBetween}>
             <TouchableOpacity
               onPress={() => { navigation.goBack(); }}
-              style={_styles.backContainer}
               hitSlop={commonStyle.hipSlop20}
             >
               <Image source={ICON.backBtnType01} style={styles.iconSquareSize(24)} resizeMode={'contain'} />
@@ -936,7 +935,6 @@ export default function MatchDetail(props: Props) {
           <SpaceView viewStyle={layoutStyle.rowBetween}>
             <TouchableOpacity
               onPress={() => { navigation.goBack(); }}
-              style={_styles.backContainer}
               hitSlop={commonStyle.hipSlop20}
             >
               <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
@@ -1362,13 +1360,6 @@ const _styles = StyleSheet.create({
   },
   topWrap: {
     flexDirection: 'row',
-  },
-  backContainer: {
-    /* position: 'absolute',
-    top: 0,
-    left: 0,
-    justifyContent: 'center',
-    zIndex: 1, */
   },
   headerWrap: {
     position: 'absolute',

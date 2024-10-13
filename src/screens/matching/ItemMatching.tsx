@@ -1,13 +1,7 @@
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, ColorType, ScreenNavigationProp } from '@types';
-import {
-  get_item_matched_info,
-  regist_match_status,
-  report_matched_user,
-  report_check_user,
-  report_check_user_confirm,
-} from 'api/models';
+import { get_item_matched_info, regist_match_status, report_matched_user, report_check_user, report_check_user_confirm } from 'api/models';
 import CommonHeader from 'component/CommonHeader';
 import { CommonBtn } from 'component/CommonBtn';
 import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
@@ -32,6 +26,9 @@ import InterestSendPopup from 'screens/commonpopup/match/InterestSendPopup';
 import SincereSendPopup from 'screens/commonpopup/match/SincereSendPopup';
 import MemberIntro from 'component/match/MemberIntro';
 import LinearGradient from 'react-native-linear-gradient';
+import ReportPopup from 'screens/commonpopup/ReportPopup';
+import MemberMark from 'component/common/MemberMark';
+import Tendency from 'component/match/Tendency';
 
 
 
@@ -55,6 +52,10 @@ export default function ItemMatching(props: Props) {
   // 로딩 상태 체크
   const [isLoad, setIsLoad] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
+
+  const [isOnShrink, setIsOnShrink] = React.useState(false); // 쉬링크 상태 변수
+
+  const [isModHeader, setIsModHeader] = useState(false); // 헤더 변경 여부 구분
 
   const [isCardIndex, setIsCardIndex] = useState(0);
 
@@ -83,13 +84,16 @@ export default function ItemMatching(props: Props) {
 
   // 신고 Pop
   const report_modalizeRef = useRef<Modalize>(null);
+  
+  // 신고하기 팝업 활성화
   const report_onOpen = () => {
-    report_modalizeRef.current?.open();
+    report_modalizeRef.current?.openModal(data?.report_code_list);
     setCheckReportType('');
   };
 
+  // 신고하기 팝업 닫기
   const report_onClose = () => {
-    report_modalizeRef.current?.close();
+    report_modalizeRef.current?.closeModal();
     setCheckReportType('');
   };
 
@@ -190,7 +194,22 @@ export default function ItemMatching(props: Props) {
   ############################################# */
   const popupActive = (activeType: string) => {
     if (activeType == 'interest') {
-      setInterestSendModalVisible(true);
+      show({
+        title: '관심있어요',
+        type: 'MATCH',
+        content: data?.match_member_info?.nickname + '님에게\n관심을 보냅니다.',
+        passType: 'CUBE',
+        passAmt: '30',
+        isNoPass: memberBase?.pass_has_amt < 30 ? false : true,
+        btnIcon: ICON.sendIcon,
+        confirmBtnText: '관심보내기',
+        memberImg: findSourcePath(data?.profile_img_list[0]?.img_file_path),
+        confirmCallback: function() {
+          insertMatchInfo('interest', 0, '');
+        },
+        cancelCallback: function() {
+        },
+      });
 
     } else if (activeType == 'sincere') {
       setSincereSendModalVisible(true);
@@ -353,6 +372,22 @@ export default function ItemMatching(props: Props) {
     report_check_user_confirm(body);
   }
 
+  /* ################################################################################ 스크롤 제어 */
+  const handleScroll = async (event) => {
+    const yOffset = event.nativeEvent.contentOffset.y;
+    if(yOffset > height * 0.7) {
+      setIsModHeader(true);
+    } else {
+      setIsModHeader(false);
+    }
+
+    if(yOffset > 120) {
+      setIsOnShrink(true);
+    } else {
+      setIsOnShrink(false);
+    }
+
+  };
 
   // ################################################################ 초기 실행 함수
   useEffect(() => {
@@ -394,316 +429,294 @@ export default function ItemMatching(props: Props) {
 
   return (
       <> 
-        {type == 'DAILY_REPLAY' ? (
+        {/* {type == 'DAILY_REPLAY' ? (
           <CommonHeader title={'데일리 뷰 다시보기'} />
         ) : (
           <CommonHeader title={'블라인드 카드 ' + (memberSeqList.length > 1 ? '( ' + (isCardIndex) + ' / ' + memberSeqList.length + ' )' : '')} />
-        )}
+        )} */}
 
-        {/* ############################################################################################### 버튼 영역 */}
-        {data.profile_img_list.length > 0 
-          && isLoad 
-          && type != 'ME' 
-          && (type != 'STORAGE' || (type == 'STORAGE' && ((data?.match_base?.match_status == 'LIVE_HIGH' && matchType == 'RES' ) || data?.match_base?.match_status == 'ZZIM') )) && (
-            <SpaceView viewStyle={_styles.btnWrap}>
-              {type != 'STORAGE' && (
-                <TouchableOpacity onPress={() => { popupActive('pass'); }}>
-                  <Text style={_styles.btnText('REFUSE', '#656565')}>스킵</Text>
+        <SpaceView viewStyle={_styles.wrap}>
+          {isOnShrink && (
+            <SpaceView viewStyle={_styles.headerWrap}>
+              <SpaceView viewStyle={layoutStyle.rowBetween}>
+                <TouchableOpacity
+                  onPress={() => { navigation.goBack(); }}
+                  hitSlop={commonStyle.hipSlop20}
+                >
+                  <Image source={ICON.backBtnType01} style={styles.iconSquareSize(24)} resizeMode={'contain'} />
                 </TouchableOpacity>
-              )}
-  
-                
-              <TouchableOpacity onPress={() => { popupActive('interest'); }}>
-                <Text style={_styles.btnText('REQ', '#43ABAE')}>호감 보내기</Text>
-              </TouchableOpacity>
-  
-              {/* <TouchableOpacity onPress={() => { popupActive('zzim'); }}>
-                <Text style={_styles.btnText('ZZIM', '#43ABAE')}>찜하기</Text>
-              </TouchableOpacity> */}
-            </SpaceView>
-          )}
-  
-          {/* ############################################################################################### 보관함 상세 하단 영역 */}
-          {(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') &&
-            <SpaceView viewStyle={_styles.btnWrap}>
-              <SpaceView viewStyle={_styles.matchArea}>
-  
-                <SpaceView mb={20} viewStyle={[layoutStyle.columCenter]}>
-                  <SpaceView viewStyle={_styles.matchTitleArea}>
-                    <Text style={_styles.matchTitle}>{data?.match_base.match_status == 'ACCEPT' ? '메시지' : matchType == 'RES' ? '관심' : '좋아요'}</Text>
-                  </SpaceView>
-                  {data?.match_base?.message &&
-                    <SpaceView mt={10} pl={5} pr={5}>
-                      <Text style={_styles.matchMsg}>"{data?.match_base?.message}"</Text>
-                    </SpaceView>
-                  }
-                </SpaceView>
-  
-                <SpaceView mt={10} viewStyle={[layoutStyle.row, layoutStyle.justifyCenter]}>
-  
-                  {/* ################################# 성공 매칭 구분 */}
-                  {data?.match_base.match_status == 'ACCEPT' ? (
-                    <>
-                      <SpaceView viewStyle={[layoutStyle.justifyCenter, layoutStyle.alignCenter, {width: '100%'}]}>
-                        {(data.match_base.res_member_seq == memberBase.member_seq && data.match_base.res_phone_open_yn == 'Y') ||
-                        (data.match_base.req_member_seq == memberBase.member_seq && data.match_base.req_phone_open_yn == 'Y') ? (
-                          <>
-                            <TouchableOpacity
-                              disabled={!isCopyHpState}
-                              style={_styles.matchSuccArea('#FFFFFF')}
-                              onPress={() => { onCopyPress(data.match_member_info.phone_number); }}>
-                              <Text style={_styles.matchSuccText('#D5CD9E')}>{data.match_member_info.phone_number}</Text>
-                            </TouchableOpacity>
-                            <Text style={_styles.clipboardCopyDesc}>연락처를 터치하면 클립보드에 복사되요.</Text>
-                          </>
-                        ) : (
-                          <TouchableOpacity style={_styles.matchSuccArea('#FFDD00')} onPress={() => { hpOpenPopup(); }}>
-                            <Text style={_styles.matchSuccText('#3D4348')}>연락처 확인하기</Text>
-                          </TouchableOpacity>
-                        )}
-                      </SpaceView>
-                    </>
-                  ) : (
-                    <>
-                      {matchType == 'RES' &&
-                        <>
-                          <SpaceView>
-                            <SpaceView viewStyle={{flexDirection:'row'}}>
-                              <SpaceView mr={5}>
-                                <TouchableOpacity onPress={() => updateMatchStatus('REFUSE') } style={[_styles.matchResBtn, {backgroundColor: '#FFF'}]}>
-                                  <Text style={_styles.matchResBtnText}>거절</Text>
-                                </TouchableOpacity>
-                              </SpaceView>
-                              <SpaceView ml={5}>
-                                <TouchableOpacity onPress={() => updateMatchStatus('ACCEPT') } style={[_styles.matchResBtn, {backgroundColor: '#FFDD00'}]}>
-                                  <Text style={_styles.matchResBtnText}>수락</Text>
-                                </TouchableOpacity>
-                              </SpaceView>
-                            </SpaceView>
-                            <SpaceView>
-                              <Text style={_styles.matchResDesc}>관심을 수락하면 서로의 연락처를 열람할 수 있어요.</Text>
-                            </SpaceView>
-                          </SpaceView>
-                        </>
-                      }
-  
-                      {matchType == 'REQ' &&
-                        <SpaceView viewStyle={_styles.matchReqArea}>
-                          <Text style={_styles.matchReqText}>{data?.match_base?.match_status == 'REFUSE' ? '보내주신 관심에 상대방이 정중히 거절했어요.' : '상대방의 응답을 기다리고 있어요.'}</Text>
-                        </SpaceView>
-                      }
-                    </>
-                  )}
+
+                <SpaceView><Text style={styles.fontStyle('EB', 20, '#fff')}>{data?.match_member_info?.nickname}</Text></SpaceView>
+
+                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20}>
+                    <Image source={ICON.homeIcon} style={styles.iconSquareSize(24)} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
+                    <Image source={ICON.declaration} style={styles.iconSquareSize(24)} />
+                  </TouchableOpacity>
                 </SpaceView>
               </SpaceView>
+
+              <SpaceView mt={10} viewStyle={layoutStyle.alignCenter}>
+                <MemberMark 
+                  sizeType={'S'}
+                  respectGrade={data?.match_member_info?.respect_grade} 
+                  bestFaceName={data?.match_member_info?.best_face_name}
+                  highAuthYn={data?.match_member_info?.high_auth_yn}
+                  variousAuthYn={data?.match_member_info?.various_auth_yn} />
+              </SpaceView>
             </SpaceView>
-          }
-  
-          <LinearGradient
-            colors={['#3D4348', '#1A1E1C']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={_styles.wrap}
-          >
-  
-            <ScrollView style={{ flex: 1, marginBottom: 40 }}>
-                {data.profile_img_list.length > 0 && isLoad ? (
-                  <>
-                    <SpaceView mb={(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') ? 130 : 60}>
-                      
-                      {/* ####################################################################################
-                      ####################### 상단 영역
-                      #################################################################################### */}
-                      <SpaceView mb={30} viewStyle={{overflow: 'hidden'}}>
-  
-                        {/* ############################################################## 상단 이미지 영역 */}
-                        <SpaceView viewStyle={_styles.profileImgWrap}>
-                          <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
-  
-                          <TouchableOpacity onPress={() => { report_onOpen(); }} style={{position: 'absolute', top: 10, right: 25}}>
-                            <Image source={ICON.reportBtn} style={styles.iconSquareSize(32)} />
-                          </TouchableOpacity>
-                        </SpaceView>
-  
-                        <SpaceView viewStyle={_styles.infoArea}>
-                          <SpaceView pb={30} viewStyle={{justifyContent: 'center', alignItems: 'center'}}>
-                            {isEmptyData(data?.match_member_info.distance) && (
-                              <SpaceView mb={5}><Text style={_styles.infoText(14)}>{data?.match_member_info.distance}Km</Text></SpaceView>
-                            )}
-                            <SpaceView mb={8}><Text style={_styles.infoText(25)}>{data?.match_member_info.nickname}, {data?.match_member_info.age}</Text></SpaceView>
-                            <SpaceView pl={30} pr={30}><Text style={_styles.infoText(16)}>{data?.match_member_info.comment}</Text></SpaceView>
-                          </SpaceView>
-                        </SpaceView>
-  
-                        <LinearGradient
-                          colors={['transparent', '#000000']}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 0, y: 1 }}
-                          style={_styles.thumnailDimArea} />
-                      </SpaceView>
-  
-                      {/* ############################################################################################################# 간단 소개 영역 */}
-                      <SpaceView pl={15} pr={15} mb={40}>
-                        <MemberIntro 
-                          memberData={data?.match_member_info} 
-                          isEditBtn={false}
-                          faceList={data?.face_list} />
-                      </SpaceView>
-  
-                      {/* ############################################################################################################# 자기 소개 영역 */}
-                      {isEmptyData(data?.match_member_info.introduce_comment) && (
-                        <SpaceView pl={15} pr={15} mb={40} viewStyle={_styles.commentWrap}>
-                          <SpaceView mb={15} viewStyle={{flexDirection: 'row'}}>
-                            <View style={{zIndex:1}}>
-                              <Text style={_styles.commentTitText}>{data?.match_member_info.nickname}님 소개</Text>
-                            </View>
-                            <View style={_styles.commentUnderline} />
-                          </SpaceView>
-                          <SpaceView>
-                            <Text style={_styles.commentText}>{data?.match_member_info.introduce_comment}</Text>
-                          </SpaceView> 
-                        </SpaceView>
-                      )}
-  
-                      {/* ############################################################################################################# 프로필 인증 영역 */}
-                      {data.second_auth_list.length > 0 && (
-                        <SpaceView pl={15} pr={15} mb={40}>
-                          <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
-                        </SpaceView>
-                      )}
-  
-                      {/* <SpaceView pl={15} pr={15} mb={40}>
-                      {data.second_auth_list.length > 0 ? (
-                        <ProfileAuth data={data.second_auth_list} isButton={false} memberData={data?.match_member_info} />
-                      ) : (
-                        <SpaceView mt={10} viewStyle={_styles.authNoDataArea}>
-                          <SpaceView mb={8}><Text style={_styles.authNoDataTit}>프로필 인증없이 가입한 회원입니다.</Text></SpaceView>
-                          <SpaceView><Text style={_styles.authNoDataSubTit}>프로필 인증은 직업, 학업, 소득, 자산, SNS, 차량 등의 인증 항목을 의미합니다.</Text></SpaceView>
-                        </SpaceView>
-                      )}
-                      </SpaceView> */}
-  
-                      {/* ############################################################################################################# 2번째 이미지 영역 */}
-                      <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                        <Image source={findSourcePath(data.profile_img_list[1]?.img_file_path)} style={_styles.profileImgStyle} />
-                      </SpaceView>
-  
-                      {/* ############################################################################################################# 인터뷰 영역 */}
-                      <SpaceView pl={15} pr={15} mb={35}>
-                        <InterviewRender 
-                          title={data?.match_member_info?.nickname + '에 대한 필독서'} 
-                          isEdit={false}
-                          dataList={data?.interview_list} />
-                      </SpaceView>
-  
-                      {/* ############################################################################################################# 3번째 이미지 영역 */}
-                      <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                        <Image source={findSourcePath(data.profile_img_list[2]?.img_file_path)} style={_styles.profileImgStyle} />
-                      </SpaceView>
-  
-                      {/* ############################################################################################################# 관심사 영역 */}
-                      <SpaceView pl={15} pr={15} mb={40}>
-                        <InterestRender 
-                          memberData={data?.match_member_info} 
-                          isEditBtn={false}
-                          interestList={data?.interest_list} />
-                      </SpaceView>
-  
-                      {/* ############################################################################################################# 4,5,6번째 이미지 영역 */}
-                      {data.profile_img_list?.length > 3 && (
-                        <>
-                          <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                            <Image source={findSourcePath(data.profile_img_list[3]?.img_file_path)} style={_styles.profileImgStyle} />
-                          </SpaceView>
-  
-                          {data.profile_img_list?.length > 4 && (
-                            <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                              <Image source={findSourcePath(data.profile_img_list[4]?.img_file_path)} style={_styles.profileImgStyle} />
-                            </SpaceView>
-                          )}
-  
-                          {data.profile_img_list?.length > 5 && (
-                            <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
-                              <Image source={findSourcePath(data.profile_img_list[5]?.img_file_path)} style={_styles.profileImgStyle} />
-                            </SpaceView>
-                          )}
-                        </>
-                      )}
-  
-                      <SpaceView pl={20} pr={20} mb={30}>
-  
-                        {/* ############################################################## 부스트 회원 노출 영역 */}
-                        {/* {data?.match_member_info?.boost_yn === 'Y' && (
-                          <View style={_styles.boostPannel}>
-                            <View style={_styles.boostBadge}>
-                              <Text style={_styles.boostBadgeText}>BOOST</Text>
-                            </View>
-                            <Text style={_styles.boostTitle}>부스터 회원을 만났습니다.</Text>
-                            <Text style={_styles.boostDescription}>
-                              관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
-                            </Text>
-                          </View>
-                        )} */}
-  
-                        {/* ############################################################## 추가 정보 영역 */}
-                        {/* <AddInfo memberData={data?.match_member_info} /> */}
-  
-                      {/* ############################################################## 신고하기 영역 */}
-                      {/* {type != 'ME' && (
-                        <TouchableOpacity onPress={() => { report_onOpen(); }}>
-                          <View style={_styles.reportButton}>
-                            <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
-                          </View>
-                        </TouchableOpacity>
-                      )} */}
-  
-                    </SpaceView>
-  
-                  </SpaceView>
-                </>
-              ) : (
-                <>
-                  {isEmpty ? (
-                    <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'}]}>
-                      <View style={[layoutStyle.alignCenter]}>
-                        <CommonText type={'h4'} textStyle={_styles.emptyText}>
-                          {/* 프로필 카드 이용이 마감되었어요. */}
-                          매칭 회원이 존재하지 않아요.
-                        </CommonText>
-  
-                        <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
-                          <Image source={IMAGE.logoIcon03} style={{width: 230, height: 230}} />
-                        </View>
-  
-                        <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
-                        <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
-                      </View>
-                    </View>
-                  ) : (
-                    <>
-                      <SpaceView viewStyle={{width: width, height: height}}>
-                        <View style={{height:height / 2, alignItems: 'center', justifyContent:'center', flexDirection: 'row'}}>
-                          <Text style={{fontSize: 25, fontFamily: 'Pretendard-Regular', color: '#646467'}}>잠시만{'\n'}기다려 주세요!</Text>
-                          {/* <Image source={ICON.digitalClock} style={[styles.iconSize40, {marginTop: 25, marginLeft: 5}]} /> */}
-                        </View>
-                      </SpaceView>
-                    </>
-                  )}
-                </>
+          )}
+
+          {/* ############################################################################################### 버튼 영역 */}
+          {/* {data.profile_img_list.length > 0 
+            && isLoad 
+            && type != 'ME' 
+            && (type != 'STORAGE' || (type == 'STORAGE' && ((data?.match_base?.match_status == 'LIVE_HIGH' && matchType == 'RES' ) || data?.match_base?.match_status == 'ZZIM') )) && (
+              
+          )} */}
+
+          <SpaceView viewStyle={_styles.btnWrap}>              
+            <TouchableOpacity 
+              onPress={() => { popupActive('interest'); }}
+              style={_styles.btnSubWrap(140, '#46F66F')}
+            >
+              <Image source={ICON.sendIcon} style={styles.iconSquareSize(20)} />
+              <SpaceView><Text style={styles.fontStyle('B', 16, '#fff')}>관심있어요</Text></SpaceView>
+            </TouchableOpacity>
+          </SpaceView>
+
+          <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll} showsVerticalScrollIndicator={false} scrollEventThrottle={16}>
+
+            {/* ############################################################################################### 상단 Header */}
+            <SpaceView mt={35} mb={0} viewStyle={[{height: 50}]}>
+              <SpaceView viewStyle={layoutStyle.rowBetween}>
+                <TouchableOpacity
+                  onPress={() => { navigation.goBack(); }}
+                  hitSlop={commonStyle.hipSlop20}
+                >
+                  <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
+                </TouchableOpacity>
+
+                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20} >
+                    <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
+                    <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
+                  </TouchableOpacity>
+                </SpaceView>
+              </SpaceView>
+
+              {isOnShrink && (
+                <SpaceView mt={10} viewStyle={layoutStyle.alignCenter}>
+                  <MemberMark 
+                    sizeType={'S'}
+                    respectGrade={data?.match_member_info?.respect_grade} 
+                    bestFaceName={data?.match_member_info?.best_face_name}
+                    highAuthYn={data?.match_member_info?.high_auth_yn}
+                    variousAuthYn={data?.match_member_info?.various_auth_yn} />
+                </SpaceView>
               )}
-            </ScrollView>
-          </LinearGradient>
-  
+            </SpaceView>
+
+            {data.profile_img_list.length > 0 && isLoad ? (
+              <>
+                <SpaceView mb={(type == 'STORAGE' && data?.match_base?.match_status != 'LIVE_HIGH' && data?.match_base?.match_status != 'ZZIM') ? 130 : 60}>
+                      
+                  {/* ####################################################################################
+                  ####################### 상단 영역
+                  #################################################################################### */}
+                  <SpaceView viewStyle={{overflow: 'hidden'}}>
+                    <SpaceView>
+                      <SpaceView mb={13} viewStyle={layoutStyle.alignCenter}>
+                        <Text style={styles.fontStyle('H', 30, '#fff')}>{data?.match_member_info?.nickname}</Text>
+                      </SpaceView>
+
+                      <SpaceView mb={10} viewStyle={_styles.topWrap}>
+                        <SpaceView viewStyle={_styles.gradeArea}>
+                          <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
+                          <Text style={_styles.gradeText}>{data?.match_member_info?.respect_grade}</Text>
+                        </SpaceView>
+                      </SpaceView>
+                    </SpaceView>
+
+                    {/* ############################################################## 상단 이미지 영역 */}
+                    <LinearGradient
+                      colors={['#46F66F', '#FFFF5D']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={{borderRadius: 10, overflow: 'hidden', paddingHorizontal: 2, paddingVertical: 2}}
+                    >
+                      <Image source={findSourcePath(data.profile_img_list[0]?.img_file_path)} style={_styles.profileImgStyle} />
+                    </LinearGradient>
+                  </SpaceView>
+
+                  {/* ############################################################################################################# 소개 영역 */}
+                  <SpaceView pl={20} pr={20} mt={40} mb={40}>
+                    <SpaceView>
+                      <Text style={[styles.fontStyle('EB', 24, '#fff'), {textAlign: 'center'}]}>"{data?.match_member_info.comment}"</Text>
+                    </SpaceView>
+
+                    {isEmptyData(data?.match_member_info.introduce_comment) && (
+                      <SpaceView mt={25} mb={30}>
+                        <Text style={[styles.fontStyle('SB', 14, '#fff'), {textAlign: 'center'}]}>{data?.match_member_info.introduce_comment}</Text>
+                      </SpaceView>
+                    )}
+                  </SpaceView>
+
+                  {/* ############################################################################################################# 성향 영역 */}
+                  <SpaceView mb={30}>
+                    <Tendency 
+                      addData={data?.match_member_add} 
+                      isEditBtn={false}
+                      isNoDataArea={false}
+                    />
+                  </SpaceView>
+
+                  {/* ############################################################################################################# 프로필 인증 영역 */}
+                  {data?.second_auth_list.length > 0 && (
+                    <SpaceView mb={40}>
+                      <ProfileAuth dataList={data?.second_auth_list} isButton={false} memberData={data?.match_member_info} />
+                    </SpaceView>
+                  )}
+
+                  {/* ############################################################################################################# 2번째 이미지 영역 */}
+                  <SpaceView viewStyle={_styles.profileImgWrap}>
+                    <Image source={findSourcePath(data.profile_img_list[1]?.img_file_path)} style={_styles.profileImgStyle} />
+                  </SpaceView>
+
+                  {/* ############################################################################################################# 부가 소개 영역 */}
+                  <SpaceView mt={30}>
+                    <MemberIntro 
+                      addData={data?.match_member_add}
+                      faceModifier={data?.match_member_info?.face_modifier}
+                      nickname={data?.match_member_info?.nickname}
+                      gender={data?.match_member_info?.gender}
+                      isEditBtn={false} />
+                  </SpaceView>
+
+                  {/* ############################################################################################################# 관심사 영역 */}
+                  <SpaceView mt={70}>
+                    <InterestRender 
+                      memberData={data?.match_member_info} 
+                      isEditBtn={false}
+                      interestList={data?.interest_list} />
+                  </SpaceView>
+
+                  {/* ############################################################################################################# 3번째 이미지 영역 */}
+                  <SpaceView mt={30} viewStyle={_styles.profileImgWrap}>
+                    <Image source={findSourcePath(data.profile_img_list[2]?.img_file_path)} style={_styles.profileImgStyle} />
+                  </SpaceView>
+
+                  {/* ############################################################################################################# 인터뷰 영역 */}
+                  <SpaceView mt={50}>
+                    <InterviewRender 
+                      nickname={data?.match_member_info?.nickname} 
+                      isEdit={false}
+                      dataList={data?.interview_list} />
+                  </SpaceView>
+
+                  {/* ############################################################################################################# 4,5,6번째 이미지 영역 */}
+                  {/* {data.profile_img_list?.length > 3 && (
+                    <>
+                      <SpaceView mt={30} mb={40} viewStyle={_styles.profileImgWrap}>
+                        <Image source={findSourcePath(data.profile_img_list[3]?.img_file_path)} style={_styles.profileImgStyle} />
+                      </SpaceView>
+
+                      {data.profile_img_list?.length > 4 && (
+                        <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                          <Image source={findSourcePath(data.profile_img_list[4]?.img_file_path)} style={_styles.profileImgStyle} />
+                        </SpaceView>
+                      )}
+
+                      {data.profile_img_list?.length > 5 && (
+                        <SpaceView mb={40} viewStyle={_styles.profileImgWrap}>
+                          <Image source={findSourcePath(data.profile_img_list[5]?.img_file_path)} style={_styles.profileImgStyle} />
+                        </SpaceView>
+                      )}
+                    </>
+                  )} */}
+
+                  <SpaceView pl={20} pr={20} mb={30}>
+                    {/* ############################################################## 부스트 회원 노출 영역 */}
+                    {/* {data?.match_member_info?.boost_yn === 'Y' && (
+                      <View style={_styles.boostPannel}>
+                        <View style={_styles.boostBadge}>
+                          <Text style={_styles.boostBadgeText}>BOOST</Text>
+                        </View>
+                        <Text style={_styles.boostTitle}>부스터 회원을 만났습니다.</Text>
+                        <Text style={_styles.boostDescription}>
+                          관심이나 찐심을 보내면 소셜 평점 보너스가 부여됩니다.
+                        </Text>
+                      </View>
+                    )} */}
+
+                    {/* ############################################################## 신고하기 영역 */}
+                    {/* {type != 'ME' && (
+                      <TouchableOpacity onPress={() => { report_onOpen(); }}>
+                        <View style={_styles.reportButton}>
+                          <Text style={_styles.reportTextBtn}>신고 및 차단하기</Text>
+                        </View>
+                      </TouchableOpacity>
+                    )} */}
+
+                  </SpaceView>
+                </SpaceView>
+              </>
+            ) : (
+              <>
+                {isEmpty ? (
+                  <View style={[layoutStyle.justifyCenter, layoutStyle.flex1, {backgroundColor: 'white'}]}>
+                    <View style={[layoutStyle.alignCenter]}>
+                      <CommonText type={'h4'} textStyle={_styles.emptyText}>
+                        {/* 프로필 카드 이용이 마감되었어요. */}
+                        매칭 회원이 존재하지 않아요.
+                      </CommonText>
+
+                      <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                        <Image source={IMAGE.logoIcon03} style={{width: 230, height: 230}} />
+                      </View>
+
+                      <View style={{position: 'absolute', top: -50, left: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+                      <View style={{position: 'absolute', top: 80, right: 75}}><Image source={IMAGE.heartImg01} style={{width: 40, height: 40}} /></View>
+                    </View>
+                  </View>
+                ) : (
+                  <>
+                    <SpaceView viewStyle={{width: width, height: height}}>
+                      <View style={{height:height / 2, alignItems: 'center', justifyContent:'center', flexDirection: 'row'}}>
+                        <Text style={{fontSize: 25, fontFamily: 'Pretendard-Regular', color: '#646467'}}>잠시만{'\n'}기다려 주세요!</Text>
+                        {/* <Image source={ICON.digitalClock} style={[styles.iconSize40, {marginTop: 25, marginLeft: 5}]} /> */}
+                      </View>
+                    </SpaceView>
+                  </>
+                )}
+              </>
+            )}
+          </ScrollView>
+        </SpaceView>
+
+        {/* ##################################################################################
+                    사용자 신고하기 팝업
+        ################################################################################## */}
+        <ReportPopup
+          ref={report_modalizeRef}
+          //profileOpenFn={profileCardOpen}
+          confirmFn={reportCheckCallbackFn}
+        />
+
+
         
 
           {/* ##################################################################################
                       사용자 신고하기 팝업
           ################################################################################## */}
-          <Modalize
+          {/* <Modalize
             ref={report_modalizeRef}
             adjustToContentHeight={false}
             handleStyle={modalStyle.modalHandleStyle}
-            /* modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]} */
             modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#333B41'}}
             modalHeight={550}
             FooterComponent={
@@ -726,11 +739,7 @@ export default function ItemMatching(props: Props) {
           >
             <SpaceView viewStyle={{backgroundColor: '#333B41'}}>
               <SpaceView mt={25} ml={30}>
-                {/* <CommonText fontWeight={'700'} type={'h3'}>사용자 신고 및 차단하기</CommonText> */}
                 <Text style={_styles.reportTitle}>사용자 신고 및 차단하기</Text>
-                {/* <TouchableOpacity onPress={report_onClose}>
-                  <Image source={ICON.xBtn2} style={{width: 20, height: 20}} />
-                </TouchableOpacity> */}
               </SpaceView>
   
               <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 0}]}>
@@ -743,7 +752,7 @@ export default function ItemMatching(props: Props) {
                 </SpaceView>
               </View>
             </SpaceView>
-          </Modalize>
+          </Modalize> */}
   
   
           {/* ##################################################################################
@@ -778,8 +787,20 @@ export default function ItemMatching(props: Props) {
 const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
+    paddingHorizontal: 10,
+    backgroundColor: '#13111C',
+  },
+  headerWrap: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    height: 80,
+    backgroundColor: '#13111C',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
     paddingTop: 10,
-    paddingBottom: 50,
   },
   profileImgWrap: {
     alignItems: 'center',
@@ -791,95 +812,6 @@ const _styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
   },
-  infoArea: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-    paddingVertical: 25,
-    overflow: 'hidden',
-  },
-  infoText: (fs:number, cr:string) => {
-    return {
-      fontFamily: 'Pretendard-Regular',
-      fontSize: fs,
-      color: isEmptyData(cr) ? cr : '#fff',
-    };
-  },
-  thumnailDimArea: {
-    position: 'absolute',
-    bottom: -1,
-    left: 0,
-    right: 0,
-    opacity: 0.8,
-    height: height * 0.34,
-    marginHorizontal: 12,
-    borderRadius: 22,
-    overflow: 'hidden',
-  },
-  commentWrap: {
-    alignItems: 'center',
-  },
-  commentTitText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  commentText: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 14,
-    color: '#F3DEA6',
-    textAlign: 'center',
-  },
-  commentUnderline: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 7,
-    backgroundColor: '#FE8C12',
-  },
-  boostPannel: {
-    width: '100%',
-    borderRadius: 10,
-    backgroundColor: '#f6f7fe',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  boostBadge: {
-    width: 54,
-    borderRadius: 7.5,
-    backgroundColor: '#7986ee',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-  },
-  boostBadgeText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 10,
-    lineHeight: 19,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  boostTitle: {
-    fontFamily: 'Pretendard-ExtraBold',
-    fontSize: 14,
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#262626',
-  },
-  boostDescription: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#8e8e8e',
-  },
   emptyText: {
     textAlign: 'center',
     fontSize: 16,
@@ -887,191 +819,46 @@ const _styles = StyleSheet.create({
     minHeight: 70,
     textAlignVertical: 'center',
   },
-  authNoDataArea: {
-    width: '100%',
-    backgroundColor: '#ffffff', 
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderWidth: 1, 
-    borderRadius: 10, 
-    borderColor: '#8E9AEB', 
-    borderStyle: 'dotted',
-  },
-  authNoDataTit: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    color: '#7986EE',
-    textAlign: 'center',
-  },
-  authNoDataSubTit: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 10,
-    color: '#C3C3C8',
-    textAlign: 'center',
-  },
   btnWrap: {
     position: 'absolute',
-    bottom: 10,
-    left: 0,
-    right: 0,
+    bottom: Platform.OS == 'ios' ? 110 : 50,
+    right: 10,
     zIndex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
   },
-  btnText: (type:string, _fColor:string) => {
-    let ph = 30;
-
-    if(type == 'REQ') {
-      ph = 55;
-    } else if(type == 'ZZIM') {
-      ph = 15;
-    }
-    
+  btnSubWrap: (_w:number, _bg:string) => {
     return {
-      fontFamily: 'Pretendard-Bold',
-      fontSize: 20,
-      color: _fColor,
-      textAlign: 'center',
-      borderRadius: 10,
-      backgroundColor: '#fff',
-      paddingHorizontal: ph,
-      paddingVertical: 10,
-      marginHorizontal: type == 'REQ' ? 5 : 0,
-      overflow: 'hidden',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: _bg,
+      borderRadius: 25,
+      width: _w,
+      height: 40,
+      paddingHorizontal: 15,
     };
   },
+  gradeArea: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: Platform.OS == 'ios' ? 8 : 15,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  gradeText:  {
+    fontFamily: 'SUITE-Bold',
+    fontSize: 13,
+    color: '#000000',
+    marginLeft: 3,
+  },
+  topWrap: {
+    flexDirection: 'row',
+  },
 
 
 
 
 
-
-
-
-
-  reportTitle: {
-    fontFamily: 'Pretendard-ExtraBold',
-		fontSize: 20,
-		color: '#D5CD9E',
-		textAlign: 'left',
-  },
-  reportButton: {
-    height: 43,
-    borderRadius: 21.5,
-    backgroundColor: '#363636',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: 20,
-  },
-  reportTextBtn: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  reportText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 17,
-    color: '#E1DFD1',
-    textAlign: 'left',
-  },
-  reportBtnArea: (bg:number, bdc:number) => {
-		return {
-			/* width: '50%',
-			height: 48, */
-			backgroundColor: bg,
-			alignItems: 'center',
-			justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: bdc,
-      borderRadius: 5,
-      paddingVertical: 13,
-		}
-	},
-  reportBtnText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-		  fontSize: 16,
-		  color: isEmptyData(cr) ? cr : '#fff',
-		};
-	},
-
-
-  matchArea: {
-    borderRadius: 10,
-    paddingVertical: 20,
-    backgroundColor: 'rgba(51, 59, 65, 0.9)',
-    width: '95%',
-  },
-  matchTitleArea: {
-    backgroundColor: '#FFF',
-    paddingHorizontal: 10,
-    width: 60,
-    borderRadius: Platform.OS == 'ios' ? 20 : 50,
-  },
-  matchTitle: {
-    textAlign: 'center',
-    fontFamily: 'Pretendard-SemiBold',
-    color: '#D5CD9E',
-  },
-  matchMsg: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#E1DFD1',
-  },
-  matchResBtn: {
-    paddingVertical: 10,
-    paddingHorizontal: 65,
-    borderRadius: 10,
-  },
-  matchResBtnText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
-    color: '#3D4348',
-  },
-  matchReqArea: {
-    borderWidth: 2,
-    borderColor: '#D5CD9E',
-    width: '95%',
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderStyle: 'dashed',
-  },
-  matchReqText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
-    color: '#D5CD9E',
-    textAlign: 'center',
-  },
-  matchSuccArea: (bgcr:string) => {
-		return {
-		  width: '95%',
-      backgroundColor: bgcr,
-      paddingVertical: 10,
-      borderRadius: 10,
-		};
-	},
-  matchSuccText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-      fontSize: 16,
-      color: cr,
-      textAlign: 'center',
-		};
-	},
-  matchResDesc: {
-    marginTop: 10,
-    textAlign: 'center',
-    fontFamily: 'Pretendard-Light',
-    fontSize: 10,
-    color: '#FFFDEC',
-  },  
-  clipboardCopyDesc: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 10,
-    color: '#FFFDEC',
-    marginTop: 10,
-  },
 });

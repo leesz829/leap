@@ -29,7 +29,7 @@ export const DropDown: FC<Props> = (props) => {
   const menuList = [
     {label: '블라인드 카드', value: 'BLIND'},
     {label: '바이브', value: 'VIBE'},
-    {label: '커플 시나리오', value: 'COUPLE'},
+    {label: '커플 시나리오', value: 'SCENARIO'},
   ]
 
   const handleToggleDropdown = () => {

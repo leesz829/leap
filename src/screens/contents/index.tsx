@@ -23,6 +23,7 @@ import { clearPrincipal } from 'redux/reducers/authReducer';
 import { List } from 'component/match/List';
 import { DropDown } from 'component/common/DropDown';
 import { Vibe } from 'component/vibe/Vibe';
+import { Scenario } from 'component/scenario/Scenario';
 
 
 
@@ -94,6 +95,7 @@ export const Contents = () => {
 
         {selectedMenuValue.value == 'BLIND' && <List />}
         {selectedMenuValue.value == 'VIBE' && <Vibe />}
+        {selectedMenuValue.value == 'SCENARIO' && <Scenario />}
 
         {/* <Vibe /> */}
       </SpaceView>
