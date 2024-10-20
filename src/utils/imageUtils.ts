@@ -410,6 +410,7 @@ export const ICON = {
   scenario_descIcon2: require('assets/icon/scenario/desc_icon2.png'),
   scenario_descIcon3: require('assets/icon/scenario/desc_icon3.png'),
   scenario_play: require('assets/icon/scenario/play.png'),
+  scenario_heartYellow: require('assets/icon/scenario/heart_yellow.png'),
 
 
 };
