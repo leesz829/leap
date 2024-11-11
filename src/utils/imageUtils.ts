@@ -265,6 +265,9 @@ export const ICON = {
   arrowRight: require('assets/icon/common/arrow_right.png'),
   searchGreen: require('assets/icon/common/search_green.png'),
   respectIcon: require('assets/icon/common/respect_icon.png'),
+  addWhite: require('assets/icon/common/add_white.png'),
+  pencilBlue: require('assets/icon/common/pencil_blue.png'),
+  checkBlue: require('assets/icon/common/check_blue.png'),
 
   /* match */
   distanceIcon: require('assets/icon/match/distance_icon.png'),

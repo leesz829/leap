@@ -506,8 +506,8 @@ const StoryHeader = React.memo(({selectFn}) => {
               {keywordList?.map((item, index) => {
                 return (
                   <TouchableOpacity onPress={() => { keywordSelectFn(item?.code) }}>
-                  <Text style={_styles.keywordItemText(item?.code == selectedKeyword)}>{item?.name}</Text>
-                </TouchableOpacity>
+                    <Text style={_styles.keywordItemText(item?.code == selectedKeyword)}>{item?.name}</Text>
+                  </TouchableOpacity>
                 )
               })}
             </SpaceView>

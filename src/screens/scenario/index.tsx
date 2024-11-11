@@ -68,8 +68,7 @@ export const Scenario = (props: Props) => {
 
   const move = async () => {
     setPageGubun('RESULT');
-  }
-
+  };
 
   // ####################################################################################################### 초기 실행 함수
   useEffect(() => {

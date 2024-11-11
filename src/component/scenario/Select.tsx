@@ -1,7 +1,7 @@
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect, CommonActions } from '@react-navigation/native';
 import React, { useEffect, useState, FC } from 'react';
 import { BottomParamList, ColorType, ScreenNavigationProp, CommonCode, LabelObj, LiveMemberInfo, LiveProfileImg } from '@types';
-import { get_live_members, regist_profile_evaluation, get_common_code, update_additional } from 'api/models';
+import { get_random_scnr_tmplt_list } from 'api/models';
 import SpaceView from 'component/SpaceView';
 import { CommonLoading } from 'component/CommonLoading';
 import { usePopup } from 'Context';
@@ -36,7 +36,12 @@ const Select = React.memo(({ resultCallbackFn }) => {
   const [isLoading, setIsLoading] = useState(false); // 로딩 여부
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
 
+  const [ccsTitle, setCcsTitle] = useState(''); // 시나리오 제목
+  const [ccsTitleCd, setCcsTitleCd] = useState(''); // 시나리오 제목 코드
+  const [ccsList, setCcsList] = useState([]); // 시나리오 목록
+
   const [selectCode, setSelectCode] = useState('');
+  const [selectCodeList, setSelectCodeList] = useState([]);
 
   const codeList = [
     {code: '01', name: '코인 노래방'},
@@ -51,17 +56,66 @@ const Select = React.memo(({ resultCallbackFn }) => {
 
   const answerSelect = async (code:string) => {
     setSelectCode(code);
-  }
+  };
 
   const move = async () => {
     resultCallbackFn();
-  }
+  };
+
+  const getTextForNumber = (num:number) => {
+    switch(num) {
+      case 1: return '첫번째';
+      case 2: return '두번째';
+      case 3: return '세번째';
+      case 4: return '네번째';
+      case 5: return '다섯번째';
+      case 6: return '여섯번째';
+      case 7: return '일곱번째';
+      case 8: return '여덞번째';
+      case 9: return '아홉번째';
+      case 10: return '열번째';
+      default: return '첫번째';
+    }
+  };
+
+  // ####################################################################### 커플 시나리오 조회
+  const getScenario = async () => {
+    setIsLoading(true);
+    setSelectCodeList([]);
+
+    const body = {
+
+    };
+    try {
+      const { success, data } = await get_random_scnr_tmplt_list(body);
+      if (success) {
+        if (data.result_code == '0000') {          
+          const ccsData = data.result;
+          console.log('list ::::::: ' , ccsData?.list);
+
+          setCcsTitle(ccsData?.ccs_title);
+          setCcsTitleCd(ccsData?.ccs_title_cd);
+          setCcsList(ccsData?.list);
+
+        } else {
+          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useFocusEffect(
     React.useCallback(() => {
+      getScenario();
+      setSelectCode('');
       
       return () => {
-
+        
       };
     }, []),
   );
@@ -72,7 +126,7 @@ const Select = React.memo(({ resultCallbackFn }) => {
 
       <SpaceView mt={40} viewStyle={_styles.contentWrap}>
         <SpaceView viewStyle={_styles.titleWrap}>
-          <Text style={styles.fontStyle('EB', 20, '#fff')}>시나리오 이름</Text>
+          <Text style={styles.fontStyle('EB', 20, '#fff')}>{ccsTitle}</Text>
         </SpaceView>
         <SpaceView pl={13} pr={13}>
           <SpaceView pt={50} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start'}}>
@@ -119,28 +173,39 @@ const Select = React.memo(({ resultCallbackFn }) => {
             </SpaceView>
           </SpaceView>
           <SpaceView mt={30}>
-            <SpaceView><Text style={styles.fontStyle('SB', 16, '#fff')}>첫번째 상황</Text></SpaceView>
-            <SpaceView mt={5}><Text style={styles.fontStyle('SB', 14, '#fff')}>데이트 분위기는 첫 인사 때보다 훈훈해졌습니다. 시간은 아직 밤 9시. 헤어지기 아쉬운 시간 대에 당신은 다음 장소를 제안합니다.</Text></SpaceView>
+            <SpaceView><Text style={styles.fontStyle('SB', 16, '#fff')}>{getTextForNumber(selectCodeList.length+1)} 상황</Text></SpaceView>
+            <SpaceView mt={5}>
+              <Text style={styles.fontStyle('SB', 14, '#fff')}>{ccsList.length > 0 && ccsList[selectCodeList.length+1]?.ccs_contents}</Text>
+            </SpaceView>
           </SpaceView>
           <SpaceView mt={50} mb={20}>
-            {codeList.map((item, index) => (
-              <TouchableOpacity
-                style={_styles.answerItemWrap}
-                activeOpacity={0.7}
-                onPress={() => {
+            {ccsList.length > 0 && (
+              <>
+                {ccsList[selectCodeList.length]?.ans_list.map((item, index) => {
+                  const ccsAnsCd = item?.ccs_ans_cd;
 
-                  if(selectCode == item.code) {
-                    move();
-                  } else {
-                    answerSelect(item.code);
-                  }
-                  
-                }}
-              >
-                <Text style={styles.fontStyle('SB', 16, '#fff')}>{item.name}</Text>
-                {isEmptyData(selectCode) && selectCode == item.code && ( <SpeechBubble />)}
-              </TouchableOpacity>
-            ))}
+                  return (
+                    <TouchableOpacity
+                      style={_styles.answerItemWrap}
+                      activeOpacity={0.7}
+                      onPress={() => {
+      
+                        if(selectCode == item.code) {
+                          setSelectCodeList((prevItems) => [...prevItems, selectCode]);
+                          move();
+                        } else {
+                          answerSelect(item.code);
+                        }
+                        
+                      }}
+                    >
+                      <Text style={styles.fontStyle('SB', 16, '#fff')}>{item.ccs_ans_contents}</Text>
+                      {isEmptyData(selectCode) && selectCode == item.code && ( <SpeechBubble />)}
+                    </TouchableOpacity>
+                  );
+                })}
+              </>
+            )}
           </SpaceView>
         </SpaceView>
       </SpaceView>

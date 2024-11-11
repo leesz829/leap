@@ -44,6 +44,11 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
     navigation.navigate(STACK.COMMON, { screen: 'MyHomeVisitor' });
   };
 
+  // 보관함 이동
+  const onPressStorage = async (loadPage:any) => {
+    navigation.navigate(STACK.TAB, { screen: 'Storage' });
+  };
+
 
   return (
     <>
@@ -422,7 +427,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
               <Image source={ICON.peapleIcon} style={{width: 7, height: 15}} />
               <SpaceView ml={7} mb={3}><Text style={styles.fontStyle('EB', 18, '#fff')}>11</Text></SpaceView>
             </SpaceView>
-            <TouchableOpacity style={_styles.storageBtn}>
+            <TouchableOpacity style={_styles.storageBtn} onPress={onPressStorage}>
               <Text style={styles.fontStyle('B', 11, '#fff')}>보관함 바로가기</Text>
               <Text style={styles.fontStyle('B', 11, '#fff')}>{'>'}</Text>
             </TouchableOpacity>

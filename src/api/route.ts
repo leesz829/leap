@@ -179,3 +179,8 @@ export const STORY_PROFILE_SECRET_PROC = '/story/profileSecretProc';
 export const GET_CHAT_ROOM_LIST = '/chat/getChatRoomList';
 export const CHAT_ROOM_INFO = '/chat/selectChatRoomInfo';
 export const CHAT_EXIT = '/chat/updateChatRoomStatus';
+
+/**
+ * 커플 시나리오
+ */
+export const GET_CCS_RANDOM_SCNR_TMPLT_LIST = '/ccs/selectCCSRandomScnrTmpltList';

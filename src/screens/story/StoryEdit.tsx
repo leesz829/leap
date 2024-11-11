@@ -28,6 +28,7 @@ import { KeywordDropDown } from 'component/story/KeywordDropDown';
 import { myProfile } from 'redux/reducers/authReducer';
 import RNPickerSelect from 'react-native-picker-select';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import PopupLogGroupRegi from 'component/story/PopupLogGroupRegi';
 
 
 
@@ -139,6 +140,14 @@ export default function StoryEdit(props: Props) {
   // 로그 그룹핑 목록
   const [logList, setLogList] = useState([]);
 
+  // 로그 그룹핑 등록 modalizeRef
+  const logGroupRegi_modalizeRef = useRef(null);
+
+  // 로그 그룹핑 등록 팝업 활성화
+  const logGroupRegi_onOpen = () => {
+    logGroupRegi_modalizeRef.current?.openModal();
+  };
+
   // 키워드 선택
   const fnKeywordSelect = () => {
     show({
@@ -168,18 +177,22 @@ export default function StoryEdit(props: Props) {
       list = logList;
     }
 
-    show({
-      type: 'SELECT',
-      title: item.label + ' 선택',
-      dataList: list,
-      confirmCallback: async function(data:any) {
-        setPromptList((prev) =>
-          prev.map((_item: any) =>
-            _item.value === item.value ? { ..._item, selectedValue: {prompt_seq: data?.prompt_seq, prompt_name: data?.prompt_name} } : _item
-          )
-        );
-      },
-    });
+    if(item.value == 'LOGG') {
+      logGroupRegi_onOpen();
+    } else {
+      show({
+        type: 'SELECT',
+        title: item.label + ' 선택',
+        dataList: list,
+        confirmCallback: async function(data:any) {
+          setPromptList((prev) =>
+            prev.map((_item: any) =>
+              _item.value === item.value ? { ..._item, selectedValue: {prompt_seq: data?.prompt_seq, prompt_name: data?.prompt_name} } : _item
+            )
+          );
+        },
+      });
+    }
   };
 
   // 초이스 선택
@@ -850,6 +863,13 @@ export default function StoryEdit(props: Props) {
           </ScrollView>
         </TouchableWithoutFeedback>
       </SpaceView>
+
+      {/* ##################################################################################
+            AI 소개글 팝업
+      ################################################################################## */}
+      <PopupLogGroupRegi 
+        ref={logGroupRegi_modalizeRef}
+      />
     </>
   );
 

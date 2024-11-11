@@ -122,6 +122,7 @@ import {
   SAVE_PROFILE_INFO,
   GET_MEMBER_ADD_INFO,
   SAVE_MEMBER_INTERVIEW,
+  GET_CCS_RANDOM_SCNR_TMPLT_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -1234,4 +1235,16 @@ export async function update_chat_exit(body: {
   chat_member_status: string;
 }) {
   return send(CHAT_EXIT, 'POST', body, true, false);
+};
+
+
+/* ========================================================================================================
+==================================================== 커플 시나리오
+======================================================================================================== */
+
+// 채팅방 목록을 조회한다.
+export async function get_random_scnr_tmplt_list(body: { 
+  
+}) {
+  return send(GET_CCS_RANDOM_SCNR_TMPLT_LIST, 'POST', body, true, false);
 };

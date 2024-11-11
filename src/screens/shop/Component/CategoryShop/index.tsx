@@ -183,55 +183,34 @@ export default function CategoryShop({ loadingFunc, itemUpdateFunc, onPressCateg
 
   return (
     <>
-
-      {/* ############################################################# 카테고리 탭 */}
-      <SpaceView mt={20} mb={10} viewStyle={_styles.tabWrap}>
-        {categoryList?.map((item, index) => (
-          <>
-            <TouchableOpacity
-              key={`category-${item.value}-${index}`}
-              onPress={() => onPressCategoryFunc(item)}
-              style={index > 0 && {marginLeft: 10}}>
-              <Image source={item.value === selectData.value ? item.imgActive : item.imgUnactive} style={styles.iconSquareSize(55)} />
-              <SpaceView mt={5}><Text style={[styles.fontStyle('B', 12, (item.value === selectData.value ? '#46F66F' : '#808080')), {textAlign: 'center'}]}>{item.label}</Text></SpaceView>
-            </TouchableOpacity>
-          </>
-        ))}
-      </SpaceView>
-
       <SpaceView mb={23}>
         <Text style={styles.fontStyle('EB', 20, '#fff')}>{selectData.label}</Text>
       </SpaceView>
 
       {/* ############################################################# 상품 목록 */}
-      <ScrollView style={_styles.categoryWrap} showsVerticalScrollIndicator={false}>
-
-        <SpaceView mb={height-50}>
-
-          {productList.length > 0 ? (
-            <>
-              <SpaceView viewStyle={_styles.itemListWrap}>
-                {productList?.map((item, index) => (
-                  <RenderItem
-                    key={`product-${item?.item_code}-${index}`}
-                    item={item}
-                    index={index}
-                    openModal={openProductModalFunc}
-                    categoryData={selectData}
-                  />
-                ))}
-              </SpaceView>
-            </>
-          ) : (
-            <>
-              <SpaceView mt={50} viewStyle={{alignItems: 'center'}}>
-                <Text style={styles.fontStyle('B', 13, '#fff')}>등록된 상품이 없습니다.</Text>
-              </SpaceView>
-            </>
-          )}
-        </SpaceView>
-
-      </ScrollView>
+      <SpaceView mb={150}>
+        {productList.length > 0 ? (
+          <>
+            <SpaceView viewStyle={_styles.itemListWrap}>
+              {productList?.map((item, index) => (
+                <RenderItem
+                  key={`product-${item?.item_code}-${index}`}
+                  item={item}
+                  index={index}
+                  openModal={openProductModalFunc}
+                  categoryData={selectData}
+                />
+              ))}
+            </SpaceView>
+          </>
+        ) : (
+          <>
+            <SpaceView mt={50} viewStyle={{alignItems: 'center'}}>
+              <Text style={styles.fontStyle('B', 13, '#fff')}>등록된 상품이 없습니다.</Text>
+            </SpaceView>
+          </>
+        )}
+      </SpaceView>
     </>
   );
 }
@@ -363,13 +342,6 @@ const _styles = StyleSheet.create({
     flexDirection: 'column',
     //height: height - 450,
     //marginTop: 20,
-  },
-  tabWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.5)',
-    paddingBottom: 10,
   },
   itemListWrap: {
     flexDirection: 'row',

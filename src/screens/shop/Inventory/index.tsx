@@ -362,7 +362,7 @@ export default function Inventory() {
       {isLoading && <CommonLoading />}
 
       <SpaceView viewStyle={_styles.wrap}>
-        <SpaceView mt={40}>
+        <SpaceView mt={40} viewStyle={{paddingHorizontal: 10}}>
           <CommonHeader title="아이템" />
         </SpaceView>
 

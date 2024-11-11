@@ -55,6 +55,8 @@ export const Shop = () => {
   const { show } = usePopup(); // 공통 팝업
   const [isVisible, setIsVisible] = useState(false);
 
+  const [isOnShrink, setIsOnShrink] = React.useState(false); // 쉬링크 상태 변수
+
   const [productModalVisible, setProductModalVisible] = useState(false); // 상품 모달 VIsible
   const [targetItem, setTargetItem] = useState(null); // 타겟 아이템
   const [selectedCategoryData, setSelectedCategoryData] = useState(categoryList[0]); // 선택된 카테고리
@@ -398,6 +400,16 @@ export const Shop = () => {
     }    
   };
 
+  // ############################################################################# 스크롤 이동 함수
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    if(contentOffset.y > 150) {
+      setIsOnShrink(true);
+    } else {
+      setIsOnShrink(false);
+    }
+  };
+
   // ############################################################################# 초기 실행 실행
   useFocusEffect(
     React.useCallback(() => {
@@ -441,8 +453,6 @@ export const Shop = () => {
 
   return (
     <>
-      {/* <TopNavigation currentPath={''} /> */}
-
       {isLoading && <CommonLoading />}
 
       <SpaceView viewStyle={_styles.wrap}>
@@ -450,93 +460,274 @@ export const Shop = () => {
         <SpaceView mt={50} viewStyle={{flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between'}}>
           <Text style={styles.fontStyle('H', 32, '#fff')}>스토어</Text>
 
-          <TouchableOpacity onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}>
-            <Image source={ICON.shop_inventory} style={styles.iconSquareSize(40)} />
-          </TouchableOpacity>
-        </SpaceView>
-
-        {memberBase?.gender == 'W' && (
-          <SpaceView mt={20}>
-            <SpaceView viewStyle={_styles.femaleBannerWrap}>
-              <SpaceView ml={13}>
-                <SpaceView mb={10}><Text style={styles.fontStyle('EB', 20, '#fff')}>RP 스토어</Text></SpaceView>
-                <SpaceView mb={13}><Text style={styles.fontStyle('SB', 10, '#fff')}>오직 여성 회원들을 위한 특권👸{'\n'}다양한 기프티콘이 당신을 기다리고 있어요.</Text></SpaceView>
-                <SpaceView mb={15}><Text style={styles.fontStyle('H', 24, '#fff')}>{CommaFormat(memberBase?.mileage_point)}</Text></SpaceView>
-                <SpaceView>
-                  {(memberBase.respect_grade == 'PLATINUM' || memberBase.respect_grade == 'DIAMOND') ? (
-                    <TouchableOpacity style={_styles.rpStoreBtn} onPress={onPressLimitShop}>
-                      <Text style={styles.fontStyle('B', 12, '#44B6E5')}>입장하기</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                      <SpaceView viewStyle={_styles.gradeContainer}>
-                        <Image source={ICON.sparkler} style={styles.iconSquareSize(12)} />
-                        <SpaceView ml={2}><Text style={styles.fontStyle('EB', 9, '#000000')}>{memberBase.respect_grade}</Text></SpaceView>
-                      </SpaceView>
-                      <SpaceView mb={4}><Text style={styles.fontStyle('SB', 9, '#fff')}>PLATINUM 등급부터 RP스토어 이용이 가능합니다.</Text></SpaceView>
-                    </SpaceView>
-                  )}
-                </SpaceView>
+          <SpaceView viewStyle={layoutStyle.rowCenter}>
+            <SpaceView mr={10} viewStyle={layoutStyle.rowCenter}>
+              <SpaceView viewStyle={_styles.cubeWrap}>
+                <SpaceView mr={5}><Image source={ICON.cube} style={styles.iconSquareSize(14)} /></SpaceView>
+                <Text style={styles.fontStyle('R', 12, '#fff')}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
               </SpaceView>
-              <SpaceView mr={20}>
-                <Image source={ICON.shop_femaleShop} style={styles.iconNoSquareSize(59, 140)} />
+              <SpaceView ml={6} viewStyle={_styles.cubeWrap}>
+                <SpaceView mr={5}><Image source={ICON.megaCube} style={styles.iconSquareSize(14)} /></SpaceView>
+                <Text style={styles.fontStyle('R', 12, '#fff')}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
               </SpaceView>
             </SpaceView>
+
+            <TouchableOpacity onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}>
+              <Image source={ICON.shop_inventory} style={styles.iconSquareSize(40)} />
+            </TouchableOpacity>
+          </SpaceView>
+        </SpaceView>
+
+        {/* ############################################################# 카테고리 탭(쉬링크) */}
+        {isOnShrink && (
+          <SpaceView mt={20} mb={10} viewStyle={_styles.tabWrap}>
+            {categoryList?.map((item, index) => (
+              <>
+                <TouchableOpacity
+                  key={`category-${item.value}-${index}`}
+                  onPress={() => onPressCategory(item)}
+                  style={index > 0 && {marginLeft: 10}}>
+                  <Image source={item.value === selectedCategoryData.value ? item.imgActive : item.imgUnactive} style={styles.iconSquareSize(55)} />
+                  <SpaceView mt={5}><Text style={[styles.fontStyle('B', 12, (item.value === selectedCategoryData.value ? '#46F66F' : '#808080')), {textAlign: 'center'}]}>{item.label}</Text></SpaceView>
+                </TouchableOpacity>
+              </>
+            ))}
           </SpaceView>
         )}
 
-        {memberBase?.gender == 'M' && (
-          <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
-            <ImageBackground source={ICON.shop_maleBg} style={[styles.iconNoSquareSize(380, 162), _styles.maleWrap]}>
-              <SpaceView mt={15}><Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>리워드 플랜</Text></SpaceView>
-              <SpaceView viewStyle={{alignItems: 'center'}}>
-                <SpaceView>
-                  <Text style={styles.fontStyle('B', 16, '#fff')}>
-                    {payInfo?.receive_flag == 'Y'
-                      ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
-                      : payInfo?.tmplt_name
-                    }등급 보상은{' '}
-                    {payInfo?.tmplt_name == 'S' && payInfo?.receive_flag == 'Y' ? '이미 보상은 끝'
-                      : tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1]?.item_name + '입니다.'
-                    }
-                  </Text>
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}} onScroll={handleScroll}>
+          {memberBase?.gender == 'W' && (
+            <SpaceView mt={20}>
+              <SpaceView viewStyle={_styles.femaleBannerWrap}>
+                <SpaceView ml={13}>
+                  <SpaceView mb={10}><Text style={styles.fontStyle('EB', 20, '#fff')}>RP 스토어</Text></SpaceView>
+                  <SpaceView mb={13}><Text style={styles.fontStyle('SB', 10, '#fff')}>오직 여성 회원들을 위한 특권👸{'\n'}다양한 기프티콘이 당신을 기다리고 있어요.</Text></SpaceView>
+                  <SpaceView mb={15}><Text style={styles.fontStyle('H', 24, '#fff')}>{CommaFormat(memberBase?.mileage_point)}</Text></SpaceView>
+                  <SpaceView>
+                    {(memberBase.respect_grade == 'PLATINUM' || memberBase.respect_grade == 'DIAMOND') ? (
+                      <TouchableOpacity style={_styles.rpStoreBtn} onPress={onPressLimitShop}>
+                        <Text style={styles.fontStyle('B', 12, '#44B6E5')}>입장하기</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                        <SpaceView viewStyle={_styles.gradeContainer}>
+                          <Image source={ICON.sparkler} style={styles.iconSquareSize(12)} />
+                          <SpaceView ml={2}><Text style={styles.fontStyle('EB', 9, '#000000')}>{memberBase.respect_grade}</Text></SpaceView>
+                        </SpaceView>
+                        <SpaceView mb={4}><Text style={styles.fontStyle('SB', 9, '#fff')}>PLATINUM 등급부터 RP스토어 이용이 가능합니다.</Text></SpaceView>
+                      </SpaceView>
+                    )}
+                  </SpaceView>
                 </SpaceView>
-                <SpaceView mt={10}>
-                  <SpaceView mb={5} viewStyle={{borderRadius: 50, width: 250}}>
+                <SpaceView mr={20}>
+                  <Image source={ICON.shop_femaleShop} style={styles.iconNoSquareSize(59, 140)} />
+                </SpaceView>
+              </SpaceView>
+            </SpaceView>
+          )}
 
-                    <SpaceView>
+          {memberBase?.gender == 'M' && (
+            <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
+              <ImageBackground source={ICON.shop_maleBg} style={[_styles.maleWrap]}>
+                <SpaceView><Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>리워드 플랜</Text></SpaceView>
+                <SpaceView viewStyle={{alignItems: 'center'}}>
+                  <SpaceView>
+                    <Text style={styles.fontStyle('B', 16, '#fff')}>
+                      {payInfo?.receive_flag == 'Y'
+                        ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
+                        : payInfo?.tmplt_name
+                      }등급 보상은{' '}
+                      {payInfo?.tmplt_name == 'S' && payInfo?.receive_flag == 'Y' ? '이미 보상은 끝'
+                        : tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1]?.item_name + '입니다.'
+                      }
+                    </Text>
+                  </SpaceView>
+                  <SpaceView mt={10}>
+                    <SpaceView mb={5} viewStyle={{borderRadius: 50, width: width - 110}}>
 
                       <SpaceView>
-                        <LinearGradient
-                          colors={['#46F66F', '#FFFF5D']}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 0 }}
-                          style={_styles.gradient(0.3)} />
-                      </SpaceView>
-                      
-                      <Slider
-                        animateTransitions={true}
-                        renderThumbComponent={() => null}
-                        containerStyle={_styles.sliderContainerStyle}
-                        trackStyle={_styles.sliderThumbStyle}
-                        trackClickable={false}
-                        disabled
-                      />
-                    </SpaceView>
+                        <SpaceView viewStyle={{zIndex:1}}>
+                          {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? (
+                            <>
+                              <LinearGradient
+                                colors={['#46F66F', '#FFFF5D']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={_styles.gradient(1)}
+                              >
+                                <TouchableOpacity
+                                  onPress={() => {onPressGetReward(payInfo?.event_tmplt_seq, payInfo?.tmplt_name);}}
+                                  style={{width: '100%', alignItems: 'center'}}
+                                >
+                                  <Text style={styles.fontStyle('SB', 10, '#1F5AFB')}>터치하고 보상 받기</Text>
+                                </TouchableOpacity>
+                              </LinearGradient>
+                            </>
+                          ) : (
+                            <>
+                              <LinearGradient
+                                colors={['#46F66F', '#FFFF5D']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={_styles.gradient(payInfo?.price_persent)} />
 
-                    <SpaceView mt={5}>
-                      <Text style={[styles.fontStyle('SB', 9, '#FFFF5D'), {textAlign: 'right'}]}>
-                        <Text style={styles.fontStyle('SB', 9, '#fff')}>
-                          {payInfo?.receive_flag == 'Y'
+                              {/* <Image 
+                                source={
+                                  payInfo?.receive_flag == 'N' ? (
+                                    payInfo?.tmplt_name == 'E' ? ICON.circleUnrank
+                                    : payInfo?.tmplt_name == 'D' ? ICON.circleE
+                                    : payInfo?.tmplt_name == 'C' ? ICON.circleD
+                                    : payInfo?.tmplt_name == 'B' ? ICON.circleC
+                                    : payInfo?.tmplt_name == 'A' ? ICON.circleB
+                                    : payInfo?.tmplt_name == 'S' && ICON.circleA
+                                  ) : (
+                                    <>
+                                      {payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name !== 'S' ? (
+                                        ICON[`circle${payInfo?.tmplt_name}`]
+                                      ) : payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' && (
+                                        ICON.circleComplete
+                                      )}
+                                    </>
+                                  )
+                                }
+                                style={styles.iconSquareSize(70)} /> */}
+                            </>
+                          )}
+                        </SpaceView>
+                        
+                        <Slider
+                          animateTransitions={true}
+                          renderThumbComponent={() => null}
+                          containerStyle={_styles.sliderContainerStyle}
+                          trackStyle={_styles.sliderThumbStyle}
+                          trackClickable={false}
+                          disabled
+                        />
+                      </SpaceView>
+
+                      {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? (
+                        <>
+                        
+                        </>
+                      ) : (
+                        <SpaceView mt={5}>
+                          <Text style={[styles.fontStyle('SB', 9, '#FFFF5D'), {textAlign: 'right'}]}>
+                            <Text style={styles.fontStyle('SB', 9, '#fff')}>
+                              {payInfo?.receive_flag == 'Y'
+                              ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
+                              : payInfo?.tmplt_name
+                              }등급까지
+                            </Text>{' '}
+                            {CommaFormat(payInfo?.target_buy_price - payInfo?.member_buy_price)}RP 남음
+                          </Text>
+                        </SpaceView>
+                      )}
+
+                      
+
+                      {/* <Text style={_styles.rewardDesc}>
+                        {payInfo?.receive_flag == 'N' ? payInfo?.target_buy_price - payInfo?.member_buy_price : payInfo?.target_buy_price}
+                        {' 원 더 결제하면 '}
+                        {payInfo?.receive_flag == 'Y'
                           ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
                           : payInfo?.tmplt_name
-                          }등급까지
-                        </Text>{' '}
-                        {CommaFormat(payInfo?.target_buy_price - payInfo?.member_buy_price)}RP 남음
-                      </Text>
+                          }
+                          등급 달성!
+                      </Text> */}
                     </SpaceView>
+                  </SpaceView>
+                </SpaceView>
+                <SpaceView><Text style={[styles.fontStyle('SB', 10, '#fff'), {textAlign: 'center'}]}>유료 상품 구매를 하면 캐시백 포인트가 충전됩니다.</Text></SpaceView>
+              </ImageBackground>
+            </SpaceView>
+          )}
 
-                    {/* <Text style={_styles.rewardDesc}>
+          {/* <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {backgroundColor: '#3D4348', width: width, zIndex: 1,}]}>
+            <SpaceView ml={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
+              <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={ICON.cubeCyan} style={styles.iconSquareSize(30)} />
+                <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
+              </SpaceView>
+              <SpaceView ml={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={ICON.megaCubeCyan} style={styles.iconSquareSize(33)} />
+                <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
+              </SpaceView>
+            </SpaceView>
+
+            <TouchableOpacity
+              style={_styles.inventoryBtn}
+              onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}
+            >
+              <Image source={ICON.menuCyan} style={styles.iconSquareSize(20)} />
+              <Text style={_styles.inventoryText}>보유 아이템</Text>
+
+              {newItemCnt > 0 && (
+                <SpaceView viewStyle={_styles.newInvenArea}>
+                  <View style={_styles.newInvenTriangle} />
+                  <SpaceView viewStyle={_styles.newInvenTextArea}>
+                    <Text style={_styles.newInvenText}>새 아이템 도착!</Text>
+                  </SpaceView>
+                </SpaceView>
+              )}
+
+            </TouchableOpacity>
+          </SpaceView> */}
+
+          {/* {memberBase?.gender == 'M' && (
+            <SpaceView viewStyle={_styles.shadowContainer}>
+              <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
+                {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? (
+                  <TouchableOpacity onPress={() => {onPressGetReward(payInfo?.event_tmplt_seq, payInfo?.tmplt_name);}}>
+                    <Image source={ICON.circleReward} style={styles.iconSquareSize(70)} />
+                  </TouchableOpacity>
+                ) : (
+                  <Image 
+                    source={
+                      payInfo?.receive_flag == 'N' ? (
+                        payInfo?.tmplt_name == 'E' ? ICON.circleUnrank
+                        : payInfo?.tmplt_name == 'D' ? ICON.circleE
+                        : payInfo?.tmplt_name == 'C' ? ICON.circleD
+                        : payInfo?.tmplt_name == 'B' ? ICON.circleC
+                        : payInfo?.tmplt_name == 'A' ? ICON.circleB
+                        : payInfo?.tmplt_name == 'S' && ICON.circleA
+                      ) : (
+                        <>
+                          {payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name !== 'S' ? (
+                            ICON[`circle${payInfo?.tmplt_name}`]
+                          ) : payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' && (
+                            ICON.circleComplete
+                          )}
+                        </>
+                      )
+                    }
+                    style={styles.iconSquareSize(70)} />
+                )}
+                
+                <SpaceView ml={10} mb={5}>
+                  <Text style={_styles.rewardTitle}>
+                    <Text style={{color: '#F1D30E'}}>
+                      {payInfo?.receive_flag == 'Y'
+                        ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
+                        : payInfo?.tmplt_name
+                      }
+                    </Text>
+                    {'보상은 '}
+                    {isEmptyData(payInfo?.tmplt_level) && isEmptyData(tmplList) &&
+                      <Text style={{color: '#32F9E4'}}>
+                        {payInfo?.tmplt_name == 'S' && payInfo?.receive_flag == 'Y' ? '이미 보상은 끝'
+                          : tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1].item_name
+                        }
+                      </Text>
+                    }
+                    입니다.
+                  </Text>
+
+                  {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? (
+                    <Text style={_styles.rewardDesc}>{payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.</Text>
+                  ) : payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' ? (
+                    <Text style={_styles.rewardDesc}>이미 보상은 끝</Text>
+                  ) : (
+                    <Text style={_styles.rewardDesc}>
                       {payInfo?.receive_flag == 'N' ? payInfo?.target_buy_price - payInfo?.member_buy_price : payInfo?.target_buy_price}
                       {' 원 더 결제하면 '}
                       {payInfo?.receive_flag == 'Y'
@@ -544,178 +735,73 @@ export const Shop = () => {
                         : payInfo?.tmplt_name
                         }
                         등급 달성!
-                    </Text> */}
-                  </SpaceView>
-                </SpaceView>
-              </SpaceView>
-              <SpaceView><Text style={[styles.fontStyle('SB', 10, '#fff'), {textAlign: 'center'}]}>유료 상품 구매를 하면 캐시백 포인트가 충전됩니다.</Text></SpaceView>
-            </ImageBackground>
-          </SpaceView>
-        )}
-
-        
-
-        {/* <SpaceView mt={20} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity>
-            <Image source={ICON.shop_tabCubeOn} style={styles.iconSquareSize(50)} />
-          </TouchableOpacity>
-          <TouchableOpacity style={{marginLeft:10}}>
-            <Image source={ICON.shop_tabMegaOff} style={styles.iconSquareSize(50)} />
-          </TouchableOpacity>
-          <TouchableOpacity style={{marginLeft:10}}>
-            <Image source={ICON.shop_tabCardOff} style={styles.iconSquareSize(50)} />
-          </TouchableOpacity>
-          <TouchableOpacity style={{marginLeft:10}}>
-            <Image source={ICON.shop_tabBoostOff} style={styles.iconSquareSize(50)} />
-          </TouchableOpacity>
-          <TouchableOpacity style={{marginLeft:10}}>
-            <Image source={ICON.shop_tabPackageOff} style={styles.iconSquareSize(50)} />
-          </TouchableOpacity>
-        </SpaceView> */}
-
-
-
-        {/* <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, {backgroundColor: '#3D4348', width: width, zIndex: 1,}]}>
-          <SpaceView ml={10} viewStyle={[layoutStyle.row, layoutStyle.alignCenter]}>
-            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image source={ICON.cubeCyan} style={styles.iconSquareSize(30)} />
-              <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.pass_has_amt)}</Text>
-            </SpaceView>
-            <SpaceView ml={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image source={ICON.megaCubeCyan} style={styles.iconSquareSize(33)} />
-              <Text style={_styles.myCubeDesc}>{CommaFormat(memberBase?.royal_pass_has_amt)}</Text>
-            </SpaceView>
-          </SpaceView>
-
-          <TouchableOpacity
-            style={_styles.inventoryBtn}
-            onPress={() => (navigation.navigate(STACK.COMMON, { screen: ROUTES.SHOP_INVENTORY }))}
-          >
-            <Image source={ICON.menuCyan} style={styles.iconSquareSize(20)} />
-            <Text style={_styles.inventoryText}>보유 아이템</Text>
-
-            {newItemCnt > 0 && (
-              <SpaceView viewStyle={_styles.newInvenArea}>
-                <View style={_styles.newInvenTriangle} />
-                <SpaceView viewStyle={_styles.newInvenTextArea}>
-                  <Text style={_styles.newInvenText}>새 아이템 도착!</Text>
-                </SpaceView>
-              </SpaceView>
-            )}
-
-          </TouchableOpacity>
-        </SpaceView> */}
-
-        {/* {memberBase?.gender == 'M' && (
-          <SpaceView viewStyle={_styles.shadowContainer}>
-            <SpaceView mt={30} mb={30} viewStyle={[layoutStyle.row, layoutStyle.alignEnd, {paddingHorizontal: 15}]}>
-              {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? (
-                <TouchableOpacity onPress={() => {onPressGetReward(payInfo?.event_tmplt_seq, payInfo?.tmplt_name);}}>
-                  <Image source={ICON.circleReward} style={styles.iconSquareSize(70)} />
-                </TouchableOpacity>
-              ) : (
-                <Image 
-                  source={
-                    payInfo?.receive_flag == 'N' ? (
-                      payInfo?.tmplt_name == 'E' ? ICON.circleUnrank
-                      : payInfo?.tmplt_name == 'D' ? ICON.circleE
-                      : payInfo?.tmplt_name == 'C' ? ICON.circleD
-                      : payInfo?.tmplt_name == 'B' ? ICON.circleC
-                      : payInfo?.tmplt_name == 'A' ? ICON.circleB
-                      : payInfo?.tmplt_name == 'S' && ICON.circleA
-                    ) : (
-                      <>
-                        {payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name !== 'S' ? (
-                          ICON[`circle${payInfo?.tmplt_name}`]
-                        ) : payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' && (
-                          ICON.circleComplete
-                        )}
-                      </>
-                    )
-                  }
-                  style={styles.iconSquareSize(70)} />
-              )}
-              
-              <SpaceView ml={10} mb={5}>
-                <Text style={_styles.rewardTitle}>
-                  <Text style={{color: '#F1D30E'}}>
-                    {payInfo?.receive_flag == 'Y'
-                      ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
-                      : payInfo?.tmplt_name
-                    }
-                  </Text>
-                  {'보상은 '}
-                  {isEmptyData(payInfo?.tmplt_level) && isEmptyData(tmplList) &&
-                    <Text style={{color: '#32F9E4'}}>
-                      {payInfo?.tmplt_name == 'S' && payInfo?.receive_flag == 'Y' ? '이미 보상은 끝'
-                        : tmplList[payInfo?.receive_flag == 'Y' ? payInfo?.tmplt_level : payInfo?.tmplt_level - 1].item_name
-                      }
                     </Text>
-                  }
-                  입니다.
-                </Text>
+                  )}
+                </SpaceView>
 
-                {(payInfo?.target_buy_price - payInfo?.member_buy_price == 0) && payInfo?.receive_flag == 'N' ? (
-                  <Text style={_styles.rewardDesc}>{payInfo?.tmplt_name}등급 달성! 보상을 받을 수 있습니다.</Text>
-                ) : payInfo?.receive_flag == 'Y' && payInfo?.tmplt_name == 'S' ? (
-                  <Text style={_styles.rewardDesc}>이미 보상은 끝</Text>
-                ) : (
-                  <Text style={_styles.rewardDesc}>
-                    {payInfo?.receive_flag == 'N' ? payInfo?.target_buy_price - payInfo?.member_buy_price : payInfo?.target_buy_price}
-                    {' 원 더 결제하면 '}
-                    {payInfo?.receive_flag == 'Y'
-                      ? payInfo?.tmplt_name == 'S' ? 'S' : payInfo?.tmplt_name == 'A' ? 'S' : String.fromCharCode(payInfo?.tmplt_name.charCodeAt(0) - 1)
-                      : payInfo?.tmplt_name
-                      }
-                      등급 달성!
-                  </Text>
-                )}
+                <TouchableOpacity style={_styles.rewardBtn} onPress={getCashBackPayInfo}>
+                  <Text style={_styles.rewardBtnText}>리워드 플랜</Text>
+                </TouchableOpacity>
               </SpaceView>
-
-              <TouchableOpacity style={_styles.rewardBtn} onPress={getCashBackPayInfo}>
-                <Text style={_styles.rewardBtnText}>리워드 플랜</Text>
-              </TouchableOpacity>
             </SpaceView>
+          )} */}
+
+          {/* {(memberBase?.gender == 'W' || memberBase?.test_member_yn == 'Y') && (
+            <LinearGradient
+              colors={['#FF7B92', '#FFF7C1']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{paddingHorizontal: 15, paddingVertical: 10, marginTop: 10}}
+            >
+              <Text style={_styles.mileageTitle}>보유 RP</Text>
+              <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
+                <Text style={_styles.mileageDesc}>{CommaFormat(memberBase?.mileage_point)}</Text>
+                {memberBase?.respect_grade == 'VIP' || memberBase?.respect_grade == 'VVIP' ?
+                  <TouchableOpacity style={_styles.rpStoreBtn} onPress={onPressLimitShop}>
+                    <Image source={ICON.gift} style={styles.iconSquareSize(30)} />
+                    <Text style={_styles.rpStoreText}>RP 스토어 입장</Text>
+                  </TouchableOpacity>
+                :
+                  <TouchableOpacity style={_styles.rpStorePreBtn} onPress={onPressLimitShop}>
+                    <Text style={_styles.rpStorePreText}>RP 스토어{'\n'}미리보기</Text>
+                  </TouchableOpacity>
+                }
+              </SpaceView>
+              <Text style={_styles.rpStoreDesc}>RP 스토어에서 교환 가능한 쓸쓸한 기프티콘 보고 가세요.</Text>
+            </LinearGradient>
+          )} */}
+
+          {/* ############################################################# 카테고리 탭 */}
+          {!isOnShrink && (
+            <SpaceView mt={20} mb={10} viewStyle={_styles.tabWrap}>
+              {categoryList?.map((item, index) => (
+                <>
+                  <TouchableOpacity
+                    key={`category-${item.value}-${index}`}
+                    onPress={() => onPressCategory(item)}
+                    style={index > 0 && {marginLeft: 10}}>
+                    <Image source={item.value === selectedCategoryData.value ? item.imgActive : item.imgUnactive} style={styles.iconSquareSize(55)} />
+                    <SpaceView mt={5}><Text style={[styles.fontStyle('B', 12, (item.value === selectedCategoryData.value ? '#46F66F' : '#808080')), {textAlign: 'center'}]}>{item.label}</Text></SpaceView>
+                  </TouchableOpacity>
+                </>
+              ))}
+            </SpaceView>
+          )}
+
+          {/* ############################################### 카테고리별 */}
+          <SpaceView mb={200}>
+            <CategoryShop 
+              loadingFunc={loadingFunc} 
+              itemUpdateFunc={getShopMain}
+              onPressCategoryFunc={onPressCategory}
+              openProductModalFunc={openProductModal}
+              categoryList={categoryList}
+              productList={productList}
+              selectedCategoryData={selectedCategoryData}
+            />
           </SpaceView>
-        )} */}
 
-        {/* {(memberBase?.gender == 'W' || memberBase?.test_member_yn == 'Y') && (
-          <LinearGradient
-            colors={['#FF7B92', '#FFF7C1']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={{paddingHorizontal: 15, paddingVertical: 10, marginTop: 10}}
-          >
-            <Text style={_styles.mileageTitle}>보유 RP</Text>
-            <SpaceView viewStyle={[layoutStyle.row, layoutStyle.justifyBetween, layoutStyle.alignCenter]}>
-              <Text style={_styles.mileageDesc}>{CommaFormat(memberBase?.mileage_point)}</Text>
-              {memberBase?.respect_grade == 'VIP' || memberBase?.respect_grade == 'VVIP' ?
-                <TouchableOpacity style={_styles.rpStoreBtn} onPress={onPressLimitShop}>
-                  <Image source={ICON.gift} style={styles.iconSquareSize(30)} />
-                  <Text style={_styles.rpStoreText}>RP 스토어 입장</Text>
-                </TouchableOpacity>
-              :
-                <TouchableOpacity style={_styles.rpStorePreBtn} onPress={onPressLimitShop}>
-                  <Text style={_styles.rpStorePreText}>RP 스토어{'\n'}미리보기</Text>
-                </TouchableOpacity>
-              }
-            </SpaceView>
-            <Text style={_styles.rpStoreDesc}>RP 스토어에서 교환 가능한 쓸쓸한 기프티콘 보고 가세요.</Text>
-          </LinearGradient>
-        )} */}
-
-        {/* ############################################### 카테고리별 */}
-        <SpaceView mb={200}>
-          <CategoryShop 
-            loadingFunc={loadingFunc} 
-            itemUpdateFunc={getShopMain}
-            onPressCategoryFunc={onPressCategory}
-            openProductModalFunc={openProductModal}
-            categoryList={categoryList}
-            productList={productList}
-            selectedCategoryData={selectedCategoryData}
-          />
-        </SpaceView>
+        </ScrollView>
       </SpaceView>
 
       {/* 상품 상세 팝업 */}
@@ -1111,7 +1197,12 @@ const _styles = StyleSheet.create({
   },
   maleWrap: {
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingTop: 20,
+    paddingBottom: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+    width: '100%',
+    height: 170,
   },
   gradient: (value:any) => {
     let percent = 0;
@@ -1123,20 +1214,36 @@ const _styles = StyleSheet.create({
     return {
       position: 'absolute',
       width: percent + '%',
-      height: 12,
+      height: 15,
       zIndex: 1,
       borderRadius: 20,
     };
   },
   sliderContainerStyle: {
-    height: 12,
+    height: 15,
     borderRadius: 50,
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
   sliderThumbStyle: {
-    height: 12,
+    height: 15,
     borderRadius: 50,
     backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  cubeWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 25,
+    paddingHorizontal: 7,
+    paddingVertical: 4,
+  },
+  tabWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.5)',
+    paddingBottom: 10,
   },
 
 
