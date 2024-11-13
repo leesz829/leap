@@ -525,8 +525,8 @@ export const Storage = (props: Props) => {
                 {tabs.map((item, index) => (
                   <>
                     <SpaceView key={index}>
-                      <TouchableOpacity onPress={() => { onPressDot(index); }}>
-                        <Text style={_styles.tabText(currentIndex == index)}>{item.title}</Text>
+                      <TouchableOpacity onPress={() => { onPressDot(index); }} style={_styles.tabItem(currentIndex == index)}>
+                        <Text style={styles.fontStyle('EB', 14, currentIndex == index ? '#46F66F' : '#A6B8CF')} >{item.title}</Text>
                       </TouchableOpacity>
                     </SpaceView>
                   </>
@@ -674,17 +674,14 @@ const _styles = StyleSheet.create({
     paddingVertical: 5,
     //width: '60%',
   },
-  tabText: (isOn: boolean) => {
-		return {
-			fontFamily: 'SUITE-ExtraBold',
-      fontSize: 14,
-			color: isOn ? '#46F66F' : '#A6B8CF',
+  tabItem: (isOn: boolean) => {
+    return {
       backgroundColor: isOn ? '#fff' : 'transparent',
       borderRadius: 25,
       paddingHorizontal: 14,
       paddingVertical: 6,
-		};
-	},  
+    }
+  },
   noData: {
     paddingHorizontal: 20,
     height: height - 350,
