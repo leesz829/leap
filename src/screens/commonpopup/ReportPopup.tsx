@@ -52,10 +52,11 @@ const ReportPopup = forwardRef((props, ref) => {
 			handleStyle={modalStyle.modalHandleStyle}
 			/* modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]} */
 			modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#1B1633'}}
-			modalHeight={height - 150}
-			/* scrollViewProps={{
+			//modalHeight={height - 160}
+			modalHeight={650}
+			scrollViewProps={{
 				scrollEnabled: false, // 스크롤 비활성화
-			}} */
+			}}
 			onOverlayPress={() => { closeModal(); }}
 			FooterComponent={
 				<>
