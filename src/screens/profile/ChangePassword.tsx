@@ -323,7 +323,7 @@ const _styles = StyleSheet.create({
 			fontFamily: 'SUITE-Bold',
 			fontSize: 12,
 			textAlign: 'center',
-			borderRadius: 50,
+			borderRadius: 25,
 			overflow: 'hidden',
 			paddingVertical: 15,
 			paddingHorizontal: 20,
