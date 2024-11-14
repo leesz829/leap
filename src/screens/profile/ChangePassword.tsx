@@ -229,7 +229,7 @@ export const ChangePassword = (props : Props) => {
 						</SpaceView>
 					</SpaceView>
 
-					<SpaceView mb={24} mt={80}>
+					<SpaceView mb={30} mt={80}>
 						<CommonInput
 							value={oldPassword}
 							onChangeText={(oldPassword) => setOldPassword(oldPassword)}
@@ -244,7 +244,7 @@ export const ChangePassword = (props : Props) => {
 						{oldPasswordConfirmMessage !== '' && (<Text style={{marginTop: 10, color: oldPasswordConfirmMessageColor}}>{oldPasswordConfirmMessage}</Text>)}
 					</SpaceView>
 
-					<SpaceView mb={24}>
+					<SpaceView mb={30}>
 						<CommonInput
 							value={newPassword}
 							onChangeText={(newPassword) => setNewPassword(newPassword)}
