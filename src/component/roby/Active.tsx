@@ -94,7 +94,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
 
         {/* ################################################################################ 리프로운 매너 생활 영역 */}
         <LinearGradient
-          colors={['#411968', '#3B5FD4']}
+          colors={['rgba(65,25,104,0.5)', 'rgba(59,95,212,0.5)']}
           style={{ borderRadius: 10, paddingHorizontal: 10, paddingVertical: 10 }}
           start={{ x: 1, y: 0 }}
           end={{ x: 0, y: 1 }} >
@@ -144,7 +144,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
                     {item == 'MEGACUBE' && ( <>매주 월요일{'\n'}메가 큐브 {megaCubeCnt}개 지급</> )}
                   </Text>
 
-                  <SpaceView mt={10} mb={20}>
+                  <SpaceView mt={10} mb={25}>
                     {item == 'FREE' && ( <Image source={ICON.respectFree} style={styles.iconSquareSize(60)} /> )}
                     {item == 'CUBE' && ( <Image source={ICON.respectCube} style={styles.iconSquareSize(60)} /> )}
                     {item == 'MEGACUBE' && ( <Image source={ICON.respectMegaCube} style={styles.iconSquareSize(60)} /> )}
@@ -176,7 +176,8 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
           <SpaceView mt={20} viewStyle={{alignItems: 'flex-end'}}>
             <TouchableOpacity
               style={_styles.respectBtn}
-              onPress={onGradeGudePopup}>
+              onPress={onGradeGudePopup}
+            >
               <Text style={styles.fontStyle('B', 11, '#fff')}>등급 관리하기</Text>
               <Text style={styles.fontStyle('B', 11, '#fff')}>{'>'}</Text>
             </TouchableOpacity>
@@ -219,11 +220,10 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
 
                 {realTimeData?.auth_percent >= 21 && (
                   <>
-                    {(realTimeData?.auth_percent >= 21 && realTimeData?.auth_percent <= 30) && <> 리프에서 월등한 멤버십 </>}
+                    {(realTimeData?.auth_percent >= 21 && realTimeData?.auth_percent <= 30) && <> 리프에서 월등한 멤버십 인증 회원 </>}
                     {(realTimeData?.auth_percent >= 31 && realTimeData?.auth_percent <= 50) && <> 리프에서 우월한 멤버십 인증 회원 </>}
                     {(realTimeData?.auth_percent >= 51 && realTimeData?.auth_percent <= 70) && <> 리프에서 경쟁력 있는 멤버십 인증 회원 </>}
                     {(realTimeData?.auth_percent >= 71 && realTimeData?.auth_percent <= 100) && <> 믿을 수 있는 멤버십 인증 회원 </>}
-                    인증 회원
                   </>
                 )}
               </Text>
@@ -267,8 +267,26 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
               <Text style={styles.fontStyle('EB', 15, '#fff')}>마일스톤</Text>
               <SpaceView mt={8}>
                 <Text style={styles.fontStyle('SB', 11, '#fff')}>
-                  <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>상위{realTimeData?.auth_percent}%의 프리미엄</Text> 회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{memberBase.nickname}</Text>님의{'\n'} 
-                  멤버십 인증 과정 한눈에 보기
+                  {realTimeData?.auth_percent <= 20 && (
+                    <>
+                      <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>
+                        상위{realTimeData?.auth_percent}%의 
+                        {realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
+                        {(realTimeData?.auth_percent >= 2 && realTimeData?.auth_percent <= 5) && <> VIP </>}
+                        {(realTimeData?.auth_percent >= 6 && realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
+                        {(realTimeData?.auth_percent >= 11 && realTimeData?.auth_percent <= 15) && <> 최상위 </>}
+                        {(realTimeData?.auth_percent >= 16 && realTimeData?.auth_percent <= 20) && <> 상위 </>}
+                      </Text> 
+                      회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{memberBase.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
+                    </>
+                  )}
+                  {realTimeData?.auth_percent >= 21 && (
+                    <>
+                      <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>인증</Text> 회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{memberBase.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
+                    </>
+                  )}
+
+                  {/* <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>상위{realTimeData?.auth_percent}%의 프리미엄</Text> 회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{memberBase.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기 */}
                 </Text>
               </SpaceView>
             </SpaceView>
@@ -529,7 +547,7 @@ const _styles = StyleSheet.create({
   respectItemWrap: {
     width: width/3.6,
     height: 180,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingVertical: 20,
     paddingHorizontal: 10,
@@ -572,7 +590,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: 'rgba(0,0,0,0.3)',
-    width: 100,
+    width: 120,
     borderRadius: 20,
     paddingVertical: 8,
     paddingHorizontal: 10,

@@ -47,9 +47,13 @@ const SetLocalSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackF
 
   return (
     <>
-      <Modal visible={isVisible} transparent={true}>
-        <View style={modalStyle.modalBackground}>
-          <View style={[modalStyle.modalStyle1]}>
+      <Modal 
+        visible={isVisible} 
+        transparent={true}
+        onRequestClose={() => {closeFunc(data?.code)}}
+      >
+        <TouchableOpacity style={modalStyle.modalBackground} activeOpacity={1} onPress={() => {closeFunc(data?.code)}}>
+          <View style={[modalStyle.modalStyle1]} onStartShouldSetResponder={() => true}>
             <SpaceView viewStyle={_styles.modalWrap}>
               <SpaceView mb={20}>
                 <Text style={styles.fontStyle('H', 26, '#000000')}>{data?.name}</Text>
@@ -124,7 +128,7 @@ const SetLocalSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackF
               </TouchableOpacity>
             </SpaceView>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </>
   );

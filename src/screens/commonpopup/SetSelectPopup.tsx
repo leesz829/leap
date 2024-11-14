@@ -48,9 +48,13 @@ const SetSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackFunc, 
 
   return (
     <>
-      <Modal visible={isVisible} transparent={true}>
-        <View style={modalStyle.modalBackground}>
-          <View style={[modalStyle.modalStyle1]}>
+      <Modal 
+        visible={isVisible} 
+        transparent={true}
+        onRequestClose={() => {closeFunc()}}
+      >
+        <TouchableOpacity style={modalStyle.modalBackground} activeOpacity={1} onPress={() => {closeFunc()}}>
+          <View style={modalStyle.modalStyle1} onStartShouldSetResponder={() => true}>
             <SpaceView viewStyle={_styles.modalWrap}>
               <SpaceView mb={20}>
                 <Text style={styles.fontStyle('H', 26, '#000000')}>{data?.name}</Text>
@@ -166,7 +170,7 @@ const SetSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackFunc, 
               </TouchableOpacity>
             </SpaceView>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </>
   );

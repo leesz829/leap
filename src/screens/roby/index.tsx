@@ -122,6 +122,8 @@ export const Roby = (props: Props) => {
           }));
           setResLikeList(data.res_like_list);
           setMatchTrgtList(data.match_trgt_list);
+          
+          console.log('data?.real_time_info ::::: ' , data?.real_time_info);
 
           setMemberPeekData({
             realTimeData: data?.real_time_info,
@@ -498,7 +500,9 @@ export const Roby = (props: Props) => {
                 </SpaceView>
                 <TouchableOpacity 
                   style={_styles.mstProfileImgArea}
-                  onPress={() => (onPressMangeProfile())}>
+                  onPress={() => (onPressMangeProfile())}
+                  //onPress={()=> { navigation.navigate(STACK.COMMON, { screen: 'MyHome' }); }}
+                >
                   <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.mstProfileImgStyle} />
 
                   <SpaceView viewStyle={_styles.profileEditBtnWrap}>

@@ -47,9 +47,13 @@ export const MatchPopup = (props: Props) => {
 
   return (
     <>
-      <Modal visible={props.popupVisible} transparent={true}>
-        <View style={modalStyle.modalBackground}>
-          <View style={[modalStyle.modalStyle1]}>
+      <Modal 
+        visible={props.popupVisible} 
+        transparent={true}
+        onRequestClose={onPressCancel}
+      >
+        <TouchableOpacity style={modalStyle.modalBackground} activeOpacity={1} onPress={onPressCancel}>
+          <View style={modalStyle.modalStyle1} onStartShouldSetResponder={() => true}>
             <SpaceView viewStyle={_styles.modalWrap}>
 
               {/* ########################################################### 타이틀 영역 */}
@@ -115,7 +119,7 @@ export const MatchPopup = (props: Props) => {
               </TouchableOpacity>
             </SpaceView>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </>
   );

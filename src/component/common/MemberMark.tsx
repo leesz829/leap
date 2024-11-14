@@ -18,7 +18,7 @@ import { isEmptyData } from 'utils/functions';
 const MemberMark = React.memo(({ sizeType, respectGrade, bestFaceName, highAuthYn, variousAuthYn }) => {
 
   let _fontSize = 13;
-  let _iconSize = 15;
+  let _iconSize = 16;
 
   if(sizeType == 'S') {
     _fontSize = 9;

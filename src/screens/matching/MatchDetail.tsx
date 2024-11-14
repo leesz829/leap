@@ -745,10 +745,13 @@ export default function MatchDetail(props: Props) {
             <SpaceView><Text style={styles.fontStyle('EB', 20, '#fff')}>{data?.match_member_info?.nickname}</Text></SpaceView>
 
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-              <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20}>
-                <Image source={ICON.homeIcon} style={styles.iconSquareSize(24)} />
+              <TouchableOpacity style={{marginRight: 10}} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20}>
+                <Image source={ICON.chatIcon} style={styles.iconSquareSize(24)} />
               </TouchableOpacity>
-              <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
+              {/* <TouchableOpacity style={{marginRight: 10}} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20}>
+                <Image source={ICON.homeIcon} style={styles.iconSquareSize(24)} />
+              </TouchableOpacity> */}
+              <TouchableOpacity onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
                 <Image source={ICON.declaration} style={styles.iconSquareSize(24)} />
               </TouchableOpacity>
             </SpaceView>
@@ -941,10 +944,13 @@ export default function MatchDetail(props: Props) {
             </TouchableOpacity>
 
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-              <TouchableOpacity style={[layoutStyle.row, {marginRight: 10}]} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20} >
-                <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
+              <TouchableOpacity style={{marginRight: 10}} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20} >
+                <Image source={ICON.chatIcon} style={styles.iconSquareSize(35)} />
               </TouchableOpacity>
-              <TouchableOpacity style={[layoutStyle.row]} onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
+              {/* <TouchableOpacity style={{marginRight: 10}} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20} >
+                <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
+              </TouchableOpacity> */}
+              <TouchableOpacity onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
                 <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
               </TouchableOpacity>
             </SpaceView>
@@ -995,11 +1001,13 @@ export default function MatchDetail(props: Props) {
                     <Text style={styles.fontStyle('H', 30, '#fff')}>{data?.match_member_info?.nickname}</Text>
                   </SpaceView>
 
-                  <SpaceView mb={10} viewStyle={_styles.topWrap}>
-                    <SpaceView viewStyle={_styles.gradeArea}>
-                      <Image source={ICON.sparkler} style={styles.iconSquareSize(16)} />
-                      <Text style={_styles.gradeText}>{data?.match_member_info?.respect_grade}</Text>
-                    </SpaceView>
+                  <SpaceView mb={10} viewStyle={layoutStyle.rowCenter}>
+                    <MemberMark 
+                      respectGrade={data?.match_member_info?.respect_grade} 
+                      bestFaceName={data?.match_member_info?.best_face_name}
+                      highAuthYn={data?.match_member_info?.high_auth_yn}
+                      variousAuthYn={data?.match_member_info?.various_auth_yn} 
+                    />
                   </SpaceView>
                 </SpaceView>
 
@@ -1213,9 +1221,13 @@ export default function MatchDetail(props: Props) {
 
     {/* setPhoneOpenCubeType */}
 
-    <Modal visible={phoneOpenModalVisible} transparent={true}>
-      <SpaceView viewStyle={modalStyle.modalBackground}>
-        <SpaceView viewStyle={[modalStyle.modalStyle1]}>
+    <Modal 
+      visible={phoneOpenModalVisible} 
+      transparent={true}
+      onRequestClose={() => {phoneOpenCloseModal()}}
+    >
+      <TouchableOpacity style={modalStyle.modalBackground} activeOpacity={1} onPress={() => {closeFunc(data?.code)}}>
+        <SpaceView viewStyle={modalStyle.modalStyle1} onStartShouldSetResponder={() => true}>
           <SpaceView viewStyle={_styles.openModalWrap}>
             <SpaceView>
               <Text style={styles.fontStyle('H', 26, '#000000')}>재화 선택</Text>
@@ -1278,7 +1290,7 @@ export default function MatchDetail(props: Props) {
             </TouchableOpacity>
           </SpaceView>
         </SpaceView>
-      </SpaceView>
+      </TouchableOpacity>
     </Modal>
 
   </>
@@ -1341,25 +1353,6 @@ const _styles = StyleSheet.create({
     width: 155,
     height: 40,
     paddingHorizontal: 15,
-  },
-  gradeArea: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: Platform.OS == 'ios' ? 8 : 15,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  gradeText:  {
-    fontFamily: 'SUITE-Bold',
-    fontSize: 13,
-    color: '#000000',
-    marginLeft: 3,
-  },
-  topWrap: {
-    flexDirection: 'row',
   },
   headerWrap: {
     position: 'absolute',

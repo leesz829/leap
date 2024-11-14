@@ -103,11 +103,15 @@ const SetJobSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackFun
 
   return (
     <>
-      <Modal visible={isVisible} transparent={true}>
+      <Modal 
+        visible={isVisible} 
+        transparent={true}
+        onRequestClose={() => {closeFunc(data?.code)}}
+      >
         {isLoading && <CommonLoading />}
 
-        <View style={modalStyle.modalBackground}>
-          <View style={[modalStyle.modalStyle1]}>
+        <TouchableOpacity style={modalStyle.modalBackground} activeOpacity={1} onPress={() => {closeFunc(data?.code)}}>
+          <View style={modalStyle.modalStyle1} onStartShouldSetResponder={() => true}>
             <SpaceView viewStyle={_styles.modalWrap}>
               <SpaceView mb={20}>
                 <Text style={styles.fontStyle('H', 26, '#000000')}>{data?.name}</Text>
@@ -224,7 +228,7 @@ const SetJobSelectPopup = React.memo(({ isVisible, closeFunc, confirmCallbackFun
               </TouchableOpacity>
             </SpaceView>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </>
   );

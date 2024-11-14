@@ -55,6 +55,7 @@ import { Message } from 'screens/message';
 
 import { RecommendMatch } from 'screens/roby/RecommendMatch';
 import { MyHomeVisitor } from 'screens/roby/MyHomeVisitor';
+import { MyHome } from 'screens/roby/MyHome';
 
 import { Scenario } from 'screens/scenario';
 
@@ -106,6 +107,7 @@ const CommonNavigation = () => {
       <CommonStack.Screen name="Message" component={Message} />
       <CommonStack.Screen name="RecommendMatch" component={RecommendMatch} />
       <CommonStack.Screen name="MyHomeVisitor" component={MyHomeVisitor} />
+      <CommonStack.Screen name="MyHome" component={MyHome} />
       <CommonStack.Screen name="Scenario" component={Scenario} />
     </CommonStack.Navigator>
   );

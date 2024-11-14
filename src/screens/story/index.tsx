@@ -67,6 +67,15 @@ export const Story = (props: Props) => {
     storyData: [],
   });
 
+  const keywordList = [
+    {name: 'ALL', code: 'ALL'},
+    {name: '나들이명소', code: 'PLACE'},
+    {name: 'OTT뭐볼까?', code: 'OTT'},
+    {name: '이력서·면접', code: 'RESUME'},
+  ];
+
+  const [selectedKeyword, setSelectedKeyword] = useState('ALL'); // 선택된 키워드
+
   // 스토리 유형 선택
   const goStoryEdit = async (type:string) => {
     navigation.navigate(STACK.COMMON, {
@@ -122,6 +131,10 @@ export const Story = (props: Props) => {
 
   // ############################################################################# 스토리 목록 조회
   const getStoryBoardList = async (_type:string, _pageNum:number, _keyword:string) => {
+
+    // 키워드 선택 변수 저장
+    setSelectedKeyword(_keyword);
+
     if(_type == 'ADD' && _pageNum > 1 && isListFinally) {
 
     } else {
@@ -254,7 +267,7 @@ export const Story = (props: Props) => {
       setIsRefreshing(false);
 
       if(storyList.length == 0 || isRefreshing) {
-        getStoryBoardList('ADD', pageNum == 0 ? 1 : pageNum);
+        getStoryBoardList('ADD', pageNum == 0 ? 1 : pageNum, 'ALL');
       }
     } else {
       //setStoryList([]);
@@ -314,6 +327,41 @@ export const Story = (props: Props) => {
                   </TouchableOpacity> */}
                 </SpaceView>
               </SpaceView>
+            </SpaceView>
+
+            <SpaceView pl={10} pr={10} mt={10}>
+              <SpaceView viewStyle={layoutStyle.rowBetween}>
+                <SpaceView viewStyle={layoutStyle.rowStart}>
+                  <SpaceView mr={10}>
+                    <Text style={styles.fontStyle('EB', 19, '#fff')}>키워드</Text>
+                  </SpaceView>
+                  <TouchableOpacity 
+                    style={_styles.keywordAllBtn}
+                    onPress={() => { keywordSelectFn('ALL') }}>
+                    <Text style={styles.fontStyle('SB', 11, '#fff')}>전체보기</Text>
+                    <Text style={styles.fontStyle('SB', 11, '#fff')}>{'>'}</Text>
+                  </TouchableOpacity>
+                </SpaceView>
+
+                {/* <SpaceView>
+                  <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={styles.fontStyle('B', 11, '#fff')}>즐겨찾기만 보기</Text>
+                    <SpaceView ml={3}><Image source={ICON.story_starOff} style={styles.iconSquareSize(11)} /></SpaceView>
+                  </TouchableOpacity>
+                </SpaceView> */}
+              </SpaceView>
+
+              <ScrollView horizontal={true}>
+                <SpaceView viewStyle={{flexDirection: 'row', paddingVertical: 10}}>
+                  {keywordList?.map((item, index) => {
+                    return (
+                      <TouchableOpacity onPress={() => { keywordSelectFn(item?.code) }}>
+                        <Text style={_styles.keywordItemText(item?.code == selectedKeyword)}>{item?.name}</Text>
+                      </TouchableOpacity>
+                    )
+                  })}
+                </SpaceView>
+              </ScrollView>
 
             </SpaceView>
           </SpaceView>
@@ -350,7 +398,13 @@ export const Story = (props: Props) => {
           }
           //onEndReached={loadMoreData}
           onEndReachedThreshold={0.1}
-          ListHeaderComponent={<StoryHeader selectFn={getStoryBoardList} />}
+          ListHeaderComponent={
+            <StoryHeader 
+              selectFn={getStoryBoardList} 
+              keywordList={keywordList} 
+              selectedKeyword={selectedKeyword}
+            />
+          }
           //ListFooterComponent={isLoadingMore && <Text>Loading more...</Text>}
           renderItem={({ item, index }) => {
 
@@ -439,21 +493,13 @@ export const Story = (props: Props) => {
 /* #######################################################################################################################
 ############## 스토리 헤더
 ####################################################################################################################### */
-const StoryHeader = React.memo(({selectFn}) => {
-  const [selectedKeyword, setSelectedKeyword] = useState('ALL'); // 선택된 키워드
+const StoryHeader = React.memo(({selectFn, keywordList, selectedKeyword}) => {
   const [currentTab, setCurrentTab] = useState('TALK');
-
-  const keywordList = [
-    {name: 'ALL', code: 'ALL'},
-    {name: '나들이명소', code: 'PLACE'},
-    {name: 'OTT뭐볼까?', code: 'OTT'},
-    {name: '이력서·면접', code: 'RESUME'},
-  ];
 
   // ##################################################################################### 키워드 선택
   const keywordSelectFn = async (code:string) => {
     selectFn('REFRESH', 1, code);
-    setSelectedKeyword(code);
+    //setSelectedKeyword(code);
   };
 
   return (
@@ -564,10 +610,11 @@ const _styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 50,
+    //height: 50,
     backgroundColor: '#000',
     zIndex: 1,
     justifyContent: 'center',
+    paddingTop: 15,
   },
   backContainer: {
     position: 'absolute',

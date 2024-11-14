@@ -56,7 +56,7 @@ export const SelectPopup = (props: Props) => {
       <Modal 
         visible={props.popupVisible} 
         transparent={true} 
-        onRequestClose={() => onPressCancel}>
+        onRequestClose={onPressCancel}>
 
         <View style={modalStyle.modalBackground}>
 

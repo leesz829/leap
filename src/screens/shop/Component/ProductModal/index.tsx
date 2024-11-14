@@ -461,9 +461,13 @@ export default function ProductModal({ isVisible, type, closeModal, item, isUse 
             item={item}
           /> */}
 
-          <Modal visible={isVisible} transparent={true}>
-            <View style={modalStyle.modalBackground}>
-              <View style={[modalStyle.modalStyle1]}>
+          <Modal 
+            visible={isVisible} 
+            transparent={true}
+            onRequestClose={() => {toggleCloseFn(false)}}
+          >
+            <TouchableOpacity style={modalStyle.modalBackground} activeOpacity={1} onPress={() => {toggleCloseFn(false)}}>
+              <View style={[modalStyle.modalStyle1]} onStartShouldSetResponder={() => true}>
                 <SpaceView viewStyle={_styles.prodWrap}>
                   <LinearGradient
                     colors={['#372B48', '#130C1D']}
@@ -495,7 +499,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, isUse 
                     </TouchableOpacity>
                 </SpaceView>
               </View>
-            </View>
+            </TouchableOpacity>
           </Modal>
         </>
       ) : (
@@ -538,9 +542,13 @@ export default function ProductModal({ isVisible, type, closeModal, item, isUse 
             </View>
           </Modal> */}
 
-          <Modal visible={isVisible} transparent={true}>
-            <View style={modalStyle.modalBackground}>
-              <View style={[modalStyle.modalStyle1]}>
+          <Modal 
+            visible={isVisible} 
+            transparent={true}
+            onRequestClose={() => {toggleCloseFn(false)}}
+          >
+            <TouchableOpacity style={modalStyle.modalBackground} activeOpacity={1} onPress={() => {toggleCloseFn(false)}}>
+              <View style={[modalStyle.modalStyle1]} onStartShouldSetResponder={() => true}>
                 <SpaceView viewStyle={_styles.prodWrap}>
                   <LinearGradient
                     colors={['#fff', '#fff']}
@@ -572,7 +580,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, isUse 
                     </TouchableOpacity>
                 </SpaceView>
               </View>
-            </View>
+            </TouchableOpacity>
           </Modal>
         </>
         
