@@ -37,6 +37,7 @@ import Story from 'component/roby/Story';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import PopupGradeGuide from 'component/roby/PopupGradeGuide';
 import PopupAiIntro from 'component/roby/PopupAiIntro';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 
 
@@ -147,21 +148,38 @@ export const Roby = (props: Props) => {
 
 
   // 등급 관리하기 modalizeRef
-  const gradeGuide_modalizeRef = useRef(null);
-  //const gradeGuide_modalizeRef = React.useRef<Modalize>(null);
+  const gradeGuide_modalizeRef = useRef<BottomSheetModal>(null);
 
   // 등급 관리하기 활성화
   const gradeGuide_onOpen = () => {
-    gradeGuide_modalizeRef.current?.openModal();
+    gradeGuide_modalizeRef.current?.present();
   };
 
+  // 등급 관리하기 닫기
+  const gradeGuide_onClose = () => {
+    gradeGuide_modalizeRef.current?.dismiss();
+  };
+
+  const gradeGuide_onChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
   // AI 소개글 modalizeRef
-  const aiIntro_modalizeRef = useRef(null);
+  const aiIntro_modalizeRef = useRef<BottomSheetModal>(null);
 
   // AI 소개글 활성화
   const aiIntro_onOpen = () => {
-    aiIntro_modalizeRef.current?.openModal();
+    aiIntro_modalizeRef.current?.present();
   };
+
+  // 등급 관리하기 닫기
+  const aiIntro_onClose = () => {
+    aiIntro_modalizeRef.current?.dismiss();
+  };
+
+  const aiIntro_onChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   /* #################################################################################################################################
   ##### 팝업 관련
@@ -558,8 +576,8 @@ export const Roby = (props: Props) => {
         >
           <BlurView 
             style={_styles.menuBlurWrap}
-            blurType='dark'
-            blurAmount={15}
+            blurType={'regular'}
+            blurAmount={5}
           />
 
           <SpaceView pr={10} viewStyle={{alignItems: 'flex-end', marginTop: -140}}>
@@ -604,16 +622,82 @@ export const Roby = (props: Props) => {
       {/* ##################################################################################
             등급 관리하기 팝업
       ################################################################################## */}
-      <PopupGradeGuide 
+      {/* <PopupGradeGuide 
         ref={gradeGuide_modalizeRef}
-      />
+      /> */}
+
+      <BottomSheetModalProvider>
+        <BottomSheetModal
+          ref={gradeGuide_modalizeRef}
+          index={0}
+          onChange={gradeGuide_onChanges}
+          //snapPoints={snapPoints}
+          maxDynamicContentSize={Platform.OS == 'android' ? height-150 : height-200}
+          enablePanDownToClose={true}
+          handleIndicatorStyle={{
+            backgroundColor: '#808080', // 핸들러 색상 변경
+            width: 37, // 핸들러 너비 변경
+            height: 7, // 핸들러 높이 변경
+            borderRadius: 5, // 둥글게 처리
+          }}
+          handleStyle={{
+            backgroundColor: '#1B1633', // 핸들러 배경 변경
+            borderTopLeftRadius: 30, // 모달 상단 모서리 둥글게
+            borderTopRightRadius: 30,
+            overflow: 'hidden',
+            paddingTop: 20
+          }}
+          backgroundStyle={{backgroundColor: '#1B1633'}}
+          //handleComponent={null}
+        >
+          <PopupGradeGuide 
+            ref={gradeGuide_modalizeRef}
+            closeFn={gradeGuide_onClose}
+          />
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
 
       {/* ##################################################################################
             AI 소개글 팝업
       ################################################################################## */}
-      <PopupAiIntro 
+      {/* <PopupAiIntro 
         ref={aiIntro_modalizeRef}
-      />
+      /> */}
+
+      <BottomSheetModalProvider>
+        <BottomSheetModal
+          ref={aiIntro_modalizeRef}
+          index={0}
+          onChange={gradeGuide_onChanges}
+          //snapPoints={snapPoints}
+          maxDynamicContentSize={Platform.OS == 'android' ? height-150 : height-200}
+          enablePanDownToClose={true}
+          handleIndicatorStyle={{
+            backgroundColor: '#808080', // 핸들러 색상 변경
+            width: 37, // 핸들러 너비 변경
+            height: 7, // 핸들러 높이 변경
+            borderRadius: 5, // 둥글게 처리
+          }}
+          handleStyle={{
+            backgroundColor: '#1B1633', // 핸들러 배경 변경
+            borderTopLeftRadius: 30, // 모달 상단 모서리 둥글게
+            borderTopRightRadius: 30,
+            overflow: 'hidden',
+            paddingTop: 20
+          }}
+          backgroundStyle={{backgroundColor: '#1B1633'}}
+          //handleComponent={null}
+        >
+          <PopupAiIntro 
+            ref={aiIntro_modalizeRef}
+            closeFn={aiIntro_onClose}
+          />
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
+
+
+
+
 
       {/********************************************************** 프로필 관리 버튼 */}
       {/* <TouchableOpacity style={_styles.profileBtn} onPress={onPressMangeProfile}>
