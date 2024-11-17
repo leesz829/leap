@@ -2,7 +2,7 @@ import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styl
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text, TextInput } from 'react-native';
-import * as React from 'react';
+import React, { useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { ColorType, StackParamList, BottomParamList, ScreenNavigationProp } from '@types';
@@ -45,7 +45,10 @@ export const Profile_AddInfo = (props: Props) => {
 	const [isLoading, setIsLoading] = React.useState(false); // 로딩 여부
 	const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
-  const memberBase = useUserInfo(); // 회원 기본정보
+	const defaultPlaceholder = "내용을 입력해 주세요.\n※ 입력된 내용이 없는 인터뷰는 상대에게 공개되지 않습니다.";
+	const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+
+  	const memberBase = useUserInfo(); // 회원 기본정보
 
 	// 현재 탭
 	const [currentTab, setCurrentTab] = React.useState('INTEREST');
@@ -211,10 +214,6 @@ export const Profile_AddInfo = (props: Props) => {
 		//callbackAnswerFn && callbackAnswerFn(member_interview_seq, text);
 	};
 
-
-
-
-
 	const onTabActive = async (value:string) => {
 		setCurrentTab(value);
 	};
@@ -309,14 +308,20 @@ export const Profile_AddInfo = (props: Props) => {
 														<SpaceView mt={30} viewStyle={_styles.interviewAnswerWrap}>
 															<TextInput
 																defaultValue={item?.answer}
-																onChangeText={(text) => answerChangeHandler(item?.common_code, text) }
+																onChangeText={(text) => 
+																	answerChangeHandler(item?.common_code, text)
+																}
 																autoCapitalize={'none'}
 																multiline={true}
 																style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#C4B6AA')]}
-																placeholder={'내용을 입력해 주세요.\n※입력된 내용이 없는 인터뷰는 상대에게 공개되지 않습니다. '}
+																placeholder={placeholder}
 																placeholderTextColor={'#C4B6AA'}
 																maxLength={200}
 																caretHidden={true}
+																onFocus={() => setPlaceholder('')}
+																onBlur={() => {
+																	setPlaceholder(defaultPlaceholder);
+																}}
 															/>
 														</SpaceView>
 														<SpaceView mt={10} viewStyle={_styles.interviewBtnWrap}>
