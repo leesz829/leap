@@ -1,7 +1,7 @@
 import { styles, layoutStyle, modalStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text, TextInput, FlatList } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, Text, TextInput, FlatList, Button } from 'react-native';
 import * as React from 'react';
 import { FC, useState, useEffect, useRef, useCallback } from 'react';
 import { CommonBtn } from 'component/CommonBtn';
@@ -22,6 +22,7 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import LinearGradient from 'react-native-linear-gradient';
 import { CommonText } from 'component/CommonText';
 import { SecondAuthPopup } from 'screens/commonpopup/SecondAuthPopup';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 
 /* ################################################################################################################
@@ -48,14 +49,29 @@ export const Profile_Auth = (props: Props) => {
 
   const memberBase = useUserInfo(); // 회원 기본정보
 
+	const detailModalRef = useRef<BottomSheetModal>(null);
+
 	const detail_modalizeRef = useRef<Modalize>(null);
+	//const detail_modalizeRef = useRef(null);
   const detail_onOpen = () => {
-		detail_modalizeRef.current?.open();
+		//detail_modalizeRef.current?.open();
     //getMemberSecondDetail('JOB');
+
+		detailModalRef.current?.present();
   };
   const detail_onClose = () => { 
     detail_modalizeRef.current?.close();
   };
+
+	// variables
+  const snapPoints = React.useMemo(() => ['50%'], []);
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+
+
 	const [authList, setAuthList] = React.useState([]); // 인증 목록
 
   const authInfoArr = [
@@ -238,28 +254,75 @@ export const Profile_Auth = (props: Props) => {
 		{/* #############################################################################################################
 		######### 상세 팝업 영역
 		############################################################################################################# */}
-		<Modalize
+		<BottomSheetModalProvider>
+			<BottomSheetModal
+				ref={detailModalRef}
+				index={0}
+				onChange={handleSheetChanges}
+				//snapPoints={snapPoints}
+				maxDynamicContentSize={height - 100}
+				enablePanDownToClose={true}
+				handleIndicatorStyle={{
+					backgroundColor: '#808080', // 핸들러 색상 변경
+					width: 37, // 핸들러 너비 변경
+					height: 7, // 핸들러 높이 변경
+					borderRadius: 5, // 둥글게 처리
+				}}
+				handleStyle={{
+					backgroundColor: '#1B1633', // 핸들러 배경 변경
+					borderTopLeftRadius: 20, // 모달 상단 모서리 둥글게
+					borderTopRightRadius: 20,
+					overflow: 'hidden',
+					paddingTop: 20
+				}}
+				backgroundStyle={{backgroundColor: '#1B1633'}}
+				//handleComponent={null}
+			>
+				<SecondAuthPopup
+					modalHeight={height - 130}
+					type={'JOB'}
+					onCloseFn={detail_onClose}
+					saveFn={saveSecondAuth}
+					//filePath01={filePathData.filePath01}
+					//filePath02={filePathData.filePath02}
+					//filePath03={filePathData.filePath03}
+					//auth_status={filePathData.auth_status}
+					//auth_comment={filePathData.auth_comment}
+					//return_reason={filePathData.return_reason}
+					isShopComment={false}
+					data={detailAuthData}
+				/>
+      </BottomSheetModal>
+		</BottomSheetModalProvider>
+
+		{/* <Modalize
 			ref={detail_modalizeRef}
-			adjustToContentHeight = {false}
+			adjustToContentHeight={true}
 			handleStyle={modalStyle.modalHandleStyle}
 			modalStyle={{borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden', backgroundColor: '#1B1633'}} 
-			modalHeight={height - 130}>
+			//modalHeight={height - 130}
+			//disableScrollIfPossible={false}
+			//keyboardAvoidingBehavior="none" // 충돌 방지
+			//withHandle={false} // 모달 핸들러 제거
+  		//panGestureEnabled={false} // 제스처 비활성
+		>
 			<SecondAuthPopup
 				modalHeight={height - 130}
 				type={'JOB'}
 				onCloseFn={detail_onClose}
 				saveFn={saveSecondAuth}
-				/* saveFn={saveSecondAuth}
-				filePath01={filePathData.filePath01}
-				filePath02={filePathData.filePath02}
-				filePath03={filePathData.filePath03}
-				auth_status={filePathData.auth_status}
-				auth_comment={filePathData.auth_comment}
-				return_reason={filePathData.return_reason} */
+
+				//filePath01={filePathData.filePath01}
+				//filePath02={filePathData.filePath02}
+				//filePath03={filePathData.filePath03}
+				//auth_status={filePathData.auth_status}
+				//auth_comment={filePathData.auth_comment}
+				//return_reason={filePathData.return_reason}
+
 				isShopComment={false}
 				data={detailAuthData}
 			/>
-		</Modalize>
+		</Modalize> */}
   </>
   );
 };

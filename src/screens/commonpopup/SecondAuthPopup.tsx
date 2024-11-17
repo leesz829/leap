@@ -19,6 +19,7 @@ import { setPartialPrincipal } from 'redux/reducers/authReducer';
 import { useSecondAth } from 'hooks/useSecondAth';
 import { CommonTextarea } from 'component/CommonTextarea';
 import { isEmptyData, imagePickerOpen } from 'utils/functions';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 
 
@@ -268,18 +269,22 @@ export const SecondAuthPopup = (props: Props) => {
 
   return (
     <>
-      <SpaceView viewStyle={_styles.modalWrap}>
+      {/* <SpaceView viewStyle={_styles.modalWrap}> */}
 
         {/* ######################### header */}
-        <SpaceView mt={30} mb={40}>
-          <SpaceView mb={30} viewStyle={layoutStyle.alignCenter}>
+        <SpaceView mb={30} viewStyle={{padding: 23}}>
+          {/* <SpaceView mb={30} viewStyle={layoutStyle.alignCenter}>
             <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 5}} />
-          </SpaceView>
+          </SpaceView> */}
           <Text style={styles.fontStyle('EB', 22, '#fff')}>{title}인증</Text>
         </SpaceView>
 
         {/* ######################### body */}
-        <ScrollView showsVerticalScrollIndicator={false} style={{height: props.modalHeight - 200}}>
+        {/* <ScrollView showsVerticalScrollIndicator={false} style={{height: props.modalHeight - 200}}> */}
+        <BottomSheetScrollView 
+					contentContainerStyle={{ paddingHorizontal: 23, height: props.modalHeight }}  
+          showsVerticalScrollIndicator={false}
+				>
           <SpaceView>
             <SpaceView mb={24}>
               <SpaceView mb={10} viewStyle={layoutStyle.rowStart}>
@@ -299,15 +304,15 @@ export const SecondAuthPopup = (props: Props) => {
             <SpaceView mb={30} viewStyle={[layoutStyle.alignCenter]}>
               <SpaceView viewStyle={layoutStyle.rowBetween}>
 
-                {[0,1,2].map((i, index) => {
-                  return (
-                    <>
-                      {index == 0 && <AuthImageItem index={index} imgData={fileDataList.length > 0 ? fileDataList[0] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                      {index == 1 && <AuthImageItem index={index} imgData={fileDataList.length > 1 ? fileDataList[1] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                      {index == 2 && <AuthImageItem index={index} imgData={fileDataList.length > 2 ? fileDataList[2] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
-                    </>
-                  )
-                })}
+              {[0,1,2].map((i, index) => {
+                return (
+                  <>
+                    {index == 0 && <AuthImageItem index={index} imgData={fileDataList.length > 0 ? fileDataList[0] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                    {index == 1 && <AuthImageItem index={index} imgData={fileDataList.length > 1 ? fileDataList[1] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                    {index == 2 && <AuthImageItem index={index} imgData={fileDataList.length > 2 ? fileDataList[2] : null} delFn={imageDelete} imgSelectedFn={imgSelected}  /> }
+                  </>
+                )
+              })}
               </SpaceView>
 
               {/* <View style={[layoutStyle.row]}>
@@ -562,9 +567,9 @@ export const SecondAuthPopup = (props: Props) => {
                       </View>
                     </SpaceView>
                     <View style={[_styles.rowStyle, _styles.rowHeader]}>
-                      <Text style={[_styles.rowTextLeft, {color: '#44B6E5'}]}>구분</Text>
-                      <Text style={[_styles.rowTextCenter, {color: '#44B6E5'}]}>현금</Text>
-                      <Text style={[_styles.rowTextRight, {color: '#44B6E5'}]}>부동산</Text>
+                      <Text style={[_styles.rowTextLeft, {color: '#FFDD00'}]}>구분</Text>
+                      <Text style={[_styles.rowTextCenter, {color: '#FFDD00'}]}>현금</Text>
+                      <Text style={[_styles.rowTextRight, {color: '#FFDD00'}]}>부동산</Text>
                     </View>
                     <View style={_styles.rowStyle}>
                       <Text style={_styles.rowTextLeft}>LV 1</Text>
@@ -666,10 +671,11 @@ export const SecondAuthPopup = (props: Props) => {
             </SpaceView>
           </SpaceView>
 
-        </ScrollView>
+        {/* </ScrollView> */}
+        </BottomSheetScrollView>
 
         {/* ######################### footer */}
-        <SpaceView mt={15}>
+        <SpaceView mb={20} viewStyle={{paddingHorizontal: 23}}>
           <TouchableOpacity
             style={_styles.saveBtn}
             onPress={() => {
@@ -687,7 +693,7 @@ export const SecondAuthPopup = (props: Props) => {
             }}
           /> */}
         </SpaceView>
-      </SpaceView>
+      {/* </SpaceView> */}
     </>
   );
 };
@@ -772,7 +778,7 @@ const _styles = StyleSheet.create({
 
 
   rowHeader: {
-    backgroundColor: '#FFFF5D',
+    backgroundColor: '#3D4348',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderWidth: 0,
