@@ -576,7 +576,7 @@ export const Roby = (props: Props) => {
         >
           <BlurView 
             style={_styles.menuBlurWrap}
-            blurType={'regular'}
+            blurType={'dark'}
             blurAmount={5}
           />
 
