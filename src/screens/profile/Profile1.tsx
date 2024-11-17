@@ -269,7 +269,7 @@ export const Profile1 = (props: Props) => {
           bounces={false} 
           showsVerticalScrollIndicator={false} 
           style={{flexGrow: 1}} 
-          contentContainerStyle={{paddingBottom: 200}}
+          contentContainerStyle={{paddingBottom: 250}}
           onScroll={handleScroll} 
           scrollEventThrottle={16}>
 
