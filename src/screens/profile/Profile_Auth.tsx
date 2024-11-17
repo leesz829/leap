@@ -260,7 +260,7 @@ export const Profile_Auth = (props: Props) => {
 				index={0}
 				onChange={handleSheetChanges}
 				//snapPoints={snapPoints}
-				maxDynamicContentSize={height - 100}
+				maxDynamicContentSize={Platform.OS == 'android' ? height-100 : height-200}
 				enablePanDownToClose={true}
 				handleIndicatorStyle={{
 					backgroundColor: '#808080', // 핸들러 색상 변경
