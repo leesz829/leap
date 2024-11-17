@@ -265,7 +265,13 @@ export const Profile1 = (props: Props) => {
           </SpaceView>
         </SpaceView> */}
 
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}} onScroll={handleScroll} scrollEventThrottle={16}>
+        <ScrollView 
+          bounces={false} 
+          showsVerticalScrollIndicator={false} 
+          style={{flexGrow: 1}} 
+          contentContainerStyle={{paddingBottom: 200}}
+          onScroll={handleScroll} 
+          scrollEventThrottle={16}>
 
           {/* ############################################################################################################# 프로필 이미지 영역 */}
           <SpaceView mt={15} mb={40} viewStyle={_styles.contentWrap}>
@@ -352,7 +358,7 @@ export const Profile1 = (props: Props) => {
           </SpaceView>
 
           {/* ############################################################################################################# 프로필 정보 영역 */}
-          <SpaceView mb={160}>
+          <SpaceView>
             <ProfileComponent 
               data={profileData?.member_add} 
               authPercent={profileData.auth_percent} 
@@ -394,7 +400,7 @@ export const Profile1 = (props: Props) => {
           saveProfileInfo();
         }}>
         <Image source={ICON.saveIcon} style={styles.iconSquareSize(15)} />
-        <SpaceView ml={5} mb={3}><Text style={styles.fontStyle('B', 16, '#fff')}>저장하기</Text></SpaceView>
+        <SpaceView ml={5}><Text style={styles.fontStyle('B', 16, '#fff')}>저장하기</Text></SpaceView>
       </TouchableOpacity>
     </>
   );
@@ -447,7 +453,7 @@ const _styles = StyleSheet.create({
 	},
   saveBtnWrap: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 30,
     right: 10,
     zIndex: 1,
     backgroundColor: '#46F66F',
