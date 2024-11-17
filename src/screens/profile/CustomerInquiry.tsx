@@ -47,6 +47,8 @@ export const CustomerInquiry = (props : Props) => {
 
 	const [title,    setTitle]    = React.useState('');
 	const [contents, setContents] = React.useState('');
+	const defaultPlaceholder = '여기에 내용을 입력하기.';
+	const [placeholder, setPlaceholder] = React.useState(defaultPlaceholder);
 	
 	const jwtToken  = hooksMember.getJwtToken();   // 토큰
 	const memberSeq = hooksMember.getMemberSeq(); // 회원번호
@@ -135,13 +137,17 @@ export const CustomerInquiry = (props : Props) => {
 								style={[styles.fontStyle('B', 12, '#FFFFFF'), {height:190, width: 200}]}
 								value={contents}
 								onChangeText={(contents) => setContents(contents)}
-								placeholder={'여기에 내용을 입력하기. '}
+								placeholder={placeholder}
 								placeholderTextColor={'#FFFFFF'}
 								maxLength={500}
 								autoCapitalize={'none'}
 								textAlignVertical={'top'}
 								multiline={true}
 								caretHidden={true}
+								onFocus={() => setPlaceholder('')}
+								onBlur={() => {
+									contents == '' && setPlaceholder(defaultPlaceholder);
+								}}
 								// exceedCharCountColor={'#990606'}
 							/>
 
