@@ -403,7 +403,7 @@ export const Shop = () => {
   // ############################################################################# 스크롤 이동 함수
   const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
-    if(contentOffset.y > 150) {
+    if(contentOffset.y > 100) {
       setIsOnShrink(true);
     } else {
       setIsOnShrink(false);
@@ -416,6 +416,10 @@ export const Shop = () => {
       async function fetch() {
         onPressCategory(categoryList[0]);
         await AsyncStorage.setItem('SHOP_CONNECT_DT', formatNowDate());
+        getCashBackPayInfo('FOCUS');
+
+        let isPopupShow = true;
+        getShopMain(isPopupShow); 
       };
       fetch();
 
@@ -426,8 +430,7 @@ export const Shop = () => {
 
   useEffect(() => {
     if(isFocus) {
-      let isPopupShow = true;
-
+      
       // 튜토리얼 팝업 노출
       /* if(!isEmptyData(memberBase?.tutorial_shop_yn) || memberBase?.tutorial_shop_yn == 'Y') {
         isPopupShow = false;
@@ -446,8 +449,6 @@ export const Shop = () => {
         });
       }; */
       
-      getCashBackPayInfo('FOCUS');
-      getShopMain(isPopupShow); 
     }
   }, [isFocus]);
 
@@ -496,6 +497,8 @@ export const Shop = () => {
         )}
 
         <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}} onScroll={handleScroll}>
+
+          {/* ################################################################################## 여성 회원 UI */}
           {memberBase?.gender == 'W' && (
             <SpaceView mt={20}>
               <SpaceView viewStyle={_styles.femaleBannerWrap}>
@@ -526,6 +529,7 @@ export const Shop = () => {
             </SpaceView>
           )}
 
+          {/* ################################################################################## 남성 회원 UI */}
           {memberBase?.gender == 'M' && (
             <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
               <ImageBackground source={ICON.shop_maleBg} style={[_styles.maleWrap]}>

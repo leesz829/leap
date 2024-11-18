@@ -353,7 +353,7 @@ export default function ProductModal({ isVisible, type, closeModal, item, isUse 
     if (success) {
       if(data?.result_code == '0000') {
         setIsPayLoading(false);
-        toggleCloseFn(false);
+        toggleCloseFn(true);
         //navigation.navigate(STACK.TAB, { screen: 'Shop' });
 
         // 즉시 사용 구분 처리
