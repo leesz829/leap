@@ -496,7 +496,13 @@ export const Shop = () => {
           </SpaceView>
         )}
 
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1}} onScroll={handleScroll}>
+        <ScrollView 
+          bounces={false} 
+          showsVerticalScrollIndicator={false} 
+          style={{flexGrow: 1}} 
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+        >
 
           {/* ################################################################################## 여성 회원 UI */}
           {memberBase?.gender == 'W' && (
