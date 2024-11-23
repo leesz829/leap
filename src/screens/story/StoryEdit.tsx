@@ -780,7 +780,7 @@ export default function StoryEdit(props: Props) {
                                     return (
                                       <>
                                         <SpaceView mb={10} viewStyle={_styles.voteItemWrap}>
-                                          <SpaceView ml={3} /* mb={-2} */>
+                                          <SpaceView>
                                             <Text style={styles.fontStyle('SB', 12, '#fff')}>선택지</Text>
                                           </SpaceView>
                                           <SpaceView>
