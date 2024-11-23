@@ -792,7 +792,7 @@ export default function StoryEdit(props: Props) {
                                               onChangeText={(text) => voteOptionHandler(item?.idx, text)}
                                               multiline={false}
                                               autoCapitalize="none"
-                                              style={[styles.fontStyle('SB', 11, '#fff'), {textAlign: 'left'}]}
+                                              style={[styles.fontStyle('SB', 11, '#fff'), {textAlign: 'left', paddingHorizontal: 0}]}
                                               //editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
                                               secureTextEntry={false}
                                               maxLength={100}
