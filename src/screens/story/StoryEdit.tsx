@@ -780,25 +780,27 @@ export default function StoryEdit(props: Props) {
                                     return (
                                       <>
                                         <SpaceView mb={10} viewStyle={_styles.voteItemWrap}>
-                                          <SpaceView ml={3} mb={-2}>
+                                          <SpaceView ml={3} /* mb={-2} */>
                                             <Text style={styles.fontStyle('SB', 12, '#fff')}>선택지</Text>
                                           </SpaceView>
-                                          <TextInput
-                                            //value={voteData[`voteName0${i+1}`]}
-                                            //value={item.value}
-                                            defaultValue={item?.value}
-                                            //onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
-                                            onChangeText={(text) => voteOptionHandler(item?.idx, text)}
-                                            multiline={false}
-                                            autoCapitalize="none"
-                                            style={_styles.voteItemInput}
-                                            //editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
-                                            secureTextEntry={false}
-                                            maxLength={100}
-                                            numberOfLines={1}
-                                            placeholder={'내용을 입력해 주세요.'}
-                                            placeholderTextColor={'#606060'}
-                                          />
+                                          <SpaceView>
+                                            <TextInput
+                                              //value={voteData[`voteName0${i+1}`]}
+                                              //value={item.value}
+                                              defaultValue={item?.value}
+                                              //onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
+                                              onChangeText={(text) => voteOptionHandler(item?.idx, text)}
+                                              multiline={false}
+                                              autoCapitalize="none"
+                                              style={[styles.fontStyle('SB', 11, '#fff'), {textAlign: 'left'}]}
+                                              //editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
+                                              secureTextEntry={false}
+                                              maxLength={100}
+                                              numberOfLines={1}
+                                              placeholder={'내용을 입력해 주세요.'}
+                                              placeholderTextColor={'#606060'}
+                                            />
+                                          </SpaceView>
                                         </SpaceView>
                                       </>
                                     )
@@ -1006,12 +1008,7 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     height: 50,
-  },
-  voteItemInput: {
-    fontFamily: 'SUITE-SemiBold',
-    fontSize: 11,
-    color: '#fff',
-    textAlign: 'left',
+    justifyContent: 'space-between',
   },
   
 
