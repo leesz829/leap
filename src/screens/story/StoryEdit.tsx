@@ -611,7 +611,7 @@ export default function StoryEdit(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView style={{backgroundColor: '#000'}}>
         <SpaceView pt={30} viewStyle={_styles.wrap}>
 
           <CommonHeader type={'STORY_REGI'} title={isEmptyData(params.storyBoardSeq) ? '새글수정' : '새글등록'} callbackFunc={storyRegister} />
