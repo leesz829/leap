@@ -517,10 +517,10 @@ const StoryHeader = React.memo(({selectFn, keywordList, selectedKeyword}) => {
               onPress={() => (setCurrentTab('TALK'))}>
               <Text style={_styles.tabText(currentTab == 'TALK', 25)}>리프Talk</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => (setCurrentTab('STORY'))}>
               <Text style={_styles.tabText(currentTab == 'STORY', 25)}>FEED</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </SpaceView>
         </SpaceView>
 
@@ -656,7 +656,7 @@ const _styles = StyleSheet.create({
       fontSize: 11,
       color: isOn ? '#46F66F' : '#808080',
       backgroundColor: isOn ? '#fff' : 'transparent',
-      borderRadius: 12,
+      borderRadius: 8,
       paddingHorizontal: 8,
       paddingVertical: 3,
       overflow: 'hidden',
