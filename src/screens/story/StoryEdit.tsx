@@ -29,6 +29,7 @@ import { myProfile } from 'redux/reducers/authReducer';
 import RNPickerSelect from 'react-native-picker-select';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import PopupLogGroupRegi from 'component/story/PopupLogGroupRegi';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 
@@ -610,259 +611,262 @@ export default function StoryEdit(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <SpaceView pt={30} viewStyle={_styles.wrap}>
+      <KeyboardAwareScrollView>
+        <SpaceView pt={30} viewStyle={_styles.wrap}>
 
-        <CommonHeader type={'STORY_REGI'} title={isEmptyData(params.storyBoardSeq) ? '새글수정' : '새글등록'} callbackFunc={storyRegister} />
+          <CommonHeader type={'STORY_REGI'} title={isEmptyData(params.storyBoardSeq) ? '새글수정' : '새글등록'} callbackFunc={storyRegister} />
 
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-          <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{paddingHorizontal: 10, marginTop: 35}}>
-            <SpaceView mb={150}>
+            <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{paddingHorizontal: 10, marginTop: 35}}>
+              <SpaceView mb={150}>
 
-              {/* ##############################################################################################################
-              ##### 키워드 선택 영역
-              ############################################################################################################## */}
-              <SpaceView viewStyle={_styles.keywordWrap}>
-                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', flex: 0.25}}>
-                  <Text style={styles.fontStyle('B', 14, '#fff')}>키워드 선택</Text>
-                </SpaceView>
-                <TouchableOpacity 
-                  onPress={fnKeywordSelect} 
-                  style={_styles.keywordSelectWrap}>
-                  <SpaceView><Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>{!isEmptyData(storyData?.keywordData?.code_name) && '게시글을 등록할 채널 키워드를 선택해주세요.'}</Text></SpaceView>
-                  <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{storyData?.keywordData?.code_name}</Text></SpaceView>
-                    <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
+                {/* ##############################################################################################################
+                ##### 키워드 선택 영역
+                ############################################################################################################## */}
+                <SpaceView viewStyle={_styles.keywordWrap}>
+                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', flex: 0.25}}>
+                    <Text style={styles.fontStyle('B', 14, '#fff')}>키워드 선택</Text>
                   </SpaceView>
-                </TouchableOpacity>
-                {/* <KeywordDropDown /> */}
-              </SpaceView>
-
-              {/* ##############################################################################################################
-              ##### 타입 선택 영역
-              ############################################################################################################## */}
-              <SpaceView viewStyle={_styles.typeWrap}>
-                <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image source={ICON.story_calculator} style={styles.iconSquareSize(16)} />
-                  <SpaceView ml={8} mr={10}><Text style={styles.fontStyle('B', 14, '#fff')}>타입</Text></SpaceView>
-                  <Text style={styles.fontStyle('B', 10, '#CBCBCB')}>함께 참여할 수 있는 다양한 타입의 게시글이 준비되어 있습니다.</Text>
-                </SpaceView>
-                <SpaceView mt={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                  {typeList.map((item, index) => {
-
-                    console.log('storyData.storyType ::::: ' , storyData.storyType);
-
-                    return (
-                      <>
-                        <TouchableOpacity 
-                          key={item.value}
-                          //disabled={isEmptyData(props.route.params.storyBoardSeq)} 
-                          onPress={() => (fnTypeSelect(item.value))} 
-                          style={_styles.typeItemWrap(storyData.storyType == item.value)}>
-
-                          <Text style={_styles.typeItemText(storyData.storyType == item.value)}>{item.label}</Text>
-                        </TouchableOpacity>
-                      </>
-                    )
-                  })}
-                </SpaceView>
-
-                {isEmptyData(storyData.storyType) && storyData.storyType != 'STORY' && (
-                  <>
-                    <SpaceView mt={20}>
-                      <SpaceView>
-                        <Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>
-                        {storyData.storyType == 'CHOICE' && (
-                          <>
-                            전문성 있는 답변이 필요하신가요? 리프에도 도움을 줄 수 있는 분이 계실 거예요.{'\n'}
-                            질문 기간 동안 도움이 된 댓글 1개를 채택해 주세요.
-                          </>
-                        )}
-                        {storyData.storyType == 'RELAY' && (
-                          <>
-                            사람들의 생각이 궁금한가요? 팔로워 또는 팔로잉 회원을 지명해 보세요.{'\n'}
-                            참여자가 늘어날수록 모두에게 지급되는 보상도 커집니다.
-                          </>
-                        )}
-                        {storyData.storyType == 'VOTE' && (
-                          <>
-                            최대 5가지 선택지에 대한 투표를 진행할 수 있습니다.
-                          </>
-                        )}
-                          
-                        </Text>
-                      </SpaceView>
-                      <SpaceView mt={20}>
-                        {storyData.storyType == 'CHOICE' && (
-                          <SpaceView>
-                            {typeChoiceList.map((item, index) => {
-                              return (
-                                <>
-                                  <TouchableOpacity
-                                    onPress={() => (fnTypeChoiceSelect(item))} 
-                                    style={_styles.typeBaseItemWrap(item.value == typeChoiceValue?.value)}
-                                    activeOpacity={0.8}>
-                                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                      <SpaceView viewStyle={{width:16}}>
-                                        {item.value == typeChoiceValue?.value && <Image source={ICON.story_promptYGreen} style={styles.iconSquareSize(16)} /> }
-                                      </SpaceView>
-                                      <SpaceView ml={5}><Text style={styles.fontStyle('SB', 12, '#fff')}>{item.label}</Text></SpaceView>
-                                    </SpaceView>
-                                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                      <Text style={styles.fontStyle('SB', 12, item.value == typeChoiceValue?.value ? '#fff' : '#808080')}>{item.price}</Text>
-                                      <SpaceView ml={5}><Image source={ICON.cube} style={styles.iconSquareSize(19)} /></SpaceView>
-                                    </SpaceView>
-                                  </TouchableOpacity>
-                                </>
-                              )
-                            })}
-                          </SpaceView>
-                        )}
-
-                        {storyData.storyType == 'RELAY' && (
-                          <SpaceView>
-                            <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center'}}>
-                              <LinearGradient
-                                colors={['#8BAAFF', '#2CDEA1']}
-                                start={{ x: 0, y: 1 }}
-                                end={{ x: 1, y: 0 }}
-                                style={_styles.typeRelayTrgtBtn}
-                              >
-                                <Image source={ICON.story_people} style={styles.iconSquareSize(16)} />
-                                <SpaceView ml={5}><Text style={styles.fontStyle('SB', 12, '#fff')}>대상자 선택</Text></SpaceView>
-                              </LinearGradient>
-                            </TouchableOpacity>
-
-                            <SpaceView mt={20} viewStyle={_styles.typeRelayWrap}>
-                              <SpaceView viewStyle={_styles.typeRelayCube}><Image source={ICON.cube} style={styles.iconSquareSize(20)} /></SpaceView>
-                              <SpaceView mt={10}>
-                                <Text style={[styles.fontStyle('SB', 10, '#CBCBCB'), {textAlign: 'center'}]}>최초 작성자 포함 릴레이 참여자 5명 이상부터 큐브  제공되며,{'\n'}30명 참여 시 인당 30개까지 지급!</Text>
-                              </SpaceView>
-                            </SpaceView>
-                          </SpaceView>
-                        )}
-
-                        {/* ########################## 투표 */}
-                        {storyData.storyType == 'VOTE' && (
-                          <SpaceView>
-                            <TouchableOpacity 
-                              onPress={() => (fnVoteTypeSelect())}
-                              style={_styles.selectItemWrap}>
-
-                              <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
-                                <Image source={isEmptyData(storyData?.voteEndType) ? ICON.story_promptYGreen : ICON.story_promptNRed} style={styles.iconSquareSize(16)} />
-                                <SpaceView ml={8}><Text style={styles.fontStyle('B', 14, '#fff')}>투표기간</Text></SpaceView>
-                              </SpaceView>
-
-                              <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                {/* <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{voteTypeValue?.label || '선택'}</Text></SpaceView> */}
-                                <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>
-                                  {storyData?.voteEndType ? voteEndTypeList.filter((item, index) => item.value == storyData?.voteEndType)[0]?.label : '선택'}</Text>
-                                </SpaceView>
-                                <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
-                              </SpaceView>
-                            </TouchableOpacity>
-
-                            <SpaceView mt={20}>
-                              <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                                <TouchableOpacity onPress={() => (fnVoteOptionAdd())}>
-                                  <Image source={ICON.story_plusCircle} style={styles.iconSquareSize(28)} />
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => (fnVoteOptionDel())} style={{marginLeft: 10}}>
-                                  <Image source={ICON.story_minusCircle} style={styles.iconSquareSize(28)} />
-                                </TouchableOpacity>
-                              </SpaceView>
-                              <SpaceView mt={10}>
-
-                                {voteOptionList.map((item, index) => {
-                                  return (
-                                    <>
-                                      <SpaceView mb={10} viewStyle={_styles.voteItemWrap}>
-                                        <SpaceView ml={3} mb={-2}>
-                                          <Text style={styles.fontStyle('SB', 12, '#fff')}>선택지</Text>
-                                        </SpaceView>
-                                        <TextInput
-                                          //value={voteData[`voteName0${i+1}`]}
-                                          //value={item.value}
-                                          defaultValue={item?.value}
-                                          //onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
-                                          onChangeText={(text) => voteOptionHandler(item?.idx, text)}
-                                          multiline={false}
-                                          autoCapitalize="none"
-                                          style={_styles.voteItemInput}
-                                          //editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
-                                          secureTextEntry={false}
-                                          maxLength={100}
-                                          numberOfLines={1}
-                                          placeholder={'내용을 입력해 주세요.'}
-                                          placeholderTextColor={'#606060'}
-                                        />
-                                      </SpaceView>
-                                    </>
-                                  )
-                                })}
-                              </SpaceView>
-                            </SpaceView>
-                          </SpaceView>
-                        )}
-                      </SpaceView>
+                  <TouchableOpacity 
+                    onPress={fnKeywordSelect} 
+                    style={_styles.keywordSelectWrap}>
+                    <SpaceView><Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>{!isEmptyData(storyData?.keywordData?.code_name) && '게시글을 등록할 채널 키워드를 선택해주세요.'}</Text></SpaceView>
+                    <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{storyData?.keywordData?.code_name}</Text></SpaceView>
+                      <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
                     </SpaceView>
-                  </>
-                )}
-              </SpaceView>
-
-              {/* ##############################################################################################################
-              ##### 프롬프트 사용 설정 영역
-              ############################################################################################################## */}
-              <SpaceView viewStyle={_styles.promptWrap}>
-                <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={styles.fontStyle('B', 14, '#fff')}>프롬트 사용</Text>
-                    <SpaceView ml={10}><Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>내 이야기의 로그를 남길 수 있습니다.</Text></SpaceView>
-                  </SpaceView>
-                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                    <TouchableOpacity style={_styles.promptBtn(!isPromptUse)} onPress={() => (setIsPromptUse(false))}>
-                      <Image source={ICON.story_promptN} style={styles.iconSquareSize(20)} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[_styles.promptBtn(isPromptUse), {marginLeft: 10}]} onPress={() => (setIsPromptUse(true))}>
-                      <Image source={ICON.story_promptY} style={styles.iconSquareSize(20)} />
-                    </TouchableOpacity>
-                  </SpaceView>
+                  </TouchableOpacity>
+                  {/* <KeywordDropDown /> */}
                 </SpaceView>
 
-                {isPromptUse && (
-                  <SpaceView mt={20}>
-                    {promptList.map((item, index) => {
+                {/* ##############################################################################################################
+                ##### 타입 선택 영역
+                ############################################################################################################## */}
+                <SpaceView viewStyle={_styles.typeWrap}>
+                  <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Image source={ICON.story_calculator} style={styles.iconSquareSize(16)} />
+                    <SpaceView ml={8} mr={10}><Text style={styles.fontStyle('B', 14, '#fff')}>타입</Text></SpaceView>
+                    <Text style={styles.fontStyle('B', 10, '#CBCBCB')}>함께 참여할 수 있는 다양한 타입의 게시글이 준비되어 있습니다.</Text>
+                  </SpaceView>
+                  <SpaceView mt={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                    {typeList.map((item, index) => {
+
+                      console.log('storyData.storyType ::::: ' , storyData.storyType);
+
                       return (
                         <>
-                          <SpaceView mb={10} viewStyle={_styles.selectItemWrap}>
-                            <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
-                              <Image source={isEmptyData(item?.selectedValue?.prompt_seq) ? ICON.story_promptYGreen : ICON.story_promptNRed} style={styles.iconSquareSize(16)} />
-                              <SpaceView ml={8}><Text style={styles.fontStyle('B', 14, '#fff')}>{item.label}</Text></SpaceView>
-                            </SpaceView>
-                            <SpaceView>
-                              {/* <KeywordDropDown /> */}
-                              <TouchableOpacity 
-                                onPress={() => (fnPromptSelect(item))}
-                                style={_styles.keywordSelectWrap}>
-                                <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-                                  <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{item?.selectedValue?.prompt_name || '선택'}</Text></SpaceView>
-                                  <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
-                                </SpaceView>
-                              </TouchableOpacity>
-                            </SpaceView>
-                          </SpaceView>
+                          <TouchableOpacity 
+                            key={item.value}
+                            //disabled={isEmptyData(props.route.params.storyBoardSeq)} 
+                            onPress={() => (fnTypeSelect(item.value))} 
+                            style={_styles.typeItemWrap(storyData.storyType == item.value)}>
+
+                            <Text style={_styles.typeItemText(storyData.storyType == item.value)}>{item.label}</Text>
+                          </TouchableOpacity>
                         </>
                       )
                     })}
                   </SpaceView>
-                )}
-              </SpaceView>
 
-            </SpaceView>
-          </ScrollView>
-        </TouchableWithoutFeedback>
-      </SpaceView>
+                  {isEmptyData(storyData.storyType) && storyData.storyType != 'STORY' && (
+                    <>
+                      <SpaceView mt={20}>
+                        <SpaceView>
+                          <Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>
+                          {storyData.storyType == 'CHOICE' && (
+                            <>
+                              전문성 있는 답변이 필요하신가요? 리프에도 도움을 줄 수 있는 분이 계실 거예요.{'\n'}
+                              질문 기간 동안 도움이 된 댓글 1개를 채택해 주세요.
+                            </>
+                          )}
+                          {storyData.storyType == 'RELAY' && (
+                            <>
+                              사람들의 생각이 궁금한가요? 팔로워 또는 팔로잉 회원을 지명해 보세요.{'\n'}
+                              참여자가 늘어날수록 모두에게 지급되는 보상도 커집니다.
+                            </>
+                          )}
+                          {storyData.storyType == 'VOTE' && (
+                            <>
+                              최대 5가지 선택지에 대한 투표를 진행할 수 있습니다.
+                            </>
+                          )}
+                            
+                          </Text>
+                        </SpaceView>
+                        <SpaceView mt={20}>
+                          {storyData.storyType == 'CHOICE' && (
+                            <SpaceView>
+                              {typeChoiceList.map((item, index) => {
+                                return (
+                                  <>
+                                    <TouchableOpacity
+                                      onPress={() => (fnTypeChoiceSelect(item))} 
+                                      style={_styles.typeBaseItemWrap(item.value == typeChoiceValue?.value)}
+                                      activeOpacity={0.8}>
+                                      <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <SpaceView viewStyle={{width:16}}>
+                                          {item.value == typeChoiceValue?.value && <Image source={ICON.story_promptYGreen} style={styles.iconSquareSize(16)} /> }
+                                        </SpaceView>
+                                        <SpaceView ml={5}><Text style={styles.fontStyle('SB', 12, '#fff')}>{item.label}</Text></SpaceView>
+                                      </SpaceView>
+                                      <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Text style={styles.fontStyle('SB', 12, item.value == typeChoiceValue?.value ? '#fff' : '#808080')}>{item.price}</Text>
+                                        <SpaceView ml={5}><Image source={ICON.cube} style={styles.iconSquareSize(19)} /></SpaceView>
+                                      </SpaceView>
+                                    </TouchableOpacity>
+                                  </>
+                                )
+                              })}
+                            </SpaceView>
+                          )}
+
+                          {storyData.storyType == 'RELAY' && (
+                            <SpaceView>
+                              <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <LinearGradient
+                                  colors={['#8BAAFF', '#2CDEA1']}
+                                  start={{ x: 0, y: 1 }}
+                                  end={{ x: 1, y: 0 }}
+                                  style={_styles.typeRelayTrgtBtn}
+                                >
+                                  <Image source={ICON.story_people} style={styles.iconSquareSize(16)} />
+                                  <SpaceView ml={5}><Text style={styles.fontStyle('SB', 12, '#fff')}>대상자 선택</Text></SpaceView>
+                                </LinearGradient>
+                              </TouchableOpacity>
+
+                              <SpaceView mt={20} viewStyle={_styles.typeRelayWrap}>
+                                <SpaceView viewStyle={_styles.typeRelayCube}><Image source={ICON.cube} style={styles.iconSquareSize(20)} /></SpaceView>
+                                <SpaceView mt={10}>
+                                  <Text style={[styles.fontStyle('SB', 10, '#CBCBCB'), {textAlign: 'center'}]}>최초 작성자 포함 릴레이 참여자 5명 이상부터 큐브  제공되며,{'\n'}30명 참여 시 인당 30개까지 지급!</Text>
+                                </SpaceView>
+                              </SpaceView>
+                            </SpaceView>
+                          )}
+
+                          {/* ########################## 투표 */}
+                          {storyData.storyType == 'VOTE' && (
+                            <SpaceView>
+                              <TouchableOpacity 
+                                onPress={() => (fnVoteTypeSelect())}
+                                style={_styles.selectItemWrap}>
+
+                                <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
+                                  <Image source={isEmptyData(storyData?.voteEndType) ? ICON.story_promptYGreen : ICON.story_promptNRed} style={styles.iconSquareSize(16)} />
+                                  <SpaceView ml={8}><Text style={styles.fontStyle('B', 14, '#fff')}>투표기간</Text></SpaceView>
+                                </SpaceView>
+
+                                <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                  {/* <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{voteTypeValue?.label || '선택'}</Text></SpaceView> */}
+                                  <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>
+                                    {storyData?.voteEndType ? voteEndTypeList.filter((item, index) => item.value == storyData?.voteEndType)[0]?.label : '선택'}</Text>
+                                  </SpaceView>
+                                  <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
+                                </SpaceView>
+                              </TouchableOpacity>
+
+                              <SpaceView mt={20}>
+                                <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                  <TouchableOpacity onPress={() => (fnVoteOptionAdd())}>
+                                    <Image source={ICON.story_plusCircle} style={styles.iconSquareSize(28)} />
+                                  </TouchableOpacity>
+                                  <TouchableOpacity onPress={() => (fnVoteOptionDel())} style={{marginLeft: 10}}>
+                                    <Image source={ICON.story_minusCircle} style={styles.iconSquareSize(28)} />
+                                  </TouchableOpacity>
+                                </SpaceView>
+                                <SpaceView mt={10}>
+
+                                  {voteOptionList.map((item, index) => {
+                                    return (
+                                      <>
+                                        <SpaceView mb={10} viewStyle={_styles.voteItemWrap}>
+                                          <SpaceView ml={3} mb={-2}>
+                                            <Text style={styles.fontStyle('SB', 12, '#fff')}>선택지</Text>
+                                          </SpaceView>
+                                          <TextInput
+                                            //value={voteData[`voteName0${i+1}`]}
+                                            //value={item.value}
+                                            defaultValue={item?.value}
+                                            //onChangeText={(text) => setVoteData({...voteData, [`voteName0${i+1}`] : text})}
+                                            onChangeText={(text) => voteOptionHandler(item?.idx, text)}
+                                            multiline={false}
+                                            autoCapitalize="none"
+                                            style={_styles.voteItemInput}
+                                            //editable={(storyData.storyType == 'VOTE' && storyData.voteEndYn == 'Y') ? false : true}
+                                            secureTextEntry={false}
+                                            maxLength={100}
+                                            numberOfLines={1}
+                                            placeholder={'내용을 입력해 주세요.'}
+                                            placeholderTextColor={'#606060'}
+                                          />
+                                        </SpaceView>
+                                      </>
+                                    )
+                                  })}
+                                </SpaceView>
+                              </SpaceView>
+                            </SpaceView>
+                          )}
+                        </SpaceView>
+                      </SpaceView>
+                    </>
+                  )}
+                </SpaceView>
+
+                {/* ##############################################################################################################
+                ##### 프롬프트 사용 설정 영역
+                ############################################################################################################## */}
+                <SpaceView viewStyle={_styles.promptWrap}>
+                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text style={styles.fontStyle('B', 14, '#fff')}>프롬트 사용</Text>
+                      <SpaceView ml={10}><Text style={styles.fontStyle('SB', 10, '#CBCBCB')}>내 이야기의 로그를 남길 수 있습니다.</Text></SpaceView>
+                    </SpaceView>
+                    <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                      <TouchableOpacity style={_styles.promptBtn(!isPromptUse)} onPress={() => (setIsPromptUse(false))}>
+                        <Image source={ICON.story_promptN} style={styles.iconSquareSize(20)} />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[_styles.promptBtn(isPromptUse), {marginLeft: 10}]} onPress={() => (setIsPromptUse(true))}>
+                        <Image source={ICON.story_promptY} style={styles.iconSquareSize(20)} />
+                      </TouchableOpacity>
+                    </SpaceView>
+                  </SpaceView>
+
+                  {isPromptUse && (
+                    <SpaceView mt={20}>
+                      {promptList.map((item, index) => {
+                        return (
+                          <>
+                            <SpaceView mb={10} viewStyle={_styles.selectItemWrap}>
+                              <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <Image source={isEmptyData(item?.selectedValue?.prompt_seq) ? ICON.story_promptYGreen : ICON.story_promptNRed} style={styles.iconSquareSize(16)} />
+                                <SpaceView ml={8}><Text style={styles.fontStyle('B', 14, '#fff')}>{item.label}</Text></SpaceView>
+                              </SpaceView>
+                              <SpaceView>
+                                {/* <KeywordDropDown /> */}
+                                <TouchableOpacity 
+                                  onPress={() => (fnPromptSelect(item))}
+                                  style={_styles.keywordSelectWrap}>
+                                  <SpaceView ml={10} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <SpaceView mr={10}><Text style={styles.fontStyle('SB', 12, '#CBCBCB')}>{item?.selectedValue?.prompt_name || '선택'}</Text></SpaceView>
+                                    <Image source={ICON.story_moreAdd} style={styles.iconNoSquareSize(10, 17)} />
+                                  </SpaceView>
+                                </TouchableOpacity>
+                              </SpaceView>
+                            </SpaceView>
+                          </>
+                        )
+                      })}
+                    </SpaceView>
+                  )}
+                </SpaceView>
+
+              </SpaceView>
+            </ScrollView>
+          </TouchableWithoutFeedback>
+        </SpaceView>
+
+      </KeyboardAwareScrollView>
 
       {/* ##################################################################################
             AI 소개글 팝업
