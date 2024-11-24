@@ -146,6 +146,9 @@ export const Roby = (props: Props) => {
     }
   };
 
+  /* #########################################################################################################
+  ######## 등급 관리하기 모달 관련
+  ######################################################################################################### */
 
   // 등급 관리하기 modalizeRef
   const gradeGuide_modalizeRef = useRef<BottomSheetModal>(null);
@@ -164,6 +167,11 @@ export const Roby = (props: Props) => {
     console.log('handleSheetChanges', index);
   }, []);
 
+
+  /* #########################################################################################################
+  ######## AI 소개글 모달 관련
+  ######################################################################################################### */
+
   // AI 소개글 modalizeRef
   const aiIntro_modalizeRef = useRef<BottomSheetModal>(null);
 
@@ -172,7 +180,7 @@ export const Roby = (props: Props) => {
     aiIntro_modalizeRef.current?.present();
   };
 
-  // 등급 관리하기 닫기
+  // AI 소개글 닫기
   const aiIntro_onClose = () => {
     aiIntro_modalizeRef.current?.dismiss();
   };
@@ -181,18 +189,10 @@ export const Roby = (props: Props) => {
     console.log('handleSheetChanges', index);
   }, []);
 
+
   /* #################################################################################################################################
   ##### 팝업 관련
   ################################################################################################################################# */
-
-  // 내 선호 이성 Pop
-  const ideal_modalizeRef = useRef<Modalize>(null);
-  const ideal_onOpen = () => {
-    ideal_modalizeRef.current?.open();
-  };
-  const ideal_onClose = () => {
-    ideal_modalizeRef.current?.close();
-  };
 
   const onPressEditProfile = () => {
     navigation.navigate(STACK.COMMON, { screen: 'Introduce' });
@@ -232,9 +232,7 @@ export const Roby = (props: Props) => {
 
   // 보관함 이동
   const onPressStorage = async (loadPage:any) => {
-    navigation.navigate(STACK.TAB, {
-      screen: 'Storage',
-    });
+    navigation.navigate(STACK.TAB, { screen: 'Storage' });
   };
 
   // 최근 소식 이동
@@ -668,7 +666,7 @@ export const Roby = (props: Props) => {
         <BottomSheetModal
           ref={aiIntro_modalizeRef}
           index={0}
-          onChange={gradeGuide_onChanges}
+          onChange={aiIntro_onChanges}
           //snapPoints={snapPoints}
           maxDynamicContentSize={Platform.OS == 'android' ? height-150 : height-200}
           enablePanDownToClose={true}
@@ -694,6 +692,11 @@ export const Roby = (props: Props) => {
           />
         </BottomSheetModal>
       </BottomSheetModalProvider>
+
+
+
+
+
 
 
 

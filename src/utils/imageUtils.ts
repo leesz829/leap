@@ -372,6 +372,24 @@ export const ICON = {
   story_woman01: require('assets/icon/story/woman_01.png'),
   story_woman02: require('assets/icon/story/woman_02.png'),
 
+  story_manPeople01: require('assets/icon/story/man_people_01.png'),
+  story_manPeople02: require('assets/icon/story/man_people_02.png'),
+  story_manPeople03: require('assets/icon/story/man_people_03.png'),
+  story_manPeople04: require('assets/icon/story/man_people_04.png'),
+  story_manPeople05: require('assets/icon/story/man_people_05.png'),
+  story_manPeople06: require('assets/icon/story/man_people_06.png'),
+  story_manPeople07: require('assets/icon/story/man_people_07.png'),
+  story_manPeople08: require('assets/icon/story/man_people_08.png'),
+  story_womanPeople01: require('assets/icon/story/woman_people_01.png'),
+  story_womanPeople02: require('assets/icon/story/woman_people_02.png'),
+  story_womanPeople03: require('assets/icon/story/woman_people_03.png'),
+  story_womanPeople04: require('assets/icon/story/woman_people_04.png'),
+  story_womanPeople05: require('assets/icon/story/woman_people_05.png'),
+  story_womanPeople06: require('assets/icon/story/woman_people_06.png'),
+  story_womanPeople07: require('assets/icon/story/woman_people_07.png'),
+  story_womanPeople08: require('assets/icon/story/woman_people_08.png'),
+
+
   /* shop */
   shop_inventory: require('assets/icon/shop/inventory.png'),
   shop_femaleShop: require('assets/icon/shop/female_shop.png'),

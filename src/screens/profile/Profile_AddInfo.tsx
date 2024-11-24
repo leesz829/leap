@@ -21,6 +21,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { ICON, PROFILE_IMAGE, findSourcePath, findSourcePathLocal } from 'utils/imageUtils';
 import InterestRegiPopup from 'component/member/InterestRegiPopup';
 import { getInterview } from 'hooks/member';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 /* ################################################################################################################
@@ -101,6 +102,8 @@ export const Profile_AddInfo = (props: Props) => {
                 };
               });
             });
+						console.log('setList ::::: ' , setList);
+
 					  setCheckIntList(setList);
 
 						setInterviewList(data?.interview_list);
@@ -229,10 +232,8 @@ export const Profile_AddInfo = (props: Props) => {
 		<>
 			{isLoading && <CommonLoading />}
 
-			<SpaceView viewStyle={_styles.wrap}>
-				<SpaceView pl={10} pr={10}>
-					<CommonHeader title="추가 정보" />
-				</SpaceView>
+			<SpaceView pt={30} viewStyle={{backgroundColor: '#13111C', paddingHorizontal: 10}}>
+        <CommonHeader title="추가 정보" />
 
 				<SpaceView mt={30} viewStyle={layoutStyle.rowBetween}>
 					<TouchableOpacity 
@@ -248,107 +249,164 @@ export const Profile_AddInfo = (props: Props) => {
 						<Text style={styles.fontStyle('EB', 20, currentTab == 'INTERVIEW' ? '#46F66F' : '#808080')}>인터뷰</Text>
 					</TouchableOpacity>
 				</SpaceView>
+      </SpaceView>
 
-				<SpaceView>
+			<KeyboardAwareScrollView style={{backgroundColor: '#13111C'}} extraScrollHeight={150} showsVerticalScrollIndicator={false}>
+				<SpaceView viewStyle={_styles.wrap}>
+					{/* <SpaceView pl={10} pr={10}>
+						<CommonHeader title="추가 정보" />
+					</SpaceView> */}
 
-					{/* 관심사 */}
-					{currentTab == 'INTEREST' && (
-						<SpaceView>
-							<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingBottom: 15, marginTop: 30, height: height-300}}>
-								<SpaceView pl={10} pr={10}>
-									<SpaceView>
-										<SpaceView viewStyle={layoutStyle.rowStart}>
-											<Image source={ICON.int_lifestyle} style={styles.iconSquareSize(15)} />
-											<SpaceView ml={3}><Text style={styles.fontStyle('EB', 16, '#fff')}>라이프 스타일</Text></SpaceView>
-										</SpaceView>
-										<SpaceView mt={20} viewStyle={_styles.interestListWrap}>
-											{checkIntList.map((i, index) => {
-												return isEmptyData(i.code_name) && (
-													<SpaceView key={index + 'reg'} mr={5} mb={10} viewStyle={_styles.interestItemWrap}>
-														<Text style={styles.fontStyle('B', 14, '#fff')}>{i.code_name}</Text>
+					<SpaceView>
+
+						{/* ########################################################################################################
+						############# 관심사 
+						######################################################################################################## */}
+						{currentTab == 'INTEREST' && (
+							<SpaceView>
+								<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingBottom: 15, marginTop: 30, height: height-300}}>
+									<SpaceView pl={10} pr={10}>
+										{intList.map((item, index) => {
+											const groupCode = item?.group_code;
+											const list = item?.list;
+											let icon = ICON.int_lifestyle;
+											let bgColor = 'rgba(64,224,208,0.66)';
+
+											// 관심사 체크 갯수
+											let intChkCnt = 0;
+											list.map((itm, idx) => {
+												if(null != itm.interest_seq) {
+													intChkCnt = intChkCnt+1;
+												}
+											});
+
+											// 아이콘 설정
+											if(groupCode == 'INTEREST_CATEGORY_01') {
+												icon = ICON.int_lifestyle;
+												bgColor = 'rgba(64,224,208,0.66)';
+											} else if(groupCode == 'INTEREST_CATEGORY_02') {
+												icon = ICON.int_leisure;
+											} else if(groupCode == 'INTEREST_CATEGORY_03') {
+												icon = ICON.int_food;
+											} else if(groupCode == 'INTEREST_CATEGORY_04') {
+												icon = ICON.int_body;
+												bgColor = 'rgba(128,0,0,0.66)';
+											} else if(groupCode == 'INTEREST_CATEGORY_05') {
+												icon = ICON.int_active;
+											} else if(groupCode == 'INTEREST_CATEGORY_06') {
+												icon = ICON.int_social;
+											} else if(groupCode == 'INTEREST_CATEGORY_07') {
+												icon = ICON.int_entertainment;
+												bgColor = 'rgba(152,251,152,0.66)';
+											} else if(groupCode == 'INTEREST_CATEGORY_08') {
+												icon = ICON.int_game;
+											}
+											
+											return intChkCnt > 0 && (
+												<SpaceView mb={30}>
+													<SpaceView viewStyle={layoutStyle.rowStart}>
+														<Image source={icon} style={styles.iconSquareSize(15)} />
+														<SpaceView ml={3}><Text style={styles.fontStyle('EB', 16, '#fff')}>{item?.group_code_name}</Text></SpaceView>
 													</SpaceView>
-												);
-											})}
-										</SpaceView>
-									</SpaceView>
-								</SpaceView>
-							</ScrollView>
-							<TouchableOpacity
-								style={_styles.interestAddBtn}
-								onPress={() => {
-									int_onOpen();
-								}}>
-								<Text style={styles.fontStyle('B', 12, '#fff')}>관심사 추가/삭제</Text>
-							</TouchableOpacity>
-						</SpaceView>
-					)}
-
-					{/* 인터뷰 */}
-					{currentTab == 'INTERVIEW' && (
-						<SpaceView pl={10} pr={10}>
-							<SpaceView mt={25}>
-								<Text style={styles.fontStyle('EB', 20, '#fff')}>리프의 친구들에게{'\n'}{memberBase?.nickname}님의 생각을 남겨 보세요.</Text>
-							</SpaceView>
-							<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, marginTop: 25, height: height-280}}>
-								<SpaceView mb={50}>
-									{interviewList.map((item, index) => {
-										
-										return (
-											<>
-												<SpaceView>
-													<LinearGradient
-														colors={['rgba(203,239,255,0.3)', 'rgba(113,143,156,0.3)', 'rgba(122,154,183,0.3)']}
-														start={{ x: 0.1, y: 0 }}
-														end={{ x: 0.8, y: 0.8 }}
-														style={_styles.interviewItemWrap}
-													>
-														<SpaceView>
-															<Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
-														</SpaceView>
-														<SpaceView mt={30} viewStyle={_styles.interviewAnswerWrap}>
-															<TextInput
-																defaultValue={item?.answer}
-																onChangeText={(text) => 
-																	answerChangeHandler(item?.common_code, text)
-																}
-																autoCapitalize={'none'}
-																multiline={true}
-																style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#C4B6AA')]}
-																placeholder={placeholder}
-																placeholderTextColor={'#C4B6AA'}
-																maxLength={200}
-																caretHidden={true}
-																onFocus={() => setPlaceholder('')}
-																onBlur={() => {
-																	setPlaceholder(defaultPlaceholder);
-																}}
-															/>
-														</SpaceView>
-														<SpaceView mt={10} viewStyle={_styles.interviewBtnWrap}>
-															<TouchableOpacity style={_styles.interviewCancelBtn}>
-																<Text style={styles.fontStyle('B', 16, '#fff')}>취소</Text>
-															</TouchableOpacity>
-															<TouchableOpacity 
-																style={_styles.interviewSaveBtn}
-																onPress={() => {
-																	saveInterview(item);
-																}}>
-																<Text style={styles.fontStyle('B', 16, '#fff')}>저장</Text>
-															</TouchableOpacity>
-														</SpaceView>
-													</LinearGradient>
+													<SpaceView mt={20} viewStyle={_styles.interestListWrap}>
+														{checkIntList.map((i, index) => {
+															return isEmptyData(i.code_name) && i.group_code == groupCode && (
+																<SpaceView key={index + 'reg'} mr={5} mb={10} viewStyle={_styles.interestItemWrap(bgColor)}>
+																	<Text style={styles.fontStyle('B', 14, '#fff')}>{i.code_name}</Text>
+																</SpaceView>
+															);
+														})}
+													</SpaceView>
 												</SpaceView>
-											</>
-										);
-									})}
-								</SpaceView>
-							</ScrollView>
-						</SpaceView>
-					)}
-					
-				</SpaceView>
-			</SpaceView>
+											)
+										})}
+									</SpaceView>
+								</ScrollView>
+							</SpaceView>
+						)}
 
+						{/* ########################################################################################################
+						############# 인터뷰
+						######################################################################################################## */}
+						{currentTab == 'INTERVIEW' && (
+							<SpaceView pl={10} pr={10}>
+								<SpaceView mt={25}>
+									<Text style={styles.fontStyle('EB', 20, '#fff')}>리프의 친구들에게{'\n'}{memberBase?.nickname}님의 생각을 남겨 보세요.</Text>
+								</SpaceView>
+								<ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, marginTop: 25, height: height-280}}>
+									<SpaceView mb={50}>
+										{interviewList.map((item, index) => {
+											
+											return (
+												<>
+													<SpaceView>
+														<LinearGradient
+															colors={['rgba(203,239,255,0.3)', 'rgba(113,143,156,0.3)', 'rgba(122,154,183,0.3)']}
+															start={{ x: 0.1, y: 0 }}
+															end={{ x: 0.8, y: 0.8 }}
+															style={_styles.interviewItemWrap}
+														>
+															<SpaceView>
+																<Text style={styles.fontStyle('B', 14, '#fff')}>{item?.code_name}</Text>
+															</SpaceView>
+															<SpaceView mt={30} viewStyle={_styles.interviewAnswerWrap}>
+																<TextInput
+																	defaultValue={item?.answer}
+																	onChangeText={(text) => 
+																		answerChangeHandler(item?.common_code, text)
+																	}
+																	autoCapitalize={'none'}
+																	multiline={true}
+																	style={[_styles.textInputBox(100), styles.fontStyle('SB', 12, '#C4B6AA')]}
+																	placeholder={placeholder}
+																	placeholderTextColor={'#C4B6AA'}
+																	maxLength={200}
+																	caretHidden={true}
+																	onFocus={() => setPlaceholder('')}
+																	onBlur={() => {
+																		setPlaceholder(defaultPlaceholder);
+																	}}
+																/>
+															</SpaceView>
+															<SpaceView mt={10} viewStyle={_styles.interviewBtnWrap}>
+																<TouchableOpacity style={_styles.interviewCancelBtn}>
+																	<Text style={styles.fontStyle('B', 16, '#fff')}>취소</Text>
+																</TouchableOpacity>
+																<TouchableOpacity 
+																	style={_styles.interviewSaveBtn}
+																	onPress={() => {
+																		saveInterview(item);
+																	}}>
+																	<Text style={styles.fontStyle('B', 16, '#fff')}>저장</Text>
+																</TouchableOpacity>
+															</SpaceView>
+														</LinearGradient>
+													</SpaceView>
+												</>
+											);
+										})}
+									</SpaceView>
+								</ScrollView>
+							</SpaceView>
+						)}
+						
+					</SpaceView>
+				</SpaceView>
+
+			</KeyboardAwareScrollView>
+
+			{/* ################################## 관심사 추가/삭제 버튼 영역 */}
+			{currentTab == 'INTEREST' && (
+				<SpaceView viewStyle={{backgroundColor: '#13111C', paddingVertical: 20}}>
+					<TouchableOpacity
+						style={_styles.interestAddBtn}
+						onPress={() => {
+							int_onOpen();
+						}}>
+						<Text style={styles.fontStyle('B', 12, '#fff')}>관심사 추가/삭제</Text>
+					</TouchableOpacity>
+				</SpaceView>
+			)}
 
 			{/* #############################################################################
 											관심사 설정 팝업
@@ -387,13 +445,15 @@ const _styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 	},
-	interestItemWrap: {
-		backgroundColor: '#808080',
-		borderRadius: 25,
-		borderColor: '#40E0D0',
-		borderWidth: 1,
-		paddingHorizontal: 18,
-		paddingVertical: 10,
+	interestItemWrap: (cr:string) => {
+		return {
+			backgroundColor: cr,
+			borderRadius: 25,
+			borderColor: cr,
+			borderWidth: 1,
+			paddingHorizontal: 18,
+			paddingVertical: 10,
+    };
 	},
 	interestAddBtn: {
 		backgroundColor: '#44B6E5',

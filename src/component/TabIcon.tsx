@@ -196,7 +196,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
           <SpaceView viewStyle={_style.navItemWrap}>
             <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navShopOn : ICON.navShop} />
             <SpaceView mt={5}>
-              <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>상점</Text>
+              <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>스토어</Text>
             </SpaceView>
 
             {/* {(memberBase?.gender == 'M' && memberBase?.new_item_cnt != null && typeof memberBase?.new_item_cnt != 'undefined' && memberBase?.new_item_cnt > 0) &&

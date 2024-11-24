@@ -420,7 +420,7 @@ export const Vibe: FC<Props> = (props) => {
                             key={'face_' + item.common_code} 
                             onPress={() => openImpressPop('#' + item.code_name, item.common_code, item.code_memo)}
                             style={_styles.liveModalFaceItem}>
-                            <Text style={[styles.fontStyle('B', 15, '#44B6E5'), {textAlign: 'center', marginBottom: 3}]}>#{item.code_name}</Text>
+                            <Text style={[styles.fontStyle('B', 15, '#44B6E5'), {textAlign: 'center', marginBottom: 3}]}>{item.code_name}</Text>
                           </TouchableOpacity>
                         )
                       })}
@@ -666,10 +666,10 @@ const _styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#44B6E5',
     borderRadius: 25,
-    width: width-60,
+    width: width-40,
     paddingVertical: 8,
     justifyContent: 'center',
-    marginBottom: 13,
+    marginBottom: 7,
   },
   vibeEmptyContent: {
     height: height,

@@ -10,7 +10,8 @@ import { useProfileImg } from 'hooks/useProfileImg';
 import { Modalize } from 'react-native-modalize';
 import { isEmptyData } from 'utils/functions';
 import Modal from 'react-native-modal';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 
 /* ################################################################################################################
@@ -139,9 +140,9 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
     }; */
 
     if(gender == 'M') {
-      applyMsgImg = ICON.story_man01;
+      applyMsgImg = ICON.story_manPeople01;
     } else {
-      applyMsgImg = ICON.story_woman02;
+      applyMsgImg = ICON.story_womanPeople01;
     }
 
     // 노출 닉네임
@@ -280,115 +281,7 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
   return (
     <>
-      {/* <Modalize
-        ref={modalizeRef}
-        handleStyle={modalStyle.modalHandleStyle}
-        modalStyle={_styles.modalWrap}
-        modalHeight={height-150} 
-        onOverlayPress={() => { popup_onClose(); }}
-      >
-        <SpaceView mt={25} viewStyle={{alignItems: 'center'}}>
-          <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 5}} />
-        </SpaceView>
-
-        <SpaceView mt={45}>
-          <Text style={styles.fontStyle('H', 26, '#fff')}>댓글 {replyList?.length}개</Text>
-        </SpaceView>
-
-        <SpaceView mt={30}>
-          <FlatList
-            style={{height: height - 400, marginBottom: 50}}
-            data={replyList}
-            renderItem={({ item, index }) => {
-              return (
-                <SpaceView>
-                  <ReplyRender item={item} index={index} likeFunc={likeFn} />
-                </SpaceView>
-              )
-            }}
-          />
-        </SpaceView>
-
-        <SpaceView viewStyle={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-          <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',}} onPress={()=> { popup_onClose(); }} />
-
-          <ScrollView>
-            {Platform.OS == 'ios' ? (
-              <>
-                <InputAccessoryView>
-                  <SpaceView viewStyle={_styles.inputArea}>
-                    <SpaceView viewStyle={_styles.replyImgCircle(30)}>
-                      <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
-                    </SpaceView>
-
-                    <SpaceView viewStyle={_styles.replyInputWrap}>
-                      <TextInput
-                        ref={inputRef}
-                        value={inputReplyText}
-                        onChangeText={(text) => setInputReplyText(text)}
-                        multiline={false}
-                        textAlignVertical={'center'}
-                        autoCapitalize={'none'}
-                        style={[_styles.replyTextStyle, styles.fontStyle('SB', 12, '#CBCBCB')]}
-                        placeholder={'댓글 내용을 입력해 주세요.'}
-                        placeholderTextColor={'#606060'}
-                        editable={true}
-                        secureTextEntry={false}
-                        maxLength={150}
-                        autoFocus={true}
-                      />
-
-                      <TouchableOpacity
-                        onPress={() => { replyRegister(); }}
-                        style={_styles.replyBtnWrap}
-                        hitSlop={commonStyle.hipSlop30}>
-                        <Text style={styles.fontStyle('SB', 12, '#fff')}>전송</Text>
-                      </TouchableOpacity>
-                    </SpaceView>
-                  </SpaceView>
-                </InputAccessoryView>
-              </>
-            ) : (
-              <>
-                <SpaceView viewStyle={_styles.inputArea}>
-                  <SpaceView viewStyle={_styles.replyImgCircle(30)}>
-                    <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
-                  </SpaceView>
-
-                  <SpaceView viewStyle={_styles.replyInputWrap}>
-                    <TextInput
-                      ref={inputRef}
-                      value={inputReplyText}
-                      onChangeText={(text) => setInputReplyText(text)}
-                      multiline={false}
-                      textAlignVertical={'center'}
-                      autoCapitalize={'none'}
-                      style={[_styles.replyTextStyle, styles.fontStyle('SB', 12, '#CBCBCB')]}
-                      placeholder={'댓글 내용을 입력해 주세요.'}
-                      placeholderTextColor={'#606060'}
-                      editable={true}
-                      secureTextEntry={false}
-                      maxLength={150}
-                      autoFocus={true}
-                    />
-
-                    <TouchableOpacity
-                      onPress={() => { replyRegister(); }}
-                      style={_styles.replyBtnWrap}>
-                      <Text style={styles.fontStyle('SB', 12, '#fff')}>전송</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                </SpaceView>
-              </>
-            )}
-          </ScrollView>
-
-        </SpaceView>
-
-      </Modalize> */}
-
-
-      <Modal
+      {/* <Modal
         isVisible={isModalVisible}
         style={_styles.modalWrap}
         animationIn="slideInUp"
@@ -398,17 +291,22 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
         propagateSwipe={true} // 스와이프 동작과 스크롤 동작이 겹치지 않도록 설정
         onSwipeComplete={popup_onClose} // 스와이프가 완료되면 모달 닫힘
         onBackdropPress={popup_onClose} // 배경을 터치해도 모달 닫기
+      > */}
+
+      <SpaceView mt={45} mb={30} pl={23} pr={23}>
+        <Text style={styles.fontStyle('H', 26, '#fff')}>댓글 {replyList?.length}개</Text>
+      </SpaceView>
+
+      {/* <SpaceView viewStyle={{alignItems: 'center'}}>
+        <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 7}} />
+      </SpaceView> */}
+
+      <BottomSheetScrollView 
+        contentContainerStyle={{ paddingHorizontal: 23, minHeight: Platform.OS == 'android' ? height-150 : height-200 }}  
+        showsVerticalScrollIndicator={false}
       >
-        <SpaceView viewStyle={{alignItems: 'center'}}>
-          <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 7}} />
-        </SpaceView>
-
-        <SpaceView mt={45}>
-          <Text style={styles.fontStyle('H', 26, '#fff')}>댓글 {replyList?.length}개</Text>
-        </SpaceView>
-
-        <SpaceView mt={30}>
-          <FlatList
+        <SpaceView mb={30}>
+          {/* <FlatList
             style={{height: height - 400, marginBottom: 50}}
             data={replyList}
             showsVerticalScrollIndicator={false}
@@ -419,16 +317,92 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
                 </SpaceView>
               )
             }}
-          />
+          /> */}
+
+          {replyList?.map((item, index) => {
+
+            return (
+              <SpaceView>
+                <ReplyRender item={item} index={index} likeFunc={likeFn} />
+              </SpaceView>
+            )
+          })}
         </SpaceView>
+      </BottomSheetScrollView>
 
-        <SpaceView>
-          <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',}} onPress={()=> { popup_onClose(); }} />
+      <KeyboardAwareScrollView extraScrollHeight={50}>
+        <SpaceView viewStyle={_styles.inputArea}>
+          <SpaceView viewStyle={_styles.replyImgCircle(30)}>
+            <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
+          </SpaceView>
 
-          <ScrollView>
-            {Platform.OS == 'ios' ? (
-              <>
-                <InputAccessoryView>
+          <SpaceView viewStyle={_styles.replyInputWrap}>
+            <TextInput
+              ref={inputRef}
+              value={inputReplyText}
+              onChangeText={(text) => setInputReplyText(text)}
+              multiline={false}
+              textAlignVertical={'center'}
+              autoCapitalize={'none'}
+              style={[_styles.replyTextStyle, styles.fontStyle('SB', 12, '#CBCBCB')]}
+              placeholder={'댓글 내용을 입력해 주세요.'}
+              placeholderTextColor={'#606060'}
+              editable={true}
+              secureTextEntry={false}
+              maxLength={150}
+              //autoFocus={true}
+            />
+
+            <TouchableOpacity
+              onPress={() => { replyRegister(); }}
+              style={_styles.replyBtnWrap}
+              hitSlop={commonStyle.hipSlop30}>
+              <Text style={styles.fontStyle('SB', 12, '#fff')}>전송</Text>
+            </TouchableOpacity>
+          </SpaceView>
+        </SpaceView>
+      </KeyboardAwareScrollView>
+
+            {/* <Pressable style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',}} onPress={()=> { popup_onClose(); }} /> */}
+
+            {/* <ScrollView>
+              {Platform.OS == 'ios' ? (
+                <>
+                  <InputAccessoryView>
+                    <SpaceView viewStyle={_styles.inputArea}>
+                      <SpaceView viewStyle={_styles.replyImgCircle(30)}>
+                        <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
+                      </SpaceView>
+
+                      <SpaceView viewStyle={_styles.replyInputWrap}>
+                        <TextInput
+                          ref={inputRef}
+                          value={inputReplyText}
+                          onChangeText={(text) => setInputReplyText(text)}
+                          multiline={false}
+                          textAlignVertical={'center'}
+                          autoCapitalize={'none'}
+                          style={[_styles.replyTextStyle, styles.fontStyle('SB', 12, '#CBCBCB')]}
+                          placeholder={'댓글 내용을 입력해 주세요.'}
+                          placeholderTextColor={'#606060'}
+                          editable={true}
+                          secureTextEntry={false}
+                          maxLength={150}
+                          autoFocus={true}
+                        />
+
+                        <TouchableOpacity
+                          onPress={() => { replyRegister(); }}
+                          style={_styles.replyBtnWrap}
+                          hitSlop={commonStyle.hipSlop30}>
+                          <Text style={styles.fontStyle('SB', 12, '#fff')}>전송</Text>
+                        </TouchableOpacity>
+                      </SpaceView>
+                    </SpaceView>
+                  </InputAccessoryView>
+                </>
+              ) : (
+                <>
                   <SpaceView viewStyle={_styles.inputArea}>
                     <SpaceView viewStyle={_styles.replyImgCircle(30)}>
                       <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
@@ -453,51 +427,15 @@ const ReplyRegiPopup = forwardRef((props, ref) => {
 
                       <TouchableOpacity
                         onPress={() => { replyRegister(); }}
-                        style={_styles.replyBtnWrap}
-                        hitSlop={commonStyle.hipSlop30}>
+                        style={_styles.replyBtnWrap}>
                         <Text style={styles.fontStyle('SB', 12, '#fff')}>전송</Text>
                       </TouchableOpacity>
                     </SpaceView>
                   </SpaceView>
-                </InputAccessoryView>
-              </>
-            ) : (
-              <>
-                <SpaceView viewStyle={_styles.inputArea}>
-                  <SpaceView viewStyle={_styles.replyImgCircle(30)}>
-                    <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(30)} resizeMode={'cover'} />
-                  </SpaceView>
-
-                  <SpaceView viewStyle={_styles.replyInputWrap}>
-                    <TextInput
-                      ref={inputRef}
-                      value={inputReplyText}
-                      onChangeText={(text) => setInputReplyText(text)}
-                      multiline={false}
-                      textAlignVertical={'center'}
-                      autoCapitalize={'none'}
-                      style={[_styles.replyTextStyle, styles.fontStyle('SB', 12, '#CBCBCB')]}
-                      placeholder={'댓글 내용을 입력해 주세요.'}
-                      placeholderTextColor={'#606060'}
-                      editable={true}
-                      secureTextEntry={false}
-                      maxLength={150}
-                      autoFocus={true}
-                    />
-
-                    <TouchableOpacity
-                      onPress={() => { replyRegister(); }}
-                      style={_styles.replyBtnWrap}>
-                      <Text style={styles.fontStyle('SB', 12, '#fff')}>전송</Text>
-                    </TouchableOpacity>
-                  </SpaceView>
-                </SpaceView>
-              </>
-            )}
-          </ScrollView>
-
-        </SpaceView>
-      </Modal>
+                </>
+              )}
+            </ScrollView> */}
+      {/* </Modal> */}
     </>
   );
 });
@@ -541,6 +479,9 @@ const _styles = StyleSheet.create({
   inputArea: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 23,
+    paddingVertical: 15,
+    marginBottom: 30,
   },
   replyImgCircle: (num:number) => {
     return {

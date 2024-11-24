@@ -113,9 +113,12 @@ const InterestRegiPopup = forwardRef((props, ref) => {
           <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
             <View style={{backgroundColor: '#808080', borderRadius: 5, width: 35, height: 5}} />
           </SpaceView>
+
           <SpaceView viewStyle={_styles.headerWrap}>
             <Text style={styles.fontStyle('EB', 24, '#fff')}>관심사 추가/삭제({!checkIntList.length ? 0 : checkIntList.length}/5)</Text>
           </SpaceView>
+
+          {/* 카테고리 영역 */}
           <SpaceView>
             <ScrollView horizontal={true}>
               {interestList.map((item, index) => (

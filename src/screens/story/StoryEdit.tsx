@@ -611,10 +611,12 @@ export default function StoryEdit(props: Props) {
     <>
       {isLoading && <CommonLoading />}
 
-      <KeyboardAwareScrollView style={{backgroundColor: '#000'}}>
-        <SpaceView pt={30} viewStyle={_styles.wrap}>
+      <SpaceView pt={30} viewStyle={{backgroundColor: '#000', paddingHorizontal: 10}}>
+        <CommonHeader type={'STORY_REGI'} title={isEmptyData(params.storyBoardSeq) ? '새글수정' : '새글등록'} callbackFunc={storyRegister} />
+      </SpaceView>
 
-          <CommonHeader type={'STORY_REGI'} title={isEmptyData(params.storyBoardSeq) ? '새글수정' : '새글등록'} callbackFunc={storyRegister} />
+      <KeyboardAwareScrollView style={{backgroundColor: '#000'}}>
+        <SpaceView viewStyle={_styles.wrap}>
 
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
@@ -893,8 +895,8 @@ const _styles = StyleSheet.create({
   wrap: {
     minHeight: height,
     backgroundColor: '#000',
-    paddingTop: 30,
-    paddingHorizontal: 10,
+    //paddingTop: 10,
+    //paddingHorizontal: 10,
   },
   keywordWrap: {
     borderTopWidth: 1,

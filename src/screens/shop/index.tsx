@@ -499,14 +499,14 @@ export const Shop = () => {
         <ScrollView 
           bounces={false} 
           showsVerticalScrollIndicator={false} 
-          style={{flexGrow: 1}} 
+          style={{flexGrow: 1, paddingTop: !isOnShrink ? 0 : 70}} 
           onScroll={handleScroll}
           scrollEventThrottle={16}
         >
 
           {/* ################################################################################## 여성 회원 UI */}
           {memberBase?.gender == 'W' && (
-            <SpaceView mt={20}>
+            <SpaceView mt={20} mb={20}>
               <SpaceView viewStyle={_styles.femaleBannerWrap}>
                 <SpaceView ml={13}>
                   <SpaceView mb={10}><Text style={styles.fontStyle('EB', 20, '#fff')}>RP 스토어</Text></SpaceView>
@@ -537,7 +537,7 @@ export const Shop = () => {
 
           {/* ################################################################################## 남성 회원 UI */}
           {memberBase?.gender == 'M' && (
-            <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
+            <SpaceView mt={20} mb={20} viewStyle={{alignItems: 'center'}}>
               <ImageBackground source={ICON.shop_maleBg} style={[_styles.maleWrap]}>
                 <SpaceView><Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>리워드 플랜</Text></SpaceView>
                 <SpaceView viewStyle={{alignItems: 'center'}}>
@@ -782,8 +782,8 @@ export const Shop = () => {
           )} */}
 
           {/* ############################################################# 카테고리 탭 */}
-          {!isOnShrink && (
-            <SpaceView mt={20} mb={10} viewStyle={_styles.tabWrap}>
+          {/* {!isOnShrink && (
+            <SpaceView mb={10} viewStyle={_styles.tabWrap}>
               {categoryList?.map((item, index) => (
                 <>
                   <TouchableOpacity
@@ -796,7 +796,21 @@ export const Shop = () => {
                 </>
               ))}
             </SpaceView>
-          )}
+          )} */}
+
+          <SpaceView mb={10} viewStyle={_styles.tabWrap}>
+            {categoryList?.map((item, index) => (
+              <>
+                <TouchableOpacity
+                  key={`category-${item.value}-${index}`}
+                  onPress={() => onPressCategory(item)}
+                  style={index > 0 && {marginLeft: 10}}>
+                  <Image source={item.value === selectedCategoryData.value ? item.imgActive : item.imgUnactive} style={styles.iconSquareSize(55)} />
+                  <SpaceView mt={5}><Text style={[styles.fontStyle('B', 12, (item.value === selectedCategoryData.value ? '#46F66F' : '#808080')), {textAlign: 'center'}]}>{item.label}</Text></SpaceView>
+                </TouchableOpacity>
+              </>
+            ))}
+          </SpaceView>
 
           {/* ############################################### 카테고리별 */}
           <SpaceView mb={200}>
@@ -983,83 +997,10 @@ const _styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 10,
   },
-  inventoryText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 17,
-    color: '#32F9E4',
-    marginLeft: 5,
-    textAlign: 'center',
-  },
-  myCubeDesc: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 20,
-    color: '#32F9E4',
-    marginLeft: 2,
-  },
-
   bannerWrapper: {
     backgroundColor: Color.white,
     width: `100%`,
     height: 250,
-  },
-  mileageTitle: {
-    fontFamily: 'Pretendard-Regular',
-    color: '#FFF',
-  },
-  mileageDesc: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 48,
-    color: '#FFF',
-  },
-  rpStoreDesc: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 10,
-    color: '#FFF6BE',
-  },
-  /* rpStoreBtn: {
-    backgroundColor: '#FFF',
-    borderRadius: 30,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }, */
-  rpStorePreBtn: {
-    backgroundColor: '#5A707F',
-    borderRadius: 30,
-    paddingVertical: 5,
-    paddingHorizontal: 30,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  rpStorePreText: {
-    fontFamily: 'Pretendard-SemiBold',
-    textAlign: 'center',
-    color: '#D5CD9E',
-  },
-  rewardTitle: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 12,
-    color: '#D5CD9E',
-  },
-  rewardDesc: {
-    fontFamily: 'Pretendard-Light',
-    fontSize: 10,
-    color: '#ABA99A',
-  },
-  rewardBtn: {
-    backgroundColor: '#000',
-    paddingVertical: 4,
-    paddingHorizontal: 7,
-    borderRadius: 10,
-    marginLeft: 'auto',
-  },
-  rewardBtnText: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 14,
-    color: '#D5CD9E',
   },
 
   shadowContainer: {
@@ -1113,12 +1054,6 @@ const _styles = StyleSheet.create({
     fontSize: 16,
     color: '#3D4348',
   },
-  rpAmtText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 14,
-    color: '#FFDD00',
-    marginBottom: 2,
-  },
   rewardAreaText: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 14,
@@ -1134,20 +1069,6 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     left: 16,
     bottom: -20,
-  },
-  newInvenTextArea: {
-    
-  },
-  newInvenText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 10,
-    color: '#F1D30E',
-    backgroundColor: '#fff',
-    borderRadius: 3,
-    overflow: 'hidden',
-    textAlign: 'center',
-    paddingVertical: 1,
-    paddingHorizontal: 5,
   },
   newInvenTriangle: {
     marginTop: 2,

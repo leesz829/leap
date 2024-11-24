@@ -81,28 +81,27 @@ export default function MileageOrder() {
 
       {/* <CommonHeader title={'주문 내역'} walletTextStyle={{ color: 'white' }} /> */}
 
-      <ScrollView>
+      <LinearGradient
+        colors={['#390D1D', '#390D1D']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={_styles.wrap}
+      >
+        <SpaceView mt={40} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <TouchableOpacity onPress={() => (navigation.goBack())}>
+            <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} />
+          </TouchableOpacity>
 
-        <LinearGradient
-          colors={['#390D1D', '#390D1D']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={_styles.wrap}>
-
-          <SpaceView mt={40} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-            <TouchableOpacity onPress={() => (navigation.goBack())}>
-              <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} />
-            </TouchableOpacity>
-
-            <SpaceView>
-              <Text style={styles.fontStyle('H', 30, '#fff')}>주문내역</Text>
-            </SpaceView>
-            
-            <TouchableOpacity>
-              <Image source={ICON.shop_refresh} style={styles.iconSquareSize(35)} />
-            </TouchableOpacity>
+          <SpaceView>
+            <Text style={styles.fontStyle('H', 30, '#fff')}>주문내역</Text>
           </SpaceView>
+          
+          <TouchableOpacity>
+            <Image source={ICON.shop_refresh} style={styles.iconSquareSize(35)} />
+          </TouchableOpacity>
+        </SpaceView>
 
+        <ScrollView>
           <SpaceView mt={35} mb={20}>
             <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-end'}}>
               <TouchableOpacity>
@@ -144,9 +143,9 @@ export default function MileageOrder() {
               </>
             )}
           </SpaceView>
-        </LinearGradient>
-        
-      </ScrollView>
+
+        </ScrollView>
+      </LinearGradient>
     </>
   );
 }

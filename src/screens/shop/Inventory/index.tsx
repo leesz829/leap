@@ -251,16 +251,16 @@ export default function Inventory() {
     let itemImg;
     let itemType;
     if(item?.cate_common_code == 'PASS') {
-      itemImg = ICON.cubeCyan;
+      itemImg = ICON.shop_productCube;
       itemType = 'Cube';
     }else if(item?.cate_common_code == 'ROYAL_PASS') {
-      itemImg = ICON.megaCubeCyan;
+      itemImg = ICON.shop_productMega;
       itemType = 'MegaCube';
     }else if(item?.cate_group_code == 'SUBSCRIPTION') {
-      itemImg = ICON.drinkCyan;
+      itemImg = ICON.shop_productBoost;
       itemType = 'Subs';
     }else if(item?.cate_group_code == 'PROFILE_DRAWING') {
-      itemImg = ICON.cardCyan;
+      itemImg = ICON.shop_productCard;
       itemType = 'Prof';
     }
 
@@ -301,7 +301,8 @@ export default function Inventory() {
 
             {/* 아이템 이미지 */}
             <SpaceView>
-              <Image source={ICON.shop_productMega} style={styles.iconSquareSize(45)} />
+              {/* <Image source={ICON.shop_productMega} style={styles.iconSquareSize(45)} /> */}
+              <Image source={itemImg} style={styles.iconSquareSize(45)} />
             </SpaceView>
 
             {/* 내용 */}

@@ -407,7 +407,6 @@ export const Story = (props: Props) => {
           }
           //ListFooterComponent={isLoadingMore && <Text>Loading more...</Text>}
           renderItem={({ item, index }) => {
-
             return (
               <>
                 <TalkItem item={item} profileOpenFn={null} goDetailFn={goStoryDetail} />

@@ -16,10 +16,11 @@ import { myProfile } from 'redux/reducers/authReducer';
 import { CommonLoading } from 'component/CommonLoading';
 import SpaceView from 'component/SpaceView';
 import { ScrollView } from 'react-native-gesture-handler';
-import { layoutStyle, styles } from 'assets/styles/Styles';
+import { layoutStyle, styles, commonStyle } from 'assets/styles/Styles';
 import LinearGradient from 'react-native-linear-gradient';
 import MileageInfo from 'component/shop/MileageInfo';
 import { useUserInfo } from 'hooks/useUserInfo';
+import { Slider } from '@miblanchard/react-native-slider';
 
 
 
@@ -51,6 +52,8 @@ export default function MileageShop() {
   const [tab, setTab] = useState(categories[0]);
   const [data, setData] = useState(DATA);
   const me = useUserInfo();
+
+  const [isOnShrink, setIsOnShrink] = React.useState(false); // 쉬링크 상태 변수
 
   const [prodList, setProdList] = useState([]);
 
@@ -195,6 +198,17 @@ export default function MileageShop() {
     navigation.navigate(STACK.COMMON, { screen: ROUTES.Mileage_Order });
   };
 
+  // ############################################################################# 스크롤 이동 함수
+  const handleScroll = (event) => {
+    let contentOffset = event.nativeEvent.contentOffset;
+    if(contentOffset.y > 130) {
+      setIsOnShrink(true);
+    } else {
+      setIsOnShrink(false);
+    }
+  };
+
+
   return (
     <>
       {isLoading && <CommonLoading />}
@@ -203,25 +217,110 @@ export default function MileageShop() {
         colors={['#390D1D', '#390D1D']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
-        style={_styles.wrap}>
+        style={_styles.wrap}
+      >
+        {isOnShrink && (
+          <>
+            <LinearGradient
+              colors={['#070707', '#390D1D']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={_styles.headerWrap}
+            >
+            {/* <SpaceView viewStyle={_styles.headerWrap}> */}
+              <SpaceView viewStyle={[layoutStyle.rowBetween, {width: '100%'}]}>
+                <TouchableOpacity
+                  onPress={() => { navigation.goBack(); }}
+                  hitSlop={commonStyle.hipSlop20}
+                >
+                  <Image source={ICON.backBtnType01} style={styles.iconSquareSize(24)} resizeMode={'contain'} />
+                </TouchableOpacity>
 
-        {/* ################################################################################################# 상단 버튼 영역 */}
-        <SpaceView mt={40} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <TouchableOpacity onPress={() => (navigation.goBack())}>
-            <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} />
-          </TouchableOpacity>
+                <SpaceView viewStyle={{width: '75%'}}>
+                  <SpaceView viewStyle={layoutStyle.rowBetween}>
+                    <SpaceView viewStyle={layoutStyle.rowStart}>
+                      <SpaceView mr={5} viewStyle={_styles.gradeWrap}>
+                        <Image source={ICON.sparkler} style={styles.iconSquareSize(9)} />
+                        <SpaceView ml={2}><Text style={styles.fontStyle('B', 9, '#000000')}>{me?.respect_grade}</Text></SpaceView>
+                      </SpaceView>
+                      <SpaceView viewStyle={layoutStyle.rowCenter}>
+                        <Image source={ICON.shop_rpCard} style={styles.iconNoSquareSize(13, 9)} />
+                        <SpaceView ml={5} mb={4}><Text style={styles.fontStyle('EB', 9, '#FFFF5D')}>{CommaFormat(me?.mileage_point)}</Text></SpaceView>
+                      </SpaceView>
+                    </SpaceView>
+                    <SpaceView>
+                      <Text style={styles.fontStyle('SB', 9, '#FFFF5D')}>{me?.mileage_point > 10000 ? '10,000' : CommaFormat(me?.mileage_point)}/10,000</Text>
+                    </SpaceView>
+                  </SpaceView>
+                  <SpaceView mt={2}>
+                    <SpaceView mb={5} viewStyle={{overflow: 'hidden', borderRadius: 13}}>
+                      <LinearGradient
+                        colors={['#46F66F', '#FFFF5D']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={_styles.gradient(me?.mileage_point / 10000)}
+                        //style={_styles.gradient(3000 / 10000)}
+                      />
+                      <Slider
+                        animateTransitions={true}
+                        renderThumbComponent={() => null}
+                        containerStyle={_styles.sliderContainerStyle}
+                        trackStyle={_styles.sliderThumbStyle}
+                        trackClickable={false}
+                        disabled
+                      />
+                    </SpaceView>
+                  </SpaceView>
+                </SpaceView>
 
-          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image source={ICON.shop_rpCard} style={styles.iconNoSquareSize(25, 17)} />
-            <SpaceView ml={5} mb={4}><Text style={styles.fontStyle('EB', 16, '#FFFF5D')}>{CommaFormat(me?.mileage_point)}</Text></SpaceView>
+                <TouchableOpacity onPress={onPressLimitShop}>
+                  <Image source={ICON.shop_order} style={styles.iconSquareSize(24)} />
+                </TouchableOpacity>
+              </SpaceView>
+
+              <SpaceView>
+                <SpaceView mt={30}>
+                  <SpaceView mb={10}>
+                    <Text style={styles.fontStyle('EB', 20, '#fff')}>브랜드</Text>
+                  </SpaceView>
+                  <SpaceView>
+                    <RenderCategory onPressTab={onPressTab} tabList={brandList} />
+                  </SpaceView>
+                </SpaceView>
+              </SpaceView>
+            </LinearGradient>
+          </>
+        )}
+
+        <ScrollView 
+          style={{ flex: 1, marginBottom: 40 }} 
+          onScroll={handleScroll} 
+          showsVerticalScrollIndicator={false} 
+          scrollEventThrottle={16}
+        >
+
+          {/* ################################################################################################# 상단 Header 영역 */}
+          {/* {!isOnShrink && (
+            <>
+              
+            </>
+          )} */}
+
+          <SpaceView mt={40} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <TouchableOpacity onPress={() => (navigation.goBack())}>
+              <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} />
+            </TouchableOpacity>
+
+            <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image source={ICON.shop_rpCard} style={styles.iconNoSquareSize(25, 17)} />
+              <SpaceView ml={5} mb={4}><Text style={styles.fontStyle('EB', 16, '#FFFF5D')}>{CommaFormat(me?.mileage_point)}</Text></SpaceView>
+            </SpaceView>
+            
+            <TouchableOpacity onPress={onPressLimitShop}>
+              <Image source={ICON.shop_order} style={styles.iconSquareSize(35)} />
+            </TouchableOpacity>
           </SpaceView>
-          
-          <TouchableOpacity onPress={onPressLimitShop}>
-            <Image source={ICON.shop_order} style={styles.iconSquareSize(35)} />
-          </TouchableOpacity>
-        </SpaceView>
 
-        <SpaceView>
           {/* ################################################################################################# RP Store 정보 */}
           <SpaceView>
             <MileageInfo data={me} />
@@ -236,51 +335,60 @@ export default function MileageShop() {
               <RenderCategory onPressTab={onPressTab} tabList={brandList} />
             </SpaceView>
           </SpaceView>
-        </SpaceView>
 
-        {/* <ListHeaderComponent onPressTab={onPressTab} tabList={brandList} /> */}
+          {/* <ListHeaderComponent onPressTab={onPressTab} tabList={brandList} /> */}
 
-        {/* ################################################################################################# 기프티콘 영역 */}
-        <SpaceView mt={20}>
-          <SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Text style={styles.fontStyle('EB', 20, '#fff')}>기프티콘</Text>
-            <SpaceView viewStyle={{flexDirection: 'row'}}>
-              <TouchableOpacity>
-                <Image source={ICON.orderIcon} style={styles.iconSquareSize(24)} />
-              </TouchableOpacity>
-              <TouchableOpacity style={{marginLeft: 10}}>
-                <Image source={ICON.settingIcon} style={styles.iconSquareSize(24)} />
-              </TouchableOpacity>
+          {/* ################################################################################################# 기프티콘 영역 */}
+          <SpaceView mt={20}>
+            <SpaceView mb={10} viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+              <Text style={styles.fontStyle('EB', 20, '#fff')}>기프티콘</Text>
+              <SpaceView viewStyle={{flexDirection: 'row'}}>
+                <TouchableOpacity>
+                  <Image source={ICON.orderIcon} style={styles.iconSquareSize(24)} />
+                </TouchableOpacity>
+                <TouchableOpacity style={{marginLeft: 10}}>
+                  <Image source={ICON.settingIcon} style={styles.iconSquareSize(24)} />
+                </TouchableOpacity>
+              </SpaceView>
             </SpaceView>
-          </SpaceView>
 
-          <SpaceView /* mb={height-20} */ viewStyle={{height: height-500}}>
             {brandList[currentBrandIndex]?.prod_list?.length > 0 && (
               <>
-                <FlatList
-                  //ref={dataRef}
-                  data={brandList[currentBrandIndex]?.prod_list}
-                  keyExtractor={(item, index) => index.toString()}
-                  //numColumns={1} // 2열로 설정
-                  //contentContainerStyle={{justifyContent: 'space-between'}}
-                  showsHorizontalScrollIndicator={false}
-                  showsVerticalScrollIndicator={false}
-                  renderItem={({ item, index }) => {
+                {brandList[currentBrandIndex]?.prod_list.map((item, index) => {
 
-                    return (
+                  return (
+                    <>
                       <RenderItem type={tab.value} item={item} index={index} callFn={purchaseCallFn} memberData={me} />
-                    )
-                  }}
-                />
+                    </>
+                  )
+                })}
               </>
             )}
+
+            {/* <SpaceView viewStyle={{height: height-500}}>
+              {brandList[currentBrandIndex]?.prod_list?.length > 0 && (
+                <>
+                  <FlatList
+                    //ref={dataRef}
+                    data={brandList[currentBrandIndex]?.prod_list}
+                    keyExtractor={(item, index) => index.toString()}
+                    //numColumns={1} // 2열로 설정
+                    //contentContainerStyle={{justifyContent: 'space-between'}}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({ item, index }) => {
+
+                      return (
+                        <RenderItem type={tab.value} item={item} index={index} callFn={purchaseCallFn} memberData={me} />
+                      )
+                    }}
+                  />
+                </>
+              )}
+            </SpaceView> */}
           </SpaceView>
-        </SpaceView>
-
+        </ScrollView>
       </LinearGradient>
-
-
-
 
       {/* {(me?.respect_grade !== 'DIAMOND' && me?.respect_grade !== 'PLATINUM') ? 
         <SpaceView viewStyle={_styles.floatWrapper}>
@@ -711,6 +819,37 @@ const _styles = StyleSheet.create({
     minHeight: height,
     paddingHorizontal: 10,
   },
+  headerWrap: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    backgroundColor: '#070707',
+    paddingHorizontal: 10,
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  gradeWrap: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+  },
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -982,105 +1121,60 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  brandAllLogoText: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 12,
-    color: '#fff',
+
+
+
+
+  floatWrapper: {
+    width: '100%',
+    backgroundColor: '#390D1D',
+    paddingHorizontal: 15,
+    paddingTop: 20,
   },
+  rpStoreBtn: {
+    backgroundColor: '#FFF',
+    borderRadius: 50,
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+  },
+  respectLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    height: 30,
+    marginTop: 10,
+  },
+  repectGrade: {
+    fontFamily: 'SUITE-Bold',
+    color: '#000000',
+    marginRight: 10,
+    marginLeft: 2,
+  },
+  gradient: (value:any) => {
+    let percent = 0;
 
+    if(value != null && typeof value != 'undefined') {
+      percent = value * 100;
+    };
 
-
-
-
-
-
-floatWrapper: {
-  width: '100%',
-  backgroundColor: '#390D1D',
-  paddingHorizontal: 15,
-  paddingTop: 20,
-},
-rpStoreBtn: {
-  backgroundColor: '#FFF',
-  borderRadius: 50,
-  paddingHorizontal: 12,
-  paddingVertical: 2,
-},
-respectLine: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  height: 30,
-  marginTop: 10,
-},
-repectGrade: {
-  fontFamily: 'SUITE-Bold',
-  color: '#000000',
-  marginRight: 10,
-  marginLeft: 2,
-},
-respectTitle: {
-  fontFamily: 'Pretendard-SemiBold',
-  fontSize: 10,
-  color: '#333B41',
-},
-respectDesc: {
-  fontFamily: 'Pretendard-Light',
-  fontSize: 10,
-  color: '#D5CD9E',
-},
-rpAvailable: {
-  fontFamily: 'Pretendard-SemiBold',
-  fontSize: 10,
-  color: '#333B41',
-  marginTop: 5,
-},
-rpText: {
-  fontFamily: 'Pretendard-SemiBold',
-  fontSize: 17,
-  color: '#32F9E4',
-},
-rpAmtText: {
-  fontFamily: 'Pretendard-Medium',
-  fontSize: 32,
-  color: '#32F9E4',
-},
-gradeTitle: {
-  fontFamily: 'Pretendard-Light',
-  fontSize: 10,
-  color: '#32F9E4',
-  textAlign: 'right',
-},
-gradient: (value:any) => {
-  let percent = 0;
-
-  if(value != null && typeof value != 'undefined') {
-    percent = value * 100;
-  };
-
-  return {
-    position: 'absolute',
-    width: percent + '%',
-    height: 12,
-    zIndex: 1,
-    borderRadius: 20,
-  };
-},
-sliderContainerStyle: {
-  height: 12,
-  borderRadius: 50,
-  backgroundColor: '#FFF',
-},
-sliderThumbStyle: {
-  height: 12,
-  borderRadius: 50,
-  backgroundColor: '#FFF',
-},
-rpDescText: {
-  fontFamily: 'Pretendard-Light',
-  fontSize: 10,
-  color: '#D5CD9E',
-},
+    return {
+      position: 'absolute',
+      width: percent + '%',
+      height: 9,
+      zIndex: 1,
+      borderRadius: 13,
+    };
+  },
+  sliderContainerStyle: {
+    height: 9,
+    borderRadius: 13,
+    backgroundColor: '#707070',
+  },
+  sliderThumbStyle: {
+    height: 9,
+    borderRadius: 13,
+    backgroundColor: '#707070',
+  },
 
 
   brandItemWrap: {

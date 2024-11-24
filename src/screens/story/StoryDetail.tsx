@@ -23,6 +23,7 @@ import ReplyRegiPopup from 'component/story/ReplyRegiPopup';
 import LikeListPopup from 'component/story/LikeListPopup';
 import { useEffect, useRef, useState } from 'react';
 import ReportPopup from 'screens/commonpopup/ReportPopup';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 
 
@@ -154,24 +155,33 @@ export default function StoryDetail(props: Props) {
   /* #########################################################################################################
   ######## 댓글 모달 관련
   ######################################################################################################### */
+
+  // 등급 관리하기 modalizeRef
+  //const reply_modalizeRef = useRef<BottomSheetModal>(null);
+
   const [isReplyVisible, setIsReplyVisible] = React.useState(false);
 
   // 댓글 modalizeRef
   const reply_modalizeRef = React.useRef<Modalize>(null);
 
-  // 댓글 팝업 활성화
+  // 댓글 활성화
   const reply_onOpen = () => {
-    reply_modalizeRef.current?.openModal(storyBoardSeq);
+    reply_modalizeRef.current?.present();
   };
 
-  {/* <ReplyRegiPopup 
-        isVisible={isReplyVisible} 
-        storyBoardSeq={storyData?.board?.story_board_seq}
-        storyReplySeq={selectedReplyData.storyReplySeq}
-        depth={selectedReplyData.depth}
-        isSecret={selectedReplyData.isSecret}
-        callbackFunc={replyRegiCallback} 
-      /> */}
+  // 댓글 닫기
+  const reply_onClose = () => {
+    reply_modalizeRef.current?.dismiss();
+  };
+
+  const reply_onChanges = React.useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+  // 댓글 팝업 활성화
+  /* const reply_onOpen = () => {
+    reply_modalizeRef.current?.openModal(storyBoardSeq);
+  }; */
 
   // 선택된 댓글 데이터(댓글 등록 모달 적용)
   const [selectedReplyData, setSelectedReplyData] = React.useState({
@@ -1190,6 +1200,7 @@ export default function StoryDetail(props: Props) {
         </ScrollView>
       </SpaceView>
 
+
       {/* ##################################################################################
                 댓글 입력 팝업
       ################################################################################## */}
@@ -1202,13 +1213,50 @@ export default function StoryDetail(props: Props) {
         callbackFunc={replyRegiCallback} 
       /> */}
 
-      <ReplyRegiPopup 
+      <BottomSheetModalProvider>
+        <BottomSheetModal
+          ref={reply_modalizeRef}
+          index={0}
+          onChange={reply_onChanges}
+          //snapPoints={snapPoints}
+          maxDynamicContentSize={Platform.OS == 'android' ? height-150 : height-200}
+          enablePanDownToClose={true}
+          handleIndicatorStyle={{
+            backgroundColor: '#808080', // 핸들러 색상 변경
+            width: 37, // 핸들러 너비 변경
+            height: 7, // 핸들러 높이 변경
+            borderRadius: 5, // 둥글게 처리
+          }}
+          handleStyle={{
+            backgroundColor: '#1B1633', // 핸들러 배경 변경
+            borderTopLeftRadius: 30, // 모달 상단 모서리 둥글게
+            borderTopRightRadius: 30,
+            overflow: 'hidden',
+            paddingTop: 20
+          }}
+          backgroundStyle={{backgroundColor: '#1B1633'}}
+          //handleComponent={null}
+        >
+          <ReplyRegiPopup 
+            ref={reply_modalizeRef}
+            replyList={storyData.replyList}
+            //profileOpenFn={profileCardOpen}
+            likeFn={storyLikeProc}
+            replyRegisterFn={replyRegister}
+          />
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
+
+
+      {/* <ReplyRegiPopup 
         ref={reply_modalizeRef}
         replyList={storyData.replyList}
         //profileOpenFn={profileCardOpen}
         likeFn={storyLikeProc}
         replyRegisterFn={replyRegister}
-      />
+      /> */}
+
+      
 
       {/* ##################################################################################
                 좋아요 목록 팝업
@@ -1238,9 +1286,7 @@ export default function StoryDetail(props: Props) {
         modalStyle={[modalStyle.modalContainer, {backgroundColor: '#333B41'}]} >
 
         <SpaceView viewStyle={[modalStyle.modalHeaderContainer, {marginBottom: 0, marginTop: 10}]}>
-          <Text style={_styles.modTitle}>
-            게시글 관리
-          </Text>
+          <Text style={_styles.modTitle}>게시글 관리</Text>
         </SpaceView>
 
         <SpaceView pl={40} pr={40} mb={10}>
@@ -1269,8 +1315,6 @@ export default function StoryDetail(props: Props) {
         //profileOpenFn={profileCardOpen}
         confirmFn={reportProc}
       />
-
-
 
 
     </>
@@ -1459,72 +1503,5 @@ const _styles = StyleSheet.create({
     borderBottomColor: '#8BC1FF',
     transform: [{ rotate: '0deg' }],
   },
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  reportTitle: {
-    fontFamily: 'Pretendard-ExtraBold',
-		fontSize: 20,
-		color: '#D5CD9E',
-		textAlign: 'left',
-  },
-  reportButton: {
-    height: 43,
-    borderRadius: 21.5,
-    backgroundColor: '#363636',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: 20,
-  },
-  reportTextBtn: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  reportText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 17,
-    color: '#E1DFD1',
-    textAlign: 'left',
-  },
-  reportBtnArea: (bg:number, bdc:number) => {
-		return {
-			/* width: '50%',
-			height: 48, */
-			backgroundColor: bg,
-			alignItems: 'center',
-			justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: bdc,
-      borderRadius: 5,
-      paddingVertical: 13,
-		}
-	},
-  reportBtnText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-		  fontSize: 16,
-		  color: isEmptyData(cr) ? cr : '#fff',
-		};
-	},
 
 });
