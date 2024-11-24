@@ -403,7 +403,7 @@ export const Shop = () => {
   // ############################################################################# 스크롤 이동 함수
   const handleScroll = (event) => {
     let contentOffset = event.nativeEvent.contentOffset;
-    if(contentOffset.y > 100) {
+    if(contentOffset.y > 150) {
       setIsOnShrink(true);
     } else {
       setIsOnShrink(false);
@@ -479,34 +479,18 @@ export const Shop = () => {
           </SpaceView>
         </SpaceView>
 
-        {/* ############################################################# 카테고리 탭(쉬링크) */}
-        {isOnShrink && (
-          <SpaceView mt={20} mb={10} viewStyle={_styles.tabWrap}>
-            {categoryList?.map((item, index) => (
-              <>
-                <TouchableOpacity
-                  key={`category-${item.value}-${index}`}
-                  onPress={() => onPressCategory(item)}
-                  style={index > 0 && {marginLeft: 10}}>
-                  <Image source={item.value === selectedCategoryData.value ? item.imgActive : item.imgUnactive} style={styles.iconSquareSize(55)} />
-                  <SpaceView mt={5}><Text style={[styles.fontStyle('B', 12, (item.value === selectedCategoryData.value ? '#46F66F' : '#808080')), {textAlign: 'center'}]}>{item.label}</Text></SpaceView>
-                </TouchableOpacity>
-              </>
-            ))}
-          </SpaceView>
-        )}
-
         <ScrollView 
           bounces={false} 
           showsVerticalScrollIndicator={false} 
-          style={{flexGrow: 1, paddingTop: !isOnShrink ? 0 : 70}} 
+          style={{flexGrow: 1}} 
           onScroll={handleScroll}
           scrollEventThrottle={16}
+          stickyHeaderIndices={[1]}
         >
 
           {/* ################################################################################## 여성 회원 UI */}
           {memberBase?.gender == 'W' && (
-            <SpaceView mt={20} mb={20}>
+            <SpaceView mt={20}>
               <SpaceView viewStyle={_styles.femaleBannerWrap}>
                 <SpaceView ml={13}>
                   <SpaceView mb={10}><Text style={styles.fontStyle('EB', 20, '#fff')}>RP 스토어</Text></SpaceView>
@@ -537,7 +521,7 @@ export const Shop = () => {
 
           {/* ################################################################################## 남성 회원 UI */}
           {memberBase?.gender == 'M' && (
-            <SpaceView mt={20} mb={20} viewStyle={{alignItems: 'center'}}>
+            <SpaceView mt={20} viewStyle={{alignItems: 'center'}}>
               <ImageBackground source={ICON.shop_maleBg} style={[_styles.maleWrap]}>
                 <SpaceView><Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>리워드 플랜</Text></SpaceView>
                 <SpaceView viewStyle={{alignItems: 'center'}}>
@@ -781,24 +765,7 @@ export const Shop = () => {
             </LinearGradient>
           )} */}
 
-          {/* ############################################################# 카테고리 탭 */}
-          {/* {!isOnShrink && (
-            <SpaceView mb={10} viewStyle={_styles.tabWrap}>
-              {categoryList?.map((item, index) => (
-                <>
-                  <TouchableOpacity
-                    key={`category-${item.value}-${index}`}
-                    onPress={() => onPressCategory(item)}
-                    style={index > 0 && {marginLeft: 10}}>
-                    <Image source={item.value === selectedCategoryData.value ? item.imgActive : item.imgUnactive} style={styles.iconSquareSize(55)} />
-                    <SpaceView mt={5}><Text style={[styles.fontStyle('B', 12, (item.value === selectedCategoryData.value ? '#46F66F' : '#808080')), {textAlign: 'center'}]}>{item.label}</Text></SpaceView>
-                  </TouchableOpacity>
-                </>
-              ))}
-            </SpaceView>
-          )} */}
-
-          <SpaceView mb={10} viewStyle={_styles.tabWrap}>
+          <SpaceView pt={20} pb={10} mb={10} viewStyle={_styles.tabWrap}>
             {categoryList?.map((item, index) => (
               <>
                 <TouchableOpacity
@@ -1065,25 +1032,6 @@ const _styles = StyleSheet.create({
     color: '#ABA99A',
     marginBottom: 15,
   },
-  newInvenArea: {
-    position: 'absolute',
-    left: 16,
-    bottom: -20,
-  },
-  newInvenTriangle: {
-    marginTop: 2,
-    marginLeft: 5,
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderLeftWidth: 5,
-    borderRightWidth: 5,
-    borderBottomWidth: 5,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#fff',
-    transform: [{ rotate: '360deg' }],
-  },
 
 
 
@@ -1174,7 +1122,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.5)',
-    paddingBottom: 10,
+    backgroundColor: '#130C1D',
   },
 
 
