@@ -70,6 +70,10 @@ export const Scenario = (props: Props) => {
     setPageGubun('RESULT');
   };
 
+  const selectSuccess = async () => {
+    setPageGubun('RESULT');
+  }
+
   // ####################################################################################################### 초기 실행 함수
   useEffect(() => {
     if(isFocus) {
@@ -90,7 +94,7 @@ export const Scenario = (props: Props) => {
           <CommonHeader title={'커플 시나리오'} /* callbackFunc={nextBtn} */ />
 
           <SpaceView>
-            {pageGubun == 'SELECT' && <Select resultCallbackFn={move} />}
+            {pageGubun == 'SELECT' && <Select resultCallbackFn={selectSuccess} />}
             {pageGubun == 'RESULT' && <Result resultCallbackFn={move} />}
           </SpaceView>
 

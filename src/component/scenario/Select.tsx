@@ -40,6 +40,10 @@ const Select = React.memo(({ resultCallbackFn }) => {
   const [ccsTitleCd, setCcsTitleCd] = useState(''); // 시나리오 제목 코드
   const [ccsList, setCcsList] = useState([]); // 시나리오 목록
 
+  const [matchMemberSeq, setMatchMemberSeq] = useState(''); // 매칭 멤버 일련번호
+  const [matchMemberNickname, setMatchMemberNickname] = useState(''); // 매칭 멤버 닉네임
+  const [matchMemberMstImgPath, setMatchMemberMstImgPath] = useState(''); // 매칭 멤버 대표 사진
+
   const [selectCode, setSelectCode] = useState('');
   const [selectCodeList, setSelectCodeList] = useState([]);
 
@@ -97,6 +101,10 @@ const Select = React.memo(({ resultCallbackFn }) => {
           setCcsTitleCd(ccsData?.ccs_title_cd);
           setCcsList(ccsData?.list);
 
+          setMatchMemberSeq(ccsData?.match_member_seq);
+          setMatchMemberNickname(ccsData?.nickname);
+          setMatchMemberMstImgPath(ccsData?.mst_img_path);
+
         } else {
           show({ content: '오류입니다. 관리자에게 문의해주세요.' });
           return false;
@@ -131,7 +139,7 @@ const Select = React.memo(({ resultCallbackFn }) => {
         <SpaceView pl={13} pr={13}>
           <SpaceView pt={50} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start'}}>
             <SpaceView viewStyle={_styles.imgWrap}>
-              <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.imgStyle} />
+              <Image source={findSourcePath(matchMemberMstImgPath)} style={_styles.imgStyle} />
               <BlurView 
                 style={_styles.blurArea}
                 blurType='light'
@@ -139,7 +147,7 @@ const Select = React.memo(({ resultCallbackFn }) => {
               />
             </SpaceView>
             <SpaceView ml={10} mt={13}>
-              <SpaceView><Text style={styles.fontStyle('H', 30, '#fff')}>Nickname</Text></SpaceView>
+              <SpaceView><Text style={styles.fontStyle('H', 30, '#fff')}>{matchMemberNickname}</Text></SpaceView>
               <SpaceView mt={8} viewStyle={layoutStyle.rowStart}>
                 <SpaceView><Text style={styles.fontStyle('SB', 9, '#8BAAFF')}>예상 친밀도</Text></SpaceView>
                 <SpaceView ml={10} viewStyle={{overflow: 'hidden', width: 80}}>
@@ -182,6 +190,7 @@ const Select = React.memo(({ resultCallbackFn }) => {
             {ccsList.length > 0 && (
               <>
                 {ccsList[selectCodeList.length]?.ans_list.map((item, index) => {
+                  const ccsCd = item?.ccs_cd;
                   const ccsAnsCd = item?.ccs_ans_cd;
 
                   return (
@@ -190,17 +199,28 @@ const Select = React.memo(({ resultCallbackFn }) => {
                       activeOpacity={0.7}
                       onPress={() => {
       
-                        if(selectCode == item.code) {
-                          setSelectCodeList((prevItems) => [...prevItems, selectCode]);
-                          move();
+                        if(selectCode == ccsAnsCd) {
+                          console.log('111111111111111111111111111111111 ::::: ', ccsCd);
+                          //setSelectCodeList((prevItems) => [...prevItems, selectCode]);
+                          setSelectCodeList((prevItems) => [...prevItems, {'ccs_cd': ccsCd, 'ccs_ans_cd': ccsAnsCd}]);
+                          //move();
+
+                          console.log('ccsList.length ::::: ' , ccsList.length);
+                          console.log('selectCodeList.length ::::: ' , selectCodeList.length);
+
+                          if(ccsList.length-1 == selectCodeList.length) {
+                            move();
+                          }
+
                         } else {
-                          answerSelect(item.code);
+                          console.log('222222222222222222222222222222222 ::::: ', ccsAnsCd);
+                          answerSelect(ccsAnsCd);
                         }
                         
                       }}
                     >
                       <Text style={styles.fontStyle('SB', 16, '#fff')}>{item.ccs_ans_contents}</Text>
-                      {isEmptyData(selectCode) && selectCode == item.code && ( <SpeechBubble />)}
+                      {isEmptyData(selectCode) && selectCode == ccsAnsCd && ( <SpeechBubble />)}
                     </TouchableOpacity>
                   );
                 })}

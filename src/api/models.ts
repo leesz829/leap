@@ -123,6 +123,7 @@ import {
   GET_MEMBER_ADD_INFO,
   SAVE_MEMBER_INTERVIEW,
   GET_CCS_RANDOM_SCNR_TMPLT_LIST,
+  INSERT_CCS_MEMBER_ANS,
 } from './route';
 
 /* ========================================================================================================
@@ -1247,4 +1248,11 @@ export async function get_random_scnr_tmplt_list(body: {
   
 }) {
   return send(GET_CCS_RANDOM_SCNR_TMPLT_LIST, 'POST', body, true, false);
+};
+
+// 채팅방 나가기를 한다.
+export async function insert_ccs_member_ans(body: {
+  
+}) {
+  return send(INSERT_CCS_MEMBER_ANS, 'POST', body, true, false);
 };

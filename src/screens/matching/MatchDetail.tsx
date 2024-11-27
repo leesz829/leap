@@ -33,6 +33,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { SUCCESS } from 'constants/reusltcode';
 import ReportPopup from 'screens/commonpopup/ReportPopup';
 import MemberMark from 'component/common/MemberMark';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -116,6 +117,8 @@ export default function MatchDetail(props: Props) {
   };
 
   const [isModHeader, setIsModHeader] = useState(false); // 헤더 변경 여부 구분
+
+  const [isMyHomeNoti, setIsMyHomeNoti] = useState(false); // 마이홈 노티피케이션 노출 여부
 
   // ######################################################################################## 관심 및 찐심 보내기 관련
   const [message, setMessage] = useState('');
@@ -596,36 +599,6 @@ export default function MatchDetail(props: Props) {
 
   };
 
-
-  // ################################################################ 초기 실행 함수
-  useEffect(() => {
-    if(isFocus) {
-      checkUserReport();
-      setIsEmpty(false);
-      // 데일리 매칭 정보 조회
-      getMatchInfo();
-      // 채팅 정보 조회
-      chatRoomInfo();
-    }
-  }, [isFocus]);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      navigation.addListener('beforeRemove', (e) => {
-        if(e.data.action.type == 'POP' && type == 'PROFILE_CARD_ITEM') {
-          show({ 
-            content: '선택을 안하시는 경우 아이템이 소멸됩니다.\n그래도 나가시겠습니까?',
-            cancelCallback: function() {},
-            confirmCallback: function() {
-              goMove();
-            }
-          });
-          e.preventDefault();
-        }
-      });
-    }, [navigation])
-  );
-
   const goMove = async () => {
     navigation.canGoBack()
       ? navigation.goBack()
@@ -665,8 +638,6 @@ export default function MatchDetail(props: Props) {
   // ############################################################ 채팅방 이동
   const goChatDetail = async () => {
     const chatInfoData = chatData ? chatData : data.match_member_info;
-
-    console.log('mega :::: ' , memberBase?.royal_pass_has_amt);
 
     if(data.match_member_info?.chat_open_cnt > 0) {
       navigation.navigate(STACK.COMMON, { 
@@ -710,6 +681,58 @@ export default function MatchDetail(props: Props) {
     }
   }
 
+  // ############################################################ 마이홈 이동
+  const goMyHome = async () => {
+    navigation.navigate(STACK.COMMON, { screen: 'MyHome' });
+  };
+
+  // ############################################################ 마이홈 노티피케이션 노출 설정
+  const myHomeNotiSet = async () => {
+    let nowDt = formatNowDate().substring(0, 8);
+    const detailAccessRecentDate = await AsyncStorage.getItem('DETAIL_ACCESS_RECENT_DATE');
+
+    if(isEmptyData(detailAccessRecentDate) && Number(detailAccessRecentDate) >= Number(nowDt)) {
+      console.log('1111');
+      setIsMyHomeNoti(false);
+    } else {
+      console.log('2222');
+      setIsMyHomeNoti(true);
+      await AsyncStorage.setItem('DETAIL_ACCESS_RECENT_DATE', formatNowDate().substring(0, 8));
+    }
+  };
+
+
+  // ################################################################ 초기 실행 함수
+  useEffect(() => {
+    if(isFocus) {
+      checkUserReport();
+      setIsEmpty(false);
+      // 데일리 매칭 정보 조회
+      getMatchInfo();
+      // 채팅 정보 조회
+      chatRoomInfo();
+
+      myHomeNotiSet();
+    }
+  }, [isFocus]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      navigation.addListener('beforeRemove', (e) => {
+        if(e.data.action.type == 'POP' && type == 'PROFILE_CARD_ITEM') {
+          show({ 
+            content: '선택을 안하시는 경우 아이템이 소멸됩니다.\n그래도 나가시겠습니까?',
+            cancelCallback: function() {},
+            confirmCallback: function() {
+              goMove();
+            }
+          });
+          e.preventDefault();
+        }
+      });
+    }, [navigation])
+  );
+
   return (
   <>
     <SpaceView viewStyle={_styles.wrap}>
@@ -734,7 +757,7 @@ export default function MatchDetail(props: Props) {
 
       {isOnShrink && (
         <SpaceView viewStyle={_styles.headerWrap}>
-          <SpaceView viewStyle={layoutStyle.rowBetween}>
+          <SpaceView viewStyle={[layoutStyle.rowBetween, {zIndex: 1}]}>
             <TouchableOpacity
               onPress={() => { navigation.goBack(); }}
               hitSlop={commonStyle.hipSlop20}
@@ -742,15 +765,34 @@ export default function MatchDetail(props: Props) {
               <Image source={ICON.backBtnType01} style={styles.iconSquareSize(24)} resizeMode={'contain'} />
             </TouchableOpacity>
 
-            <SpaceView><Text style={styles.fontStyle('EB', 20, '#fff')}>{data?.match_member_info?.nickname}</Text></SpaceView>
+            <SpaceView viewStyle={{position: 'absolute', left: 0, right: 0, alignItems: 'center'}}>
+              <Text style={styles.fontStyle('EB', 18, '#fff')}>{data?.match_member_info?.nickname}</Text>
+            </SpaceView>
 
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
               <TouchableOpacity style={{marginRight: 10}} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20}>
                 <Image source={ICON.chatIcon} style={styles.iconSquareSize(24)} />
               </TouchableOpacity>
-              {/* <TouchableOpacity style={{marginRight: 10}} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20}>
-                <Image source={ICON.homeIcon} style={styles.iconSquareSize(24)} />
-              </TouchableOpacity> */}
+              <SpaceView mr={10}>
+                <TouchableOpacity onPress={() => { goMyHome(); }} hitSlop={commonStyle.hipSlop20}>
+                  <Image source={ICON.homeIcon} style={styles.iconSquareSize(24)} />
+                </TouchableOpacity>
+
+                {/* 마이홈 노티피케이션 노출 영역 */}
+                {isMyHomeNoti && (
+                  <SpaceView viewStyle={{position: 'absolute', top: 35, right: -11, alignItems: 'flex-end'}}>
+                    <LinearGradient
+                      colors={['#691CDE', '#8080E2']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={[_styles.phoneMaskingMsgWrap, {width: 150}]}
+                    >
+                      <Text style={styles.fontStyle('SB', 10, '#fff')}>친구의 마이홈도 방문할 수 있어요.</Text>
+                    </LinearGradient>
+                    <View style={_styles.triangle02} />
+                  </SpaceView>
+                )}
+              </SpaceView>
               <TouchableOpacity onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
                 <Image source={ICON.declaration} style={styles.iconSquareSize(24)} />
               </TouchableOpacity>
@@ -934,7 +976,7 @@ export default function MatchDetail(props: Props) {
       <ScrollView style={{ flex: 1, marginBottom: 40 }} onScroll={handleScroll} showsVerticalScrollIndicator={false} scrollEventThrottle={16}>
 
         {/* ############################################################################################### 상단 Header */}
-        <SpaceView mt={35} mb={0} viewStyle={[{height: 50}]}>
+        <SpaceView mt={35} mb={0} viewStyle={[{height: 50, zIndex:1}]}>
           <SpaceView viewStyle={layoutStyle.rowBetween}>
             <TouchableOpacity
               onPress={() => { navigation.goBack(); }}
@@ -947,9 +989,26 @@ export default function MatchDetail(props: Props) {
               <TouchableOpacity style={{marginRight: 10}} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20} >
                 <Image source={ICON.chatIcon} style={styles.iconSquareSize(35)} />
               </TouchableOpacity>
-              {/* <TouchableOpacity style={{marginRight: 10}} onPress={() => { goChatDetail(); }} hitSlop={commonStyle.hipSlop20} >
-                <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
-              </TouchableOpacity> */}
+              <SpaceView mr={10}>
+                <TouchableOpacity onPress={() => { goMyHome(); }} hitSlop={commonStyle.hipSlop20} >
+                  <Image source={ICON.homeIcon} style={styles.iconSquareSize(35)} />
+                </TouchableOpacity>
+
+                {/* 마이홈 노티피케이션 노출 영역 */}
+                {isMyHomeNoti && (
+                  <SpaceView viewStyle={{position: 'absolute', top: 45, right: -5, alignItems: 'flex-end'}}>
+                    <LinearGradient
+                      colors={['#691CDE', '#8080E2']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={[_styles.phoneMaskingMsgWrap, {width: 150}]}
+                    >
+                      <Text style={styles.fontStyle('SB', 10, '#fff')}>친구의 마이홈도 방문할 수 있어요.</Text>
+                    </LinearGradient>
+                    <View style={_styles.triangle02} />
+                  </SpaceView>
+                )}
+              </SpaceView>
               <TouchableOpacity onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
                 <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
               </TouchableOpacity>
@@ -1366,20 +1425,6 @@ const _styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 10,
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   openModalWrap: {
     backgroundColor: '#fff',
     paddingHorizontal: 20,
@@ -1432,6 +1477,23 @@ const _styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderBottomColor: '#416DFF',
     transform: [{ rotate: '180deg' }],
+  },
+  triangle02: {
+    position: 'absolute',
+    top: -6,
+    right: 0,
+    marginTop: 0,
+    marginRight: 15,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderLeftWidth: 8,
+    borderRightWidth: 8,
+    borderBottomWidth: 8,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#8080E2',
+    transform: [{ rotate: '360deg' }],
   },
 
 

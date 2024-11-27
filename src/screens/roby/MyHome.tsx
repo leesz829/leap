@@ -59,7 +59,7 @@ export const MyHome = (props : Props) => {
         <ScrollView 
 					bounces={false} 
 					showsVerticalScrollIndicator={false} 
-					style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}
+					style={{flexGrow: 1, /* paddingTop: 15, marginTop: 30 */}}
 				>
 					<LinearGradient
 						colors={['rgba(128, 128, 226, 0.0)', 'rgba(116, 116, 206, 1)', 'rgba(116, 116, 206, 0.9)', '#16112A']}

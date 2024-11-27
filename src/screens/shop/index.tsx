@@ -54,9 +54,7 @@ export const Shop = () => {
   const isFocus = useIsFocused();
   const { show } = usePopup(); // 공통 팝업
   const [isVisible, setIsVisible] = useState(false);
-
-  const [isOnShrink, setIsOnShrink] = React.useState(false); // 쉬링크 상태 변수
-
+  
   const [productModalVisible, setProductModalVisible] = useState(false); // 상품 모달 VIsible
   const [targetItem, setTargetItem] = useState(null); // 타겟 아이템
   const [selectedCategoryData, setSelectedCategoryData] = useState(categoryList[0]); // 선택된 카테고리
@@ -402,12 +400,12 @@ export const Shop = () => {
 
   // ############################################################################# 스크롤 이동 함수
   const handleScroll = (event) => {
-    let contentOffset = event.nativeEvent.contentOffset;
+    /* let contentOffset = event.nativeEvent.contentOffset;
     if(contentOffset.y > 150) {
       setIsOnShrink(true);
     } else {
       setIsOnShrink(false);
-    }
+    } */
   };
 
   // ############################################################################# 초기 실행 실행

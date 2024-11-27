@@ -184,3 +184,4 @@ export const CHAT_EXIT = '/chat/updateChatRoomStatus';
  * 커플 시나리오
  */
 export const GET_CCS_RANDOM_SCNR_TMPLT_LIST = '/ccs/selectCCSRandomScnrTmpltList';
+export const INSERT_CCS_MEMBER_ANS = '/ccs/insertCcsMemberAns';
