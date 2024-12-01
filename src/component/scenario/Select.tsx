@@ -63,7 +63,7 @@ const Select = React.memo(({ resultCallbackFn }) => {
   };
 
   const move = async () => {
-    resultCallbackFn();
+    resultCallbackFn(selectCodeList);
   };
 
   const getTextForNumber = (num:number) => {

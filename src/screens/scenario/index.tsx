@@ -66,11 +66,12 @@ export const Scenario = (props: Props) => {
     setSelectCode(code);
   }
 
-  const move = async () => {
+  const move = async (codeList:any) => {
     setPageGubun('RESULT');
   };
 
-  const selectSuccess = async () => {
+  const selectSuccess = async (codeList:any) => {
+    console.log('codeList ::::: ' , codeList);
     setPageGubun('RESULT');
   }
 

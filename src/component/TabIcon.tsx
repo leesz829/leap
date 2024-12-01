@@ -7,6 +7,9 @@ import { CommaFormat, isEmptyData } from 'utils/functions';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue, withSpring, withDelay, Easing, withRepeat, withSequence } from 'react-native-reanimated';
 import SpaceView from './SpaceView';
 import { styles } from 'assets/styles/Styles';
+import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
@@ -64,34 +67,50 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       if(masterProfileImg.length > 0) {
         return (
           <>
-            <SpaceView viewStyle={_style.navItemWrap}>
-              <Image style={_style.imgSize(isFocused)} source={findSourcePath(masterProfileImg[0].img_file_path)} />
+            <SpaceView viewStyle={_styles.navItemWrap}>
+              <Image style={_styles.imgSize(isFocused)} source={findSourcePath(masterProfileImg[0].img_file_path)} />
               <SpaceView mt={5}>
                 <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>마이홈</Text>
               </SpaceView>
 
               {isEmptyData(memberBase?.new_board_cnt) && memberBase?.new_board_cnt > 0 && (
-                <View style={_style.newIcon} />
+                <View style={_styles.newIcon} />
               )}
             </SpaceView>
           </>
         )
       } else {
         if (isFocused) {
-          return <Image style={[_style.imgSize(isFocused)]} source={IMAGE.logoLeapTmon} resizeMode={'cover'} />;
+          return <Image style={[_styles.imgSize(isFocused)]} source={IMAGE.logoLeapTmon} resizeMode={'cover'} />;
         } else {
-          return <Image style={[_style.imgSize(isFocused)]} source={IMAGE.logoLeapTmon} resizeMode={'cover'} />;
+          return <Image style={[_styles.imgSize(isFocused)]} source={IMAGE.logoLeapTmon} resizeMode={'cover'} />;
         }
       };
     }
     case 'Contents': {
+
+      
+
+
       return (
         <>
-          <SpaceView viewStyle={_style.navItemWrap}>
+          <SpaceView viewStyle={_styles.navItemWrap}>
             <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navContentsOn : ICON.navContents} />
             <SpaceView mt={5}>
               <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>친구찾기</Text>
             </SpaceView>
+
+            {/* <SpaceView viewStyle={_styles.bubbleContainer}>
+              <LinearGradient
+                colors={['#8BC1FF', '#416DFF']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0.7, y: 0 }}
+                style={_styles.bubble}
+              >
+                <Text style={styles.fontStyle('SB', 9, '#fff')}>새로운 친구를 만날 수 있는 컨텐츠들이 준비되어 있어요.</Text>
+                <SpaceView viewStyle={_styles.triangle} />
+              </LinearGradient>
+            </SpaceView> */}
           </SpaceView>
         </>
       )
@@ -99,7 +118,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
     case 'Story': {
       return (
         <>
-          <SpaceView viewStyle={_style.navItemWrap}>
+          <SpaceView viewStyle={_styles.navItemWrap}>
             <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navStoryOn : ICON.navStory} />
             <SpaceView mt={5}>
               <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>스토리</Text>
@@ -111,7 +130,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
     case 'Storage': {
       return (
         <>
-          <SpaceView viewStyle={_style.navItemWrap}>
+          <SpaceView viewStyle={_styles.navItemWrap}>
             <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navStorageOn : ICON.navStorage} />
             <SpaceView mt={5}>
               <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>보관함</Text>
@@ -193,7 +212,7 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
     case 'Cashshop': {
       return (
         <>
-          <SpaceView viewStyle={_style.navItemWrap}>
+          <SpaceView viewStyle={_styles.navItemWrap}>
             <Image style={styles.iconSquareSize(24)} source={isFocused ? ICON.navShopOn : ICON.navShop} />
             <SpaceView mt={5}>
               <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>스토어</Text>
@@ -219,13 +238,15 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
       )
     }
     default:
-      return <Image style={_style.iconSize} source={IMAGE.logoLeapTmon} />;
+      return <Image style={_styles.iconSize} source={IMAGE.logoLeapTmon} />;
   }
 };
 
 export default TabIcon;
 
-const _style = StyleSheet.create({
+
+
+const _styles = StyleSheet.create({
   iconSize: {
     width: 28,
     height: 28,
@@ -266,10 +287,8 @@ const _style = StyleSheet.create({
     minWidth: 99,
     paddingVertical: 3,
     paddingLeft: Platform.OS == 'android' ?  0 : 5,
-    
   },
-  
-  triangle: {
+  /* triangle: {
     marginTop: -1,
     marginRight: 40,
     width: 0,
@@ -282,7 +301,7 @@ const _style = StyleSheet.create({
     borderRightColor: 'transparent',
     borderBottomColor: '#7F67FF',
     transform: [{ rotate: '180deg' }],
-  },
+  }, */
   newIcon: {
 		position: 'absolute',
 		top: -3,
@@ -325,49 +344,33 @@ const _style = StyleSheet.create({
   navItemWrap: {
     alignItems: 'center',
   },
-
-
-
-
-
-
-
-  /* countText: {
-    backgroundColor: '#FFF',
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 10,
-    color: '#FFDD00',
-    borderRadius: 8,
-    width: 25,
-    textAlign: 'center',
-    paddingVertical: 1,
-    overflow: 'hidden',
+  bubbleContainer: {
+    position: 'absolute',
+    top: -40,
+    left: -28,
+    width: 230,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  newText: {
-    backgroundColor: '#FF7E8C',
-    fontFamily: 'Pretendard-ExtraBold',
-    fontSize: 10,
-    color: '#fff',
-    borderRadius: 9,
-    //paddingHorizontal: 6,
-    paddingVertical: 1,
-    overflow: 'hidden',
-    width: 34,
-    textAlign: 'center',
+  bubble: {
+    paddingVertical: 7,
+    paddingHorizontal: 7,
+    borderRadius: 50, // 말풍선의 둥근 모서리
+    position: 'relative',
   },
-  limitText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 9,
-    color: '#FFF',
-    textAlign: 'center',
-    paddingHorizontal: 2,
+  triangle: {
+    position: 'absolute',
+    bottom: -8, // 삼각형을 아래로 위치 조정
+    left: 20,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 13,
+    borderRightWidth: 13  ,
+    borderTopWidth: 9,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: '#75A8FF', // 말풍선 배경색과 동일하게 설정
   },
-  storageText: {
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 9,
-    color: '#FFF',
-    textAlign: 'center',
-  }, */
-
 
 });
