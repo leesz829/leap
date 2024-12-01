@@ -6,7 +6,6 @@ import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { RouteProp, useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
 import SpaceView from 'component/SpaceView';
 import { CommonText } from 'component/CommonText';
-import { ICON } from 'utils/imageUtils';
 import { Color } from 'assets/styles/Color';
 import { usePopup } from 'Context';
 import { CommonLoading } from 'component/CommonLoading';
@@ -15,14 +14,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useUserInfo } from 'hooks/useUserInfo';
 import { TextInput } from 'react-native-gesture-handler';
 import { CommonBtn } from 'component/CommonBtn';
-import { commonStyle, layoutStyle, modalStyle } from 'assets/styles/Styles';
+import { styles, commonStyle, layoutStyle, modalStyle } from 'assets/styles/Styles';
 import { CommaFormat, isEmptyData, formatNowDate } from 'utils/functions';
 import { update_chat_exit, report_matched_user, get_chat_room_list, get_common_code_list } from 'api/models';
 import { SUCCESS } from 'constants/reusltcode';
 import { Modalize } from 'react-native-modalize';
 import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
-
-
+import { ICON, findSourcePath } from 'utils/imageUtils';
+import { useProfileImg } from 'hooks/useProfileImg';
 
 
 /* ################################################################################################################
@@ -55,7 +54,12 @@ export const ChatDetail = (props: Props) => {
   const [reportData, setReportData] = useState<any>({
     report_code_list: [],
   }); // 신고 회원 데이터
+
+  const mbrProfileImgList = useProfileImg(); // 회원 프로필 이미지 목록
     
+  const defaultPlaceholder = '메세지 보내기';
+	const [placeholder, setPlaceholder] = React.useState(defaultPlaceholder);
+
   const nowDt = formatNowDate().substring(8, 12).replace(/(\d{2})(\d{2})/, '$1:$2'); // 현재 시간
 
   const scrollViewRef = useRef<ScrollView | null>(null);
@@ -317,32 +321,45 @@ export const ChatDetail = (props: Props) => {
 		}
 	};
 
+  const [inputHeight, setInputHeight] = useState(0);
+
+  const handleContentSizeChange = (event) => {
+    const { contentSize } = event.nativeEvent;
+    setInputHeight(contentSize.height);
+  };
+
   return (
     <>
-      {/* <CommonHeader title={'채팅'} type={'CHAT_DETAIL'} callbackFunc={report_onOpen} /> */}
-
-      <LinearGradient
-        colors={['#3D4348', '#1A1E1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={_styles.container}
-      >
-
-        <TouchableOpacity
+      <CommonHeader title={'채팅'} type={'CHAT_DETAIL'} callbackFunc={report_onOpen} />
+      <SpaceView viewStyle={_styles.container}>
+        {/* <TouchableOpacity
           style={[layoutStyle.alignEnd, {marginBottom: 20}]}
           onPress={() => { exitChat(); }}
         >
           <SpaceView viewStyle={_styles.exitBtn}>
             <Text style={_styles.exitBtnText}>나가기</Text>
           </SpaceView>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <ScrollView ref={scrollViewRef} style={{marginBottom: 200}}>
+        <ScrollView
+          ref={scrollViewRef}
+          showsHorizontalScrollIndicator={false}
+          horizontal={false}
+        >
           {messagesList.map((message, index) => {
             const isSendUser = message?.chat_member_seq == memberBase?.member_seq || message?.member_seq == memberBase?.member_seq;
             
+            // 이전 메시지 조회 및 비교
+            const previousMessage = messagesList[index - 1];
+            const isPrevCompareMsg = !previousMessage || previousMessage.chat_member_seq !== message.chat_member_seq;
+
             return (
-              <SpaceView key={index} viewStyle={_styles.msgListArea(isSendUser)}>
+              <SpaceView key={index} viewStyle={_styles.msgListArea(isSendUser, isPrevCompareMsg)}>
+                {!isSendUser &&
+                  <SpaceView viewStyle={{width: 35, height: 35, borderRadius: 100, overflow: 'hidden', marginRight: 10}}>
+                    <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(35)} resizeMode={'cover'} />
+                  </SpaceView>
+                }
                 <SpaceView viewStyle={_styles.msgListBox(isSendUser)}>
                   <Text style={_styles.msgListText(isSendUser)}>{message?.message}</Text>
                 </SpaceView>
@@ -352,67 +369,84 @@ export const ChatDetail = (props: Props) => {
           })}
 
           {chatData[0]?.status == 'CHAT_UNACTIVE' &&
-            <SpaceView mt={30}>
+            <SpaceView viewStyle={_styles.exitCont} mt={30}>
               <Text style={_styles.exitNotiText}>상대방이 퇴장하였습니다.</Text>
             </SpaceView>
           }
+        </ScrollView>
 
-          {Platform.OS == 'ios' ? (
-            <>
-              <InputAccessoryView>
-                <SpaceView>
-                  <TextInput
-                    ref={inputRef}
-                    value={messageText}
-                    onChangeText={(text) => setMessageText(text)}
-                    multiline={true}
-                    textAlignVertical={'top'}
-                    autoCapitalize={'none'}
-                    style={_styles.regiContainer}
-                    placeholder={'메세지를 입력해 주세요.'}
-                    placeholderTextColor={'#c7c7c7'}
-                    editable={chatData[0]?.status == 'CHAT_UNACTIVE' ? false : true}
-                    secureTextEntry={false}
-                    maxLength={150}
-                    autoFocus={true}
-                  />
-                  <TouchableOpacity
-                    onPress={sendMessage} disabled={messageText == ''}
-                    style={_styles.regiBtn}
-                    hitSlop={commonStyle.hipSlop30}>
-                    <Text style={_styles.regiText}>등록</Text>
-                  </TouchableOpacity>
-                </SpaceView>
-              </InputAccessoryView>
-            </>
-          ) : (
-            <SpaceView>
+        {Platform.OS == 'ios' ? (
+          <InputAccessoryView>
+            <SpaceView viewStyle={_styles.regiContainer}>
+              <SpaceView viewStyle={_styles.profileBox(inputHeight)}>
+                <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(35)} resizeMode={'cover'} />
+              </SpaceView>
+              <SpaceView viewStyle={_styles.regiBox}>
+                <TextInput
+                  ref={inputRef}
+                  value={messageText}
+                  onChangeText={(text) => setMessageText(text)}
+                  multiline={true}
+                  autoCapitalize={'none'}
+                  style={_styles.regiTextInput}
+                  placeholder={placeholder}
+                  placeholderTextColor={'#606060'}
+                  editable={chatData[0]?.status == 'CHAT_UNACTIVE' ? false : true}
+                  secureTextEntry={false}
+                  maxLength={150}
+                  autoFocus={true}
+                  onFocus={() => setPlaceholder('')}
+                  onBlur={() => {
+                    messageText == '' && setPlaceholder(defaultPlaceholder);
+                  }}
+                  onContentSizeChange={handleContentSizeChange}
+                />
+                <TouchableOpacity
+                  onPress={sendMessage}
+                  style={_styles.regiBtn(inputHeight, messageText)}
+                  disabled={messageText == '' ? true : false}
+                >
+                  <Text style={_styles.regiText}>전송</Text>
+                </TouchableOpacity>
+              </SpaceView>
+            </SpaceView>
+          </InputAccessoryView>
+        ) : (
+          <SpaceView viewStyle={_styles.regiContainer}>
+            <SpaceView viewStyle={_styles.profileBox(inputHeight)}>
+              <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={styles.iconSquareSize(35)} resizeMode={'cover'} />
+            </SpaceView>
+            <SpaceView viewStyle={_styles.regiBox}>
               <TextInput
                 ref={inputRef}
                 value={messageText}
                 onChangeText={(text) => setMessageText(text)}
                 multiline={true}
-                textAlignVertical={'top'}
                 autoCapitalize={'none'}
-                style={_styles.regiContainer}
-                placeholder={'메세지를 입력해 주세요.'}
-                placeholderTextColor={'#c7c7c7'}
+                style={_styles.regiTextInput}
+                placeholder={placeholder}
+                placeholderTextColor={'#606060'}
                 editable={chatData[0]?.status == 'CHAT_UNACTIVE' ? false : true}
                 secureTextEntry={false}
                 maxLength={150}
                 autoFocus={true}
+                onFocus={() => setPlaceholder('')}
+                onBlur={() => {
+                  messageText == '' && setPlaceholder(defaultPlaceholder);
+                }}
+                onContentSizeChange={handleContentSizeChange}
               />
               <TouchableOpacity
                 onPress={sendMessage}
-                style={_styles.regiBtn}
-                hitSlop={commonStyle.hipSlop30}>
-                <Text style={_styles.regiText}>등록</Text>
+                style={_styles.regiBtn(inputHeight, messageText)}
+                disabled={messageText == '' ? true : false}
+              >
+                <Text style={_styles.regiText}>전송</Text>
               </TouchableOpacity>
             </SpaceView>
-          )}
-        </ScrollView>
-      </LinearGradient>
-
+          </SpaceView>
+        )}
+      </SpaceView>
 
       {/* ##################################################################################
                     사용자 신고하기 팝업
@@ -469,10 +503,10 @@ export const ChatDetail = (props: Props) => {
 
 const _styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
-    paddingLeft: 16,
-    paddingRight: 16,
-    minHeight: height,
+    flex: 1,
+    backgroundColor: '#16112A',
+    paddingHorizontal: 16,
+    paddingTop: 20,
   },
   exitBtn: {
     width: 50,
@@ -487,61 +521,104 @@ const _styles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
     color: 'yellow',
   },
-  msgListArea: (isSendUser:boolean) => {
+  msgListArea: (isSendUser:boolean, isPrevCompareMsg:boolean) => {
 		return {
       alignSelf: isSendUser ? 'flex-end' : 'flex-start',
-      marginBottom: 15,
+      marginBottom: 10,
+      marginTop: isPrevCompareMsg ? 30 : 0,
       flexDirection: isSendUser ? 'row-reverse' : 'row',
+      justifyContent: 'center',
 		};
 	},
   msgListTime: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 12,
-    color: '#ddd',
+    fontFamily: 'SUITE-Bold',
+    fontSize: 10,
+    color: '#FFF',
     marginHorizontal: 8,
     alignSelf: 'flex-end', 
   },
   msgListBox: (isSendUser:boolean) => {
 		return {
-		  backgroundColor: isSendUser ? 'yellow' : 'skyblue',
-      borderRadius: 10,
+		  backgroundColor: isSendUser ? '#1F5AFB' : '#FFFFFF',
+      borderTopLeftRadius: isSendUser ? 50 : 10,
+      borderBottomLeftRadius: isSendUser ? 50 : 10,
+      borderTopRightRadius: isSendUser ? 10 : 50,
+      borderBottomRightRadius: isSendUser ? 10 : 50,
       paddingVertical: 8,
       paddingHorizontal: 15,
-      maxWidth: 200,
+      maxWidth: 300,
 		};
 	},
   msgListText: (isSendUser:boolean) => {
 		return {
-		  fontFamily: 'Pretendard-Bold',
-		  fontSize: 16,
-		  color: isSendUser ? 'blue' : 'black',
+		  fontFamily: 'SUITE-Bold',
+		  fontSize: 12,
+		  color: isSendUser ? '#FFFFFF' : '#383838',
 		};
 	},
   regiContainer: {
-    height: 60,
-    paddingRight: 30,
-    backgroundColor: '#5A707F',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    fontFamily: 'Pretendard-Medium',
-    fontSize: 13,
-    color: '#000',
-    borderRadius: 8,
-    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  regiBtn: {
-    position: 'absolute',
-    bottom: 3,
-    right: 13,
+  profileBox: (inputHeight:number) => {
+    return {
+      width: 35,
+      height: 35,
+      borderRadius: 150,
+      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: inputHeight >= 35 ? 'flex-end' : 'center',
+    }
+  },
+  regiBox: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#606060',
+    borderRadius: 20,
+    marginLeft: 10,
+  },
+  regiTextInput: {
+    paddingHorizontal: 15,
+    paddingVertical: 3,
+    fontFamily: 'SUITE-Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
+    width: '60%',
+  },
+  regiBtn: (inputHeight:number, messageText:string) => {
+    return {
+      alignSelf: inputHeight >= 35 ? 'flex-end' : 'center',
+      marginRight: 5,
+      marginBottom: inputHeight >= 35 ? 5 : 0,
+      backgroundColor: messageText == '' ? '#808080' : '#46F66F',
+      borderRadius: 50,
+      paddingVertical: inputHeight <= 35
+      ? (messageText == '' ? 3 : 7)
+      : 7,
+      paddingHorizontal: 15,
+    }
   },
   regiText: {
-    fontFamily: 'Pretendard-Bold',
-    color: '#FFDD00',
+    fontFamily: 'SUITE-Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
+  },
+  exitCont: {
+    alignSelf: 'center',
+    backgroundColor: '#808080',
+    borderRadius: 100,
+    paddingVertical: 5,
+    paddingHorizontal: 20,
   },
   exitNotiText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
-    color: 'rgba(225, 223, 209, 0.45)',
+    fontFamily: 'SUITE-Bold',
+    fontSize: 12,
+    color: '#FFF',
     textAlign: 'center',
   },
 
