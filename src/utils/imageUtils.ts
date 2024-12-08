@@ -223,7 +223,7 @@ export const ICON = {
   chatRed: require('assets/icon/icon-chat-red.png'),
   cardBlack: require('assets/icon/icon-card-black.png'),
   blindDetail: require('assets/icon/icon-blind-detail.png'),
-
+  replayBlack: require('assets/icon/icon-replay-black.png'),
 
 
 
