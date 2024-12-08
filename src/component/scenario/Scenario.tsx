@@ -11,6 +11,9 @@ import { useDispatch } from 'react-redux';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE, GIF_IMG } from 'utils/imageUtils';
 import { formatNowDate, isEmptyData, CommaFormat } from 'utils/functions';
 import { ROUTES, STACK } from 'constants/routes';
+import { SpeechBubble } from 'component/SpeechBubble';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 /* ################################################################################################################
@@ -39,68 +42,42 @@ export const Scenario: FC<Props> = (props) => {
   const [isEmpty, setIsEmpty] = React.useState(false); // 빈 데이터 여부
   const [isClickable, setIsClickable] = React.useState(true); // 클릭 여부
 
-  // ####################################################################################### 라이브 등록
-  /* const insertLiveMatch = async (pick:string, code:string, profileScore:string) => {
-
-    // 중복 클릭 방지 설정
-    if(isClickable) {
-      setIsClickable(false);
-
-      try {
-        const body = {
-          profile_score: pick == 'SKIP' ? profileScore : pickProfileScore,
-          face_code: pick == 'SKIP' ? code : pickFaceCode,
-          member_seq: liveMemberSeq,
-          approval_profile_seq: approvalProfileSeq,
-          newYn: 'Y',
-        };
-  
-        const { success, data } = await regist_profile_evaluation(body);
-  
-        if(success) {
-          switch (data.result_code) {
-            case SUCCESS:
-              dispatch(myProfile());
-              setIsLoad(false);
-              setIsEmpty(false); 
-              setLiveModalVisible(false);
-              getLiveMatchTrgt();
-  
-              break;
-            default:
-              show({ content: '오류입니다. 관리자에게 문의해주세요.' , });
-              break;
-          }
-        }else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-        }
-      } catch (error) {
-        console.log(error);
-        show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-      } finally {
-        setIsPopVisible(false);
-        setIsClickable(true);
-      }
-    };
-  }; */
+  const [isJoinBtn, setIsJoinBtn] = React.useState(true);
 
   // 참여하기 클릭 함수
   const onSelect = async () => {
-    navigation.navigate(STACK.COMMON, { screen: 'Scenario' });
-  }
+    if(memberBase?.pass_has_amt >= 10) {
+      navigation.navigate(STACK.COMMON, { screen: 'Scenario' });
+    } else {
+      show({ content: '보유 큐브가 부족합니다.' });
+    }
+  };
+
+  // 커커시 참여 횟수 체크
+  const chkCcsAttendCnt = async () => {
+    const sg_ccsJoinData = await AsyncStorage.getItem('CCS_TODAY_JOIN_DATA'); // 커커시 금일 참여 데이터
+
+    if(isEmptyData(sg_ccsJoinData)) {
+      const nowDt = formatNowDate().substring(0, 8);
+
+      const ccsJoinDt = sg_ccsJoinData?.split('_')[0];
+      const ccsJoinCnt = sg_ccsJoinData?.split('_')[1];
+
+      if(nowDt == ccsJoinDt) {
+        if(Number(ccsJoinCnt) > 4) {
+          setIsJoinBtn(false);
+        }
+      }
+    }
+  };
 
   // ################################################################ 초기 실행 함수
-  React.useEffect(() => {
-    if(isFocus) {
-
-    };
-  }, [isFocus]);
-
   useFocusEffect(
     React.useCallback(() => {
+      chkCcsAttendCnt();
       
       return () => {
-
+        setIsJoinBtn(true);
       };
     }, []),
   );
@@ -141,10 +118,16 @@ export const Scenario: FC<Props> = (props) => {
                     <Image source={ICON.scenario_play} style={styles.iconSquareSize(17)} />
                     <SpaceView ml={5}><Text style={styles.fontStyle('B', 14, '#fff')}>참여하기</Text></SpaceView>
 
-                    <SpaceView mr={5} viewStyle={_styles.cubeWrap}>
-                      <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
-                      <SpaceView ml={2}><Text style={styles.fontStyle('R', 9, '#fff')}>10개</Text></SpaceView>
-                    </SpaceView>
+                    {isJoinBtn ? (
+                      <SpaceView mr={5} viewStyle={_styles.cubeWrap}>
+                        <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
+                        <SpaceView ml={2}><Text style={styles.fontStyle('R', 9, '#fff')}>10개</Text></SpaceView>
+                      </SpaceView>
+                    ) : (
+                      <SpaceView viewStyle={{position: 'absolute', top: -30, right: 10}}>
+                        <SpeechBubble arrowPosition={'right'} text={'매일 자정에  참여 횟수가 초기화 됩니다.'} />
+                      </SpaceView>
+                    )}
                   </TouchableOpacity>
                 </SpaceView>
               </SpaceView>

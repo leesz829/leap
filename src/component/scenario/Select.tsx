@@ -18,15 +18,24 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { SpeechBubble } from 'component/SpeechBubble';
 
+
 /* ################################################################################################################
 ###################################################################################################################
 ###### 커플 시나리오 참여하기 선택 Component
 ###################################################################################################################
 ################################################################################################################ */
 
+interface Props {
+  ccsTitle: string; // 시나리오 제목
+  ccsList: any; // 시나리오 목록
+  nickname: string; // 닉네임
+  mstImgPath: string; // 대표사진경로
+  resultCallbackFn: (codeList:any, dupAnswerCnt:number) => void; // 결과 콜백 함수
+}
+
 const { width, height } = Dimensions.get('window');
 
-const Select = React.memo(({ resultCallbackFn }) => {
+const Select: FC<Props> = React.memo((props) => {
 
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
@@ -36,16 +45,11 @@ const Select = React.memo(({ resultCallbackFn }) => {
   const [isLoading, setIsLoading] = useState(false); // 로딩 여부
   const [isClickable, setIsClickable] = useState(true); // 클릭 여부
 
-  const [ccsTitle, setCcsTitle] = useState(''); // 시나리오 제목
-  const [ccsTitleCd, setCcsTitleCd] = useState(''); // 시나리오 제목 코드
-  const [ccsList, setCcsList] = useState([]); // 시나리오 목록
-
-  const [matchMemberSeq, setMatchMemberSeq] = useState(''); // 매칭 멤버 일련번호
-  const [matchMemberNickname, setMatchMemberNickname] = useState(''); // 매칭 멤버 닉네임
-  const [matchMemberMstImgPath, setMatchMemberMstImgPath] = useState(''); // 매칭 멤버 대표 사진
-
-  const [selectCode, setSelectCode] = useState('');
+  const [answerStep, setAnswerStep] = useState(0);
+  const [selectCode, setSelectCode] = useState({});
   const [selectCodeList, setSelectCodeList] = useState([]);
+
+  const [dupAnswerCnt, setDupAnswerCnt] = useState(0); // 같은 답변 카운트
 
   const codeList = [
     {code: '01', name: '코인 노래방'},
@@ -53,17 +57,11 @@ const Select = React.memo(({ resultCallbackFn }) => {
     {code: '03', name: '심야영화'}
   ]
 
-  // 회원 기본 정보
-  const memberBase = useUserInfo();
+  const memberBase = useUserInfo(); // 회원 기본 정보
+  const mbrProfileImgList = useProfileImg(); // 회원 프로필 이미지 목록
 
-  const mbrProfileImgList = useProfileImg();
-
-  const answerSelect = async (code:string) => {
-    setSelectCode(code);
-  };
-
-  const move = async () => {
-    resultCallbackFn(selectCodeList);
+  const move = async (list:any, dupCnt:number) => {
+    props.resultCallbackFn(list, dupCnt);
   };
 
   const getTextForNumber = (num:number) => {
@@ -82,48 +80,36 @@ const Select = React.memo(({ resultCallbackFn }) => {
     }
   };
 
-  // ####################################################################### 커플 시나리오 조회
-  const getScenario = async () => {
-    setIsLoading(true);
-    setSelectCodeList([]);
+  const nextAnswer = () => {
+    if(props.ccsList.length-2 == selectCodeList.length) {
+      let applyList = selectCodeList.filter(item => item);
+      applyList.push({'ccs_cd': selectCode?.ccs_cd, 'ccs_ans_cd': selectCode?.ccs_ans_cd, 'ccs_member_seq': selectCode?.ccs_member_seq});
+      console.log('list ::::: ' , applyList.length);
 
-    const body = {
+      let applyDupCnt = isEmptyData(selectCode?.ccs_member_seq) ? dupAnswerCnt+1 : dupAnswerCnt;
 
-    };
-    try {
-      const { success, data } = await get_random_scnr_tmplt_list(body);
-      if (success) {
-        if (data.result_code == '0000') {          
-          const ccsData = data.result;
-          console.log('list ::::::: ' , ccsData?.list);
-
-          setCcsTitle(ccsData?.ccs_title);
-          setCcsTitleCd(ccsData?.ccs_title_cd);
-          setCcsList(ccsData?.list);
-
-          setMatchMemberSeq(ccsData?.match_member_seq);
-          setMatchMemberNickname(ccsData?.nickname);
-          setMatchMemberMstImgPath(ccsData?.mst_img_path);
-
-        } else {
-          show({ content: '오류입니다. 관리자에게 문의해주세요.' });
-          return false;
-        }
+      move(applyList, applyDupCnt);
+    } else {
+      setSelectCodeList((prevItems) => [...prevItems, {'ccs_cd': selectCode?.ccs_cd, 'ccs_ans_cd': selectCode?.ccs_ans_cd, 'ccs_member_seq': selectCode?.ccs_member_seq}]);
+      if(isEmptyData(selectCode?.ccs_member_seq)) {
+        setDupAnswerCnt(dupAnswerCnt+1);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
     }
+    
+    answerReset();
+  };
+
+  const answerReset = async () => {
+    setSelectCode({});
+    setAnswerStep(0);
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      getScenario();
-      setSelectCode('');
+      answerReset();
       
       return () => {
-        
+        //setSelectCodeList([]);
       };
     }, []),
   );
@@ -134,12 +120,12 @@ const Select = React.memo(({ resultCallbackFn }) => {
 
       <SpaceView mt={40} viewStyle={_styles.contentWrap}>
         <SpaceView viewStyle={_styles.titleWrap}>
-          <Text style={styles.fontStyle('EB', 20, '#fff')}>{ccsTitle}</Text>
+          <Text style={styles.fontStyle('EB', 20, '#fff')}>{props.ccsTitle}</Text>
         </SpaceView>
         <SpaceView pl={13} pr={13}>
           <SpaceView pt={50} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start'}}>
             <SpaceView viewStyle={_styles.imgWrap}>
-              <Image source={findSourcePath(matchMemberMstImgPath)} style={_styles.imgStyle} />
+              <Image source={findSourcePath(props.mstImgPath)} style={_styles.imgStyle} />
               <BlurView 
                 style={_styles.blurArea}
                 blurType='light'
@@ -147,8 +133,8 @@ const Select = React.memo(({ resultCallbackFn }) => {
               />
             </SpaceView>
             <SpaceView ml={10} mt={13}>
-              <SpaceView><Text style={styles.fontStyle('H', 30, '#fff')}>{matchMemberNickname}</Text></SpaceView>
-              <SpaceView mt={8} viewStyle={layoutStyle.rowStart}>
+              <SpaceView><Text style={styles.fontStyle('H', 30, '#fff')}>{props.nickname}</Text></SpaceView>
+              {/* <SpaceView mt={8} viewStyle={layoutStyle.rowStart}>
                 <SpaceView><Text style={styles.fontStyle('SB', 9, '#8BAAFF')}>예상 친밀도</Text></SpaceView>
                 <SpaceView ml={10} viewStyle={{overflow: 'hidden', width: 80}}>
                   <LinearGradient
@@ -169,63 +155,126 @@ const Select = React.memo(({ resultCallbackFn }) => {
                 <SpaceView ml={5}>
                   <Text style={styles.fontStyle('R', 6, '#8BAAFF')}>40%</Text>
                 </SpaceView>
-              </SpaceView>
+              </SpaceView> */}
               <SpaceView mt={8} viewStyle={layoutStyle.rowStart}>
                 <SpaceView><Text style={[styles.fontStyle('SB', 9, '#FFFF5D'), {textAlign: 'right'}]}>긍정 반응</Text></SpaceView>
                 <SpaceView ml={18} viewStyle={layoutStyle.rowStart}>
+
+                  {Array.from({ length: dupAnswerCnt }).map((_, idx) => (
+                    <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
+                  ))}
+
+                  {/* <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
                   <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
-                  <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
-                  <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
+                  <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView> */}
                 </SpaceView>
               </SpaceView>
             </SpaceView>
           </SpaceView>
+
+          {/* ############################################################################################################################## 
+          ###### 상황 및 선택지 영역
+          ############################################################################################################################## */}
           <SpaceView mt={30}>
-            <SpaceView><Text style={styles.fontStyle('SB', 16, '#fff')}>{getTextForNumber(selectCodeList.length+1)} 상황</Text></SpaceView>
-            <SpaceView mt={5}>
-              <Text style={styles.fontStyle('SB', 14, '#fff')}>{ccsList.length > 0 && ccsList[selectCodeList.length+1]?.ccs_contents}</Text>
+            <SpaceView>
+              {answerStep == 2 && ( 
+                <TouchableOpacity 
+                  style={_styles.nextBubbleWrap}
+                  onPress={() => {
+                    nextAnswer();
+                  }}
+                >
+                  <SpeechBubble arrowPosition={'left'} text={'화면을 터치하고 다음 상황 보기'} />
+                </TouchableOpacity>
+              )}
+
+              <SpaceView><Text style={styles.fontStyle('SB', 16, '#fff')}>{getTextForNumber(selectCodeList.length+1)} 상황</Text></SpaceView>
+              <SpaceView mt={5}>
+                <Text style={styles.fontStyle('SB', 14, '#fff')}>{props.ccsList.length > 0 && props.ccsList[selectCodeList.length]?.ccs_contents}</Text>
+              </SpaceView>
             </SpaceView>
-          </SpaceView>
-          <SpaceView mt={50} mb={20}>
-            {ccsList.length > 0 && (
-              <>
-                {ccsList[selectCodeList.length]?.ans_list.map((item, index) => {
-                  const ccsCd = item?.ccs_cd;
-                  const ccsAnsCd = item?.ccs_ans_cd;
+            <SpaceView mt={50} mb={20}>
+              {props.ccsList.length > 0 && (
+                <>
+                  {props.ccsList[selectCodeList.length]?.ans_list.map((item, index) => {
+                    const ccsCd = item?.ccs_cd;
+                    const ccsAnsCd = item?.ccs_ans_cd;
+                    const ccsMemberSeq = item?.ccs_member_seq;
 
-                  return (
-                    <TouchableOpacity
-                      style={_styles.answerItemWrap}
-                      activeOpacity={0.7}
-                      onPress={() => {
-      
-                        if(selectCode == ccsAnsCd) {
-                          console.log('111111111111111111111111111111111 ::::: ', ccsCd);
-                          //setSelectCodeList((prevItems) => [...prevItems, selectCode]);
-                          setSelectCodeList((prevItems) => [...prevItems, {'ccs_cd': ccsCd, 'ccs_ans_cd': ccsAnsCd}]);
-                          //move();
+                    let wrapBgColor = 'rgba(162,223,255,0.5)';
 
-                          console.log('ccsList.length ::::: ' , ccsList.length);
-                          console.log('selectCodeList.length ::::: ' , selectCodeList.length);
-
-                          if(ccsList.length-1 == selectCodeList.length) {
-                            move();
-                          }
-
+                    if(answerStep == 0) {
+                      wrapBgColor = 'rgba(162,223,255,0.5)';
+                    } else if(answerStep == 1) {
+                      if(selectCode?.ccs_ans_cd == ccsAnsCd) {
+                        wrapBgColor = '#46F66F';
+                      } else {
+                        wrapBgColor = 'rgba(162,223,255,0.5)';
+                      }
+                    } else if(answerStep == 2) {
+                      if(isEmptyData(ccsMemberSeq)) {
+                        if(selectCode?.ccs_ans_cd == ccsAnsCd) {
+                          wrapBgColor = '#46F66F';
                         } else {
-                          console.log('222222222222222222222222222222222 ::::: ', ccsAnsCd);
-                          answerSelect(ccsAnsCd);
+                          wrapBgColor = '#FF516F';
                         }
-                        
-                      }}
-                    >
-                      <Text style={styles.fontStyle('SB', 16, '#fff')}>{item.ccs_ans_contents}</Text>
-                      {isEmptyData(selectCode) && selectCode == ccsAnsCd && ( <SpeechBubble />)}
-                    </TouchableOpacity>
-                  );
-                })}
-              </>
-            )}
+                      } else {
+                        if(selectCode?.ccs_ans_cd == ccsAnsCd) {
+                          wrapBgColor = '#46F66F';
+                        } else {
+                          wrapBgColor = 'rgba(162,223,255,0.5)';
+                        }
+                      }
+                    }
+
+                    return (
+                      <TouchableOpacity
+                        style={_styles.answerItemWrap(wrapBgColor)}
+                        activeOpacity={0.7}
+                        onPress={() => {
+
+                          if(answerStep == 0) {
+                            setAnswerStep(1);
+                            setSelectCode(item);
+                          } else if(answerStep == 1) {
+                            if(selectCode?.ccs_ans_cd == ccsAnsCd) {
+                              setAnswerStep(2);
+                            } else {
+                              setSelectCode(item);
+                            }
+                          }
+                        }}
+                      >
+                        {answerStep == 2 && selectCode?.ccs_ans_cd == ccsAnsCd && (
+                          <SpaceView viewStyle={{position: 'absolute', top: 0, bottom: 0, left: 3, justifyContent: 'center', alignItems: 'center'}}>
+                            <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.mstImgStyle} />
+                          </SpaceView>
+                        )}
+                        <Text style={styles.fontStyle('SB', 14, '#fff')}>{item.ccs_ans_contents}</Text>
+                        {(isEmptyData(selectCode?.ccs_ans_cd) && selectCode?.ccs_ans_cd == ccsAnsCd && answerStep == 1) && ( 
+                          <SpaceView viewStyle={_styles.answerOnemoreWrap}>
+                            <SpeechBubble arrowPosition={'right'} text={'한 번 더 눌러 주세요!'} />
+                          </SpaceView>
+                        )}
+                        {answerStep == 2 && isEmptyData(ccsMemberSeq) && (
+                          <SpaceView viewStyle={{position: 'absolute', top: 0, bottom: 0, right: 3, justifyContent: 'center', alignItems: 'center'}}>
+                            <SpaceView viewStyle={{flexDirection: 'row', overflow: 'hidden', borderRadius: 20}}>
+                              <Image source={findSourcePath(props.mstImgPath)} style={_styles.mstImgStyle} />
+                              <BlurView 
+                                style={_styles.blurArea}
+                                blurType='light'
+                                blurAmount={10}
+                              />
+                            </SpaceView>
+                          </SpaceView>
+                        )}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </>
+              )}
+            </SpaceView>
+
           </SpaceView>
         </SpaceView>
       </SpaceView>
@@ -264,12 +313,17 @@ const _styles = StyleSheet.create({
     borderRadius: 50,
     overflow: 'hidden',
   },
-  answerItemWrap: {
-    backgroundColor: 'rgba(162,223,255,0.5)',
-    borderRadius: 25,
-    alignItems: 'center',
-    paddingVertical: 10,
-    marginBottom: 10,
+  answerItemWrap: (bg:any) => {
+    return {
+      backgroundColor: bg,
+      borderRadius: 25,
+      alignItems: 'center',
+      paddingVertical: 10,
+      paddingHorizontal: 40,
+      marginBottom: 10,
+      /* flexDirection: 'row',
+      justifyContent: 'space-between', */
+    };
   },
   sliderActiveStyle: (value:any) => {
     let percent = 0;
@@ -309,6 +363,29 @@ const _styles = StyleSheet.create({
 		alignContent: 'center',
 		justifyContent: 'center',
 	},
+  answerOnemoreWrap: {
+    position: 'absolute',
+    top: -30,
+    right: 12,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nextBubbleWrap: {
+    position: 'absolute',
+    top: -35,
+    left: 0,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mstImgStyle: {
+    width: 33,
+    height: 33,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
 
 });
 

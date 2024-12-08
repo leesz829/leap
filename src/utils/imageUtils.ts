@@ -280,6 +280,8 @@ export const ICON = {
   storageEmptyFemale: require('assets/icon/match/storage_empty_female.png'),
   storageEmptyMale: require('assets/icon/match/storage_empty_male.png'),
   chatIcon: require('assets/icon/match/chat_icon.png'),
+  chatOutIcon: require('assets/icon/match/chat_out_icon.png'),
+
 
   /* auth */
   jobIcon: require('assets/icon/auth/job_icon.png'),

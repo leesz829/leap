@@ -106,6 +106,12 @@ export const MyHome = (props : Props) => {
 
 								{/* 메뉴, 알림 영역 */}
 								<SpaceView mt={35} ml={13} mr={13} viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <TouchableOpacity
+                    onPress={() => { navigation.goBack(); }}
+                    hitSlop={commonStyle.hipSlop20}
+                  >
+                    <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
+                  </TouchableOpacity>
 									{/* <TouchableOpacity 
 										onPress={() => ( onPressAlarmMessage() )}>
 										<Image source={ICON.alarm} style={styles.iconSquareSize(42)} />
@@ -120,10 +126,10 @@ export const MyHome = (props : Props) => {
                     <TouchableOpacity
                       style={{marginRight: 10}}
                     >
-                      <Image source={ICON.chatIcon} style={styles.iconSquareSize(42)} />
+                      <Image source={ICON.chatIcon} style={styles.iconSquareSize(35)} />
                     </TouchableOpacity>
                     <TouchableOpacity>
-                      <Image source={ICON.declaration} style={styles.iconSquareSize(42)} />
+                      <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
                     </TouchableOpacity>
                   </SpaceView>
 								</SpaceView>
@@ -172,7 +178,7 @@ export const MyHome = (props : Props) => {
 						{/* ################################################################################ 리프 AI 영역 */}
 						<SpaceView mt={45}>
 							<SpaceView mb={18}>
-								<Text style={styles.fontStyle('B', 40, '#fff')}>리프 AI</Text>
+								<Text style={styles.fontStyle('H', 38, '#fff')}>리프 AI</Text>
 							</SpaceView>
 
 							{/* ################################################################################ AI 소개글 영역 */}
@@ -244,7 +250,7 @@ export const MyHome = (props : Props) => {
 
               {/******************* 리프활동 *********************/}
               <SpaceView mb={18} mt={18}>
-								<Text style={styles.fontStyle('B', 40, '#fff')}>리프 활동</Text>
+								<Text style={styles.fontStyle('H', 38, '#fff')}>리프 활동</Text>
 							</SpaceView>
 							<LinearGradient
 								colors={['rgba(65,25,104,0.3)', 'rgba(59,95,212,0.4)']}
@@ -504,8 +510,8 @@ export const MyHome = (props : Props) => {
               </LinearGradient>
 
               {/******************* 스토리 *********************/}
-              <SpaceView mb={18} mt={18}>
-								<Text style={styles.fontStyle('B', 40, '#fff')}>스토리</Text>
+              <SpaceView mb={18} mt={30}>
+								<Text style={styles.fontStyle('H', 38, '#fff')}>스토리</Text>
 							</SpaceView>
 
               <SpaceView viewStyle={_styles.storyWrap}>
@@ -517,7 +523,7 @@ export const MyHome = (props : Props) => {
                     </SpaceView>
                     <SpaceView viewStyle={_styles.storySumDesc}>
                       <Text style={styles.fontStyle('B', 9, '#FFF')}>Nickname님이 작성한 게시글</Text>
-                      <Text style={[styles.fontStyle('B', 24, '#FFF'), {marginTop: 5}]}>45건</Text>
+                      <Text style={[styles.fontStyle('H', 24, '#FFF'), {marginTop: 5}]}>45건</Text>
                       <SpaceView mt={5} viewStyle={{backgroundColor: 'rgba(0, 0, 0, .6)', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 30}}>
                         <Text style={styles.fontStyle('B', 10, '#FFF')}>작성 댓글 100건</Text>
                       </SpaceView>
@@ -530,7 +536,7 @@ export const MyHome = (props : Props) => {
                     </SpaceView>
                     <SpaceView viewStyle={_styles.storySumDesc}>
                       <Text style={styles.fontStyle('B', 9, '#FFF')}>Nickname님이 보낸 좋아요</Text>
-                      <Text style={[styles.fontStyle('B', 24, '#FFF'), {marginTop: 5}]}>63건</Text>
+                      <Text style={[styles.fontStyle('H', 24, '#FFF'), {marginTop: 5}]}>63건</Text>
                       <SpaceView mt={5} viewStyle={{backgroundColor: 'rgba(0, 0, 0, .6)', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 30}}>
                         <Text style={styles.fontStyle('B', 10, '#FFF')}>받은 좋아요 200건</Text>
                       </SpaceView>

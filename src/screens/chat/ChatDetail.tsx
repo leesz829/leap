@@ -330,9 +330,41 @@ export const ChatDetail = (props: Props) => {
 
   return (
     <>
-      <CommonHeader title={'채팅'} type={'CHAT_DETAIL'} callbackFunc={report_onOpen} />
       <SpaceView viewStyle={_styles.container}>
-        {/* <TouchableOpacity
+        
+        <SpaceView viewStyle={layoutStyle.rowBetween}>
+          <SpaceView viewStyle={layoutStyle.rowStart}>
+            <TouchableOpacity
+              onPress={() => { navigation.goBack(); }}
+              hitSlop={commonStyle.hipSlop20}
+            >
+              <Image source={ICON.backBtnType01} style={styles.iconSquareSize(35)} resizeMode={'contain'} />
+            </TouchableOpacity>
+
+            <SpaceView ml={12} viewStyle={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+              <SpaceView viewStyle={_styles.mstImgWrap}>
+                <Image source={findSourcePath(propsData?.chat_oppn_mst_img)} style={styles.iconSquareSize(35)} />
+              </SpaceView>
+              <SpaceView ml={10}><Text style={styles.fontStyle('B', 14, '#fff')}>{propsData?.chat_oppn_nickname}</Text></SpaceView>
+            </SpaceView>
+          </SpaceView>
+
+          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
+            <SpaceView mr={10}>
+              <TouchableOpacity onPress={() => { exitChat(); }} hitSlop={commonStyle.hipSlop20} >
+                <Image source={ICON.chatOutIcon} style={styles.iconSquareSize(35)} />
+              </TouchableOpacity>
+            </SpaceView>
+            <TouchableOpacity onPress={report_onOpen} hitSlop={commonStyle.hipSlop20}>
+              <Image source={ICON.declaration} style={styles.iconSquareSize(35)} />
+            </TouchableOpacity>
+          </SpaceView>
+        </SpaceView>
+
+        {/* propsData */}
+
+        {/* 
+        <TouchableOpacity
           style={[layoutStyle.alignEnd, {marginBottom: 20}]}
           onPress={() => { exitChat(); }}
         >
@@ -671,4 +703,10 @@ const _styles = StyleSheet.create({
 		  color: isEmptyData(cr) ? cr : '#fff',
 		};
 	},
+  mstImgWrap: {
+    borderRadius: 60,
+    overflow: 'hidden',
+  },
+
+
 });

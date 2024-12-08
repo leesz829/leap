@@ -17,7 +17,7 @@ import { Modalize } from 'react-native-modalize';
 import { useDispatch } from 'react-redux'; 
 import { myProfile } from 'redux/reducers/authReducer';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
-import { formatNowDate, isEmptyData} from 'utils/functions';
+import { formatNowDate, isEmptyData } from 'utils/functions';
 import ProfileAuth from 'component/match/ProfileAuth';
 import InterviewRender from 'component/match/InterviewRender';
 import InterestRender from 'component/match/InterestRender';
@@ -34,9 +34,6 @@ import { SUCCESS } from 'constants/reusltcode';
 import ReportPopup from 'screens/commonpopup/ReportPopup';
 import MemberMark from 'component/common/MemberMark';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-
 
 
 interface Props {
@@ -649,6 +646,8 @@ export default function MatchDetail(props: Props) {
           chat_member_seq: chatInfoData?.chat_member_seq,
           chat_type: 'OPEN',
           sch_member_seq: chatInfoData?.res_member_seq == memberBase?.member_seq ? chatInfoData?.req_member_seq : chatInfoData?.res_member_seq,
+          chat_oppn_mst_img: data?.profile_img_list[0]?.img_file_path,
+          chat_oppn_nickname: data?.match_member_info?.nickname
         } 
       });
     } else {
@@ -692,10 +691,8 @@ export default function MatchDetail(props: Props) {
     const detailAccessRecentDate = await AsyncStorage.getItem('DETAIL_ACCESS_RECENT_DATE');
 
     if(isEmptyData(detailAccessRecentDate) && Number(detailAccessRecentDate) >= Number(nowDt)) {
-      console.log('1111');
       setIsMyHomeNoti(false);
     } else {
-      console.log('2222');
       setIsMyHomeNoti(true);
       await AsyncStorage.setItem('DETAIL_ACCESS_RECENT_DATE', formatNowDate().substring(0, 8));
     }

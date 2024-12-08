@@ -1245,14 +1245,14 @@ export async function update_chat_exit(body: {
 
 // 채팅방 목록을 조회한다.
 export async function get_random_scnr_tmplt_list(body: { 
-  ansList: any;
+  
 }) {
   return send(GET_CCS_RANDOM_SCNR_TMPLT_LIST, 'POST', body, true, false);
 };
 
 // 채팅방 나가기를 한다.
 export async function insert_ccs_member_ans(body: {
-  
+  ansList: any;
 }) {
   return send(INSERT_CCS_MEMBER_ANS, 'POST', body, true, false);
 };

@@ -25,10 +25,19 @@ import { SpeechBubble } from 'component/SpeechBubble';
 ###################################################################################################################
 ################################################################################################################ */
 
+interface Props {
+  ccsTitle: string; // 시나리오 제목
+  answerList: any; // 시나리오 목록
+  nickname: string; // 닉네임
+  mstImgPath: string; // 대표사진경로
+  answerAgreeRate: any; // 답변 일치율
+  resultCallbackFn: (codeList:any) => void; // 결과 콜백 함수
+  profileOpenFn: (passUseYn:string) => void; // 프로필 열람 함수
+}
 
 const { width, height } = Dimensions.get('window');
 
-const Result = React.memo(({ resultCallbackFn }) => {
+const Result: FC<Props> = React.memo((props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
   const isFocus = useIsFocused();
   const dispatch = useDispatch();
@@ -59,67 +68,121 @@ const Result = React.memo(({ resultCallbackFn }) => {
         <SpaceView pl={13} pr={13}>
           <SpaceView pt={50} viewStyle={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start'}}>
             <SpaceView viewStyle={_styles.imgWrap}>
-              <Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.imgStyle} />
-              <BlurView 
-                style={_styles.blurArea}
-                blurType='light'
-                blurAmount={10}
-              />
+              <Image source={findSourcePath(props.mstImgPath)} style={_styles.imgStyle} />
+
+              {props.answerAgreeRate < 80 && (
+                <BlurView 
+                  style={_styles.blurArea}
+                  blurType='light'
+                  blurAmount={10}
+                />
+              )}
             </SpaceView>
 
             <SpaceView ml={10} mt={13}>
-              <SpaceView><Text style={styles.fontStyle('H', 30, '#fff')}>Nickname</Text></SpaceView>
+              <SpaceView><Text style={styles.fontStyle('H', 30, '#fff')}>{props.nickname}</Text></SpaceView>
             </SpaceView>
           </SpaceView>
 
           <SpaceView mt={30} pl={40} pr={40}>
             <SpaceView viewStyle={_styles.resultWrap}>
               <SpaceView><Text style={styles.fontStyle('SB', 9, '#fff')}>답변 일치율</Text></SpaceView>
-              <SpaceView mt={5}><Text style={styles.fontStyle('H', 24, '#fff')}>65%</Text></SpaceView>
+              <SpaceView mt={5}><Text style={styles.fontStyle('H', 24, '#fff')}>{props.answerAgreeRate.toFixed(1)}%</Text></SpaceView>
               <SpaceView mt={10}>
                 <Text style={[styles.fontStyle('SB', 8, '#FFFF5D'), {textAlign: 'center'}]}>긍정 반응</Text>
                 <SpaceView mt={4} viewStyle={layoutStyle.rowCenter}>
-                  <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
-                  <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
-                  <SpaceView><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
+                  {props.answerList.map((item, index) => {
+                    return isEmptyData(item.ccs_member_seq) && (
+                      <SpaceView mr={2}><Image source={ICON.scenario_heartYellow} style={styles.iconSquareSize(12)} /></SpaceView>
+                    )
+                  })}
                 </SpaceView>
               </SpaceView>
             </SpaceView>
           </SpaceView>
 
           <SpaceView mt={20}>
-            <SpaceView>
-              <Text style={[styles.fontStyle('SB', 14, '#fff'), {textAlign: 'center'}]}>친구가 누군지 궁금하다면 일치율은 중요하지 않아요.{'\n'}
-              프로필 열람하고 먼저 다가가 보시는건 어떠세요?</Text>
-            </SpaceView>
+            {props.answerAgreeRate < 80 ? (
+              <>
+                <SpaceView mt={20}>
+                  <SpaceView>
+                    <Text style={[styles.fontStyle('SB', 14, '#fff'), {textAlign: 'center'}]}>
+                      친구가 누군지 궁금하다면 일치율은 중요하지 않아요.{'\n'}
+                      프로필 열람하고 먼저 다가가 보시는건 어떠세요?
+                    </Text>
+                  </SpaceView>
+                </SpaceView>
+
+                <SpaceView mt={20} mb={40} viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
+                  <TouchableOpacity 
+                    style={_styles.detailBtnArea('#44B6E5')}
+                    onPress={() => {
+                      props.profileOpenFn('Y');
+                    }} 
+                  >
+                    <Image source={ICON.lockIcon} style={styles.iconSquareSize(15)} />
+                    <SpaceView ml={5}><Text style={styles.fontStyle('B', 13, '#fff')}>잠금해제</Text></SpaceView>
+
+                    <SpaceView viewStyle={_styles.freeTextWrap}>
+                      <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
+                      <SpaceView ml={4}><Text style={styles.fontStyle('R', 8, '#fff')}>15개</Text></SpaceView>
+                    </SpaceView>
+                  </TouchableOpacity>
+                </SpaceView>
+              </>
+            ) : (
+              <>
+                <SpaceView mt={20}>
+                  <SpaceView>
+                    <Text style={[styles.fontStyle('SB', 14, '#fff'), {textAlign: 'center'}]}>
+                      내 성향과 비슷한 사람 발견!{'\n'}
+                      {props.nickname}님의 프로필 카드를 열람할 수 있습니다.
+                    </Text>
+                  </SpaceView>
+                </SpaceView>
+
+                <SpaceView mt={20} mb={40} viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
+                  <TouchableOpacity 
+                    style={_styles.detailBtnArea('#46F66F')}
+                    onPress={() => {
+                      props.profileOpenFn('N');
+                    }} 
+                  >
+                    <Image source={ICON.searchWhite} style={styles.iconSquareSize(15)} />
+                    <SpaceView ml={5}><Text style={styles.fontStyle('B', 13, '#fff')}>열람하기</Text></SpaceView>
+                  </TouchableOpacity>
+                </SpaceView>
+              </>
+            )}
           </SpaceView>
 
-          <SpaceView mt={20} mb={40} viewStyle={{flexDirection: 'row', justifyContent: 'center'}}>
-            <TouchableOpacity onPress={() => {/*  openProc(); */ }} style={_styles.detailBtnArea('#44B6E5')}>
-              <Image source={ICON.lockIcon} style={styles.iconSquareSize(15)} />
-              <SpaceView ml={5}><Text style={styles.fontStyle('B', 13, '#fff')}>잠금해제</Text></SpaceView>
-
-              <SpaceView viewStyle={_styles.freeTextWrap}>
-                <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
-                <SpaceView ml={4}><Text style={styles.fontStyle('R', 8, '#fff')}>15개</Text></SpaceView>
-              </SpaceView>
-            </TouchableOpacity>
-          </SpaceView>
         </SpaceView>
       </SpaceView>
 
-      <SpaceView mt={40}>
+      <SpaceView mt={40} viewStyle={[layoutStyle.rowBetween, {alignItems: 'flex-start'}]}>
         <TouchableOpacity 
-          style={_styles.btnWrap}
-          //onPress={onSelect}
-        >
-          <Image source={ICON.scenario_play} style={styles.iconSquareSize(17)} />
-          <SpaceView ml={5}><Text style={styles.fontStyle('B', 14, '#fff')}>다른 사람 찾기</Text></SpaceView>
+          style={_styles.cancelBtnWrap}
+          onPress={() => {
+            props.resultCallbackFn('01');
+          }}>
+          <Text style={styles.fontStyle('B', 14, '#fff')}>나가기</Text>
         </TouchableOpacity>
 
-        <SpaceView viewStyle={_styles.etcSearchCubeWrap}>
-          <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
-          <SpaceView ml={4}><Text style={styles.fontStyle('R', 8, '#fff')}>10개</Text></SpaceView>
+        <SpaceView viewStyle={{width: '57%'}}>
+          <TouchableOpacity 
+            style={_styles.btnWrap}
+            onPress={() => {
+              props.resultCallbackFn('02');
+            }}
+          >
+            <Image source={ICON.scenario_play} style={styles.iconSquareSize(17)} />
+            <SpaceView ml={5}><Text style={styles.fontStyle('B', 14, '#fff')}>다른 사람 찾기</Text></SpaceView>
+          </TouchableOpacity>
+
+          <SpaceView viewStyle={_styles.etcSearchCubeWrap}>
+            <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
+            <SpaceView ml={4}><Text style={styles.fontStyle('R', 8, '#fff')}>10개</Text></SpaceView>
+          </SpaceView>
         </SpaceView>
       </SpaceView>
     </>
@@ -206,7 +269,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    paddingVertical: 15,
+    height: 50,
   },
   etcSearchCubeWrap: {
     position: 'absolute',
@@ -219,6 +282,15 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  cancelBtnWrap: {
+    backgroundColor: '#FF516F',
+    borderRadius: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '40%',
+    height: 52,
   },
 
 });

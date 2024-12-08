@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import type { ViewStyle, StyleProp } from 'react-native';
 import type { FC } from 'react';
+
 type Props = {
   mb?: number;
   mt?: number;
@@ -12,6 +13,7 @@ type Props = {
   pb?: number;
   pt?: number;
   viewStyle?: StyleProp<ViewStyle>;
+  children?:any;
 };
 
 /**

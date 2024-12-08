@@ -16,6 +16,8 @@ interface Props {
   title: string;
   desc: string;
   position?: 'topRight' | 'topLeft' | 'bottomLeft' | 'bottomRight';
+  arrowPosition?: 'left' | 'right';
+  text: string;
 }
 
 /**
@@ -28,53 +30,46 @@ interface Props {
 export const SpeechBubble: FC<Props> = (props) => {
   return (
     <>
-      <SpaceView viewStyle={_styles.container}>
-        <LinearGradient
+      <LinearGradient
+        colors={['#8BC1FF', '#416DFF']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0.7, y: 0 }}
+        style={_styles.bubble}
+      >
+        <Text style={styles.fontStyle('SB', 10, '#fff')}>{props.text}</Text>
+        {/* <LinearGradient
           colors={['#8BC1FF', '#416DFF']}
           start={{ x: 0, y: 0 }}
-          end={{ x: 0.7, y: 0 }}
-          style={_styles.bubble}
-        >
-          <Text style={styles.fontStyle('SB', 10, '#fff')}>한 번 더 눌러 주세요!</Text>
-          {/* <LinearGradient
-            colors={['#8BC1FF', '#416DFF']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={_styles.triangle}
-          /> */}
-          <SpaceView viewStyle={_styles.triangle} />
-        </LinearGradient>
-      </SpaceView>
+          end={{ x: 1, y: 0 }}
+          style={_styles.triangle}
+        /> */}
+        <SpaceView viewStyle={_styles.triangle(props.arrowPosition)} />
+      </LinearGradient>
     </>
   );
 };
 
 const _styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: -30,
-    right: 12,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   bubble: {
     paddingVertical: 7,
     paddingHorizontal: 15,
     borderRadius: 50, // 말풍선의 둥근 모서리
     position: 'relative',
   },
-  triangle: {
-    position: 'absolute',
-    bottom: -8, // 삼각형을 아래로 위치 조정
-    right: 10,
-    width: 0,
-    height: 0,
-    borderLeftWidth: 9,
-    borderRightWidth: 9,
-    borderTopWidth: 9,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: '#416DFF', // 말풍선 배경색과 동일하게 설정
+  triangle: (position:any) => {
+    return {
+      position: 'absolute',
+      bottom: -8, // 삼각형을 아래로 위치 조정
+      right: position == 'right' ? 10 : undefined,
+      left: position == 'left' ? 10 : undefined,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 9,
+      borderRightWidth: 9,
+      borderTopWidth: 9,
+      borderLeftColor: 'transparent',
+      borderRightColor: 'transparent',
+      borderTopColor: position == 'right' ? '#416DFF' : '#83B8FF', // 말풍선 배경색과 동일하게 설정
+    };
   },
 });
