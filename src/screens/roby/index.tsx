@@ -88,6 +88,7 @@ export const Roby = (props: Props) => {
     accResLiveCnt: 0, */
     realTimeData: {},
     faceLankList: [],
+    vibeMatchList: [],
   });
 
   const [resLikeList, setResLikeList] = useState([]);
@@ -124,11 +125,10 @@ export const Roby = (props: Props) => {
           setResLikeList(data.res_like_list);
           setMatchTrgtList(data.match_trgt_list);
           
-          console.log('data?.real_time_info ::::: ' , data?.real_time_info);
-
           setMemberPeekData({
             realTimeData: data?.real_time_info,
             faceLankList: data?.mbr_face_rank_list,
+            vibeMatchList: data?.vibe_match_list,
           });
 
           let popupList = data?.popup_bas_list;
@@ -556,9 +556,10 @@ export const Roby = (props: Props) => {
         <SpaceView>
           {currentTab == 'ACTIVE' && 
             <Active 
-              memberBase={memberBase} 
+              memberData={memberBase} 
               authList={mbrProfileAuthList} 
               realTimeData={memberPeekData.realTimeData}
+              vibeMatchList={memberPeekData.vibeMatchList}
               fnRewardPass={procGradeRewardPass}
               onGradeGudePopup={gradeGuide_onOpen}
               onAiIntroPopup={aiIntro_onOpen} />}

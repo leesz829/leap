@@ -1,17 +1,14 @@
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
-import { CommonInput } from 'component/CommonInput';
-import { CommonTextarea } from 'component/CommonTextarea';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions, Platform, FlatList } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import * as properties from 'utils/properties';
-import { insert_member_inquiry } from 'api/models';
+import { join_member_myhome } from 'api/models';
 import { usePopup } from 'Context';
 import { SUCCESS } from 'constants/reusltcode';
 import { STACK } from 'constants/routes';
@@ -22,10 +19,9 @@ import { Shadow } from 'react-native-shadow-2';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import MemberMark from 'component/common/MemberMark';
 import { isEmptyData, formatNowDate } from 'utils/functions';
-import Active from 'component/roby/Active';
 import { useSecondAth } from 'hooks/useSecondAth';
 import { useDispatch } from 'react-redux';
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import SocialGrade from 'component/common/SocialGrade';
 
 
 /* ################################################################################################################
@@ -35,18 +31,35 @@ import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomShee
 ################################################################################################################ */
 
 interface Props {
-	
+	navigation: StackNavigationProp<StackParamList, 'MyHome'>;
+  route: RouteProp<StackParamList, 'MyHome'>;
 }
 
 const { width, height } = Dimensions.get('window');
 
 export const MyHome = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
+
+  const isFocus = useIsFocused();
+
+  const trgtMemberSeq = props.route.params.trgtMemberSeq; // 대상 회원 번호
+
 	const memberBase = useUserInfo(); // 회원 기본정보
   
 	const mbrProfileImgList = useProfileImg();
 	const mbrProfileAuthList = useSecondAth();
+  
+  const [isLoad, setIsLoad] = useState(false); // 로딩 여부
+
   const realTimeData = '';
+
+  // 회원 실시간성 데이터
+  const [data, setData] = useState({
+    member: {},
+    realTimeData: {},
+    authList: [],
+    vibeList: [],
+  });
 
   const tempStoryData = [
     {
@@ -71,6 +84,47 @@ export const MyHome = (props : Props) => {
       reply_cnt: '1.5m',
     }
   ];
+
+  // ######################################################################################## 매칭 정보 조회
+  const joinMyhome = async () => {
+    try {
+      setIsLoad(true);
+
+      const body = {
+        trgt_member_seq: trgtMemberSeq,
+      };
+
+      const { success, data } = await join_member_myhome(body);
+      
+      if (success) {
+        console.log('real_time_info :::::: ' , data?.real_time_info);
+        if (data.result_code == '0000') {
+          //setData(data);
+
+          setData({
+            member: data?.mbr_base,
+            realTimeData: data?.real_time_info,
+            authList: data?.mbr_second_auth_list,
+            vibeList: data?.vibe_match_list,
+          });
+
+        } else {
+          
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoad(false);
+    }
+  };
+
+  // ################################################################ 초기 실행 함수
+  useEffect(() => {
+    if(isFocus) {
+      joinMyhome();
+    }
+  }, [isFocus]);
 
 	return (
 		<>
@@ -137,36 +191,14 @@ export const MyHome = (props : Props) => {
 								{/* 닉네임, 대표 사진 영역 */}
 								<SpaceView mt={30} viewStyle={{alignItems: 'center'}}>
 									<SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
-										{/* <SocialGrade grade={memberBase?.respect_grade} sizeType={'SMALL'} /> */}
-										{isEmptyData(memberBase?.face_modifier) && ( 
-											<SpaceView ml={8} viewStyle={_styles.bestFaceContainer}>
-												<Text style={styles.fontStyle('SB', 9, '#fff')}>#{memberBase?.face_modifier}</Text>
-											</SpaceView>
-										)}
+										<SocialGrade grade={data?.member?.respect_grade} sizeType={'SMALL'} />
 									</SpaceView>
-                  <SpaceView viewStyle={layoutStyle.rowBetween}>
-                    <SpaceView viewStyle={[layoutStyle.rowBetween, _styles.mmbrInfoBox, {backgroundColor: '#FFF'}]}>
-                      <Image source={ICON.respectIcon} style={styles.iconSquareSize(10)} resizeMode='contain' />
-                      <Text style={styles.fontStyle('B', 9, '#000')}>SILVER</Text>
-                    </SpaceView>
-                    <SpaceView ml={5} viewStyle={[_styles.mmbrInfoBox, {backgroundColor: '#40E0D0'}]}>
-                      <Text style={styles.fontStyle('B', 9, '#FFF')}>#웃는게 예뻐요</Text>
-                    </SpaceView>
-                    <SpaceView mr={5} ml={5} viewStyle={[_styles.mmbrInfoBox, {backgroundColor: '#C740E0'}]}>
-                      <Text style={styles.fontStyle('B', 9, '#FFF')}>높은 인증 레벨</Text>
-                    </SpaceView>
-                    <SpaceView viewStyle={[_styles.mmbrInfoBox, {backgroundColor: '#3875DF'}]}>
-                      <Text style={styles.fontStyle('B', 9, '#FFF')}>다양한 인증</Text>
-                    </SpaceView>
-                  </SpaceView>
 									<SpaceView mt={8} mb={20}>
-										<Text style={styles.fontStyle('H', 30, '#fff')}>{memberBase?.nickname}</Text>
+										<Text style={styles.fontStyle('H', 30, '#fff')}>{data?.member?.nickname}</Text>
 									</SpaceView>
-									<TouchableOpacity 
-										style={_styles.mstProfileImgArea}
-									>
-										<Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.mstProfileImgStyle} />
-									</TouchableOpacity>
+                  <SpaceView viewStyle={_styles.mstProfileImgArea}>
+                    <Image source={findSourcePath(data?.member?.mst_img_path)} style={_styles.mstProfileImgStyle} />
+                  </SpaceView>
 								</SpaceView>
 							</SpaceView>
 
@@ -177,78 +209,82 @@ export const MyHome = (props : Props) => {
 
 						{/* ################################################################################ 리프 AI 영역 */}
 						<SpaceView mt={45}>
-							<SpaceView mb={18}>
-								<Text style={styles.fontStyle('H', 38, '#fff')}>리프 AI</Text>
-							</SpaceView>
 
-							{/* ################################################################################ AI 소개글 영역 */}
-							<LinearGradient
-								colors={['rgba(65,25,104,0.5)', 'rgba(59,95,212,0.5)']}
-								style={{ borderRadius: 10, paddingHorizontal: 10, paddingVertical: 18, marginBottom: 20 }}
-								start={{ x: 0, y: 0.3 }}
-								end={{ x: 0.9, y: 0.9 }}
-							>
-								<Text style={styles.fontStyle('EB', 20, '#fff')}>AI 소개글</Text>
+              {/* <SpaceView>
+                <SpaceView mb={18}>
+                  <Text style={styles.fontStyle('H', 38, '#fff')}>리프 AI</Text>
+                </SpaceView>
 
-								<SpaceView mt={8}>
-									<Text style={styles.fontStyle('SB', 12, '#fff')}>"김리미"은 2018년 1월, 중견기업에서 사원으로 경력을 시작했습니다. 그 시점에서 그는 직장에서의 초기 적응과 기초적인 업무 숙련도를 쌓아가며, 자신의 아이디어와 창의성을 발휘하고자 했습니다. 이 시기의 그는 높은 에너지를 바탕으로 활발히 활동하며, 새로운 기회를 모색하고 사람들과의 네트워크를 확장하는 데 주력했습니다. 업무에 대한 접근 방식은 실용적이면서도 창의적이었으며, 팀 내에서 주도적인 역할을 자주 맡았고, 주변 동료들과의 협력을 통해 업무를 효율적으로 수행했습...</Text>
-								</SpaceView>
+                <LinearGradient
+                  colors={['rgba(65,25,104,0.5)', 'rgba(59,95,212,0.5)']}
+                  style={{ borderRadius: 10, paddingHorizontal: 10, paddingVertical: 18, marginBottom: 20 }}
+                  start={{ x: 0, y: 0.3 }}
+                  end={{ x: 0.9, y: 0.9 }}
+                >
+                  <Text style={styles.fontStyle('EB', 20, '#fff')}>AI 소개글</Text>
 
-								<SpaceView mt={20} viewStyle={layoutStyle.alignCenter}>
-									<Text style={styles.fontStyle('SB', 12, '#9DC6DB')}>NickName님의 이야기가 더 궁금한가요?</Text>
-								</SpaceView>
+                  <SpaceView mt={8}>
+                    <Text style={styles.fontStyle('SB', 12, '#fff')}>"김리미"은 2018년 1월, 중견기업에서 사원으로 경력을 시작했습니다. 그 시점에서 그는 직장에서의 초기 적응과 기초적인 업무 숙련도를 쌓아가며, 자신의 아이디어와 창의성을 발휘하고자 했습니다. 이 시기의 그는 높은 에너지를 바탕으로 활발히 활동하며, 새로운 기회를 모색하고 사람들과의 네트워크를 확장하는 데 주력했습니다. 업무에 대한 접근 방식은 실용적이면서도 창의적이었으며, 팀 내에서 주도적인 역할을 자주 맡았고, 주변 동료들과의 협력을 통해 업무를 효율적으로 수행했습...</Text>
+                  </SpaceView>
 
-								<SpaceView mt={20} viewStyle={layoutStyle.rowCenter}>
-									<TouchableOpacity>
-										<LinearGradient
-											colors={['#44B6E5', '#1CDE95']}
-											style={{ flexDirection: 'row', borderRadius: 25, paddingHorizontal: 15, paddingVertical: 10 }}
-											start={{ x: 0, y: 0.3 }}
-											end={{ x: 0.9, y: 0.9 }}
-										>
-											<Image source={ICON.searchWhite} style={styles.iconSquareSize(18)} />
-											<SpaceView ml={5}><Text style={styles.fontStyle('EB', 17, '#fff')}>전체보기</Text></SpaceView>
+                  <SpaceView mt={20} viewStyle={layoutStyle.alignCenter}>
+                    <Text style={styles.fontStyle('SB', 12, '#9DC6DB')}>NickName님의 이야기가 더 궁금한가요?</Text>
+                  </SpaceView>
 
-											<SpaceView ml={5} viewStyle={[layoutStyle.rowBetween, {backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 25, paddingHorizontal: 5, paddingVertical: 3,}]}>
-												<Image source={ICON.cube} style={styles.iconSquareSize(13)} />
-												<SpaceView ml={5}><Text style={styles.fontStyle('R', 8, '#fff')}>20개</Text></SpaceView>
-											</SpaceView>
-										</LinearGradient>
-									</TouchableOpacity>
-								</SpaceView>
+                  <SpaceView mt={20} viewStyle={layoutStyle.rowCenter}>
+                    <TouchableOpacity>
+                      <LinearGradient
+                        colors={['#44B6E5', '#1CDE95']}
+                        style={{ flexDirection: 'row', borderRadius: 25, paddingHorizontal: 15, paddingVertical: 10 }}
+                        start={{ x: 0, y: 0.3 }}
+                        end={{ x: 0.9, y: 0.9 }}
+                      >
+                        <Image source={ICON.searchWhite} style={styles.iconSquareSize(18)} />
+                        <SpaceView ml={5}><Text style={styles.fontStyle('EB', 17, '#fff')}>전체보기</Text></SpaceView>
 
-								<SpaceView mt={30}>
-									<Text style={styles.fontStyle('EB', 20, '#fff')}>더 알아보기</Text>
-									<SpaceView mt={10} viewStyle={[layoutStyle.rowStart, {overflow: 'hidden'}]}>
-										{['데이트 스타일', 'MBTI 비교하기'].map((item, index) => {
+                        <SpaceView ml={5} viewStyle={[layoutStyle.rowBetween, {backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 25, paddingHorizontal: 5, paddingVertical: 3,}]}>
+                          <Image source={ICON.cube} style={styles.iconSquareSize(13)} />
+                          <SpaceView ml={5}><Text style={styles.fontStyle('R', 8, '#fff')}>20개</Text></SpaceView>
+                        </SpaceView>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </SpaceView>
 
-											return (
-												<>
-													<SpaceView mt={5} mr={10} viewStyle={_styles.aiIntroWrap}>
-														<Text style={styles.fontStyle('SB', 16, '#fff')}>{item}</Text>
-														<SpaceView mt={20}>
-															<Text style={styles.fontStyle('R', 10, '#fff')}>영화와 카페에서 즐기는 실내 데이트? 공연, 등산같은 실외 데이트?어떤 데이트를 더 선호할까요?</Text>
-														</SpaceView>
-														<TouchableOpacity
-                            	style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' ,borderRadius: 25, paddingHorizontal: 15, paddingVertical: 5, backgroundColor: '#44B6E5', marginTop: 20, }}
-                            >
-																<Image source={ICON.lockIcon} style={styles.iconSquareSize(18)} />
-																<SpaceView ml={5}><Text style={styles.fontStyle('B', 16, '#fff')}>열어보기</Text></SpaceView>
+                  <SpaceView mt={30}>
+                    <Text style={styles.fontStyle('EB', 20, '#fff')}>더 알아보기</Text>
+                    <SpaceView mt={10} viewStyle={[layoutStyle.rowStart, {overflow: 'hidden'}]}>
+                      {['데이트 스타일', 'MBTI 비교하기'].map((item, index) => {
 
-																<SpaceView ml={5} viewStyle={[layoutStyle.rowBetween, {backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 25, paddingHorizontal: 5, paddingVertical: 3,}]}>
-																	<Image source={ICON.cube} style={styles.iconSquareSize(13)} />
-																	<SpaceView ml={5}><Text style={styles.fontStyle('R', 8, '#fff')}>20개</Text></SpaceView>
-																</SpaceView>
-														</TouchableOpacity>
-													</SpaceView>
-												</>
-											)
-										})}
-									</SpaceView>
-								</SpaceView>
-							</LinearGradient>
+                        return (
+                          <>
+                            <SpaceView mt={5} mr={10} viewStyle={_styles.aiIntroWrap}>
+                              <Text style={styles.fontStyle('SB', 16, '#fff')}>{item}</Text>
+                              <SpaceView mt={20}>
+                                <Text style={styles.fontStyle('R', 10, '#fff')}>영화와 카페에서 즐기는 실내 데이트? 공연, 등산같은 실외 데이트?어떤 데이트를 더 선호할까요?</Text>
+                              </SpaceView>
+                              <TouchableOpacity
+                                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' ,borderRadius: 25, paddingHorizontal: 15, paddingVertical: 5, backgroundColor: '#44B6E5', marginTop: 20, }}
+                              >
+                                  <Image source={ICON.lockIcon} style={styles.iconSquareSize(18)} />
+                                  <SpaceView ml={5}><Text style={styles.fontStyle('B', 16, '#fff')}>열어보기</Text></SpaceView>
 
-              {/******************* 리프활동 *********************/}
+                                  <SpaceView ml={5} viewStyle={[layoutStyle.rowBetween, {backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 25, paddingHorizontal: 5, paddingVertical: 3,}]}>
+                                    <Image source={ICON.cube} style={styles.iconSquareSize(13)} />
+                                    <SpaceView ml={5}><Text style={styles.fontStyle('R', 8, '#fff')}>20개</Text></SpaceView>
+                                  </SpaceView>
+                              </TouchableOpacity>
+                            </SpaceView>
+                          </>
+                        )
+                      })}
+                    </SpaceView>
+                  </SpaceView>
+                </LinearGradient>
+              </SpaceView> */}
+
+              {/* ############################################################################################################
+              ####### 리프활동 영역 
+              ############################################################################################################ */}
               <SpaceView mb={18} mt={18}>
 								<Text style={styles.fontStyle('H', 38, '#fff')}>리프 활동</Text>
 							</SpaceView>
@@ -266,32 +302,32 @@ export const MyHome = (props : Props) => {
 								<SpaceView mt={28}>
 									<SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
 										<Image source={ICON.awardLeft} style={_styles.awardImgStyle} />
-										<Text style={styles.fontStyle('H', 25, '#7AB0C8')}>{memberBase?.auth_acct_cnt}</Text>
+										<Text style={styles.fontStyle('H', 25, '#7AB0C8')}>{data?.member?.auth_acct_cnt}</Text>
 										<Image source={ICON.awardRight} style={_styles.awardImgStyle} />
 									</SpaceView>
 									<SpaceView mt={12} viewStyle={{alignItems: 'center'}}>
 										<Text style={[styles.fontStyle('EB', 15, '#fff'), {textAlign: 'center'}]}>
-											{realTimeData?.auth_percent <= 20 && (
+											{data?.realTimeData?.auth_percent <= 20 && (
 											<>
-												멤버십 인증을 통해 <Text style={styles.fontStyle('EB', 15, '#7AB0C8')}>상위 {realTimeData?.auth_percent}%</Text>의{'\n'}
+												멤버십 인증을 통해 <Text style={styles.fontStyle('EB', 15, '#7AB0C8')}>상위 {data?.realTimeData?.auth_percent}%</Text>의{'\n'}
 												인증 레벨을 획득한 
 												<Text style={styles.fontStyle('EB', 15, '#7AB0C8')}>
-												{realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
-												{(realTimeData?.auth_percent >= 2 && realTimeData?.auth_percent <= 5) && <> VIP </>}
-												{(realTimeData?.auth_percent >= 6 && realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
-												{(realTimeData?.auth_percent >= 11 && realTimeData?.auth_percent <= 15) && <> 최상위 </>}
-												{(realTimeData?.auth_percent >= 16 && realTimeData?.auth_percent <= 20) && <> 상위 </>}
+												{data?.realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
+												{(data?.realTimeData?.auth_percent >= 2 && data?.realTimeData?.auth_percent <= 5) && <> VIP </>}
+												{(data?.realTimeData?.auth_percent >= 6 && data?.realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
+												{(data?.realTimeData?.auth_percent >= 11 && data?.realTimeData?.auth_percent <= 15) && <> 최상위 </>}
+												{(data?.realTimeData?.auth_percent >= 16 && data?.realTimeData?.auth_percent <= 20) && <> 상위 </>}
 												</Text> 
 												회원
 											</>
 											)}
 
-											{realTimeData?.auth_percent >= 21 && (
+											{data?.realTimeData?.auth_percent >= 21 && (
 											<>
-												{(realTimeData?.auth_percent >= 21 && realTimeData?.auth_percent <= 30) && <> 리프에서 월등한 멤버십 인증 회원 </>}
-												{(realTimeData?.auth_percent >= 31 && realTimeData?.auth_percent <= 50) && <> 리프에서 우월한 멤버십 인증 회원 </>}
-												{(realTimeData?.auth_percent >= 51 && realTimeData?.auth_percent <= 70) && <> 리프에서 경쟁력 있는 멤버십 인증 회원 </>}
-												{(realTimeData?.auth_percent >= 71 && realTimeData?.auth_percent <= 100) && <> 믿을 수 있는 멤버십 인증 회원 </>}
+												{(data?.realTimeData?.auth_percent >= 21 && data?.realTimeData?.auth_percent <= 30) && <> 리프에서 월등한 멤버십 인증 회원 </>}
+												{(data?.realTimeData?.auth_percent >= 31 && data?.realTimeData?.auth_percent <= 50) && <> 리프에서 우월한 멤버십 인증 회원 </>}
+												{(data?.realTimeData?.auth_percent >= 51 && data?.realTimeData?.auth_percent <= 70) && <> 리프에서 경쟁력 있는 멤버십 인증 회원 </>}
+												{(data?.realTimeData?.auth_percent >= 71 && data?.realTimeData?.auth_percent <= 100) && <> 믿을 수 있는 멤버십 인증 회원 </>}
 											</>
 											)}
 										</Text>
@@ -299,87 +335,73 @@ export const MyHome = (props : Props) => {
 
 									{/* 인증 목록 영역 */}
 									<SpaceView mt={15} viewStyle={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
-									{mbrProfileAuthList.map((item, index) => {
-										let icon = ICON.jobIcon;
+                    {data?.authList.map((item, index) => {
+                      let icon = ICON.jobIcon;
 
-										if(item.common_code == 'EDU') {
-										icon = ICON.eduIcon;
-										} else if(item.common_code == 'INCOME') {
-										icon = ICON.incomeIcon;
-										} else if(item.common_code == 'ASSET') {
-										if(item.auth_sub_code == 'REALTY') {
-											icon = ICON.realtyIcon;
-										} else {
-											icon = ICON.bankIcon;
-										}
-										} else if(item.common_code == 'SNS') {
-										icon = ICON.snsIcon;
-										} else if(item.common_code == 'VEHICLE') {
-										icon = ICON.vehicleIcon;
-										}
-										
-										return (
-										<SpaceView viewStyle={_styles.authItemWrap}>
-											<Image source={icon} style={styles.iconSquareSize(23)} />
-											<SpaceView ml={5}><Text style={styles.fontStyle('SB', 11, '#fff')}>{item.auth_type_name}</Text></SpaceView>
-										</SpaceView>
-										)
-									})}
+                      if(item.common_code == 'EDU') {
+                        icon = ICON.eduIcon;
+                      } else if(item.common_code == 'INCOME') {
+                        icon = ICON.incomeIcon;
+                      } else if(item.common_code == 'ASSET') {
+                      if(item.auth_sub_code == 'REALTY') {
+                        icon = ICON.realtyIcon;
+                      } else {
+                        icon = ICON.bankIcon;
+                      }
+                      } else if(item.common_code == 'SNS') {
+                        icon = ICON.snsIcon;
+                      } else if(item.common_code == 'VEHICLE') {
+                        icon = ICON.vehicleIcon;
+                      }
+                      
+                      return isEmptyData(item.auth_type_name) && (
+                        <SpaceView viewStyle={_styles.authItemWrap}>
+                          <Image source={icon} style={styles.iconSquareSize(23)} />
+                          <SpaceView ml={5}><Text style={styles.fontStyle('SB', 11, '#fff')}>{item.auth_type_name}</Text></SpaceView>
+                        </SpaceView>
+                      )
+                    })}
 									</SpaceView>
           			</SpaceView>
 
 								{/* 마일스톤 영역 */}
 								<SpaceView mt={20}>
 									<SpaceView>
-									  <Text style={styles.fontStyle('EB', 15, '#fff')}>Nickname님의 여정</Text>
+									  <Text style={styles.fontStyle('EB', 15, '#fff')}>{data?.member?.nickname}님의 여정</Text>
 									  <SpaceView mt={8}>
-
-                      {/************** 임시 텍스트 ************/}
                       <Text style={styles.fontStyle('B', 12, '#fff')}>
-                        <Text style={styles.fontStyle('B', 12, '#7AB0C8')}>
-                          상위5%의 프리미엄 
-                        </Text>
-                        회원이신&nbsp;
-                        <Text style={styles.fontStyle('B', 12, '#7AB0C8')}>
-                          닉네임
-                        </Text>
-                        님의{'\n'}
-                        멤버십 인증 과정 한눈에 보기
+                        {data.realTimeData?.auth_percent <= 20 && (
+                          <>
+                            <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>
+                              상위{data.realTimeData?.auth_percent}%의 
+                              {data.realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
+                              {(data.realTimeData?.auth_percent >= 2 && data.realTimeData?.auth_percent <= 5) && <> VIP </>}
+                              {(data.realTimeData?.auth_percent >= 6 && data.realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
+                              {(data.realTimeData?.auth_percent >= 11 && data.realTimeData?.auth_percent <= 15) && <> 최상위 </>}
+                              {(data.realTimeData?.auth_percent >= 16 && data.realTimeData?.auth_percent <= 20) && <> 상위 </>}
+                            </Text> 
+                            회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{data?.member?.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
+                          </>
+                        )}
+                        {data.realTimeData?.auth_percent >= 21 && (
+                          <>
+                            <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>인증</Text> 회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{data?.member?.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
+                          </>
+                        )}
                       </Text>
-
-										  <Text style={styles.fontStyle('B', 12, '#fff')}>
-										  {realTimeData?.auth_percent <= 20 && (
-                        <>
-                          <Text style={styles.fontStyle('B', 12, '#7AB0C8')}>
-                            상위{realTimeData?.auth_percent}%의 
-                            {realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
-                            {(realTimeData?.auth_percent >= 2 && realTimeData?.auth_percent <= 5) && <> VIP </>}
-                            {(realTimeData?.auth_percent >= 6 && realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
-                            {(realTimeData?.auth_percent >= 11 && realTimeData?.auth_percent <= 15) && <> 최상위 </>}
-                            {(realTimeData?.auth_percent >= 16 && realTimeData?.auth_percent <= 20) && <> 상위 </>}
-                          </Text>
-                          회원이신 <Text style={styles.fontStyle('B', 12, '#7AB0C8')}>{memberBase.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
-                        </>
-                      )}
-										  {realTimeData?.auth_percent >= 21 && (
-                        <>
-                          <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>인증</Text> 회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{memberBase.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
-                        </>
-										  )}
-										  </Text>
 									  </SpaceView>
 									</SpaceView>
 
-                  <SpaceView viewStyle={{flexDirection: 'row',alignItems: 'center'}}>
+                  {/* <SpaceView viewStyle={{flexDirection: 'row',alignItems: 'center'}}>
                     <SpaceView viewStyle={{backgroundColor: '#7AB0C8', paddingVertical: 5, paddingHorizontal: 20, borderRadius: 50,}}>
                       <Text style={styles.fontStyle('B', 12, '#FFF')}>23.05</Text>
                     </SpaceView>
                     <SpaceView viewStyle={{backgroundColor: '#7AB0C8', height: 5,flex: 1}} />
-                  </SpaceView>
+                  </SpaceView> */}
 
 									<SpaceView mt={10} viewStyle={{alignItems: 'flex-start', justifyContent: 'flex-start', flexDirection: 'row'}}>
                     <FlatList
-                      data={mbrProfileAuthList}
+                      data={data?.authList}
                       keyExtractor={(item, index) => index.toString()}
                       showsHorizontalScrollIndicator={false}
                       removeClippedSubviews={true}
@@ -407,7 +429,7 @@ export const MyHome = (props : Props) => {
                         icon = ICON.vehicleIcon;
                       }
 
-                      return (
+                      return isEmptyData(item.auth_level) && (
                         <SpaceView key={index} viewStyle={_styles.mileSlideItem}>
                           <SpaceView viewStyle={{width: '70%'}}>
                             <LinearGradient
@@ -439,11 +461,12 @@ export const MyHome = (props : Props) => {
 							</LinearGradient>
 
               {/******************* 바이브 *********************/}
-              <LinearGradient
+              {/* <LinearGradient
                 colors={['rgba(63,25,104,0.5)', 'rgba(59,95,212,0.5)']}
                 style={{ paddingHorizontal: 10, paddingVertical: 40, marginTop: 30, borderRadius: 10 }}
                 start={{ x: 1, y: 0 }}
-                end={{ x: 1, y: 1 }} >
+                end={{ x: 1, y: 1 }}
+              >
                 <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
                   <LinearGradient
                     colors={['rgba(122,122,122,0.5)', 'rgba(122,122,122,0.1)', 'rgba(122,122,122,0.1)']}
@@ -454,11 +477,11 @@ export const MyHome = (props : Props) => {
                     <SpaceView viewStyle={{alignItems: 'center'}}>
                       <SpaceView viewStyle={{alignItems: 'center'}}>
                         <Text style={styles.fontStyle('SB', 9, '#fff')}>보낸 바이브 전체 중</Text>
-                        <Text style={styles.fontStyle('H', 23, '#fff')}>45%</Text>
+                        <Text style={styles.fontStyle('H', 23, '#fff')}>{data?.realTimeData?.acc_req_best_face_percent}%</Text>
                       </SpaceView>
 
                       <SpaceView mt={10} viewStyle={{backgroundColor: 'rgba(0,0,0,0.3)', width: 120, paddingVertical: 7, alignItems: 'center', borderRadius: 10}}>
-                        <Text style={styles.fontStyle('B', 12, '#fff')}>감각적인 패션</Text>
+                        <Text style={styles.fontStyle('B', 12, '#fff')}>{data?.realTimeData?.acc_req_best_face_code}</Text>
                       </SpaceView>                
                     </SpaceView>
                     <SpaceView mt={25}>
@@ -469,7 +492,7 @@ export const MyHome = (props : Props) => {
                             <SpaceView viewStyle={{borderRadius:50, borderWidth:1, borderColor: '#A8A8A8', width: 30, height: 30,}}></SpaceView>
                             <SpaceView viewStyle={{borderRadius:50, borderWidth:1, borderColor: '#A8A8A8', width: 30, height: 30,}}></SpaceView>
                         </SpaceView>
-                        <SpaceView viewStyle={{backgroundColor: '#000', borderRadius: 50,alignItems:'center', justifyContent: 'center', paddingHorizontal: 15, paddingVertical: 5}}>
+                        <SpaceView viewStyle={{backgroundColor: '#000', borderRadius: 50, alignItems:'center', justifyContent: 'center', paddingHorizontal: 15, paddingVertical: 5}}>
                           <Text style={styles.fontStyle('R', 10, '#fff')}>99+</Text>
                         </SpaceView>
                       </SpaceView>
@@ -485,11 +508,11 @@ export const MyHome = (props : Props) => {
                     <SpaceView viewStyle={{alignItems: 'center'}}>
                       <SpaceView viewStyle={{alignItems: 'center'}}>
                         <Text style={styles.fontStyle('SB', 9, '#fff')}>받은 바이브 전체 중</Text>
-                        <Text style={styles.fontStyle('H', 23, '#fff')}>63%</Text>
+                        <Text style={styles.fontStyle('H', 23, '#fff')}>{data?.realTimeData?.acc_res_best_face_percent}%</Text>
                       </SpaceView>
 
                       <SpaceView mt={10} viewStyle={{backgroundColor: 'rgba(0,0,0,0.3)', width: 120, paddingVertical: 7, alignItems: 'center', borderRadius: 10}}>
-                        <Text style={styles.fontStyle('B', 12, '#fff')}>스마트한 전문성</Text>
+                        <Text style={styles.fontStyle('B', 12, '#fff')}>{data?.realTimeData?.acc_res_best_face_code}</Text>
                       </SpaceView>                
                     </SpaceView>
                     <SpaceView mt={25}>
@@ -507,100 +530,103 @@ export const MyHome = (props : Props) => {
                     </SpaceView>
                   </LinearGradient>
                 </SpaceView>
-              </LinearGradient>
+              </LinearGradient> */}
 
               {/******************* 스토리 *********************/}
-              <SpaceView mb={18} mt={30}>
-								<Text style={styles.fontStyle('H', 38, '#fff')}>스토리</Text>
-							</SpaceView>
-
-              <SpaceView viewStyle={_styles.storyWrap}>
-                {/* 작성한 글 / 공유한 좋아요 */}
-                <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                  <SpaceView mr={5} viewStyle={_styles.storySumCont}>
-                    <SpaceView viewStyle={_styles.storySumTit}>
-                      <Text style={styles.fontStyle('B', 12, '#FFF')}>작성한 글</Text>
-                    </SpaceView>
-                    <SpaceView viewStyle={_styles.storySumDesc}>
-                      <Text style={styles.fontStyle('B', 9, '#FFF')}>Nickname님이 작성한 게시글</Text>
-                      <Text style={[styles.fontStyle('H', 24, '#FFF'), {marginTop: 5}]}>45건</Text>
-                      <SpaceView mt={5} viewStyle={{backgroundColor: 'rgba(0, 0, 0, .6)', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 30}}>
-                        <Text style={styles.fontStyle('B', 10, '#FFF')}>작성 댓글 100건</Text>
-                      </SpaceView>
-                    </SpaceView>
-                  </SpaceView>
-
-                  <SpaceView ml={5} viewStyle={_styles.storySumCont}>
-                    <SpaceView viewStyle={_styles.storySumTit}>
-                      <Text style={styles.fontStyle('B', 12, '#FFF')}>공유한 좋아요</Text>
-                    </SpaceView>
-                    <SpaceView viewStyle={_styles.storySumDesc}>
-                      <Text style={styles.fontStyle('B', 9, '#FFF')}>Nickname님이 보낸 좋아요</Text>
-                      <Text style={[styles.fontStyle('H', 24, '#FFF'), {marginTop: 5}]}>63건</Text>
-                      <SpaceView mt={5} viewStyle={{backgroundColor: 'rgba(0, 0, 0, .6)', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 30}}>
-                        <Text style={styles.fontStyle('B', 10, '#FFF')}>받은 좋아요 200건</Text>
-                      </SpaceView>
-                    </SpaceView>
-                  </SpaceView>
+              <SpaceView viewStyle={{display: 'none'}}>
+                <SpaceView mb={18} mt={30}>
+                  <Text style={styles.fontStyle('H', 38, '#fff')}>스토리</Text>
                 </SpaceView>
 
-                {/* 스토리 목록 */}
-                <SpaceView mt={30}>
-                  <FlatList
-                    data={tempStoryData}
-                    keyExtractor={(item, index) => index.toString()}
-                    showsHorizontalScrollIndicator={false}
-                    removeClippedSubviews={true}
-                    decelerationRate="fast"
-                    pagingEnabled={true}
-                    snapToInterval={width * 0.75 + 10}
-                    renderItem={({ item, index }) => {
-                      return (
-                        <SpaceView viewStyle={_styles.storyListCont}>
-                          <SpaceView viewStyle={layoutStyle.rowBetween}>
-                            <Text style={styles.fontStyle('B', 16, '#000')}>{item?.nickname}</Text>
-                            <SpaceView viewStyle={{backgroundColor: '#FFFF5D', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 30,}}>
-                              <Text style={styles.fontStyle('B', 10, '#000')}>
-                                {item?.keyword_code == 'PLACE' ? '나들이명소' 
-                                  : item?.keyword_code == 'OTT' ? 'OTT뭐볼까?' 
-                                  : '이력서·면접'}
+                <SpaceView viewStyle={_styles.storyWrap}>
+                  {/* 작성한 글 / 공유한 좋아요 */}
+                  <SpaceView viewStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <SpaceView mr={5} viewStyle={_styles.storySumCont}>
+                      <SpaceView viewStyle={_styles.storySumTit}>
+                        <Text style={styles.fontStyle('B', 12, '#FFF')}>작성한 글</Text>
+                      </SpaceView>
+                      <SpaceView viewStyle={_styles.storySumDesc}>
+                        <Text style={styles.fontStyle('B', 9, '#FFF')}>Nickname님이 작성한 게시글</Text>
+                        <Text style={[styles.fontStyle('H', 24, '#FFF'), {marginTop: 5}]}>45건</Text>
+                        <SpaceView mt={5} viewStyle={{backgroundColor: 'rgba(0, 0, 0, .6)', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 30}}>
+                          <Text style={styles.fontStyle('B', 10, '#FFF')}>작성 댓글 100건</Text>
+                        </SpaceView>
+                      </SpaceView>
+                    </SpaceView>
+
+                    <SpaceView ml={5} viewStyle={_styles.storySumCont}>
+                      <SpaceView viewStyle={_styles.storySumTit}>
+                        <Text style={styles.fontStyle('B', 12, '#FFF')}>공유한 좋아요</Text>
+                      </SpaceView>
+                      <SpaceView viewStyle={_styles.storySumDesc}>
+                        <Text style={styles.fontStyle('B', 9, '#FFF')}>Nickname님이 보낸 좋아요</Text>
+                        <Text style={[styles.fontStyle('H', 24, '#FFF'), {marginTop: 5}]}>63건</Text>
+                        <SpaceView mt={5} viewStyle={{backgroundColor: 'rgba(0, 0, 0, .6)', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 30}}>
+                          <Text style={styles.fontStyle('B', 10, '#FFF')}>받은 좋아요 200건</Text>
+                        </SpaceView>
+                      </SpaceView>
+                    </SpaceView>
+                  </SpaceView>
+
+                  {/* 스토리 목록 */}
+                  <SpaceView mt={30}>
+                    <FlatList
+                      data={tempStoryData}
+                      keyExtractor={(item, index) => index.toString()}
+                      showsHorizontalScrollIndicator={false}
+                      removeClippedSubviews={true}
+                      decelerationRate="fast"
+                      pagingEnabled={true}
+                      snapToInterval={width * 0.75 + 10}
+                      renderItem={({ item, index }) => {
+                        return (
+                          <SpaceView viewStyle={_styles.storyListCont}>
+                            <SpaceView viewStyle={layoutStyle.rowBetween}>
+                              <Text style={styles.fontStyle('B', 16, '#000')}>{item?.nickname}</Text>
+                              <SpaceView viewStyle={{backgroundColor: '#FFFF5D', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 30,}}>
+                                <Text style={styles.fontStyle('B', 10, '#000')}>
+                                  {item?.keyword_code == 'PLACE' ? '나들이명소' 
+                                    : item?.keyword_code == 'OTT' ? 'OTT뭐볼까?' 
+                                    : '이력서·면접'}
+                                </Text>
+                              </SpaceView>
+                            </SpaceView>
+
+                            <SpaceView viewStyle={_styles.storyListDesc(item?.keyword_code == 'RESUME')}>
+                              {item?.keyword_code == 'RESUME' &&
+                                <SpaceView viewStyle={_styles.choicePickCont}>
+                                  <Text style={styles.fontStyle('B', 10, '#FF516F')}>초이스픽</Text>
+                                  <SpaceView ml={15} viewStyle={[layoutStyle.rowStart, {backgroundColor: '#FFF', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 30}]}>
+                                    <Image source={ICON.cube} style={styles.iconSquareSize(10)} />
+                                    <Text style={styles.fontStyle('B', 10, '#000')}>15</Text>
+                                  </SpaceView>
+                                </SpaceView>
+                              }
+
+                              <Text
+                                numberOfLines={2}
+                                ellipsizeMode="tail" 
+                                style={[styles.fontStyle('B', 12, item?.keyword_code == 'RESUME' ? '#FFF' : '#000')]}>
+                                {item?.contents}
                               </Text>
                             </SpaceView>
-                          </SpaceView>
 
-                          <SpaceView viewStyle={_styles.storyListDesc(item?.keyword_code == 'RESUME')}>
-                            {item?.keyword_code == 'RESUME' &&
-                              <SpaceView viewStyle={_styles.choicePickCont}>
-                                <Text style={styles.fontStyle('B', 10, '#FF516F')}>초이스픽</Text>
-                                <SpaceView ml={15} viewStyle={[layoutStyle.rowStart, {backgroundColor: '#FFF', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 30}]}>
-                                  <Image source={ICON.cube} style={styles.iconSquareSize(10)} />
-                                  <Text style={styles.fontStyle('B', 10, '#000')}>15</Text>
-                                </SpaceView>
+                            <SpaceView viewStyle={layoutStyle.rowEnd}>
+                              <SpaceView mr={15} viewStyle={layoutStyle.rowCenter}>
+                                <Image source={ICON.story_heartBlack} style={[styles.iconSquareSize(20), {marginRight: 5}]} resizeMode='contain' />
+                                <Text style={styles.fontStyle('B', 12, '#000')}>{item?.like_cnt}</Text>
                               </SpaceView>
-                            }
-
-                            <Text
-                              numberOfLines={2}
-                              ellipsizeMode="tail" 
-                              style={[styles.fontStyle('B', 12, item?.keyword_code == 'RESUME' ? '#FFF' : '#000')]}>
-                              {item?.contents}
-                            </Text>
-                          </SpaceView>
-
-                          <SpaceView viewStyle={layoutStyle.rowEnd}>
-                            <SpaceView mr={15} viewStyle={layoutStyle.rowCenter}>
-                              <Image source={ICON.story_heartBlack} style={[styles.iconSquareSize(20), {marginRight: 5}]} resizeMode='contain' />
-                              <Text style={styles.fontStyle('B', 12, '#000')}>{item?.like_cnt}</Text>
-                            </SpaceView>
-                            <SpaceView viewStyle={layoutStyle.rowCenter}>
-                              <Image source={ICON.replayBlack} style={[styles.iconSquareSize(20), {marginRight: 5}]} resizeMode='contain' />
-                              <Text style={styles.fontStyle('B', 12, '#000')}>{item?.reply_cnt}</Text>
+                              <SpaceView viewStyle={layoutStyle.rowCenter}>
+                                <Image source={ICON.replayBlack} style={[styles.iconSquareSize(20), {marginRight: 5}]} resizeMode='contain' />
+                                <Text style={styles.fontStyle('B', 12, '#000')}>{item?.reply_cnt}</Text>
+                              </SpaceView>
                             </SpaceView>
                           </SpaceView>
-                        </SpaceView>
-                      )}}
-                    />
+                        )}}
+                      />
+                  </SpaceView>
                 </SpaceView>
+
               </SpaceView>
 
 						</SpaceView>

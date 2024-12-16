@@ -682,7 +682,12 @@ export default function MatchDetail(props: Props) {
 
   // ############################################################ 마이홈 이동
   const goMyHome = async () => {
-    navigation.navigate(STACK.COMMON, { screen: 'MyHome' });
+    navigation.navigate(STACK.COMMON, { 
+      screen: 'MyHome',
+      params: {
+        trgtMemberSeq: trgtMemberSeq,
+      }
+    });
   };
 
   // ############################################################ 마이홈 노티피케이션 노출 설정

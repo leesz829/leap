@@ -50,12 +50,6 @@ export const Vibe: FC<Props> = (props) => {
   const [liveModalVisible, setLiveModalVisible] = useState(false); // Live 팝업 Modal
   const [isPopVisible, setIsPopVisible] = useState(false);
 
-  // 선택 인상 코드
-  const [pickFaceCode, setPickFaceCode] = useState('');
-
-  // 선택 인상 점수
-  const [pickProfileScore, setPickProfileScore] = useState('');
-
   // 라이브 관련 데이터
   const [data, setData] = useState<any>({
     live_member_info: LiveMemberInfo,
@@ -84,20 +78,11 @@ export const Vibe: FC<Props> = (props) => {
 
   // 인상 선택 팝업 열기
   const openImpressPop = async (pick:string, code:string, profileScore:string) => {
+
     if(isLoad) {
-      setPickFaceCode(code);
       setPickFace(pick);
-      setPickProfileScore(profileScore);
 
-      insertLiveMatch(pick, code, profileScore);
-
-      /* if(pick == 'SKIP') {
-        insertLiveMatch(pick, code, profileScore);
-      } else {
-        setLiveModalVisible(false);
-        //setIsPopVisible(true);
-        //insertLiveMatch();
-      } */
+      insertLiveMatch(code, profileScore);
     }
   };
 
@@ -117,7 +102,7 @@ export const Vibe: FC<Props> = (props) => {
   const approvalProfileSeq = data.live_member_info?.approval_profile_seq;
 
   // ####################################################################################### 라이브 등록
-  const insertLiveMatch = async (pick:string, code:string, profileScore:string) => {
+  const insertLiveMatch = async (code:string, profileScore:string) => {
 
     // 중복 클릭 방지 설정
     if(isClickable) {
@@ -125,8 +110,8 @@ export const Vibe: FC<Props> = (props) => {
 
       try {
         const body = {
-          profile_score: pick == 'SKIP' ? profileScore : pickProfileScore,
-          face_code: pick == 'SKIP' ? code : pickFaceCode,
+          profile_score: profileScore,
+          face_code: code,
           member_seq: liveMemberSeq,
           approval_profile_seq: approvalProfileSeq,
           newYn: 'Y',

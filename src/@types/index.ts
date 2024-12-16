@@ -95,6 +95,9 @@ export type StackParamList = {
   Profile_Auth: undefined;
   Profile_Interest: undefined;
   Profile_Introduce: undefined;
+  MyHome: {
+    trgtMemberSeq: Number;
+  };
 };
 
 export type BottomParamList = {

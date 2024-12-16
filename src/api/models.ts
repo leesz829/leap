@@ -124,6 +124,9 @@ import {
   SAVE_MEMBER_INTERVIEW,
   GET_CCS_RANDOM_SCNR_TMPLT_LIST,
   INSERT_CCS_MEMBER_ANS,
+  JOIN_MEMBER_MYHOME,
+  GET_MEMBER_MYHOME_VISIT_LIST,
+  INSERT_MEMBER_MYHOME_VISIT,
 } from './route';
 
 /* ========================================================================================================
@@ -628,9 +631,6 @@ export async function social_reward_pass_add(body: {
 }) {
   return send(SOCIAL_REWARD_PASS_ADD, 'POST', body, true, false);
 }
-
-
-
 
 
 /* ========================================================================================================
@@ -1256,3 +1256,19 @@ export async function insert_ccs_member_ans(body: {
 }) {
   return send(INSERT_CCS_MEMBER_ANS, 'POST', body, true, false);
 };
+
+
+
+/* ========================================================================================================
+==================================================== 마이홈
+======================================================================================================== */
+
+// 회원 마이홈 화면에 들어간다.
+export async function join_member_myhome(body: {
+  trgt_member_seq: string;
+}) {
+  return send(JOIN_MEMBER_MYHOME, 'POST', body, true, false);
+}
+
+
+

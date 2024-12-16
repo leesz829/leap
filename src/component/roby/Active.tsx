@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
 import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
@@ -13,13 +13,31 @@ import RecommendBanner from 'component/common/RecommendBanner';
 import PopupGradeGuide from 'component/roby/PopupGradeGuide';
 
 
+/* ################################################################################################################
+###################################################################################################################
+###### 마이홈 활동 Component
+###################################################################################################################
+################################################################################################################ */
+
+interface Props {
+  memberData: any; // 회원 정보
+  authList: any; // 인증 목록
+  realTimeData: any; // 실시간 정보
+  vibeMatchList: any; // 바이브 매칭 목록
+  fnRewardPass: (type:string) => void; // 
+  onGradeGudePopup: () => void; // 결과 콜백 함수
+  onAiIntroPopup: () => void; // 결과 콜백 함수
+}
 
 const { width, height } = Dimensions.get('window');
 
-const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, onGradeGudePopup, onAiIntroPopup }) => {
+//const Active = React.memo(({ memberBase, authList, realTimeData, vibeMatchList, fnRewardPass, onGradeGudePopup, onAiIntroPopup }) => {
+const Active: FC<Props> = React.memo((props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
-  const [currentRespectType, setCurrentRespectType] = React.useState(memberBase?.respect_grade); // repsect 등급 타입
+  const [currentRespectType, setCurrentRespectType] = React.useState(props.memberData?.respect_grade); // repsect 등급 타입
+
+  const [vibeSelectType, setVibeSelectType] = React.useState('REQ'); // 선택한 마이 바이브 유형(보낸 바이브, 받은바이브)
 
   const respectGradeList = [
     {type: 'MEMBER', freeCnt: 0, cubeCnt: 0, megaCubeCnt: 0},
@@ -59,8 +77,10 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
         end={{ x: 0, y: 0.3 }}
       >
 
-        {/* ################################################################################ AI 소개글 영역 */}
-        <LinearGradient
+        {/* ############################################################################################################
+        ####### AI 소개글 영역
+        ############################################################################################################ */}
+        {/* <LinearGradient
           colors={['rgba(65,25,104,0.5)', 'rgba(59,95,212,0.5)']}
           style={{ borderRadius: 10, paddingHorizontal: 10, paddingVertical: 18, marginBottom: 20 }}
           start={{ x: 0, y: 0.3 }}
@@ -77,7 +97,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
           </SpaceView>
 
           <SpaceView mt={25} viewStyle={layoutStyle.rowCenter}>
-            <TouchableOpacity onPress={onAiIntroPopup}>
+            <TouchableOpacity onPress={props.onAiIntroPopup}>
               <LinearGradient
                 colors={['#44B6E5', '#1CDE95']}
                 style={{ flexDirection: 'row', borderRadius: 25, paddingHorizontal: 15, paddingVertical: 10 }}
@@ -89,10 +109,11 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
               </LinearGradient>
             </TouchableOpacity>
           </SpaceView>
-        </LinearGradient>
+        </LinearGradient> */}
 
-
-        {/* ################################################################################ 리프로운 매너 생활 영역 */}
+        {/* ############################################################################################################
+        ####### 리프로운 매너 생활 영역
+        ############################################################################################################ */}
         <LinearGradient
           colors={['rgba(65,25,104,0.5)', 'rgba(59,95,212,0.5)']}
           style={{ borderRadius: 10, paddingHorizontal: 10, paddingVertical: 10 }}
@@ -106,10 +127,10 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
 
           <SpaceView mt={20} viewStyle={_styles.respectTabWrap}>
             {respectGradeList.map((item, index) => (
-              <TouchableOpacity onPress={() => (setCurrentRespectType(item.type))} style={_styles.respectTabItem((memberBase?.respect_grade == 'UNKNOWN' && item.type == 'MEMBER') || (currentRespectType == item.type))}>
+              <TouchableOpacity onPress={() => (setCurrentRespectType(item.type))} style={_styles.respectTabItem((props.memberData?.respect_grade == 'UNKNOWN' && item.type == 'MEMBER') || (currentRespectType == item.type))}>
                 <Text style={[_styles.respectText(currentRespectType == item.type)]}>{item.type}</Text>
 
-                {((memberBase?.respect_grade == 'UNKNOWN' && item.type == 'MEMBER') || (memberBase?.respect_grade == item.type)) && (
+                {((props.memberData?.respect_grade == 'UNKNOWN' && item.type == 'MEMBER') || (props.memberData?.respect_grade == item.type)) && (
                   <SpaceView viewStyle={_styles.respectTabCurrentWrap}>
                     <SpaceView viewStyle={_styles.respectTabCurrentMark}><Text style={styles.fontStyle('R', 8, '#8BAAFF')}>현재 등급</Text></SpaceView>
                   </SpaceView>
@@ -127,7 +148,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
 
               let isBtnDisabled = false;
 
-              if(item == 'FREE' || (item == 'CUBE' && realTimeData.reward_pass_cnt > 0) || (item == 'MEGACUBE' && realTimeData.reward_royal_pass_cnt > 0)) {
+              if(item == 'FREE' || (item == 'CUBE' && props.realTimeData.reward_pass_cnt > 0) || (item == 'MEGACUBE' && props.realTimeData.reward_royal_pass_cnt > 0)) {
                 isBtnDisabled = true;
               }
 
@@ -150,12 +171,12 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
                     {item == 'MEGACUBE' && ( <Image source={ICON.respectMegaCube} style={styles.iconSquareSize(60)} /> )}
                   </SpaceView>
 
-                  {memberBase?.respect_grade == currentRespectType && (
+                  {props.memberData?.respect_grade == currentRespectType && (
                     <TouchableOpacity
                       disabled={isBtnDisabled}
                       style={_styles.respectBtnWrap(item, isBtnDisabled)}
                       onPress={() => {
-                        fnRewardPass(item == 'CUBE' ? 'PASS' : 'ROYAL_PASS');
+                        props.fnRewardPass(item == 'CUBE' ? 'PASS' : 'ROYAL_PASS');
                       }}>
 
                       {item == 'FREE' && <Text style={styles.fontStyle('B', 12, '#fff')}>적용중</Text>}
@@ -176,7 +197,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
           <SpaceView mt={20} viewStyle={{alignItems: 'flex-end'}}>
             <TouchableOpacity
               style={_styles.respectBtn}
-              onPress={onGradeGudePopup}
+              onPress={props.onGradeGudePopup}
             >
               <Text style={styles.fontStyle('B', 11, '#fff')}>등급 관리하기</Text>
               <Text style={styles.fontStyle('B', 11, '#fff')}>{'>'}</Text>
@@ -184,7 +205,9 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
           </SpaceView>
         </LinearGradient>
 
-        {/* ################################################################################ 멤버십 레벨 영역 */}
+        {/* ############################################################################################################
+        ####### 멤버십 레벨 영역 
+        ############################################################################################################ */}
         <LinearGradient
           colors={['rgba(65,25,104,0.3)', 'rgba(59,95,212,0.4)']}
           style={{ paddingHorizontal: 10, paddingVertical: 20, marginTop: 20, borderRadius: 10 }}
@@ -198,32 +221,32 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
           <SpaceView mt={28}>
             <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
               <Image source={ICON.awardLeft} style={_styles.awardImgStyle} />
-              <Text style={styles.fontStyle('H', 25, '#7AB0C8')}>{memberBase?.auth_acct_cnt}</Text>
+              <Text style={styles.fontStyle('H', 25, '#7AB0C8')}>{props.memberData?.auth_acct_cnt}</Text>
               <Image source={ICON.awardRight} style={_styles.awardImgStyle} />
             </SpaceView>
             <SpaceView mt={12} viewStyle={{alignItems: 'center'}}>
               <Text style={[styles.fontStyle('EB', 15, '#fff'), {textAlign: 'center'}]}>
-                {realTimeData?.auth_percent <= 20 && (
+                {props.realTimeData?.auth_percent <= 20 && (
                   <>
-                    멤버십 인증을 통해 <Text style={styles.fontStyle('EB', 15, '#7AB0C8')}>상위 {realTimeData?.auth_percent}%</Text>의{'\n'}
+                    멤버십 인증을 통해 <Text style={styles.fontStyle('EB', 15, '#7AB0C8')}>상위 {props.realTimeData?.auth_percent}%</Text>의{'\n'}
                     인증 레벨을 획득한 
                     <Text style={styles.fontStyle('EB', 15, '#7AB0C8')}>
-                      {realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
-                      {(realTimeData?.auth_percent >= 2 && realTimeData?.auth_percent <= 5) && <> VIP </>}
-                      {(realTimeData?.auth_percent >= 6 && realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
-                      {(realTimeData?.auth_percent >= 11 && realTimeData?.auth_percent <= 15) && <> 최상위 </>}
-                      {(realTimeData?.auth_percent >= 16 && realTimeData?.auth_percent <= 20) && <> 상위 </>}
+                      {props.realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
+                      {(props.realTimeData?.auth_percent >= 2 && props.realTimeData?.auth_percent <= 5) && <> VIP </>}
+                      {(props.realTimeData?.auth_percent >= 6 && props.realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
+                      {(props.realTimeData?.auth_percent >= 11 && props.realTimeData?.auth_percent <= 15) && <> 최상위 </>}
+                      {(props.realTimeData?.auth_percent >= 16 && props.realTimeData?.auth_percent <= 20) && <> 상위 </>}
                     </Text> 
                     회원
                   </>
                 )}
 
-                {realTimeData?.auth_percent >= 21 && (
+                {props.realTimeData?.auth_percent >= 21 && (
                   <>
-                    {(realTimeData?.auth_percent >= 21 && realTimeData?.auth_percent <= 30) && <> 리프에서 월등한 멤버십 인증 회원 </>}
-                    {(realTimeData?.auth_percent >= 31 && realTimeData?.auth_percent <= 50) && <> 리프에서 우월한 멤버십 인증 회원 </>}
-                    {(realTimeData?.auth_percent >= 51 && realTimeData?.auth_percent <= 70) && <> 리프에서 경쟁력 있는 멤버십 인증 회원 </>}
-                    {(realTimeData?.auth_percent >= 71 && realTimeData?.auth_percent <= 100) && <> 믿을 수 있는 멤버십 인증 회원 </>}
+                    {(props.realTimeData?.auth_percent >= 21 && props.realTimeData?.auth_percent <= 30) && <> 리프에서 월등한 멤버십 인증 회원 </>}
+                    {(props.realTimeData?.auth_percent >= 31 && props.realTimeData?.auth_percent <= 50) && <> 리프에서 우월한 멤버십 인증 회원 </>}
+                    {(props.realTimeData?.auth_percent >= 51 && props.realTimeData?.auth_percent <= 70) && <> 리프에서 경쟁력 있는 멤버십 인증 회원 </>}
+                    {(props.realTimeData?.auth_percent >= 71 && props.realTimeData?.auth_percent <= 100) && <> 믿을 수 있는 멤버십 인증 회원 </>}
                   </>
                 )}
               </Text>
@@ -231,7 +254,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
 
             {/* 인증 목록 영역 */}
             <SpaceView mt={15} viewStyle={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
-              {authList.map((item, index) => {
+              {props.authList.map((item, index) => {
                 let icon = ICON.jobIcon;
 
                 if(item.common_code == 'EDU') {
@@ -267,22 +290,22 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
               <Text style={styles.fontStyle('EB', 15, '#fff')}>마일스톤</Text>
               <SpaceView mt={8}>
                 <Text style={styles.fontStyle('SB', 11, '#fff')}>
-                  {realTimeData?.auth_percent <= 20 && (
+                  {props.realTimeData?.auth_percent <= 20 && (
                     <>
                       <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>
-                        상위{realTimeData?.auth_percent}%의 
-                        {realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
-                        {(realTimeData?.auth_percent >= 2 && realTimeData?.auth_percent <= 5) && <> VIP </>}
-                        {(realTimeData?.auth_percent >= 6 && realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
-                        {(realTimeData?.auth_percent >= 11 && realTimeData?.auth_percent <= 15) && <> 최상위 </>}
-                        {(realTimeData?.auth_percent >= 16 && realTimeData?.auth_percent <= 20) && <> 상위 </>}
+                        상위{props.realTimeData?.auth_percent}%의 
+                        {props.realTimeData?.auth_percent == 1 && <> 킹 오브 리프 </>}
+                        {(props.realTimeData?.auth_percent >= 2 && props.realTimeData?.auth_percent <= 5) && <> VIP </>}
+                        {(props.realTimeData?.auth_percent >= 6 && props.realTimeData?.auth_percent <= 10) && <> 프리미엄 </>}
+                        {(props.realTimeData?.auth_percent >= 11 && props.realTimeData?.auth_percent <= 15) && <> 최상위 </>}
+                        {(props.realTimeData?.auth_percent >= 16 && props.realTimeData?.auth_percent <= 20) && <> 상위 </>}
                       </Text> 
-                      회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{memberBase.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
+                      회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{props.memberData.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
                     </>
                   )}
-                  {realTimeData?.auth_percent >= 21 && (
+                  {props.realTimeData?.auth_percent >= 21 && (
                     <>
-                      <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>인증</Text> 회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{memberBase.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
+                      <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>인증</Text> 회원이신 <Text style={styles.fontStyle('SB', 11, '#7AB0C8')}>{props.memberData.nickname}</Text>님의{'\n'}멤버십 인증 과정 한눈에 보기
                     </>
                   )}
 
@@ -328,7 +351,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
               /> */}
 
               <FlatList
-                data={authList}
+                data={props.authList}
                 keyExtractor={(item, index) => index.toString()}
                 showsHorizontalScrollIndicator={false}
                 removeClippedSubviews={true}
@@ -393,12 +416,16 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
           </SpaceView>
         </LinearGradient>
 
-        {/* ################################################################################ 배너 영역 */}
+        {/* ############################################################################################################
+        ####### 배너 영역
+        ############################################################################################################ */}
         <SpaceView mt={20}>
           <RecommendBanner openFn={onPressRecommendMatch} />
         </SpaceView>
 
-        {/* ################################################################################ 마이홈 방문자 영역 */}
+        {/* ############################################################################################################
+        ####### 마이홈 방문자 영역
+        ############################################################################################################ */}
         <LinearGradient
           colors={['rgba(63,25,104,0.5)', 'rgba(59,95,212,0.5)']}
           style={{ paddingHorizontal: 10, paddingVertical: 20, marginTop: 30, borderRadius: 10 }}
@@ -431,11 +458,11 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
               <Text style={styles.fontStyle('EB', 19, '#fff')}>마이 바이브</Text>
             </SpaceView>
             <SpaceView mt={15} viewStyle={{flexDirection: 'row', backgroundColor: '#fff', paddingHorizontal: 20, paddingVertical: 5, borderRadius: 25}}>
-              <TouchableOpacity>
-                <Text style={styles.fontStyle('SB', 12, '#8BAAFF')}>보낸 바이브</Text>
+              <TouchableOpacity onPress={() => { setVibeSelectType('REQ') }}>
+                <Text style={styles.fontStyle('SB', 12, vibeSelectType == 'REQ' ? '#8BAAFF' : '#808080')}>보낸 바이브</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{marginLeft: 10}}>
-                <Text style={styles.fontStyle('SB', 12, '#808080')}>받은 바이브</Text>
+              <TouchableOpacity style={{marginLeft: 10}} onPress={() => { setVibeSelectType('RES') }}>
+                <Text style={styles.fontStyle('SB', 12, vibeSelectType == 'RES' ? '#8BAAFF' : '#808080')}>받은 바이브</Text>
               </TouchableOpacity>
             </SpaceView>
             <SpaceView mt={15}>
@@ -443,7 +470,7 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
             </SpaceView>
             <SpaceView mt={15} viewStyle={{flexDirection: 'row', alignItems: 'center'}}>
               <Image source={ICON.peapleIcon} style={{width: 7, height: 15}} />
-              <SpaceView ml={7} mb={3}><Text style={styles.fontStyle('EB', 18, '#fff')}>11</Text></SpaceView>
+              <SpaceView ml={7} mb={3}><Text style={styles.fontStyle('EB', 18, '#fff')}>{vibeSelectType == 'RES' ? props.realTimeData?.acc_res_live_cnt : props.realTimeData?.acc_req_live_cnt}</Text></SpaceView>
             </SpaceView>
             <TouchableOpacity style={_styles.storageBtn} onPress={onPressStorage}>
               <Text style={styles.fontStyle('B', 11, '#fff')}>보관함 바로가기</Text>
@@ -451,38 +478,85 @@ const Active = React.memo(({ memberBase, authList, realTimeData, fnRewardPass, o
             </TouchableOpacity>
           </SpaceView>
 
-          <SpaceView viewStyle={{flexDirection: 'row'}}>
+          <SpaceView viewStyle={layoutStyle.rowBetween}>
+
+            {/* 보낸 바이브 영역 */}
             <LinearGradient
               colors={['rgba(122,122,122,0.5)', 'rgba(122,122,122,0.1)', 'rgba(122,122,122,0.1)']}
               style={_styles.vibeItemWrap}
               start={{ x: 0, y: 0 }}
-              end={{ x: 0.5, y: 1 }} >
-
-              <SpaceView viewStyle={{alignItems: 'center'}}>
-                <SpaceView viewStyle={{alignItems: 'center'}}>
+              end={{ x: 0.5, y: 1 }}
+            >
+              <SpaceView viewStyle={layoutStyle.alignCenter}>
+                <SpaceView viewStyle={layoutStyle.alignCenter}>
                   <Text style={styles.fontStyle('SB', 9, '#fff')}>보낸 바이브 전체 중</Text>
-                  <Text style={styles.fontStyle('H', 23, '#fff')}>45%</Text>
+                  <Text style={styles.fontStyle('H', 23, '#fff')}>{props.realTimeData?.acc_req_best_face_percent}%</Text>
                 </SpaceView>
 
-                <SpaceView mt={10} viewStyle={{backgroundColor: 'rgba(0,0,0,0.3)', width: 120, paddingVertical: 7, alignItems: 'center', borderRadius: 10}}>
-                  <Text style={styles.fontStyle('B', 12, '#fff')}>순두부상</Text>
-                </SpaceView>                
+                <SpaceView mt={10} viewStyle={_styles.vibeItemFace}>
+                  <Text style={styles.fontStyle('B', 12, '#fff')}>{props.realTimeData?.acc_req_best_face_code}</Text>
+                </SpaceView>
               </SpaceView>
 
-              <SpaceView mt={25} viewStyle={{alignItems: 'flex-start', justifyContent: 'flex-start'}}>
+              <SpaceView mt={25}>
                 <Text style={styles.fontStyle('SB', 8, '#A8A8A8')}>높은 리스펙트 등급</Text>
-                <SpaceView mt={8} viewStyle={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <SpaceView viewStyle={{flexDirection: 'row'}}>
-                    <SpaceView viewStyle={{borderRadius:50, borderWidth:1, borderColor: '#A8A8A8', width: 30, height: 30,}}></SpaceView>
-                    <SpaceView viewStyle={{borderRadius:50, borderWidth:1, borderColor: '#A8A8A8', width: 30, height: 30,}}></SpaceView>
-                    <SpaceView viewStyle={{borderRadius:50, borderWidth:1, borderColor: '#A8A8A8', width: 30, height: 30,}}></SpaceView>
+                <SpaceView mt={8} viewStyle={_styles.vibeItemMbrListWrap}>
+                  <SpaceView viewStyle={{flexDirection: 'row', width: '70%', overflow: 'hidden'}}>
+                    {props.vibeMatchList.map((item, index) => {
+                      return (item?.entity_type == 'REQ' && item?.no < 7) && (
+                        <SpaceView viewStyle={_styles.vibeHighGradeMemberImgWrap}>
+                          <Image source={findSourcePath(item.mst_img_path)} style={styles.iconSquareSize(30)} />
+                        </SpaceView>
+                      )
+                    })}
                   </SpaceView>
-                  <SpaceView>
-                    <Text>99</Text>
-                  </SpaceView>
+                  {props.vibeMatchList.filter(item => item.entity_type === 'REQ').length > 6 && (
+                    <SpaceView viewStyle={_styles.vibeHighGradeMemberCnt}>
+                      <Text style={styles.fontStyle('R', 8, '#fff')}>{props.vibeMatchList.filter(item => item.entity_type === 'REQ').length - 6}+</Text>
+                    </SpaceView>
+                  )}
+                </SpaceView>
+              </SpaceView>
+            </LinearGradient>
+
+            {/* 받은 바이브 영역 */}
+            <LinearGradient
+              colors={['rgba(122,122,122,0.5)', 'rgba(122,122,122,0.1)', 'rgba(122,122,122,0.1)']}
+              style={_styles.vibeItemWrap}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0.5, y: 1 }} 
+            >
+              <SpaceView viewStyle={layoutStyle.alignCenter}>
+                <SpaceView viewStyle={layoutStyle.alignCenter}>
+                  <Text style={styles.fontStyle('SB', 9, '#fff')}>받은 바이브 전체 중</Text>
+                  <Text style={styles.fontStyle('H', 23, '#fff')}>{props.realTimeData?.acc_res_best_face_percent}%</Text>
+                </SpaceView>
+
+                <SpaceView mt={10} viewStyle={_styles.vibeItemFace}>
+                  <Text style={styles.fontStyle('B', 12, '#fff')}>{props.realTimeData?.acc_res_best_face_code}</Text>
                 </SpaceView>
               </SpaceView>
 
+              <SpaceView mt={25}>
+                <Text style={styles.fontStyle('SB', 8, '#A8A8A8')}>높은 리스펙트 등급</Text>
+                <SpaceView mt={8} viewStyle={_styles.vibeItemMbrListWrap}>
+                  <SpaceView vviewStyle={{flexDirection: 'row', width: '70%', overflow: 'hidden'}}>
+                    {props.vibeMatchList.map((item, index) => {
+                      return (item?.entity_type == 'RES' && item?.no < 7) && (
+                        <SpaceView viewStyle={_styles.vibeHighGradeMemberImgWrap}>
+                          <Image source={findSourcePath(item.mst_img_path)} style={styles.iconSquareSize(30)} />
+                        </SpaceView>
+                      )
+                    })}
+                  </SpaceView>
+
+                  {props.vibeMatchList.filter(item => item.entity_type === 'RES').length > 6 && (
+                    <SpaceView viewStyle={_styles.vibeHighGradeMemberCnt}>
+                      <Text style={styles.fontStyle('R', 8, '#fff')}>{props.vibeMatchList.filter(item => item.entity_type === 'RES').length - 6}+</Text>
+                    </SpaceView>
+                  )}
+                </SpaceView>
+              </SpaceView>
             </LinearGradient>
           </SpaceView>
 
@@ -643,6 +717,35 @@ const _styles = StyleSheet.create({
     marginTop: 30, 
     borderRadius: 10,
     width: width/2.3,
+  },
+  vibeItemFace: {
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    minWidth: 120,
+    paddingVertical: 7,
+    alignItems: 'center',
+    borderRadius: 15,
+  },
+  vibeHighGradeMemberImgWrap: {
+    borderRadius:50,
+    width: 23,
+    height: 23,
+    overflow: 'hidden',
+    marginRight: -10,
+    backgroundColor: '#000',
+  },
+  vibeHighGradeMemberCnt: {
+    backgroundColor: 'rgba(0,0,0,0.66)',
+    borderRadius: 25,
+    paddingVertical: 2,
+    width: 33,
+    height: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  vibeItemMbrListWrap: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   mileSlideWrap: {
     height:100,
