@@ -1,7 +1,7 @@
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
 import SpaceView from 'component/SpaceView';
-import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import React, { memo, useEffect, useState } from 'react';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
@@ -104,7 +104,7 @@ export const MyHomeVisitor = (props : Props) => {
 													<BlurView 
 														style={_styles.visitBlurWrap}
 														blurType='light'
-														blurAmount={7}
+														blurAmount={Platform.OS == 'ios' ? 3 : 7}
 													/>
 												)}
 											</SpaceView>

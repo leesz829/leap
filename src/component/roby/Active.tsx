@@ -1,7 +1,7 @@
 import React, { useEffect, useState, FC } from 'react';
 import { RouteProp, useIsFocused, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackParamList, ScreenNavigationProp } from '@types';
-import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, FlatList, Platform } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GUIDE_IMAGE } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import LinearGradient from 'react-native-linear-gradient';
@@ -461,7 +461,7 @@ const Active: FC<Props> = React.memo((props) => {
                             <BlurView 
                               style={_styles.homeVisitBlurWrap}
                               blurType='light'
-                              blurAmount={7}
+                              blurAmount={Platform.OS == 'ios' ? 3 : 7}
                             />
                           )}
                         </SpaceView>
