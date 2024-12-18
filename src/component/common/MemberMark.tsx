@@ -40,7 +40,7 @@ const MemberMark = React.memo(({ sizeType, respectGrade, bestFaceName, highAuthY
         {/* 가장 득표수가 많은 바이브 표시 */}
         {isEmptyData(bestFaceName) && (
           <SpaceView viewStyle={_styles.itemWrap('#40E0D0')}>
-            <Text style={styles.fontStyle('SB', _fontSize, '#fff')}>#웃는게 예뻐요</Text>
+            <Text style={styles.fontStyle('SB', _fontSize, '#fff')}>#{bestFaceName}</Text>
           </SpaceView>
         )}
 

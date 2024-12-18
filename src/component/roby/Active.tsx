@@ -10,7 +10,7 @@ import { modalStyle, layoutStyle, commonStyle, styles } from 'assets/styles/Styl
 import { isEmptyData } from 'utils/functions';
 import { ScrollView } from 'react-native-gesture-handler';
 import RecommendBanner from 'component/common/RecommendBanner';
-import PopupGradeGuide from 'component/roby/PopupGradeGuide';
+import { BlurView, VibrancyView } from "@react-native-community/blur";
 
 
 /* ################################################################################################################
@@ -24,6 +24,7 @@ interface Props {
   authList: any; // 인증 목록
   realTimeData: any; // 실시간 정보
   vibeMatchList: any; // 바이브 매칭 목록
+  myhomeVisitList: any; // 마이홈 방문 목록
   fnRewardPass: (type:string) => void; // 
   onGradeGudePopup: () => void; // 결과 콜백 함수
   onAiIntroPopup: () => void; // 결과 콜백 함수
@@ -428,29 +429,48 @@ const Active: FC<Props> = React.memo((props) => {
         ############################################################################################################ */}
         <LinearGradient
           colors={['rgba(63,25,104,0.5)', 'rgba(59,95,212,0.5)']}
-          style={{ paddingHorizontal: 10, paddingVertical: 20, marginTop: 30, borderRadius: 10 }}
+          style={{ paddingHorizontal: 13, paddingVertical: 10, marginTop: 30, borderRadius: 10 }}
           start={{ x: 1, y: 0 }}
-          end={{ x: 1, y: 1 }} >
+          end={{ x: 1, y: 1 }}
+        >
+          <SpaceView pl={3} pr={3}>
+            <SpaceView viewStyle={layoutStyle.rowBetween}>
+              <Text style={styles.fontStyle('EB', 19, '#fff')}>마이홈 방문자</Text>
+              <TouchableOpacity 
+                style={{backgroundColor: 'rgba(56,56,56,0.7)', borderRadius: 25, paddingHorizontal: 10, paddingVertical: 5}}
+                onPress={onPressMyHomeVisitor}>
+                <Text style={styles.fontStyle('SB', 11, '#CBCBCB')}>전체보기</Text>
+              </TouchableOpacity>
+            </SpaceView>
 
-          <SpaceView viewStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Text style={styles.fontStyle('EB', 19, '#fff')}>마이홈 방문자</Text>
-            <TouchableOpacity 
-              style={{backgroundColor: 'rgba(56,56,56,0.7)', borderRadius: 25, paddingHorizontal: 10, paddingVertical: 5}}
-              onPress={onPressMyHomeVisitor}>
-              <Text style={styles.fontStyle('SB', 11, '#CBCBCB')}>전체보기</Text>
-            </TouchableOpacity>
-          </SpaceView>
+            <SpaceView mt={20}>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                {props.myhomeVisitList.map((item, index) => {
+                  return (
+                    <>
+                      <SpaceView mr={5}>
+                        {(item?.respect_grade == 'PLATINUM' || item?.respect_grade == 'DIAMOND') && (
+                          <SpaceView viewStyle={_styles.homeVisitGradeMark}>
+                            <Image source={ICON.sparkler} style={styles.iconSquareSize(15)} />
+                          </SpaceView>
+                        )}
+                        <SpaceView viewStyle={_styles.homeVisitWrap}>
+                          <Image source={findSourcePath(item.mst_img_path)} style={_styles.homeVisitImgStyle} />
 
-          <SpaceView mt={20}>
-            <ScrollView horizontal={true}>
-              <SpaceView viewStyle={_styles.homeVisitWrap}></SpaceView>
-              <SpaceView viewStyle={_styles.homeVisitWrap}></SpaceView>
-              <SpaceView viewStyle={_styles.homeVisitWrap}></SpaceView>
-              <SpaceView viewStyle={_styles.homeVisitWrap}></SpaceView>
-              <SpaceView viewStyle={_styles.homeVisitWrap}></SpaceView>
-              <SpaceView viewStyle={_styles.homeVisitWrap}></SpaceView>
-              <SpaceView viewStyle={_styles.homeVisitWrap}></SpaceView>
-            </ScrollView>
+                          {(item?.respect_grade != 'PLATINUM' && item?.respect_grade != 'DIAMOND') && (
+                            <BlurView 
+                              style={_styles.homeVisitBlurWrap}
+                              blurType='light'
+                              blurAmount={7}
+                            />
+                          )}
+                        </SpaceView>
+                      </SpaceView>
+                    </>
+                  )
+                })}
+              </ScrollView>
+            </SpaceView>
           </SpaceView>
 
           <SpaceView mt={50} viewStyle={{alignItems: 'center'}}>
@@ -540,7 +560,7 @@ const Active: FC<Props> = React.memo((props) => {
               <SpaceView mt={25}>
                 <Text style={styles.fontStyle('SB', 8, '#A8A8A8')}>높은 리스펙트 등급</Text>
                 <SpaceView mt={8} viewStyle={_styles.vibeItemMbrListWrap}>
-                  <SpaceView vviewStyle={{flexDirection: 'row', width: '70%', overflow: 'hidden'}}>
+                  <SpaceView viewStyle={{flexDirection: 'row', width: '70%', overflow: 'hidden'}}>
                     {props.vibeMatchList.map((item, index) => {
                       return (item?.entity_type == 'RES' && item?.no < 7) && (
                         <SpaceView viewStyle={_styles.vibeHighGradeMemberImgWrap}>
@@ -695,11 +715,29 @@ const _styles = StyleSheet.create({
   },
   homeVisitWrap: {
     borderWidth: 1,
-    borderColor: '#707070',
+    borderColor: '#fff',
     borderRadius: 60,
+    overflow: 'hidden',
     width: 60,
     height: 60,
-    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  homeVisitImgStyle: {
+    width: 50,
+    height: 50,
+    overflow: 'hidden',
+    borderRadius: 60,
+  },
+  homeVisitGradeMark: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    backgroundColor: '#fff',
+    borderRadius: 50,
+    paddingHorizontal: 2,
+    paddingVertical: 2,
+    zIndex: 1,
   },
   storageBtn: {
     flexDirection: 'row',
@@ -764,6 +802,19 @@ const _styles = StyleSheet.create({
     paddingVertical: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  homeVisitBlurWrap: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 2,
+      alignItems: 'center',
+      alignContent: 'center',
+      justifyContent: 'center',
   },
 
 });

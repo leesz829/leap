@@ -1,17 +1,14 @@
 import { styles, modalStyle, layoutStyle, commonStyle } from 'assets/styles/Styles';
 import CommonHeader from 'component/CommonHeader';
-import { CommonInput } from 'component/CommonInput';
-import { CommonTextarea } from 'component/CommonTextarea';
-import { CommonText } from 'component/CommonText';
 import SpaceView from 'component/SpaceView';
 import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions } from 'react-native';
 import { findSourcePath, ICON, IMAGE, GIF_IMG } from 'utils/imageUtils';
 import React, { memo, useEffect, useState } from 'react';
 import { StackParamList, ScreenNavigationProp, ColorType } from '@types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import * as properties from 'utils/properties';
-import { insert_member_inquiry } from 'api/models';
+import { get_myhome_visit_list } from 'api/models';
 import { usePopup } from 'Context';
 import { SUCCESS } from 'constants/reusltcode';
 import { STACK } from 'constants/routes';
@@ -41,6 +38,9 @@ export const MyHomeVisitor = (props : Props) => {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const { show } = usePopup(); // 공통 팝업
 
+	const [isLoading, setIsLoading] = React.useState(false);
+	const isFocus = useIsFocused();
+
 	const memberBase = useUserInfo(); // 회원 기본정보
 
 	const mbrProfileImgList = useProfileImg();
@@ -48,7 +48,41 @@ export const MyHomeVisitor = (props : Props) => {
 	// 클릭 여부
 	const [isClickable, setIsClickable] = useState(true);
 
+	const [visitList, setVisitList] = useState([]);
 
+	// ############################################################  메시지 목록 조회
+	const getVisitList = async () => {
+		setIsLoading(true);
+
+		const body = {};
+		try {
+			const { success, data } = await get_myhome_visit_list(body);
+		  	if(success) {
+					switch (data?.result_code) {
+			  		case SUCCESS:
+							setVisitList(data?.visit_list);
+						break;
+			  		default:
+							show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+						break;
+					}
+		   
+		  	} else {
+					show({ content: '오류입니다. 관리자에게 문의해주세요.' });
+		  	}
+		} catch (error) {
+		  console.log(error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	// ############################################################################# 최초 실행
+	React.useEffect(() => {
+		if(isFocus) {
+			getVisitList();
+		}
+	}, [isFocus]);
 
 	return (
 		<>
@@ -57,17 +91,25 @@ export const MyHomeVisitor = (props : Props) => {
         
         <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{flexGrow: 1, paddingTop: 15, marginTop: 30}}>
 					<SpaceView>
-						{[0,1,2,3,4,5].map((item, index) => {
+						{visitList.map((item, index) => {
 
 							return (
 								<>
 									<SpaceView mb={20} viewStyle={[layoutStyle.rowStart, _styles.itemWrap]}>
 										<SpaceView>
 											<SpaceView viewStyle={_styles.memberImgWrap}>
-												<Image source={findSourcePath(mbrProfileImgList[0]?.img_file_path)} style={_styles.memberImgStyle} />
+												<Image source={findSourcePath(item?.mst_img_path)} style={_styles.memberImgStyle} />
+
+												{(item?.respect_grade != 'PLATINUM' && item?.respect_grade != 'DIAMOND') && (
+													<BlurView 
+														style={_styles.visitBlurWrap}
+														blurType='light'
+														blurAmount={7}
+													/>
+												)}
 											</SpaceView>
 
-											{index == 0 && (
+											{(item?.respect_grade == 'PLATINUM' || item?.respect_grade == 'DIAMOND') && (
 												<SpaceView viewStyle={{position: 'absolute', top: 0, left: 0}}>
 													<Image source={ICON.respectIcon} style={styles.iconSquareSize(18)} />
 												</SpaceView>
@@ -77,13 +119,13 @@ export const MyHomeVisitor = (props : Props) => {
 											<SpaceView>
 												<MemberMark 
                           sizeType={'S'} 
-                          respectGrade={'DIAMOND'} 
-                          bestFaceName={'웃는게 너무'}
-                          highAuthYn={'Y'}
-                          variousAuthYn={'Y'} />
+                          respectGrade={item?.respect_grade} 
+                          bestFaceName={item?.best_face_name}
+                          highAuthYn={item?.high_auth_yn}
+                          variousAuthYn={item?.various_auth_yn} />
 											</SpaceView>
 											<SpaceView mt={5}>
-												<Text style={styles.fontStyle('B', 16, '#fff')}>{memberBase?.nickname}</Text>
+												<Text style={styles.fontStyle('B', 16, '#fff')}>{item?.nickname}</Text>
 											</SpaceView>
 										</SpaceView>
 									</SpaceView>
@@ -111,9 +153,12 @@ const _styles = StyleSheet.create({
 	memberImgWrap: {
 		borderWidth: 1,
 		borderColor: '#fff',
-		borderRadius: 100,
+		borderRadius: 60,
 		overflow: 'hidden',
-		padding: 3,
+		width: 68,
+		height: 68,
+		justifyContent: 'center',
+    alignItems: 'center',
 	},
 	memberImgStyle: {
 		width: 60,
@@ -121,5 +166,18 @@ const _styles = StyleSheet.create({
 		borderRadius: 100,
 		overflow: 'hidden',
 	},
+	visitBlurWrap: {
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
+		width: '100%',
+		height: '100%',
+		zIndex: 2,
+		alignItems: 'center',
+		alignContent: 'center',
+		justifyContent: 'center',
+},
 
 });

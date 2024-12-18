@@ -190,5 +190,6 @@ export const INSERT_CCS_MEMBER_ANS = '/ccs/insertCcsMemberAns';
  * 마이홈
  */
 export const JOIN_MEMBER_MYHOME = '/myhome/joinMemberMyhome'
-export const GET_MEMBER_MYHOME_VISIT_LIST = '/myhome/selectMemberMyhomeVisitList'
-export const INSERT_MEMBER_MYHOME_VISIT = '/myhome/insertMemberMyhomeVisit'
+export const GET_MYHOME_VISIT_LIST = '/myhome/getMyhomeVisitList'
+
+

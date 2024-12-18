@@ -48,7 +48,7 @@ export const Message = (props: Props) => {
 	const isFocus = useIsFocused();
 	const { show } = usePopup();  // 공통 팝업
 
-  	const memberBase = useUserInfo();
+  const memberBase = useUserInfo();
 
 	const toggleAccordion = (index) => {
 		setActiveIndex(activeIndex === index ? -1 : index);

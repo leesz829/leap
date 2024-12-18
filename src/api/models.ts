@@ -125,8 +125,7 @@ import {
   GET_CCS_RANDOM_SCNR_TMPLT_LIST,
   INSERT_CCS_MEMBER_ANS,
   JOIN_MEMBER_MYHOME,
-  GET_MEMBER_MYHOME_VISIT_LIST,
-  INSERT_MEMBER_MYHOME_VISIT,
+  GET_MYHOME_VISIT_LIST,
 } from './route';
 
 /* ========================================================================================================
@@ -1270,5 +1269,10 @@ export async function join_member_myhome(body: {
   return send(JOIN_MEMBER_MYHOME, 'POST', body, true, false);
 }
 
-
+// 마이홈 방문자 목록을 조회한다.
+export async function get_myhome_visit_list(body: { 
+  
+}) {
+  return send(GET_MYHOME_VISIT_LIST, 'POST', body, true, false);
+};
 
