@@ -692,7 +692,7 @@ export const Roby = (props: Props) => {
           //handleComponent={null}
         >
           <PopupAiIntro 
-            ref={aiIntro_modalizeRef}
+            //ref={aiIntro_modalizeRef}
             closeFn={aiIntro_onClose}
           />
         </BottomSheetModal>

@@ -194,7 +194,7 @@ const _styles = StyleSheet.create({
 
 
   contentWrap: {
-    
+    height: 300,
   },
   titleWrap: {
     alignItems: 'center',

@@ -1,116 +1,176 @@
 import { useRef, forwardRef, useImperativeHandle } from 'react';
-import { Image, TouchableOpacity, View, Text, StyleSheet, Dimensions } from 'react-native';
+import { Image, TouchableOpacity, View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import * as React from 'react';
 import { layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import { ICON } from 'utils/imageUtils';
 import SpaceView from 'component/SpaceView';
 import { isEmptyData } from 'utils/functions';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 
+
+/* ################################################################################################################
+###################################################################################################################
+###### 팝업 - 신고하기 화면
+###################################################################################################################
+################################################################################################################ */
 
 const { width, height } = Dimensions.get('window');
 
+interface Props {
+	modalRef: undefined
+  confirmFn: (value: string) => void
+	onChangeFn: () => void
+	codeList: []
+};
+
 const ReportPopup = forwardRef((props, ref) => {
 
-	const { confirmFn } = props;
-
-	const [codeList, setCodeList] = React.useState([]);
-
 	const [selectedValue, setSelectedValue] = React.useState('');
-
-	const modalizeRef = useRef<Modalize>(null);
-	const openModal = () => {
-		modalizeRef.current?.open();
-	};
-
-	const closeModal = () => {
-		modalizeRef.current?.close();
-	};
-
-	// 부모 컴포넌트 handle
-  useImperativeHandle(ref, () => ({
-    openModal: (list:any) => {
-			console.log('list :::::: '  ,list);
-			setCodeList(list);
-      openModal();
-    },
-    closeModal: () => {
-      
-      closeModal();
-    },
-  }));
 
 	const selectFn = (value:string) => {
 		setSelectedValue(value);
 	}
 
 	return (
-		<Modalize
-			ref={modalizeRef}
-			adjustToContentHeight={false}
-			handleStyle={modalStyle.modalHandleStyle}
-			/* modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]} */
-			modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#1B1633'}}
-			//modalHeight={height - 160}
-			modalHeight={640}
-			scrollViewProps={{
-				scrollEnabled: false, // 스크롤 비활성화
-			}}
-			onOverlayPress={() => { closeModal(); }}
-			FooterComponent={
-				<>
-					<SpaceView pl={10} pr={10} pb={20} viewStyle={{backgroundColor: '#1B1633'}}>
+		<>
+			<BottomSheetModalProvider>
+        <BottomSheetModal
+          ref={props.modalRef}
+          index={0}
+          onChange={props.onChangeFn}
+          //snapPoints={snapPoints}
+          maxDynamicContentSize={Platform.OS == 'android' ? height-150 : height-200}
+          enablePanDownToClose={true}
+          handleIndicatorStyle={{
+            backgroundColor: '#808080', // 핸들러 색상 변경
+            width: 37, // 핸들러 너비 변경
+            height: 7, // 핸들러 높이 변경
+            borderRadius: 5, // 둥글게 처리
+          }}
+          handleStyle={{
+            backgroundColor: '#1B1633', // 핸들러 배경 변경
+            borderTopLeftRadius: 30, // 모달 상단 모서리 둥글게
+            borderTopRightRadius: 30,
+            overflow: 'hidden',
+            paddingTop: 20,
+          }}
+          backgroundStyle={{backgroundColor: '#1B1633'}}
+        >
+					<SpaceView pl={20} pr={20} mt={20}>
+						<SpaceView viewStyle={_styles.titleArea}>
+							<Text style={styles.fontStyle('EB', 22, '#fff')}>신고 및 차단하기</Text>
+						</SpaceView>
+
+						<SpaceView mt={15} pb={25} viewStyle={{borderBottomWidth: 1, borderColor: '#BCBCBC'}}>
+							<Text style={styles.fontStyle('B', 13, '#fff')}>신고사유를 알려주시면 더 좋은 리프를 만드는데 도움이 됩니다.</Text>
+						</SpaceView>
+					</SpaceView>
+
+					<BottomSheetScrollView 
+						contentContainerStyle={{ minHeight: Platform.OS == 'android' ? height-250 : height-200 }}  
+						showsVerticalScrollIndicator={false}
+					>
+						<SpaceView ml={20} mr={20} mt={30}>
+							{props.codeList?.map((item, index) => {
+								return (
+									<TouchableOpacity 
+										style={_styles.itemWrap(item?.value == selectedValue)}
+										onPress={() => {
+											selectFn(item?.value);
+										}}
+									>
+										{item?.value == selectedValue ? (
+											<Image source={ICON.checkGreenIcon} style={styles.iconSquareSize(18)} />
+										) : (
+											<SpaceView viewStyle={{width: 18, height: 18}} />
+										)}
+										<SpaceView ml={10}><Text style={styles.fontStyle('B', 14, item?.value == selectedValue ? '#fff' : '#808080')}>{item.label}</Text></SpaceView>
+									</TouchableOpacity>
+								)
+							})}
+						</SpaceView>
+					</BottomSheetScrollView>
+
+					<SpaceView pl={10} pr={10} viewStyle={{backgroundColor: '#1B1633'}}>
 						<SpaceView mb={10}>
 							<TouchableOpacity 
 								onPress={() => {
-									confirmFn(selectedValue);
+									props.confirmFn(selectedValue);
 								}} 
 								style={_styles.btnArea('#44B6E5')}>
 								<Text style={styles.fontStyle('B', 12, '#fff')}>신고 및 차단하기</Text>
 							</TouchableOpacity>
 						</SpaceView>
 					</SpaceView>
-				</>
-			}
-		>
-			<SpaceView viewStyle={_styles.titleArea}>
-				<SpaceView mb={50} viewStyle={layoutStyle.alignCenter}>
-					<Image source={ICON.popupDown} style={styles.iconNoSquareSize(37, 7)} />
-				</SpaceView>
-				<Text style={styles.fontStyle('EB', 22, '#fff')}>신고 및 차단하기</Text>
-			</SpaceView>
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
 
-			<SpaceView ml={25} mr={25}>
-				<View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 0}]}>
-					<SpaceView mt={15} mb={13} pb={25} viewStyle={{borderBottomWidth: 1, borderColor: '#BCBCBC'}}>
-						<Text style={styles.fontStyle('B', 13, '#fff')}>신고사유를 알려주시면 더 좋은 리프를 만드는데 도움이 됩니다.</Text>
-					</SpaceView>
-
-					<SpaceView mt={20}>
-						{/* <RadioCheckBox_3 items={data.report_code_list} callBackFunction={reportCheckCallbackFn} /> */}
-
-						{codeList?.map((item, index) => {
-							return (
+			{/* <Modalize
+				ref={modalizeRef}
+				adjustToContentHeight={false}
+				handleStyle={modalStyle.modalHandleStyle}
+				//modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]}
+				modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#1B1633'}}
+				//modalHeight={height - 160}
+				modalHeight={640}
+				scrollViewProps={{
+					scrollEnabled: false, // 스크롤 비활성화
+				}}
+				onOverlayPress={() => { closeModal(); }}
+				FooterComponent={
+					<>
+						<SpaceView pl={10} pr={10} pb={20} viewStyle={{backgroundColor: '#1B1633'}}>
+							<SpaceView mb={10}>
 								<TouchableOpacity 
-									style={_styles.itemWrap(item?.value == selectedValue)}
 									onPress={() => {
-										selectFn(item?.value);
-									}}
-								>
-									{item?.value == selectedValue ? (
-										<Image source={ICON.checkGreenIcon} style={styles.iconSquareSize(18)} />
-									) : (
-										<SpaceView viewStyle={{width: 18, height: 18}} />
-									)}
-									<SpaceView ml={10}><Text style={styles.fontStyle('B', 14, item?.value == selectedValue ? '#fff' : '#808080')}>{item.label}</Text></SpaceView>
+										confirmFn(selectedValue);
+									}} 
+									style={_styles.btnArea('#44B6E5')}>
+									<Text style={styles.fontStyle('B', 12, '#fff')}>신고 및 차단하기</Text>
 								</TouchableOpacity>
-							)
-						})}
+							</SpaceView>
+						</SpaceView>
+					</>
+				}
+			>
+				<SpaceView viewStyle={_styles.titleArea}>
+					<SpaceView mb={50} viewStyle={layoutStyle.alignCenter}>
+						<Image source={ICON.popupDown} style={styles.iconNoSquareSize(37, 7)} />
 					</SpaceView>
-				</View>
-			</SpaceView>
-		</Modalize>
+					<Text style={styles.fontStyle('EB', 22, '#fff')}>신고 및 차단하기</Text>
+				</SpaceView>
+
+				<SpaceView ml={25} mr={25}>
+					<View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 0}]}>
+						<SpaceView mt={15} mb={13} pb={25} viewStyle={{borderBottomWidth: 1, borderColor: '#BCBCBC'}}>
+							<Text style={styles.fontStyle('B', 13, '#fff')}>신고사유를 알려주시면 더 좋은 리프를 만드는데 도움이 됩니다.</Text>
+						</SpaceView>
+
+						<SpaceView mt={20}>
+							{codeList?.map((item, index) => {
+								return (
+									<TouchableOpacity 
+										style={_styles.itemWrap(item?.value == selectedValue)}
+										onPress={() => {
+											selectFn(item?.value);
+										}}
+									>
+										{item?.value == selectedValue ? (
+											<Image source={ICON.checkGreenIcon} style={styles.iconSquareSize(18)} />
+										) : (
+											<SpaceView viewStyle={{width: 18, height: 18}} />
+										)}
+										<SpaceView ml={10}><Text style={styles.fontStyle('B', 14, item?.value == selectedValue ? '#fff' : '#808080')}>{item.label}</Text></SpaceView>
+									</TouchableOpacity>
+								)
+							})}
+						</SpaceView>
+					</View>
+				</SpaceView>
+			</Modalize> */}
+		</>
 	);
 });
 
@@ -127,8 +187,7 @@ const _styles = StyleSheet.create({
 		borderTopRightRadius: 30,
 		overflow: 'hidden',
 		backgroundColor:'#1B1633',
-		paddingVertical: 20,
-		paddingHorizontal: 23,
+		paddingVertical: 10,
 	},
   reportButton: {
     height: 43,

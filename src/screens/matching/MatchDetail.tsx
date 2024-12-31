@@ -34,6 +34,9 @@ import { SUCCESS } from 'constants/reusltcode';
 import ReportPopup from 'screens/commonpopup/ReportPopup';
 import MemberMark from 'component/common/MemberMark';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import PopupGradeGuide from 'component/roby/PopupGradeGuide';
+
 
 
 interface Props {
@@ -90,34 +93,41 @@ export default function MatchDetail(props: Props) {
     use_item: {},
   });
 
-  // 신고목록
-  const [reportTypeList, setReportTypeList] = useState([
-    { text: '', value: '' },
-  ]);
+
+  /* #########################################################################################################
+  ######## 신고하기 모달 관련
+  ######################################################################################################### */
+
+  // 신고하기 modalizeRef
+  const report_modalizeRef = useRef<BottomSheetModal>(null);
+
+  // 신고하기 활성화
+  const report_onOpen = () => {
+    report_modalizeRef.current?.present();
+  };
+
+  // 신고하기 닫기
+  const report_onClose = () => {
+    report_modalizeRef.current?.dismiss();
+  };
+
+  const report_onChanges = React.useCallback((index: number) => {
+    if(index == -1) {
+      setCheckReportType('');
+    }
+  }, []);
 
   // 선택된 신고하기 타입
   const [checkReportType, setCheckReportType] = useState('');
 
-  // 신고 Pop
-  const report_modalizeRef = useRef<Modalize>(null);
-
-  // 신고하기 팝업 활성화
-  const report_onOpen = () => {
-    report_modalizeRef.current?.openModal(data?.report_code_list);
-    setCheckReportType('');
-  };
-
-  // 신고하기 팝업 닫기
-  const report_onClose = () => {
-    report_modalizeRef.current?.closeModal();
-    setCheckReportType('');
-  };
-
   const [isModHeader, setIsModHeader] = useState(false); // 헤더 변경 여부 구분
-
   const [isMyHomeNoti, setIsMyHomeNoti] = useState(false); // 마이홈 노티피케이션 노출 여부
 
-  // ######################################################################################## 관심 및 찐심 보내기 관련
+
+  /* #########################################################################################################
+  ######## 관심 및 찐심 보내기 관련
+  ######################################################################################################### */
+
   const [message, setMessage] = useState('');
 
   const [interestSendModalVisible, setInterestSendModalVisible] = useState(false); // 관심 보내기 모달 visible
@@ -487,13 +497,13 @@ export default function MatchDetail(props: Props) {
   };
 
   // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
-  const reportCheckCallbackFn = (value: string) => {
+  /* const reportCheckCallbackFn = (value: string) => {
     setCheckReportType(value);
-  };
+  }; */
 
   // ############################################################ 사용자 신고하기 - 팝업 활성화
-  const popupReport = () => {
-    if (!checkReportType) {
+  const popupReport = (value: string) => {
+    if (!isEmptyData(value)) {
       show({ content: '신고항목을 선택해주세요.' });
       return false;
     } else {
@@ -502,10 +512,10 @@ export default function MatchDetail(props: Props) {
         content: '해당 사용자를 신고하시겠습니까?',
         type: 'REPORT',
         cancelCallback: function() {
-          report_onClose();
+          //report_onClose();
         },
         confirmCallback: async function() {
-          insertReport();
+          insertReport(value);
         },
         cancelBtnText: '취소 할래요!',
         confirmBtnText: '신고할래요!',
@@ -514,10 +524,10 @@ export default function MatchDetail(props: Props) {
   };
 
   // ############################################################ 사용자 신고하기 등록
-  const insertReport = async () => {
+  const insertReport = async (value: string) => {
     
     const body = {
-      report_type_code: checkReportType,
+      report_type_code: value,
       report_member_seq: data.match_member_info.member_seq,
     };
     
@@ -645,7 +655,7 @@ export default function MatchDetail(props: Props) {
           chat_room_id: chatInfoData?.chat_room_id,
           chat_member_seq: chatInfoData?.chat_member_seq,
           chat_type: 'OPEN',
-          sch_member_seq: chatInfoData?.res_member_seq == memberBase?.member_seq ? chatInfoData?.req_member_seq : chatInfoData?.res_member_seq,
+          sch_member_seq: data.match_member_info.member_seq,
           chat_oppn_mst_img: data?.profile_img_list[0]?.img_file_path,
           chat_oppn_nickname: data?.match_member_info?.nickname
         } 
@@ -1249,9 +1259,10 @@ export default function MatchDetail(props: Props) {
                 사용자 신고하기 팝업
     ################################################################################## */}
     <ReportPopup
-      ref={report_modalizeRef}
-      //profileOpenFn={profileCardOpen}
-      confirmFn={reportCheckCallbackFn}
+      modalRef={report_modalizeRef}
+      confirmFn={popupReport}
+      onChangeFn={report_onChanges}
+      codeList={data?.report_code_list}
     />
 
     {/* ##################################################################################
@@ -1282,7 +1293,7 @@ export default function MatchDetail(props: Props) {
 
     {/* setPhoneOpenCubeType */}
 
-    <Modal 
+    {/* <Modal 
       visible={phoneOpenModalVisible} 
       transparent={true}
       onRequestClose={() => {phoneOpenCloseModal()}}
@@ -1352,7 +1363,7 @@ export default function MatchDetail(props: Props) {
           </SpaceView>
         </SpaceView>
       </TouchableOpacity>
-    </Modal>
+    </Modal> */}
 
   </>
   );

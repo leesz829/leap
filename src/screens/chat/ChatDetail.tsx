@@ -1,6 +1,6 @@
 import CommonHeader from 'component/CommonHeader';
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, Modal, TouchableOpacity, Alert, Text, StyleSheet, Dimensions, Platform, FlatList, InputAccessoryView, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, View, Image, Modal, TouchableOpacity, Text, StyleSheet, Dimensions, Platform, FlatList, InputAccessoryView, Keyboard } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorType, ScreenNavigationProp, StackParamList } from '@types';
 import { RouteProp, useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
@@ -22,6 +22,8 @@ import { Modalize } from 'react-native-modalize';
 import { RadioCheckBox_3 } from 'component/RadioCheckBox_3';
 import { ICON, findSourcePath } from 'utils/imageUtils';
 import { useProfileImg } from 'hooks/useProfileImg';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import ReportPopup from 'screens/commonpopup/ReportPopup';
 
 
 /* ################################################################################################################
@@ -68,6 +70,30 @@ export const ChatDetail = (props: Props) => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   };
 
+  /* #########################################################################################################
+  ######## 신고하기 모달 관련
+  ######################################################################################################### */
+
+  // 신고하기 modalizeRef
+  const report_modalizeRef = useRef<BottomSheetModal>(null);
+
+  // 신고하기 활성화
+  const report_onOpen = () => {
+    Keyboard.dismiss();
+    report_modalizeRef.current?.present();
+  };
+
+  // 신고하기 닫기
+  const report_onClose = () => {
+    report_modalizeRef.current?.dismiss();
+  };
+
+  const report_onChanges = React.useCallback((index: number) => {
+    if(index == -1) {
+      setCheckReportType('');
+    }
+  }, []);
+
   // ######################################################################################## 신고 코드 조회
   const getReportCodeList = async () => {
     try {
@@ -101,26 +127,9 @@ export const ChatDetail = (props: Props) => {
   // 선택된 신고하기 타입
   const [checkReportType, setCheckReportType] = useState('');
 
-  // 신고 Pop
-  const report_modalizeRef = useRef<Modalize>(null);
-  const report_onOpen = () => {
-    report_modalizeRef.current?.open();
-    setCheckReportType('');
-  };
-
-  const report_onClose = () => {
-    report_modalizeRef.current?.close();
-    setCheckReportType('');
-  };
-
-  // ############################################################ 사용자 신고하기 - 신고사유 체크 Callback 함수
-  const reportCheckCallbackFn = (value: string) => {
-    setCheckReportType(value);
-  };
-
   // ############################################################ 사용자 신고하기 - 팝업 활성화
-  const popupReport = () => {
-    if (!checkReportType) {
+  const popupReport = (value: string) => {
+    if (!isEmptyData(value)) {
       show({ content: '신고항목을 선택해주세요.' });
       return false;
     } else {
@@ -129,10 +138,10 @@ export const ChatDetail = (props: Props) => {
         content: '해당 사용자를 신고하시겠습니까?',
         type: 'REPORT',
         cancelCallback: function() {
-          report_onClose();
+          //report_onClose();
         },
         confirmCallback: async function() {
-          insertReport();
+          insertReport(value);
         },
         cancelBtnText: '취소 할래요!',
         confirmBtnText: '신고할래요!',
@@ -141,11 +150,10 @@ export const ChatDetail = (props: Props) => {
   };
 
   // ############################################################ 사용자 신고하기 등록
-  const insertReport = async () => {
-    
+  const insertReport = async (value: string) => {
     const body = {
-      report_type_code: checkReportType,
-      report_member_seq: data.match_member_info.member_seq,
+      report_type_code: value,
+      report_member_seq: propsData?.sch_member_seq,
     };
     
     try {
@@ -160,7 +168,8 @@ export const ChatDetail = (props: Props) => {
         show({ 
           content: '신고 처리 되었습니다.',
           confirmCallback : function() {
-            navigation.goBack();
+            //navigation.goBack();
+            navigation.navigate(STACK.TAB, { screen: 'Contents' });
           }
         });
       }
@@ -325,7 +334,7 @@ export const ChatDetail = (props: Props) => {
 
   const handleContentSizeChange = (event) => {
     const { contentSize } = event.nativeEvent;
-    setInputHeight(contentSize.height);
+    //setInputHeight(contentSize.height);
   };
 
   return (
@@ -482,51 +491,13 @@ export const ChatDetail = (props: Props) => {
 
       {/* ##################################################################################
                     사용자 신고하기 팝업
-        ################################################################################## */}
-      <Modalize
-        ref={report_modalizeRef}
-        adjustToContentHeight={false}
-        handleStyle={modalStyle.modalHandleStyle}
-        /* modalStyle={[modalStyle.modalContainer, {borderRadius: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}]} */
-        modalStyle={{borderTopLeftRadius: 30, borderTopRightRadius: 30, overflow: 'hidden', backgroundColor: '#333B41'}}
-        modalHeight={550}
-        scrollViewProps={{
-          scrollEnabled: false, // 스크롤 비활성화
-        }}
-        FooterComponent={
-          <>
-            <SpaceView pl={25} pr={25} pb={65} viewStyle={{backgroundColor: '#333B41'}}>
-              <SpaceView mb={10}>
-                <TouchableOpacity onPress={popupReport} style={_styles.reportBtnArea('#FFDD00', '#FFDD00')}>
-                  <Text style={_styles.reportBtnText('#3D4348')}>신고 및 차단하기</Text>
-                </TouchableOpacity>
-              </SpaceView>
-
-              <SpaceView>
-                <TouchableOpacity onPress={report_onClose} style={_styles.reportBtnArea('#333B41', '#BBB18B')}>
-                  <Text style={_styles.reportBtnText('#D5CD9E')}>취소</Text>
-                </TouchableOpacity>
-              </SpaceView>
-            </SpaceView>
-          </>
-        }
-      >
-        <SpaceView viewStyle={{backgroundColor: '#333B41'}}>
-          <SpaceView mt={25} ml={30}>
-            <Text style={_styles.reportTitle}>사용자 신고 및 차단하기</Text>
-          </SpaceView>
-
-          <View style={[modalStyle.modalBody, {paddingBottom: 0, paddingHorizontal: 0}]}>
-            <SpaceView mt={15} mb={13} viewStyle={{borderBottomWidth: 1, borderColor: '#777777', paddingBottom: 15, paddingHorizontal: 25}}>
-              <Text style={_styles.reportText}>신고사유를 알려주시면 더 좋은 리프를{'\n'}만드는데 도움이 됩니다.</Text>
-            </SpaceView>
-
-            <SpaceView>
-              <RadioCheckBox_3 items={reportData.report_code_list} callBackFunction={reportCheckCallbackFn} />
-            </SpaceView>
-          </View>
-        </SpaceView>
-      </Modalize>
+      ################################################################################## */}
+      <ReportPopup
+        modalRef={report_modalizeRef}
+        confirmFn={popupReport}
+        onChangeFn={report_onChanges}
+        codeList={reportData.report_code_list}
+      />
     </>
   );
 };
@@ -548,10 +519,6 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-  },
-  exitBtnText: {
-    fontFamily: 'Pretendard-SemiBold',
-    color: 'yellow',
   },
   msgListArea: (isSendUser:boolean, isPrevCompareMsg:boolean) => {
 		return {
@@ -629,9 +596,7 @@ const _styles = StyleSheet.create({
       marginBottom: inputHeight >= 35 ? 5 : 0,
       backgroundColor: messageText == '' ? '#808080' : '#46F66F',
       borderRadius: 50,
-      paddingVertical: inputHeight <= 35
-      ? (messageText == '' ? 3 : 7)
-      : 7,
+      paddingVertical: 4,
       paddingHorizontal: 15,
     }
   },
@@ -653,56 +618,6 @@ const _styles = StyleSheet.create({
     color: '#FFF',
     textAlign: 'center',
   },
-
-  // 신고하기 모달 css
-  reportTitle: {
-    fontFamily: 'Pretendard-ExtraBold',
-		fontSize: 20,
-		color: '#D5CD9E',
-		textAlign: 'left',
-  },
-  reportButton: {
-    height: 43,
-    borderRadius: 21.5,
-    backgroundColor: '#363636',
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: 20,
-  },
-  reportTextBtn: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 14,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-  reportText: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 17,
-    color: '#E1DFD1',
-    textAlign: 'left',
-  },
-  reportBtnArea: (bg:number, bdc:number) => {
-		return {
-			/* width: '50%',
-			height: 48, */
-			backgroundColor: bg,
-			alignItems: 'center',
-			justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: bdc,
-      borderRadius: 5,
-      paddingVertical: 13,
-		}
-	},
-  reportBtnText: (cr:string) => {
-		return {
-		  fontFamily: 'Pretendard-Bold',
-		  fontSize: 16,
-		  color: isEmptyData(cr) ? cr : '#fff',
-		};
-	},
   mstImgWrap: {
     borderRadius: 60,
     overflow: 'hidden',

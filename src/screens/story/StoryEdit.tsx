@@ -127,13 +127,13 @@ export default function StoryEdit(props: Props) {
 
   // 프롬트 목록
   const [promptList, setPromptList] = useState([
-    {label: '테마', value: 'THEMA', selectedValue: {}},
+    {label: '테마', value: 'THEME', selectedValue: {}},
     {label: '감정', value: 'EMOTION', selectedValue: {}},
-    {label: '로그 그룹핑', value: 'LOGG', selectedValue: {}},
+    /* {label: '로그 그룹핑', value: 'LOGG', selectedValue: {}}, */
   ]);
 
   // 테마 목록
-  const [themaList, setThemaList] = useState([]);
+  const [themeList, setThemeList] = useState([]);
 
   // 감정 목록
   const [emotionList, setEmotionList] = useState([]);
@@ -170,8 +170,8 @@ export default function StoryEdit(props: Props) {
   // 프롬트 사용 선택
   const fnPromptSelect = (item:any) => {
     let list;
-    if(item.value == 'THEMA') {
-      list = themaList;
+    if(item.value == 'THEME') {
+      list = themeList;
     } else if(item.value == 'EMOTION') {
       list = emotionList;
     } else if(item.value == 'LOGG') {
@@ -471,7 +471,7 @@ export default function StoryEdit(props: Props) {
           setKeywordList(data?.keyword_list);
 
           // 프롬프트 공통코드 목록 설정
-          setThemaList(data?.thema_list);
+          setThemeList(data?.theme_list);
           setEmotionList(data?.emotion_list);
           setLogList(data?.log_list);
 
