@@ -494,6 +494,11 @@ export const Storage = (props: Props) => {
     //setIsRefreshing(false);
   };
 
+  // 추천이성 이동
+  const onPressRecommendMatch = async () => {
+    navigation.navigate(STACK.COMMON, { screen: 'RecommendMatch' });
+  };
+
   return (
     <>
       {isLoading && <CommonLoading />}
@@ -645,7 +650,7 @@ export const Storage = (props: Props) => {
                   </SpaceView>
 
                   <SpaceView mt={15}>
-                    <RecommendBanner />
+                    <RecommendBanner openFn={onPressRecommendMatch} />
                   </SpaceView>
                 </SpaceView>
               )}
