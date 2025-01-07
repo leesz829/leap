@@ -236,7 +236,7 @@ function RenderItem({ item, index, openModal, categoryData }) {
     }
 
     if(isChk) {
-      openModal(item);
+      openModal(item, categoryData.value);
 
     }
   };
@@ -244,7 +244,7 @@ function RenderItem({ item, index, openModal, categoryData }) {
   let itemImg;
   let itemType;
   let _w;
-  if(item?.item_type_code == 'PASS' && !item?.item_name.includes('로얄')) {
+  /* if(item?.item_type_code == 'PASS' && !item?.item_name.includes('로얄')) {
     itemImg = ICON.cubeCyan;
     itemType = 'Cube';
     _w = '70%';
@@ -256,6 +256,18 @@ function RenderItem({ item, index, openModal, categoryData }) {
     _w = '100%';
   }else if(item?.item_type_code == 'PACKAGE') {
     _w = '100%';
+  } */
+
+  if(categoryData.value == 'PASS') {
+    itemImg = ICON.shop_productCube;
+  } else if(categoryData.value == 'MEGACUBE') {
+    itemImg = ICON.shop_productMega;
+  } else if(categoryData.value == 'PROFILE_DRAWING') {
+    itemImg = ICON.shop_productCard;
+  } else if(categoryData.value == 'BOOST') {
+    itemImg = ICON.shop_productBoost;
+  } else if(categoryData.value == 'PACKAGE') {
+    itemImg = ICON.shop_productPackage;
   }
 
   return (
@@ -264,16 +276,17 @@ function RenderItem({ item, index, openModal, categoryData }) {
       onPress={onPressItem}>
 
       <SpaceView viewStyle={_styles.itemHeaderWrap}>
-        <Image source={ICON.cube} style={styles.iconSquareSize(18)} />
+        {/* <Image source={ICON.cube} style={styles.iconSquareSize(18)} /> */}
+        <Image source={itemImg} style={styles.iconSquareSize(18)} />
         <SpaceView ml={2}><Text style={styles.fontStyle('B', 12, '#44B6E5')}>{categoryData.label}</Text></SpaceView>
       </SpaceView>
 
       <SpaceView viewStyle={_styles.itemBodyWrap}>
-        <SpaceView>
-          <Text style={styles.fontStyle('B', 16, '#FFFF5D')}>{item?.item_name}</Text>
+        <SpaceView viewStyle={{height: 40}}>
+          <Text numberOfLines={2} style={styles.fontStyle('B', 16, '#FFFF5D')}>{item?.item_name}</Text>
         </SpaceView>
-        <SpaceView mt={25}>
-          <Text style={[styles.fontStyle('SB', 9, '#FFFFFF'), {textAlign: 'center'}]}>{item?.item_contents}</Text>
+        <SpaceView mt={15} viewStyle={{height: 35}}>
+          <Text numberOfLines={3} style={[styles.fontStyle('SB', 9, '#FFFFFF'), {textAlign: 'center'}]}>{item?.item_contents}</Text>
         </SpaceView>
         <SpaceView mt={10} viewStyle={_styles.itemPriceWrap}>
           {/* <Text style={styles.fontStyle('SB', 10, '#44B6E5')}>{'{type}'}</Text> */}

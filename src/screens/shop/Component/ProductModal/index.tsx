@@ -475,7 +475,11 @@ export default function ProductModal({ isVisible, type, closeModal, item, isUse 
                     end={{ x: 0, y: 1 }}
                     style={_styles.prodImgWrap}
                   >
-                    <Image source={ICON.shop_productCube} style={styles.iconSquareSize(90)} />
+                    {item?.category_code == 'PASS' && ( <Image source={ICON.shop_productCube} style={styles.iconSquareSize(90)} /> )}
+                    {item?.category_code == 'MEGACUBE' && ( <Image source={ICON.shop_productMega} style={styles.iconSquareSize(90)} /> )}
+                    {item?.category_code == 'PROFILE_DRAWING' && ( <Image source={ICON.shop_productCard} style={styles.iconSquareSize(90)} /> )}
+                    {item?.category_code == 'BOOST' && ( <Image source={ICON.shop_productBoost} style={styles.iconSquareSize(90)} /> )}
+                    {item?.category_code == 'PACKAGE' && ( <Image source={ICON.shop_productPackage} style={styles.iconSquareSize(90)} /> )}
                   </LinearGradient>
 
                   <SpaceView mt={20}>

@@ -214,16 +214,50 @@ export const Shop = () => {
     setSelectedCategoryData(category);
     loadingFunc(true);
 
-    const body = { item_type_code: category.value };
+    let itemTypeCode = category.value;
+
+    if(category.value == 'MEGACUBE' || category.value == 'PROFILE_DRAWING') {
+      itemTypeCode = 'PASS';
+    } else if(category.value == 'BOOST') {
+      itemTypeCode = 'SUBSCRIPTION';
+    }
+
+    const body = { item_type_code: itemTypeCode };
     const { success, data } = await get_bm_product(body);
     
     if (success) {
       let _products = data?.item_list;
+      let _applyProductList = [];
+
+      //console.log('_products ::::::: ' , _products);
 
       const connectDate = await AsyncStorage.getItem('SHOP_CONNECT_DT');
 
       _products.map((item: any) => {
         item.connect_date = connectDate;
+
+        if(category.value == 'PASS') {
+          if(item?.item_type_code == 'PASS' && item?.pass_type == 'PASS') {
+            _applyProductList.push(item);
+          }
+        } else if(category.value == 'MEGACUBE') {
+          if(item?.item_type_code == 'PASS' && item?.pass_type == 'ROYAL_PASS') {
+            _applyProductList.push(item);
+          }
+        } else if(category.value == 'PROFILE_DRAWING') {
+          if(item?.item_type_code == 'PASS' && item?.cate_group_code == 'PROFILE_DRAWING') {
+            _applyProductList.push(item);
+          }
+        } else if(category.value == 'BOOST') {
+          if(item?.item_type_code == 'SUBSCRIPTION') {
+            _applyProductList.push(item);
+          }
+        } else if(category.value == 'PACKAGE') {
+          if(item?.item_type_code == 'PACKAGE') {
+            _applyProductList.push(item);
+          }
+        }
+        
       });
 
       let _tmpProducts = [];
@@ -297,8 +331,8 @@ export const Shop = () => {
         _tmpProducts.push(_tmpProduct);
       }
 
-      setProductList(_tmpProducts);
-      //setProductList(_products);
+      //setProductList(_tmpProducts);
+      setProductList(_applyProductList);
 
       loadingFunc(false);
     } else {
@@ -307,8 +341,10 @@ export const Shop = () => {
   };
 
   // ######################################################### 상품상세 팝업 열기
-  const openProductModal = (item) => {
+  const openProductModal = (item:any, categoryCode:string) => {
     // show({ content: '준비중입니다.' });
+
+    item.category_code = categoryCode;
 
     setTargetItem(item);
     setProductModalVisible(true);
