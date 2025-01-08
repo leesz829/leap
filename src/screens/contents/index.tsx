@@ -2,7 +2,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StackParamList, BottomParamList, ColorType, ScreenNavigationProp } from '@types';
-import { request_reexamination, peek_member, update_setting, set_member_phone_book, update_additional, get_bm_product } from 'api/models';
+import { get_daily_match_list } from 'api/models';
 import { commonStyle, layoutStyle, modalStyle, styles } from 'assets/styles/Styles';
 import SpaceView from 'component/SpaceView';
 import TopNavigation from 'component/TopNavigation';
@@ -50,19 +50,82 @@ export const Contents = () => {
   // 회원 기본 정보
   const memberBase = useUserInfo();
 
+  // 선택한 메뉴 값
   const [selectedMenuValue, setSelectedMenuValue] = useState({
     label: '블라인드 카드', value: 'BLIND'
-  }); // 선택한 메뉴 값
+  }); 
 
   // 드롭다운 콜백 함수
   const dropdownCallbackFn = React.useCallback(async (item: any) => {
     setSelectedMenuValue(item);
   }, []);
 
+  // 블라인드 카드 데이터
+  const [blindData, setBlindData] = React.useState({
+    introSecondYn: '',
+    matchList: [],
+    freeOpenCnt: 0,
+  })
+  
+
+  /* #######################################################################################################
+  ##### 블라인드 카드 관련 함수
+  ####################################################################################################### */
+
+  // ############################################################ 데일리 매칭 목록 조회
+  const getDailyMatchList = async () => {
+
+    try {
+      setIsLoading(true);
+
+      const body = {
+
+      }
+      const { success, data } = await get_daily_match_list(body);
+      
+      if (success) {
+        if (data.result_code == '0000') {
+          setBlindData({
+            introSecondYn: data?.intro_second_yn,
+            matchList: data?.match_list,
+            freeOpenCnt: data?.free_open_cnt,
+          });
+
+          /* if(data?.match_member_info == null) {
+            setIsLoad(false);
+            setIsEmpty(true);
+          } else {
+            setIsLoad(true);
+          } */
+
+          // 이벤트 팝업 노출
+          /* if(data.popup_list?.length > 0) {
+            popupList = data.popup_list;
+
+            // 튜토리얼 팝업 닫혀있는 경우 호출
+            if(isPopupShow) {
+              popupShow();
+            }
+          }; */
+
+        } else {
+          setIsLoading(false);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   // ####################################################################################################### 초기 실행 함수
   useEffect(() => {
     if(isFocus) {
+
+      // IAP 연결
+      iapConnection();
 
       if(memberBase?.status == 'BLOCK') {
         show({
@@ -74,10 +137,11 @@ export const Contents = () => {
         });
       } else {
 
+        if(selectedMenuValue.value == 'BLIND') {
+          getDailyMatchList();
+        }
       }
 
-      // IAP 연결
-      iapConnection();
     };
   }, [isFocus]);
 
@@ -93,7 +157,7 @@ export const Contents = () => {
       {/* 컨텐츠 내용 */}
       <SpaceView>
 
-        {selectedMenuValue.value == 'BLIND' && <List />}
+        {selectedMenuValue.value == 'BLIND' && <List blindData={blindData} refreshCallBackFn={getDailyMatchList} />}
         {selectedMenuValue.value == 'VIBE' && <Vibe />}
         {selectedMenuValue.value == 'SCENARIO' && <Scenario />}
 

@@ -45,7 +45,6 @@ const TalkItem = React.memo(({ item, profileOpenFn, goDetailFn }) => {
 
   //const randomNumber = Math.floor(Math.random() * 8) + 1; // 1부터 8까지
   const randomNumber = ((item.story_board_seq - 1) % 8) + 1;
-  console.log('randomNumber :::: ' , randomNumber);
 
   if(item?.gender == 'M') {
     if(randomNumber == 1) { applyRandomMstImg = ICON.story_manPeople01; }

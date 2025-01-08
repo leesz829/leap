@@ -36,7 +36,7 @@ const { width, height } = Dimensions.get('window');
 const Active: FC<Props> = React.memo((props) => {
   const navigation = useNavigation<ScreenNavigationProp>();
 
-  const [currentRespectType, setCurrentRespectType] = React.useState(props.memberData?.respect_grade); // repsect 등급 타입
+  const [currentRespectType, setCurrentRespectType] = React.useState(props.memberData?.respect_grade == 'UNKNOWN' ? 'MEMBER' : props.memberData?.respect_grade); // repsect 등급 타입
 
   const [vibeSelectType, setVibeSelectType] = React.useState('REQ'); // 선택한 마이 바이브 유형(보낸 바이브, 받은바이브)
 

@@ -28,9 +28,11 @@ import { DropDown } from 'component/common/DropDown';
 
 
 interface Props {
-  label: string;
+  /* label: string;
   value?: string;
-  callBackFunction?: (value: string, check: boolean) => void;
+  callBackFunction?: (value: string, check: boolean) => void; */
+  blindData: any;
+  refreshCallBackFn?: () => void;
 }
 
 const { width, height } = Dimensions.get('window');
@@ -66,7 +68,9 @@ export const List: FC<Props> = (props) => {
   // ##################################################################################### 목록 새로고침
   const handleRefresh = () => {
     console.log('refresh!!!!!!!!!!!!!!');
-    getDailyMatchList(false);
+    //getDailyMatchList(false);
+
+    props.refreshCallBackFn();
   };
 
   // ############################################################ 데일리 매칭 목록 조회
@@ -252,7 +256,7 @@ export const List: FC<Props> = (props) => {
         let isPopupShow = true;
 
         // 데일리 매칭 정보 조회
-        getDailyMatchList(isPopupShow);
+        //getDailyMatchList(isPopupShow);
       }
 
       // IAP 연결
@@ -292,7 +296,7 @@ export const List: FC<Props> = (props) => {
             <SpaceView>
               <FlatList
                 ref={scrollRef}
-                data={data.matchList}
+                data={props.blindData?.matchList}
                 //onScroll={handleScroll}
                 pagingEnabled
                 showsVerticalScrollIndicator={false}
@@ -320,9 +324,9 @@ export const List: FC<Props> = (props) => {
                         item={item}
                         fnDetail={goMatchDetail}
                         fnProfileOpen={profileOpen}
-                        freeOpenCnt={data?.freeOpenCnt}
+                        freeOpenCnt={props.blindData?.freeOpenCnt}
                         respectGrade={memberBase?.respect_grade}
-                        isLastItem={data.matchList.length == index+1} />
+                        isLastItem={props.blindData?.matchList.length == index+1} />
                     </>
                   )
                 }}
@@ -336,7 +340,7 @@ export const List: FC<Props> = (props) => {
                 <Text style={{fontSize: 25, fontFamily: 'Pretendard-Regular', color: '#646467'}}>
                   소개하여 드릴 <Text style={{fontSize: 30, color: '#BAFAFC', fontFamily:'Pretendard-Bold'}}>이성</Text>을{"\n"}준비중이에요!
                   {'\n'}{'\n'}
-                  {data.introSecondYn == 'Y' ? (
+                  {props.blindData?.introSecondYn == 'Y' ? (
                     <>새로운 이성을 자정에{'\n'}다시 확인해 보세요!</>
                   ) : (
                     <>새로운 이성을 오후 3시에{'\n'} 다시 확인해 보세요!</>

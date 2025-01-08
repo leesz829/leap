@@ -229,7 +229,7 @@ const ListItem = React.memo(({ item, fnDetail, fnProfileOpen, freeOpenCnt, respe
                       <SpaceView ml={5}><Text style={styles.fontStyle('B', 13, '#fff')}>잠금해제</Text></SpaceView>
 
                       <SpaceView viewStyle={_styles.freeTextWrap}>
-                        {freeOpenCnt == 0 ? (
+                        {(!isEmptyData(freeOpenCnt) || freeOpenCnt == 0) ? (
                           <>
                             <Image source={ICON.cube} style={styles.iconSquareSize(12)} />
                             <SpaceView ml={4}><Text style={styles.fontStyle('R', 8, '#fff')}>30개</Text></SpaceView>

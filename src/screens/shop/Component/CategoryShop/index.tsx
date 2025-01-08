@@ -291,7 +291,14 @@ function RenderItem({ item, index, openModal, categoryData }) {
         <SpaceView mt={10} viewStyle={_styles.itemPriceWrap}>
           {/* <Text style={styles.fontStyle('SB', 10, '#44B6E5')}>{'{type}'}</Text> */}
           <Text></Text>
-          <Text style={styles.fontStyle('SB', 10, '#44B6E5')}>{CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'INAPP' ? '원' : '')}</Text>
+          <SpaceView viewStyle={layoutStyle.rowEnd}>
+            {(item?.money_type_code == 'PASS' || item?.money_type_code == 'ROYAL_PASS') && (
+              <SpaceView mr={3}>
+                <Image source={item?.money_type_code == 'PASS' ? ICON.cube : ICON.megaCube} style={styles.iconSquareSize(15)} />
+              </SpaceView>
+            )}
+            <Text style={styles.fontStyle('SB', 10, '#44B6E5')}>{CommaFormat(item?.shop_buy_price) + (item.money_type_code == 'INAPP' ? '원' : '')}</Text>
+          </SpaceView>
         </SpaceView>
       </SpaceView>
 
