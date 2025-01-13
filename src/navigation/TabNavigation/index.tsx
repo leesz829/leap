@@ -26,7 +26,7 @@ const BottomNavigation = () => {
   return (
     <Tab.Navigator
       backBehavior={'history'}
-      initialRouteName={'Roby'}
+      initialRouteName={'Contents'}
       tabBar={(props) => <CustomTab {...props} />}
     >
       <Tab.Screen

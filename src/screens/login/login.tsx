@@ -28,6 +28,7 @@ import { isEmptyData } from 'utils/functions';
 import LinearGradient from 'react-native-linear-gradient';
 import { CommonCheckBox } from 'component/CommonCheckBox';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 
@@ -155,6 +156,22 @@ export const Login = () => {
 
   // ########################################################################## 회원가입 실행
   const joinProc = async () => {
+
+    // 임시 회원가입 테스트용
+    /* 
+      navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [
+          { name: ROUTES.LOGIN },
+          { name: ROUTES.SIGNUP_PASSWORD, params: { ci: mbr_base.ci, name: mbr_base.name, gender: mbr_base.gender, mobile: mbr_base.mobile, birthday: mbr_base.birthday, memberSeq: memberSeq, emailId: mbr_base.emailId }},
+          { name: ROUTES.SIGNUP_IMAGE, params: { memberSeq: memberSeq, gender: mbr_base.gender, }},
+        ],
+      })
+    );
+
+    return; */
+
     const push_token = await AsyncStorage.getItem(storeKey.FCM_TOKEN);
     const body = {
       push_token : push_token
@@ -381,21 +398,22 @@ export const Login = () => {
   }, [isFocus]);
 
   return (
-    <>    
-      <SpaceView viewStyle={_styles.wrap}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <>
+      <KeyboardAwareScrollView extraScrollHeight={100} showsVerticalScrollIndicator={false} scrollEnabled={false}>
 
-          {/* <SpaceView>
-            <Image source={ICON.join_bg} style={styles.iconNoSquareSize('100%', '100%')} />
-          </SpaceView> */}
+        <SpaceView viewStyle={_styles.wrap}>
+          {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
 
-          <ImageBackground
-            source={ICON.join_bg}
-            style={{height: height}}
-          >
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <SpaceView>
-                {/* <ScrollView horizontal={false}> */}
+            {/* <SpaceView>
+              <Image source={ICON.join_bg} style={styles.iconNoSquareSize('100%', '100%')} />
+            </SpaceView> */}
+
+            <ImageBackground
+              source={ICON.join_bg}
+              style={{height: height}}
+            >
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <SpaceView>
                   <SpaceView /* viewStyle={{height: Platform.OS == 'android' ? height-80 : height-130}} */>
 
                     {/* ############################################################### 타이틀 */}
@@ -486,6 +504,7 @@ export const Login = () => {
 
                     </SpaceView>
 
+
                     {/* <View style={[layoutStyle.alignCenter, commonStyle.paddingHorizontal20, commonStyle.mb15, commonStyle.mt10]}>
 
                       <SpaceView mb={30} viewStyle={{width: '100%'}}>
@@ -554,12 +573,13 @@ export const Login = () => {
                       </View>
                     </View> */}
                   </SpaceView>
-                {/* </ScrollView> */}
-              </SpaceView>
-            </ScrollView>
-          </ImageBackground>
-        </TouchableWithoutFeedback>
-      </SpaceView>
+                </SpaceView>
+              </ScrollView>
+            </ImageBackground>
+          {/* </TouchableWithoutFeedback> */}
+        </SpaceView>
+
+      </KeyboardAwareScrollView>
     </>
   );
 };

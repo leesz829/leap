@@ -73,9 +73,9 @@ const TabIcon = ({ name, isFocused }: { name: string; isFocused: boolean }) => {
                 <Text style={styles.fontStyle('SB', 10, isFocused ? '#46F66F' : '#fff')}>마이홈</Text>
               </SpaceView>
 
-              {isEmptyData(memberBase?.new_board_cnt) && memberBase?.new_board_cnt > 0 && (
+              {/* {isEmptyData(memberBase?.new_board_cnt) && memberBase?.new_board_cnt > 0 && (
                 <View style={_styles.newIcon} />
-              )}
+              )} */}
             </SpaceView>
           </>
         )
