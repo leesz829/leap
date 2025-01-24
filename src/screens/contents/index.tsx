@@ -50,10 +50,13 @@ export const Contents = () => {
   // 회원 기본 정보
   const memberBase = useUserInfo();
 
+  // 상단 메뉴 활성화 여부
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   // 선택한 메뉴 값
   const [selectedMenuValue, setSelectedMenuValue] = useState({
     label: '블라인드 카드', value: 'BLIND'
-  }); 
+  });
 
   // 드롭다운 콜백 함수
   const dropdownCallbackFn = React.useCallback(async (item: any) => {
@@ -142,6 +145,8 @@ export const Contents = () => {
         }
       }
 
+    } else {
+      setIsMenuOpen(false);
     };
   }, [isFocus]);
 
@@ -151,7 +156,13 @@ export const Contents = () => {
 
       {/* 상단 드롭다운 메뉴 */}
       <SpaceView mt={40} ml={20} mr={20} viewStyle={_styles.dropDownWrap}>
-        <DropDown callBackFunction={dropdownCallbackFn} />
+        <DropDown 
+          callBackFunction={dropdownCallbackFn} 
+          isMenuOpen={isMenuOpen}
+          setIsMenuOpen={setIsMenuOpen}
+          selectedItem={selectedMenuValue}
+          setSelectedItem={setSelectedMenuValue}
+        />
       </SpaceView>
 
       {/* 컨텐츠 내용 */}

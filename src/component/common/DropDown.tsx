@@ -9,9 +9,11 @@ import SpaceView from 'component/SpaceView';
 import { styles } from 'assets/styles/Styles';
 
 interface Props {
-  label: string;
-  value?: string;
   callBackFunction?: (value: string) => void;
+  isMenuOpen?: string;
+  setIsMenuOpen?: any;
+  selectedItem?: any;
+  setSelectedItem?: any;
 }
 
 /**
@@ -21,43 +23,37 @@ interface Props {
  *
  */
 export const DropDown: FC<Props> = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState({
-    label: '블라인드 카드', value: 'BLIND'
-  });
-
   const menuList = [
     {label: '블라인드 카드', value: 'BLIND'},
     {label: '바이브', value: 'VIBE'},
     {label: '커플 시나리오', value: 'SCENARIO'},
-  ]
+  ];
 
   const handleToggleDropdown = () => {
-    setIsOpen(!isOpen);
+    props.setIsMenuOpen(!props.isMenuOpen);
   };
 
   const handleSelectItem = (item:any) => {
-    setSelectedItem(item);
-    setIsOpen(false);
-
+    props.setSelectedItem(item);
+    props.setIsMenuOpen(false);
     props.callBackFunction(item);
   };
 
   return (
     <View style={_styles.container}>
 
-      {!isOpen && (
-        <TouchableOpacity onPress={handleToggleDropdown} style={_styles.dropdownButton(isOpen)}>
+      {!props.isMenuOpen && (
+        <TouchableOpacity onPress={handleToggleDropdown} style={_styles.dropdownButton(props.isMenuOpen)}>
           {/* <Image source={ICON.commonSelect} style={styles.iconSquareSize(20)} /> */}
-          <SpaceView ml={10} mr={10}><Text style={styles.fontStyle('EB', 17, '#46F66F')}>{selectedItem.label}</Text></SpaceView>
+          <SpaceView ml={10} mr={10}><Text style={styles.fontStyle('EB', 17, '#46F66F')}>{props.selectedItem?.label}</Text></SpaceView>
           
-          {!isOpen && (
+          {!props.isMenuOpen && (
             <Image source={ICON.moreIcon} style={styles.iconSquareSize(15)} />
           )}
         </TouchableOpacity>
       )}
 
-      {isOpen && (
+      {props.isMenuOpen && (
         <>
           {/* <View style={_styles.dropdownWrap}>
 
@@ -79,7 +75,7 @@ export const DropDown: FC<Props> = (props) => {
                   <TouchableOpacity 
                     activeOpacity={0.8}
                     onPress={() => handleSelectItem(item)} style={[_styles.item, index == 1 && _styles.itmeBorder]}>
-                    <Text style={styles.fontStyle('EB', 16, item?.value == selectedItem.value ? '#46F66F' : '#fff')}>{item.label}</Text>
+                    <Text style={styles.fontStyle('EB', 16, item?.value == props.selectedItem?.value ? '#46F66F' : '#fff')}>{item.label}</Text>
                   </TouchableOpacity>
                 </>
               );

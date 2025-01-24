@@ -420,9 +420,9 @@ const Active: FC<Props> = React.memo((props) => {
         {/* ############################################################################################################
         ####### 배너 영역
         ############################################################################################################ */}
-        <SpaceView mt={20}>
+        {/* <SpaceView mt={20}>
           <RecommendBanner openFn={onPressRecommendMatch} />
-        </SpaceView>
+        </SpaceView> */}
 
         {/* ############################################################################################################
         ####### 마이홈 방문자 영역
@@ -473,15 +473,15 @@ const Active: FC<Props> = React.memo((props) => {
             </SpaceView>
           </SpaceView>
 
-          <SpaceView mt={50} viewStyle={{alignItems: 'center'}}>
+          <SpaceView mt={50} mb={30} viewStyle={{alignItems: 'center'}}>
             <SpaceView>
               <Text style={styles.fontStyle('EB', 19, '#fff')}>마이 바이브</Text>
             </SpaceView>
             <SpaceView mt={15} viewStyle={{flexDirection: 'row', backgroundColor: '#fff', paddingHorizontal: 20, paddingVertical: 5, borderRadius: 25}}>
-              <TouchableOpacity onPress={() => { setVibeSelectType('REQ') }}>
+              <TouchableOpacity onPress={() => { setVibeSelectType('REQ') }} activeOpacity={0.7}>
                 <Text style={styles.fontStyle('SB', 12, vibeSelectType == 'REQ' ? '#8BAAFF' : '#808080')}>보낸 바이브</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{marginLeft: 10}} onPress={() => { setVibeSelectType('RES') }}>
+              <TouchableOpacity style={{marginLeft: 10}} onPress={() => { setVibeSelectType('RES') }} activeOpacity={0.7}>
                 <Text style={styles.fontStyle('SB', 12, vibeSelectType == 'RES' ? '#8BAAFF' : '#808080')}>받은 바이브</Text>
               </TouchableOpacity>
             </SpaceView>
@@ -501,83 +501,87 @@ const Active: FC<Props> = React.memo((props) => {
           <SpaceView viewStyle={layoutStyle.rowBetween}>
 
             {/* 보낸 바이브 영역 */}
-            <LinearGradient
-              colors={['rgba(122,122,122,0.5)', 'rgba(122,122,122,0.1)', 'rgba(122,122,122,0.1)']}
-              style={_styles.vibeItemWrap}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-            >
-              <SpaceView viewStyle={layoutStyle.alignCenter}>
+            {isEmptyData(props.realTimeData?.acc_req_best_face_code) && (
+              <LinearGradient
+                colors={['rgba(122,122,122,0.5)', 'rgba(122,122,122,0.1)', 'rgba(122,122,122,0.1)']}
+                style={_styles.vibeItemWrap}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+              >
                 <SpaceView viewStyle={layoutStyle.alignCenter}>
-                  <Text style={styles.fontStyle('SB', 9, '#fff')}>보낸 바이브 전체 중</Text>
-                  <Text style={styles.fontStyle('H', 23, '#fff')}>{props.realTimeData?.acc_req_best_face_percent}%</Text>
-                </SpaceView>
-
-                <SpaceView mt={10} viewStyle={_styles.vibeItemFace}>
-                  <Text style={styles.fontStyle('B', 12, '#fff')}>{props.realTimeData?.acc_req_best_face_code}</Text>
-                </SpaceView>
-              </SpaceView>
-
-              <SpaceView mt={25}>
-                <Text style={styles.fontStyle('SB', 8, '#A8A8A8')}>높은 리스펙트 등급</Text>
-                <SpaceView mt={8} viewStyle={_styles.vibeItemMbrListWrap}>
-                  <SpaceView viewStyle={{flexDirection: 'row', width: '70%', overflow: 'hidden'}}>
-                    {props.vibeMatchList.map((item, index) => {
-                      return (item?.entity_type == 'REQ' && item?.no < 7) && (
-                        <SpaceView viewStyle={_styles.vibeHighGradeMemberImgWrap}>
-                          <Image source={findSourcePath(item.mst_img_path)} style={styles.iconSquareSize(30)} />
-                        </SpaceView>
-                      )
-                    })}
+                  <SpaceView viewStyle={layoutStyle.alignCenter}>
+                    <Text style={styles.fontStyle('SB', 9, '#fff')}>보낸 바이브 전체 중</Text>
+                    <Text style={styles.fontStyle('H', 23, '#fff')}>{props.realTimeData?.acc_req_best_face_percent}%</Text>
                   </SpaceView>
-                  {props.vibeMatchList.filter(item => item.entity_type === 'REQ').length > 6 && (
-                    <SpaceView viewStyle={_styles.vibeHighGradeMemberCnt}>
-                      <Text style={styles.fontStyle('R', 8, '#fff')}>{props.vibeMatchList.filter(item => item.entity_type === 'REQ').length - 6}+</Text>
-                    </SpaceView>
-                  )}
+
+                  <SpaceView mt={10} viewStyle={_styles.vibeItemFace}>
+                    <Text style={styles.fontStyle('B', 12, '#fff')}>{props.realTimeData?.acc_req_best_face_code}</Text>
+                  </SpaceView>
                 </SpaceView>
-              </SpaceView>
-            </LinearGradient>
+
+                <SpaceView mt={25}>
+                  <Text style={styles.fontStyle('SB', 8, '#A8A8A8')}>높은 리스펙트 등급</Text>
+                  <SpaceView mt={8} viewStyle={_styles.vibeItemMbrListWrap}>
+                    <SpaceView viewStyle={{flexDirection: 'row', width: '70%', overflow: 'hidden'}}>
+                      {props.vibeMatchList.map((item, index) => {
+                        return (item?.entity_type == 'REQ' && item?.no < 7) && (
+                          <SpaceView viewStyle={_styles.vibeHighGradeMemberImgWrap}>
+                            <Image source={findSourcePath(item.mst_img_path)} style={styles.iconSquareSize(30)} />
+                          </SpaceView>
+                        )
+                      })}
+                    </SpaceView>
+                    {props.vibeMatchList.filter(item => item.entity_type === 'REQ').length > 6 && (
+                      <SpaceView viewStyle={_styles.vibeHighGradeMemberCnt}>
+                        <Text style={styles.fontStyle('R', 8, '#fff')}>{props.vibeMatchList.filter(item => item.entity_type === 'REQ').length - 6}+</Text>
+                      </SpaceView>
+                    )}
+                  </SpaceView>
+                </SpaceView>
+              </LinearGradient>
+            )}
 
             {/* 받은 바이브 영역 */}
-            <LinearGradient
-              colors={['rgba(122,122,122,0.5)', 'rgba(122,122,122,0.1)', 'rgba(122,122,122,0.1)']}
-              style={_styles.vibeItemWrap}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0.5, y: 1 }} 
-            >
-              <SpaceView viewStyle={layoutStyle.alignCenter}>
+            {isEmptyData(props.realTimeData?.acc_res_best_face_code) && (
+              <LinearGradient
+                colors={['rgba(122,122,122,0.5)', 'rgba(122,122,122,0.1)', 'rgba(122,122,122,0.1)']}
+                style={_styles.vibeItemWrap}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0.5, y: 1 }} 
+              >
                 <SpaceView viewStyle={layoutStyle.alignCenter}>
-                  <Text style={styles.fontStyle('SB', 9, '#fff')}>받은 바이브 전체 중</Text>
-                  <Text style={styles.fontStyle('H', 23, '#fff')}>{props.realTimeData?.acc_res_best_face_percent}%</Text>
-                </SpaceView>
-
-                <SpaceView mt={10} viewStyle={_styles.vibeItemFace}>
-                  <Text style={styles.fontStyle('B', 12, '#fff')}>{props.realTimeData?.acc_res_best_face_code}</Text>
-                </SpaceView>
-              </SpaceView>
-
-              <SpaceView mt={25}>
-                <Text style={styles.fontStyle('SB', 8, '#A8A8A8')}>높은 리스펙트 등급</Text>
-                <SpaceView mt={8} viewStyle={_styles.vibeItemMbrListWrap}>
-                  <SpaceView viewStyle={{flexDirection: 'row', width: '70%', overflow: 'hidden'}}>
-                    {props.vibeMatchList.map((item, index) => {
-                      return (item?.entity_type == 'RES' && item?.no < 7) && (
-                        <SpaceView viewStyle={_styles.vibeHighGradeMemberImgWrap}>
-                          <Image source={findSourcePath(item.mst_img_path)} style={styles.iconSquareSize(30)} />
-                        </SpaceView>
-                      )
-                    })}
+                  <SpaceView viewStyle={layoutStyle.alignCenter}>
+                    <Text style={styles.fontStyle('SB', 9, '#fff')}>받은 바이브 전체 중</Text>
+                    <Text style={styles.fontStyle('H', 23, '#fff')}>{props.realTimeData?.acc_res_best_face_percent}%</Text>
                   </SpaceView>
 
-                  {props.vibeMatchList.filter(item => item.entity_type === 'RES').length > 6 && (
-                    <SpaceView viewStyle={_styles.vibeHighGradeMemberCnt}>
-                      <Text style={styles.fontStyle('R', 8, '#fff')}>{props.vibeMatchList.filter(item => item.entity_type === 'RES').length - 6}+</Text>
-                    </SpaceView>
-                  )}
+                  <SpaceView mt={10} viewStyle={_styles.vibeItemFace}>
+                    <Text style={styles.fontStyle('B', 12, '#fff')}>{props.realTimeData?.acc_res_best_face_code}</Text>
+                  </SpaceView>
                 </SpaceView>
-              </SpaceView>
-            </LinearGradient>
+
+                <SpaceView mt={25}>
+                  <Text style={styles.fontStyle('SB', 8, '#A8A8A8')}>높은 리스펙트 등급</Text>
+                  <SpaceView mt={8} viewStyle={_styles.vibeItemMbrListWrap}>
+                    <SpaceView viewStyle={{flexDirection: 'row', width: '70%', overflow: 'hidden'}}>
+                      {props.vibeMatchList.map((item, index) => {
+                        return (item?.entity_type == 'RES' && item?.no < 7) && (
+                          <SpaceView viewStyle={_styles.vibeHighGradeMemberImgWrap}>
+                            <Image source={findSourcePath(item.mst_img_path)} style={styles.iconSquareSize(30)} />
+                          </SpaceView>
+                        )
+                      })}
+                    </SpaceView>
+
+                    {props.vibeMatchList.filter(item => item.entity_type === 'RES').length > 6 && (
+                      <SpaceView viewStyle={_styles.vibeHighGradeMemberCnt}>
+                        <Text style={styles.fontStyle('R', 8, '#fff')}>{props.vibeMatchList.filter(item => item.entity_type === 'RES').length - 6}+</Text>
+                      </SpaceView>
+                    )}
+                  </SpaceView>
+                </SpaceView>
+              </LinearGradient>
+            )}
           </SpaceView>
 
         </LinearGradient>        
@@ -752,9 +756,9 @@ const _styles = StyleSheet.create({
   vibeItemWrap: {
     paddingHorizontal: 10, 
     paddingVertical: 20, 
-    marginTop: 30, 
     borderRadius: 10,
     width: width/2.3,
+    marginBottom: 50,
   },
   vibeItemFace: {
     backgroundColor: 'rgba(0,0,0,0.3)',

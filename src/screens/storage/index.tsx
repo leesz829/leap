@@ -645,13 +645,13 @@ export const Storage = (props: Props) => {
                       start={{ x: 0, y: 0 }} 
                       end={{ x: 0, y: 1 }} style={_styles.noEmptyTextBlur} />
                     <SpaceView viewStyle={_styles.noEmptyTextWrap}>
-                      <Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>보관 중인 프로필 카드가 없습니다.{'\n'}새로운 친구를 찾아 볼까요?</Text>
+                      <Text style={[styles.fontStyle('EB', 20, '#fff'), {textAlign: 'center'}]}>보관 중인 프로필 카드가 없습니다.{/* {'\n'}새로운 친구를 찾아 볼까요? */}</Text>
                     </SpaceView>
                   </SpaceView>
 
-                  <SpaceView mt={15}>
+                  {/* <SpaceView mt={15}>
                     <RecommendBanner openFn={onPressRecommendMatch} />
-                  </SpaceView>
+                  </SpaceView> */}
                 </SpaceView>
               )}
             </ScrollView>

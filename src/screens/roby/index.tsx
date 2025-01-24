@@ -125,7 +125,7 @@ export const Roby = (props: Props) => {
           }));
           setResLikeList(data.res_like_list);
           setMatchTrgtList(data.match_trgt_list);
-          
+
           setMemberPeekData({
             realTimeData: data?.real_time_info,
             faceLankList: data?.mbr_face_rank_list,
@@ -625,40 +625,11 @@ export const Roby = (props: Props) => {
       {/* ##################################################################################
             등급 관리하기 팝업
       ################################################################################## */}
-      {/* <PopupGradeGuide 
-        ref={gradeGuide_modalizeRef}
-      /> */}
-
-      <BottomSheetModalProvider>
-        <BottomSheetModal
-          ref={gradeGuide_modalizeRef}
-          index={0}
-          onChange={gradeGuide_onChanges}
-          //snapPoints={snapPoints}
-          maxDynamicContentSize={Platform.OS == 'android' ? height-150 : height-200}
-          enablePanDownToClose={true}
-          handleIndicatorStyle={{
-            backgroundColor: '#808080', // 핸들러 색상 변경
-            width: 37, // 핸들러 너비 변경
-            height: 7, // 핸들러 높이 변경
-            borderRadius: 5, // 둥글게 처리
-          }}
-          handleStyle={{
-            backgroundColor: '#1B1633', // 핸들러 배경 변경
-            borderTopLeftRadius: 30, // 모달 상단 모서리 둥글게
-            borderTopRightRadius: 30,
-            overflow: 'hidden',
-            paddingTop: 20
-          }}
-          backgroundStyle={{backgroundColor: '#1B1633'}}
-          //handleComponent={null}
-        >
-          <PopupGradeGuide 
-            ref={gradeGuide_modalizeRef}
-            closeFn={gradeGuide_onClose}
-          />
-        </BottomSheetModal>
-      </BottomSheetModalProvider>
+      <PopupGradeGuide 
+       modalRef={gradeGuide_modalizeRef}
+       closeFn={gradeGuide_onClose}
+       onChangeFn={gradeGuide_onChanges}
+      />
 
       {/* ##################################################################################
             AI 소개글 팝업
@@ -667,7 +638,7 @@ export const Roby = (props: Props) => {
         ref={aiIntro_modalizeRef}
       /> */}
 
-      <BottomSheetModalProvider>
+      {/* <BottomSheetModalProvider>
         <BottomSheetModal
           ref={aiIntro_modalizeRef}
           index={0}
@@ -696,7 +667,14 @@ export const Roby = (props: Props) => {
             closeFn={aiIntro_onClose}
           />
         </BottomSheetModal>
-      </BottomSheetModalProvider>
+      </BottomSheetModalProvider> */}
+
+
+      <PopupAiIntro 
+        modalRef={aiIntro_modalizeRef}
+        closeFn={aiIntro_onClose}
+        onChangeFn={aiIntro_onChanges}
+      />
 
 
 
